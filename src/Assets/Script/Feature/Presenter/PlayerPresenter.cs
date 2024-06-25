@@ -37,16 +37,7 @@ namespace Script.Feature.Presenter
 
          private void Update()
          {
-             
-             if (playerModel.StayGround)
-             {
-                 playerView.UpDatePosition(new Vector2(playerModel.MoveDirection.x*playerModel.OnGroundMoveSpeed,0));
-             }
-             else
-             {
-                 playerView.UpDatePosition(new Vector2(playerModel.MoveDirection.x,0));
-             }
-             
+             playerView.AddPower(playerModel.getPower());
          }
 
          /// <summary>
@@ -76,7 +67,7 @@ namespace Script.Feature.Presenter
              }
              print($"Jump");
              playerModel.SetStayGround(false);
-             playerView.UpDatePosition(Vector2.up*playerModel.JunpPower);
+             playerView.AddPower(Vector2.up*playerModel.JunpPower);
              
          }
 

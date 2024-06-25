@@ -1,12 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Script.Feature.View
 {
+    
     public class PlayerView : MonoBehaviour
     {
-        public void UpDatePosition(Vector2 moveDirection)
+        private Rigidbody rb;
+        void Start()
         {
-            transform.Translate(moveDirection*Time.deltaTime);
+            rb = GetComponent<Rigidbody>();
+        }
+
+        public void AddPower(Vector2 moveDirection)
+        {
+            rb.AddForce(moveDirection);
         }
     }
 }

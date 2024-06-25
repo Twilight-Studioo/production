@@ -19,5 +19,16 @@ namespace Script.Feature.Model
         {
             StayGround = stayGround;
         }
+
+        public Vector2 getPower()
+        {
+            if (StayGround)
+            {
+                return new Vector2(MoveDirection.x * OnGroundMoveSpeed, 0);
+            }
+
+            return new Vector2(MoveDirection.x, 0);
+        }
+        
     }
 }
