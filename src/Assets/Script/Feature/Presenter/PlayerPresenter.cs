@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Script.Feature.Model;
 using Script.Feature.View;
-using Script.Feature.Interface.Presenter;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -13,11 +12,12 @@ namespace Script.Feature.Presenter
     {
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
+
         
-        [Inject]
         public PlayerPresenter(
             PlayerView view,
             PlayerModel model
+            
         )
         {
             this.playerView = view;
@@ -29,7 +29,7 @@ namespace Script.Feature.Presenter
         }
         public void Move(float direction)
         {
-            playerView.Move(direction * playerModel.MoveSpeed);
+            playerView.Move(direction * playerModel.MoveSpeed,playerModel.JumpMove);
         }
 
         public void Jump()
@@ -38,6 +38,11 @@ namespace Script.Feature.Presenter
 
         }
 
+        public void Swap()
+        {
+            playerView.SwapMode();
+        }
+        
         public void Attack()
         {
             playerModel.Attack(); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
