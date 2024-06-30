@@ -7,6 +7,8 @@ namespace Script.Feature.View
     { 
         public event Action OnJump;
         public event Action OnAttack;
+        [Range(1, 100)] 
+        [SerializeField] private float TimeScaleSwapProgress = 50f;
 
         private Rigidbody rb;
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
@@ -51,7 +53,7 @@ namespace Script.Feature.View
         {
             if (Time.timeScale == 1)
             {
-                Time.timeScale = 0.2f;
+                Time.timeScale = TimeScaleSwapProgress/100;
             }
             else
                 Time.timeScale = 1;
