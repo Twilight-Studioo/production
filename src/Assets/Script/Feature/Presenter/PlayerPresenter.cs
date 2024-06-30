@@ -23,9 +23,6 @@ namespace Script.Feature.Presenter
             this.playerView = view;
             this.playerModel = model;
             
-            // ビューのイベントにプレゼンターのメソッドを登録
-            view.OnJump += Jump;
-            view.OnAttack += Attack;
         }
         public void Move(float direction)
         {
@@ -45,7 +42,7 @@ namespace Script.Feature.Presenter
         
         public void Attack()
         {
-            playerModel.Attack(); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
+            playerView.Attack(playerModel.Attack); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
         }
     }
 }

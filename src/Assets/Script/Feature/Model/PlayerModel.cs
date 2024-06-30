@@ -8,20 +8,15 @@ namespace Script.Feature.Model
     {
         public float MoveSpeed { get; private set; }
         public float JumpForce { get; private set; }
-        
         public float JumpMove { get; private set; }
-        public event Action OnAttack;
+        public float Attack { get; private set; }
 
-        public PlayerModel(float moveSpeed, float jumpForce,float jumpMove)
+        public PlayerModel(float moveSpeed, float jumpForce,float jumpMove, float attack)
         {
             MoveSpeed = moveSpeed;
             JumpForce = jumpForce;
             JumpMove = jumpMove;
-        }
-
-        public void Attack()
-        {
-            OnAttack?.Invoke();
+            Attack = attack;
         }
         
     }

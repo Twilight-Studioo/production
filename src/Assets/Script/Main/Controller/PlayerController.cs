@@ -15,6 +15,7 @@ namespace Script.Main.Controller
         public float moveSpeed = 5f;
         public float jumpForce = 10f;
         public float jumpMove = 2;
+        public float attack = 1;
         private PlayerModel playerModel;
         private PlayerView playerView;
         private PlayerPresenter playerPresenter;
@@ -24,7 +25,7 @@ namespace Script.Main.Controller
         private void Start()
         {
             // プレイヤーのモデル、ビュー、プレゼンターを初期化
-            playerModel = new PlayerModel(moveSpeed, jumpForce, jumpMove);
+            playerModel = new PlayerModel(moveSpeed, jumpForce, jumpMove, attack);
             playerView = FindObjectOfType<PlayerView>(); // シーン内のPlayerViewを見つける
             playerPresenter = new PlayerPresenter(playerView,playerModel);
             inputPlayer = new InputPlayer();
