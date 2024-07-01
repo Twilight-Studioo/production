@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using Core.Camera;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 using Script.Feature.Presenter;
@@ -20,6 +23,13 @@ namespace Script.Main.Controller
         private PlayerPresenter playerPresenter;
         private InputPlayer inputPlayer;
         private float horizontalInput;
+        
+        [SerializeField]
+        private TargetGroupManager targetGroupManager;
+
+        [SerializeField]
+        private Transform[] enemies;
+        
 
         private void Start()
         {
@@ -28,6 +38,21 @@ namespace Script.Main.Controller
             playerView = FindObjectOfType<PlayerView>(); // シーン内のPlayerViewを見つける
             playerPresenter = new PlayerPresenter(playerView,playerModel);
             inputPlayer = new InputPlayer();
+            
+            if (targetGroupManager == null)
+            {
+                // TODO: diでちゃんと管理する
+                var manager = FindObjectOfType<TargetGroupManager>();
+                if (manager == null)
+                {
+                    throw new NotImplementedException("TargetGroupManagerが見つかりませんでした");
+                }
+                targetGroupManager = manager;
+            }
+            targetGroupManager.AddTarget(playerView.transform, CameraTargetGroupTag.Player());
+            enemies.ToList().ForEach((enemy) => 
+                targetGroupManager.AddTarget(enemy, CameraTargetGroupTag.Enemy())
+            );
         }
 
         private void Update()
