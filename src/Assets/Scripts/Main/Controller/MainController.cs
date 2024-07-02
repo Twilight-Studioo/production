@@ -53,6 +53,8 @@ namespace Main.Controller
         public void Start()
         {
             InputEventSetup();
+            Setup();
+            playerPresenter.Start();
         }
 
         private void Setup()

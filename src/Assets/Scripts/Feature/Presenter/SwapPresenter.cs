@@ -100,9 +100,7 @@ namespace Feature.Presenter
         public void MoveSelector(Vector2 direction, Vector3 basePosition)
         {
             var item = swapItemsModel.GetCurrentItem();
-            Debug.Log("item = " + item);
             var select = swapItemsModel.GetNearestItem(basePosition, direction, characterParams.canSwapDistance);
-            Debug.Log("select = " + select);
             if (!select.HasValue)
             {
                 return;

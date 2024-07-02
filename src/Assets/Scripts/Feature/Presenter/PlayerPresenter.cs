@@ -7,13 +7,12 @@ using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
-using VContainer.Unity;
 
 #endregion
 
 namespace Feature.Presenter
 {
-    public class PlayerPresenter : IStartable
+    public class PlayerPresenter
     {
         private readonly CharacterParams characterParams;
         private readonly PlayerModel playerModel;
@@ -37,8 +36,12 @@ namespace Feature.Presenter
         public void Start()
         {
             playerView.Position
-                .Subscribe(position => playerModel.UpdatePosition(position))
+                .Subscribe(position =>
+                {
+                    playerModel.UpdatePosition(position);
+                })
                 .AddTo(playerView);
+            playerModel.Start();
         }
 
         public void Move(float direction)

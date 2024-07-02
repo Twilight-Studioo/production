@@ -21,7 +21,7 @@ namespace Feature.Common
 
         [Range(0.01f, 1.0f)] public float swapContinueTimeScale = 0.2f;
 
-        public uint swapUsedResource = 6;
+        public uint swapUsedResource = 3;
 
         public uint maxHasResource = 12;
 

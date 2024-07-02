@@ -12,7 +12,7 @@ using VContainer.Unity;
 
 namespace Feature.Model
 {
-    public class PlayerModel : IDisposable, IStartable
+    public class PlayerModel : IDisposable
     {
         public enum PlayerState
         {
@@ -58,7 +58,6 @@ namespace Feature.Model
                     }
 
                     swapResource.Value = Math.Min(swapResource.Value + 1, (int)characterParams.maxHasResource);
-                    Debug.Log(swapResource);
                 })
                 .AddTo(recoverTimer);
 
@@ -66,7 +65,7 @@ namespace Feature.Model
                 .Subscribe(x =>
                 {
                     var volume = (float)x / characterParams.maxHasResource;
-                    gameUIView.SetVolume(volume * 100);
+                    gameUIView.SetVolume(volume);
                 })
                 .AddTo(recoverTimer);
         }
@@ -112,7 +111,6 @@ namespace Feature.Model
 
         public void UpdatePosition(Vector3 pos)
         {
-            Debug.Log(pos);
             position.Value = pos;
         }
     }
