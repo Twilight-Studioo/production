@@ -38,7 +38,7 @@ jobs:
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
         with:
-          args: --project-dir,./src,--linter,qodana-cdnet:2024.1-eap
+          args: --project-dir,./src,--ide,QDNET
           upload-result: true
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
