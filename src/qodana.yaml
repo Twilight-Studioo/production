@@ -1,0 +1,28 @@
+ide: QDNET
+version: 1.0
+exclude:
+  - name: All
+    paths:
+      - Assets/Plugins
+      - Assets/Scripts/Core/Input
+      - Assets/Scripts/Core/Utilities/BasicEx.cs
+  - name: CSharpWarnings__CS8669 # nullable reference types
+  - name: CSharpWarnings__CS8632
+  - name: RedundantUsingDirective
+  - name: UnusedMethodReturnValue.Local
+  - name: UnusedMember.Local
+  - name: ArrangeTrailingCommaInMultilineLists
+  - name: ArrangeObjectCreationWhenTypeNotEvident # unused return type warning for void
+  - name: JsonSchemaCompliance
+  - name: FieldCanBeMadeReadOnly.Global
+    paths:
+      - Assets/Scripts/Feature/Common/Parameter
+  - name: ClassNeverInstantiated.Global
+    paths:
+      - Assets/Scripts/Feature/Common/Parameter
+  - name: UnusedMethodReturnValue.Global
+    paths:
+      - Assets/Scripts
+  - name: ArrangeTrailingCommaInSinglelineLists
+profile:
+  name: qodana.recommended
