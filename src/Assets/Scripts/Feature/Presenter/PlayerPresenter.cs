@@ -57,20 +57,45 @@ namespace Feature.Presenter
 
         public void StartSwap()
         {
-            if (!playerModel.CanSwap)
+            if (playerModel.State.Value != PlayerModel.PlayerState.Idle)
             {
                 return;
             }
 
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
-            Time.timeScale = 0.2f;
+            Time.timeScale = characterParams.swapContinueTimeScale;
             swapTimer.Clear();
             Observable
-                .Timer(TimeSpan.FromSeconds(characterParams.swapContinueMaxSec * Time.timeScale))
+                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis * Time.timeScale))
                 .Subscribe(_ =>
                 {
                     EndSwap();
                     swapTimer.Clear();
+                })
+                .AddTo(swapTimer);
+            playerModel.ContinueSwap
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        return;
+                    }
+
+                    EndSwap();
+                    swapTimer.Clear();
+                });
+    
+            // on used
+            Observable
+                .Interval(TimeSpan.FromMilliseconds(characterParams.swapContinueUsageTimeMillis * Time.timeScale))
+                .Subscribe(_ =>
+                {
+                    if (playerModel.State.Value == PlayerModel.PlayerState.Idle)
+                    {
+                        return;
+                    }
+                    playerModel.SwapUsingUpdate();
                 })
                 .AddTo(swapTimer);
         }

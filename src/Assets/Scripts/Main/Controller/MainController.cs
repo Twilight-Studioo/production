@@ -111,7 +111,6 @@ namespace Main.Controller
                     {
                         var item = swapPresenter.SelectItem();
                         swapPresenter.ResetSelector();
-                        Debug.Log("Swap Ended");
                         playerPresenter.EndSwap();
                         if (item == null)
                         {

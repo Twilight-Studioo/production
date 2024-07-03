@@ -6,7 +6,6 @@ using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
-using VContainer.Unity;
 
 #endregion
 
@@ -33,7 +32,18 @@ namespace Feature.Model
 
         private readonly IReactiveProperty<int> swapResource;
 
-        public IReadOnlyReactiveProperty<int> SwapResource;
+        public readonly IReadOnlyReactiveProperty<int> SwapResource;
+        
+        public float MoveSpeed => characterParams.speed;
+        public float JumpForce => characterParams.jumpPower;
+
+        public float JumpMove => characterParams.speed / 2;
+
+        private readonly IReactiveProperty<bool> continueSwap = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> ContinueSwap;
+
+        public IReadOnlyReactiveProperty<PlayerState> State { get; }
+        public IReadOnlyReactiveProperty<Vector3> Position { get; private set; }
 
         [Inject]
         public PlayerModel(
@@ -48,19 +58,29 @@ namespace Feature.Model
             playerState = new ReactiveProperty<PlayerState>(PlayerState.Idle);
             State = playerState.ToReadOnlyReactiveProperty();
             Position = position.ToReadOnlyReactiveProperty();
+            ContinueSwap = continueSwap.ToReadOnlyReactiveProperty();
+            // recover resource
             Observable
-                .Interval(TimeSpan.FromSeconds(characterParams.secondOfRecoveryResource))
+                .Interval(TimeSpan.FromMilliseconds(characterParams.recoveryResourceTimeMillis))
                 .Subscribe(x =>
                 {
-                    if (swapResource.Value >= characterParams.maxHasResource)
+                    if (swapResource.Value >= characterParams.maxHasResource || playerState.Value == PlayerState.DoSwap)
                     {
                         return;
                     }
 
-                    swapResource.Value = Math.Min(swapResource.Value + 1, (int)characterParams.maxHasResource);
+                    swapResource.Value = Math.Min(swapResource.Value + (int)characterParams.resourceRecoveryQuantity, (int)characterParams.maxHasResource);
                 })
                 .AddTo(recoverTimer);
 
+            Observable
+                .EveryUpdate()
+                .Subscribe(_ =>
+                {
+                    continueSwap.Value = 0 < swapResource.Value - (int)characterParams.swapExecUseResource;
+                });
+            
+            // update ui
             swapResource
                 .Subscribe(x =>
                 {
@@ -69,17 +89,6 @@ namespace Feature.Model
                 })
                 .AddTo(recoverTimer);
         }
-
-        public float MoveSpeed => characterParams.speed;
-        public float JumpForce => characterParams.jumpPower;
-
-        public float JumpMove => characterParams.speed / 2;
-
-        public bool CanSwap =>
-            swapResource.Value - characterParams.swapUsedResource >= 0 && State.Value == PlayerState.Idle;
-
-        public IReadOnlyReactiveProperty<PlayerState> State { get; }
-        public IReadOnlyReactiveProperty<Vector3> Position { get; private set; }
 
         public void Start()
         {
@@ -101,9 +110,13 @@ namespace Feature.Model
 
         public void Swapped()
         {
-            swapResource.Value -= (int)characterParams.swapUsedResource;
+            swapResource.Value = Math.Max(swapResource.Value - (int)characterParams.swapExecUseResource, 0);
         }
 
+        public void SwapUsingUpdate()
+        {
+            swapResource.Value = Math.Max(swapResource.Value - (int)characterParams.swapContinuedUseResource, 0);
+        }
         public void Attack()
         {
             OnAttack?.Invoke();
