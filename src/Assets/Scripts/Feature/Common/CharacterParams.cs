@@ -1,7 +1,6 @@
 ﻿#region
 
 using UnityEngine;
-using UnityEngine.Serialization;
 
 #endregion
 
@@ -18,51 +17,50 @@ namespace Feature.Common
 
         public int attackPower = 2;
 
-        
+
         /// <summary>
-        /// スワップの最大継続時間(Milli)
+        ///     スワップの最大継続時間(Milli)
         /// </summary>
         public float swapContinueMaxMillis = 4000f;
 
         /// <summary>
-        /// スワップ中のTimeScale
+        ///     スワップ中のTimeScale
         /// </summary>
         [Range(0.01f, 1.0f)] public float swapContinueTimeScale = 0.2f;
-        
+
         /// <summary>
-        /// リソースを持つ最大値
+        ///     リソースを持つ最大値
         /// </summary>
         public uint maxHasResource = 12;
 
         /// <summary>
-        /// 何ミリ秒ごとにリソースが回復するか
+        ///     何ミリ秒ごとにリソースが回復するか
         /// </summary>
-        public uint recoveryResourceTimeMillis = 800; 
+        public uint recoveryResourceTimeMillis = 800;
 
         /// <summary>
-        /// スワップ可能な最大距離
+        ///     スワップ可能な最大距離
         /// </summary>
         public float canSwapDistance = 10.0f;
-        
+
         /// <summary>
-        /// スワップモード中に継続して消費するリソース
+        ///     スワップモード中に継続して消費するリソース
         /// </summary>
         public uint swapContinuedUseResource = 1;
-        
+
         /// <summary>
-        /// スワップモード中何秒ごとにリソースを消費するか
+        ///     スワップモード中何秒ごとにリソースを消費するか
         /// </summary>
         public uint swapContinueUsageTimeMillis = 1000;
-        
+
         /// <summary>
-        /// スワップした時に消費するリソース
+        ///     スワップした時に消費するリソース
         /// </summary>
         public uint swapExecUseResource = 3;
 
         /// <summary>
-        /// 1回の回復で増えるリソースの量
+        ///     1回の回復で増えるリソースの量
         /// </summary>
         public uint resourceRecoveryQuantity = 1;
-        
     }
 }

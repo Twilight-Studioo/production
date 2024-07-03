@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using UniRx;
 using UnityEngine;
 
@@ -10,10 +9,11 @@ namespace Feature.View
 {
     public class PlayerView : MonoBehaviour
     {
+        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
-        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
         
+
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
@@ -31,6 +31,33 @@ namespace Feature.View
                 isGrounded = true;
             }
         }
+
+        // ----TODO Draft----
+        
+        public bool isDrawSwapRange;
+
+        public float swapRange;
+
+        private void OnDrawGizmos()
+        {
+            if (swapRange != 0 && isDrawSwapRange)
+            {
+                DrawWireDisk(transform.position, swapRange, Color.magenta);
+            }
+        }
+
+        private static void DrawWireDisk(Vector3 position, float radius, Color color)
+        {
+            var oldColor = Gizmos.color;
+            Gizmos.color = color;
+            var oldMatrix = Gizmos.matrix;
+            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new(1, 1, 1));
+            Gizmos.DrawWireSphere(Vector3.zero, radius);
+            Gizmos.matrix = oldMatrix;
+            Gizmos.color = oldColor;
+        }
+        
+        // ----TODO Draft----
 
         public void Move(float direction, float jumpMove)
         {

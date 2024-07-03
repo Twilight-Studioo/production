@@ -31,15 +31,13 @@ namespace Feature.Presenter
             playerModel = model;
             this.characterParams = characterParams;
             swapTimer = new();
+            playerView.swapRange = characterParams.canSwapDistance;
         }
 
         public void Start()
         {
             playerView.Position
-                .Subscribe(position =>
-                {
-                    playerModel.UpdatePosition(position);
-                })
+                .Subscribe(position => { playerModel.UpdatePosition(position); })
                 .AddTo(playerView);
             playerModel.Start();
         }
@@ -61,6 +59,8 @@ namespace Feature.Presenter
             {
                 return;
             }
+
+            playerView.isDrawSwapRange = true;
 
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
             Time.timeScale = characterParams.swapContinueTimeScale;
@@ -85,7 +85,7 @@ namespace Feature.Presenter
                     EndSwap();
                     swapTimer.Clear();
                 });
-    
+
             // on used
             Observable
                 .Interval(TimeSpan.FromMilliseconds(characterParams.swapContinueUsageTimeMillis * Time.timeScale))
@@ -95,6 +95,7 @@ namespace Feature.Presenter
                     {
                         return;
                     }
+
                     playerModel.SwapUsingUpdate();
                 })
                 .AddTo(swapTimer);
@@ -102,6 +103,7 @@ namespace Feature.Presenter
 
         public void EndSwap()
         {
+            playerView.isDrawSwapRange = false;
             Time.timeScale = 1f;
             playerModel.ChangeState(PlayerModel.PlayerState.Idle);
         }

@@ -19,9 +19,12 @@ namespace Feature.Model
             DoSwap,
         }
 
-        private readonly GameUIView gameUIView;
-
         private readonly CharacterParams characterParams;
+
+        private readonly IReactiveProperty<bool> continueSwap = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> ContinueSwap;
+
+        private readonly GameUIView gameUIView;
 
         private readonly IReactiveProperty<PlayerState> playerState;
 
@@ -33,17 +36,6 @@ namespace Feature.Model
         private readonly IReactiveProperty<int> swapResource;
 
         public readonly IReadOnlyReactiveProperty<int> SwapResource;
-        
-        public float MoveSpeed => characterParams.speed;
-        public float JumpForce => characterParams.jumpPower;
-
-        public float JumpMove => characterParams.speed / 2;
-
-        private readonly IReactiveProperty<bool> continueSwap = new ReactiveProperty<bool>(false);
-        public readonly IReadOnlyReactiveProperty<bool> ContinueSwap;
-
-        public IReadOnlyReactiveProperty<PlayerState> State { get; }
-        public IReadOnlyReactiveProperty<Vector3> Position { get; private set; }
 
         [Inject]
         public PlayerModel(
@@ -69,7 +61,8 @@ namespace Feature.Model
                         return;
                     }
 
-                    swapResource.Value = Math.Min(swapResource.Value + (int)characterParams.resourceRecoveryQuantity, (int)characterParams.maxHasResource);
+                    swapResource.Value = Math.Min(swapResource.Value + (int)characterParams.resourceRecoveryQuantity,
+                        (int)characterParams.maxHasResource);
                 })
                 .AddTo(recoverTimer);
 
@@ -79,7 +72,7 @@ namespace Feature.Model
                 {
                     continueSwap.Value = 0 < swapResource.Value - (int)characterParams.swapExecUseResource;
                 });
-            
+
             // update ui
             swapResource
                 .Subscribe(x =>
@@ -90,15 +83,24 @@ namespace Feature.Model
                 .AddTo(recoverTimer);
         }
 
+        public float MoveSpeed => characterParams.speed;
+        public float JumpForce => characterParams.jumpPower;
+
+        public float JumpMove => characterParams.speed / 2;
+
+        public IReadOnlyReactiveProperty<PlayerState> State { get; }
+        public IReadOnlyReactiveProperty<Vector3> Position { get; private set; }
+
+        public void Dispose()
+        {
+            recoverTimer.Dispose();
+        }
+
         public void Start()
         {
             swapResource.Value = (int)characterParams.maxHasResource;
             var volume = (float)swapResource.Value / characterParams.maxHasResource;
             gameUIView.SetVolume(volume * 100);
-        }
-        public void Dispose()
-        {
-            recoverTimer.Dispose();
         }
 
         public event Action OnAttack;
@@ -117,6 +119,7 @@ namespace Feature.Model
         {
             swapResource.Value = Math.Max(swapResource.Value - (int)characterParams.swapContinuedUseResource, 0);
         }
+
         public void Attack()
         {
             OnAttack?.Invoke();

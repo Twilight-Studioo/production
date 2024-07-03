@@ -156,6 +156,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 287fb10ae3b643b9afe758858d3fee3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDrawSwapRange: 0
+  swapRange: 0
 --- !u!54 &71158414
 Rigidbody:
   m_ObjectHideFlags: 0

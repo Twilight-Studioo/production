@@ -23,17 +23,17 @@ namespace Main.Installer
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
-           
+
             builder.RegisterComponentInHierarchy<TargetGroupManager>();
             builder.RegisterComponentInHierarchy<EnemyFactory>();
             builder.RegisterComponentInHierarchy<PlayerView>();
             builder.RegisterComponentInHierarchy<InputActionAccessor>();
             builder.RegisterComponentInHierarchy<GameUIView>();
-            
+
             builder.Register<SwapPresenter>(Lifetime.Scoped);
             builder.Register<SwapModel>(Lifetime.Scoped);
             builder.RegisterComponent(characterParams);
-            
+
             builder.Register<PlayerModel>(Lifetime.Scoped);
             builder.Register<PlayerPresenter>(Lifetime.Scoped);
             builder.RegisterEntryPoint<MainController>(Lifetime.Scoped);
