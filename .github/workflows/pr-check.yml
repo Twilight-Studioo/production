@@ -38,11 +38,12 @@ jobs:
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
         with:
-          args: --project-dir,./src,--ide,QDNET
+          args: --project-dir,./src,--output-dir,${{ runner.temp }}/qodana
           upload-result: true
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
       - name: Upload logs
+        if: failure()
         uses: actions/upload-artifact@v2
         with:
           name: logs
