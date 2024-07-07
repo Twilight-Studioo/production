@@ -109,6 +109,10 @@ namespace Main.Controller
                     }
                     else
                     {
+                        if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle)
+                        {
+                            return;
+                        }
                         var item = swapPresenter.SelectItem();
                         swapPresenter.ResetSelector();
                         playerPresenter.EndSwap();

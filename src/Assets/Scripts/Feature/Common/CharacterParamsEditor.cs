@@ -25,6 +25,7 @@ namespace Feature.Common
         private SerializedProperty swapExecUseResource;
         private SerializedProperty resourceRecoveryQuantity;
         private SerializedProperty recoveryResourceTimeMillis;
+        private SerializedProperty recoveryTimeMillis;
 
         private bool showSwapParameters = true;
         private bool showStaminaParameters = true;
@@ -49,9 +50,10 @@ namespace Feature.Common
             enterSwapUseStamina = serializedObject.FindProperty("enterSwapUseStamina");
             swapModeStaminaUsageIntervalMillis = serializedObject.FindProperty("swapModeStaminaUsageIntervalMillis");
             swapModeStaminaUsage = serializedObject.FindProperty("swapModeStaminaUsage");
-            swapExecUseResource = serializedObject.FindProperty("swapExecUseResource");
+            swapExecUseResource = serializedObject.FindProperty("swapExecUseStamina");
+            recoveryTimeMillis = serializedObject.FindProperty("recoveryTimeMillis");
             resourceRecoveryQuantity = serializedObject.FindProperty("resourceRecoveryQuantity");
-            recoveryResourceTimeMillis = serializedObject.FindProperty("recoveryResourceTimeMillis");
+            recoveryResourceTimeMillis = serializedObject.FindProperty("recoveryStaminaTimeMillis");
         }
 
         public override void OnInspectorGUI()
@@ -84,6 +86,7 @@ namespace Feature.Common
                 EditorGUILayout.PropertyField(swapModeStaminaUsageIntervalMillis, new GUIContent("スワップモード中何秒ごとにスタミナを消費するか"));
                 EditorGUILayout.PropertyField(swapModeStaminaUsage, new GUIContent("スワップモード中に継続して消費するスタミナ"));
                 EditorGUILayout.PropertyField(swapExecUseResource, new GUIContent("スワップした時に消費するスタミナ"));
+                EditorGUILayout.PropertyField(recoveryTimeMillis, new GUIContent("スワップして何秒で回復し始めるか"));
                 EditorGUILayout.PropertyField(resourceRecoveryQuantity, new GUIContent("1回の回復で増えるスタミナの量"));
                 EditorGUILayout.PropertyField(recoveryResourceTimeMillis, new GUIContent("何ミリ秒ごとにリソースが回復するか"));
             }

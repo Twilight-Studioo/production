@@ -1,6 +1,7 @@
 #region
 
 using System;
+using Core.Utilities;
 using Feature.Common;
 using Feature.Model;
 using Feature.View;
@@ -55,25 +56,25 @@ namespace Feature.Presenter
 
         public void StartSwap()
         {
-            if (playerModel.State.Value != PlayerModel.PlayerState.Idle)
+            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
             {
                 return;
             }
 
             playerView.isDrawSwapRange = true;
 
-            playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
-            Time.timeScale = characterParams.swapContinueTimeScale;
             swapTimer.Clear();
+            Time.timeScale = characterParams.swapContinueTimeScale;
+            playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
+            playerModel.OnStartSwap();
             Observable
-                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis * Time.timeScale))
+                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis * characterParams.swapContinueTimeScale))
                 .Subscribe(_ =>
                 {
                     EndSwap();
-                    swapTimer.Clear();
                 })
                 .AddTo(swapTimer);
-            playerModel.ContinueSwap
+            playerModel.CanEndSwap
                 .DistinctUntilChanged()
                 .Subscribe(x =>
                 {
@@ -83,29 +84,57 @@ namespace Feature.Presenter
                     }
 
                     EndSwap();
-                    swapTimer.Clear();
                 });
-
-            // on used
-            Observable
-                .Interval(TimeSpan.FromMilliseconds(characterParams.swapModeStaminaUsageIntervalMillis * Time.timeScale))
-                .Subscribe(_ =>
-                {
-                    if (playerModel.State.Value == PlayerModel.PlayerState.Idle)
-                    {
-                        return;
-                    }
-
-                    playerModel.SwapUsingUpdate();
-                })
-                .AddTo(swapTimer);
         }
 
         public void EndSwap()
         {
-            playerView.isDrawSwapRange = false;
-            Time.timeScale = 1f;
-            playerModel.ChangeState(PlayerModel.PlayerState.Idle);
+            if (playerModel.State.Value != PlayerModel.PlayerState.DoSwap)
+            {
+                return;
+            }
+            swapTimer.Clear();
+            playerModel.OnEndSwap();
+            
+            Func<float, float> easingFunction;
+
+            switch (characterParams.swapReturnCurve)
+            {
+                case SwapReturnCurve.EaseIn:
+                    easingFunction = Easing.EaseIn;
+                    break;
+                case SwapReturnCurve.EaseOut:
+                    easingFunction = Easing.EaseOut;
+                    break;
+                case SwapReturnCurve.EaseInOut:
+                    easingFunction = Easing.EaseInOut;
+                    break;
+                case SwapReturnCurve.Linear:
+                default:
+                    easingFunction = Easing.Linear;
+                    break;
+            }
+            
+            var initialTimeScale = characterParams.swapContinueTimeScale;
+            const float targetTimeScale = 1.0f;
+            var duration = characterParams.swapReturnTimeMillis / 1000f; 
+            var elapsedTime = 0f;
+            
+            Observable.EveryUpdate()
+                .Subscribe(_ =>
+                {
+                    elapsedTime += Time.unscaledDeltaTime; // Update elapsed time with unscaled time
+                    var t = Mathf.Clamp01(elapsedTime / duration); // Calculate normalized time
+                    Time.timeScale = Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); // Apply easing function
+                    if (t >= 1.0f) // If the transition is complete
+                    {
+                        playerView.isDrawSwapRange = false;
+                        playerModel.ChangeState(PlayerModel.PlayerState.Idle);
+                        Time.timeScale = targetTimeScale; 
+                        swapTimer.Clear();
+                    }
+                })
+                .AddTo(swapTimer);
         }
 
         public void SetPosition(Vector3 position)

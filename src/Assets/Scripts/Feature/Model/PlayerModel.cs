@@ -21,8 +21,10 @@ namespace Feature.Model
 
         private readonly CharacterParams characterParams;
 
-        private readonly IReactiveProperty<bool> continueSwap = new ReactiveProperty<bool>(false);
-        public readonly IReadOnlyReactiveProperty<bool> ContinueSwap;
+        private readonly IReactiveProperty<bool> canStartSwap = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> CanStartSwap;
+        private readonly IReactiveProperty<bool> canEndSwap = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> CanEndSwap;
 
         private readonly GameUIView gameUIView;
 
@@ -31,11 +33,15 @@ namespace Feature.Model
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
 
-        private readonly CompositeDisposable recoverTimer = new();
+        private readonly CompositeDisposable playerModelTimer = new();
 
-        private readonly IReactiveProperty<int> swapResource;
+        private readonly IReactiveProperty<int> swapStamina;
 
-        public readonly IReadOnlyReactiveProperty<int> SwapResource;
+        public readonly IReadOnlyReactiveProperty<int> SwapStamina;
+        
+        private IDisposable recoverStaminaSubscription;
+        
+        private IDisposable swapUseStaminaSubscription;
 
         [Inject]
         public PlayerModel(
@@ -45,43 +51,46 @@ namespace Feature.Model
         {
             gameUIView = ui;
             characterParams = character;
-            swapResource = new ReactiveProperty<int>((int)characterParams.maxHasStamina);
-            SwapResource = swapResource.ToReadOnlyReactiveProperty();
+            swapStamina = new ReactiveProperty<int>((int)characterParams.maxHasStamina);
+            SwapStamina = swapStamina.ToReadOnlyReactiveProperty();
             playerState = new ReactiveProperty<PlayerState>(PlayerState.Idle);
             State = playerState.ToReadOnlyReactiveProperty();
             Position = position.ToReadOnlyReactiveProperty();
-            ContinueSwap = continueSwap.ToReadOnlyReactiveProperty();
-            // recover resource
-            Observable
-                .Interval(TimeSpan.FromMilliseconds(characterParams.recoveryResourceTimeMillis))
-                .Subscribe(x =>
-                {
-                    if (swapResource.Value >= characterParams.maxHasStamina || playerState.Value == PlayerState.DoSwap)
-                    {
-                        return;
-                    }
-
-                    swapResource.Value = Math.Min(swapResource.Value + (int)characterParams.resourceRecoveryQuantity,
-                        (int)characterParams.maxHasStamina);
-                })
-                .AddTo(recoverTimer);
+            CanStartSwap = canStartSwap.ToReadOnlyReactiveProperty();
+            CanEndSwap = canEndSwap.ToReadOnlyReactiveProperty();
+            // recover stamina
+           
 
             Observable
                 .EveryUpdate()
                 .Subscribe(_ =>
                 {
-                    continueSwap.Value = 0 < swapResource.Value - (int)characterParams.swapExecUseResource;
-                });
+                    canStartSwap.Value = IfCanStartSwapRate <= (float)swapStamina.Value / characterParams.maxHasStamina;
+                })
+                .AddTo(playerModelTimer);
+            
+            Observable
+                .EveryUpdate()
+                .Subscribe(_ =>
+                {
+                    canEndSwap.Value = IfCanEndSwapRate <= (float)swapStamina.Value / characterParams.maxHasStamina;
+                })
+                .AddTo(playerModelTimer);
 
             // update ui
-            swapResource
+            swapStamina
                 .Subscribe(x =>
                 {
                     var volume = (float)x / characterParams.maxHasStamina;
                     gameUIView.SetVolume(volume);
                 })
-                .AddTo(recoverTimer);
+                .AddTo(playerModelTimer);
         }
+        
+        // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
+        private float IfCanStartSwapRate => (float)(characterParams.enterSwapUseStamina + characterParams.swapExecUseStamina) / characterParams.maxHasStamina;
+        
+        private float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
 
         public float MoveSpeed => characterParams.speed;
         public float JumpForce => characterParams.jumpPower;
@@ -93,14 +102,60 @@ namespace Feature.Model
 
         public void Dispose()
         {
-            recoverTimer.Dispose();
+            swapUseStaminaSubscription?.Dispose();
+            recoverStaminaSubscription?.Dispose();
+            playerModelTimer.Dispose();
         }
 
         public void Start()
         {
-            swapResource.Value = (int)characterParams.maxHasStamina;
-            var volume = (float)swapResource.Value / characterParams.maxHasStamina;
+            swapStamina.Value = (int)characterParams.maxHasStamina;
+            var volume = (float)swapStamina.Value / characterParams.maxHasStamina;
             gameUIView.SetVolume(volume * 100);
+            gameUIView.SetExecSwapLine(IfCanEndSwapRate);
+            gameUIView.SetStartSwapLine(IfCanStartSwapRate);
+        }
+        
+        public void OnStartSwap()
+        {
+            swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.enterSwapUseStamina, 0);
+            // スワップ中は回復を停止する
+            recoverStaminaSubscription?.Dispose();
+            swapUseStaminaSubscription?.Dispose();
+            
+            swapUseStaminaSubscription = Observable
+                .Interval(TimeSpan.FromMilliseconds(characterParams.swapModeStaminaUsageIntervalMillis * characterParams.swapContinueTimeScale))
+                .Subscribe(_ =>
+                {
+                    if (playerState.Value == PlayerState.Idle)
+                    {
+                        return;
+                    }
+
+                    SwapUsingUpdate();
+                })
+                .AddTo(playerModelTimer);
+        }
+
+        
+        public void OnEndSwap()
+        {
+            swapUseStaminaSubscription?.Dispose();
+            recoverStaminaSubscription?.Dispose();
+            recoverStaminaSubscription = Observable
+                .Timer(TimeSpan.FromMilliseconds(characterParams.recoveryTimeMillis))
+                .SelectMany(_ => Observable.Interval(TimeSpan.FromMilliseconds(characterParams.recoveryStaminaTimeMillis)))
+                .Subscribe(_ =>
+                {
+                    if (swapStamina.Value >= characterParams.maxHasStamina || playerState.Value == PlayerState.DoSwap)
+                    {
+                        return;
+                    }
+
+                    swapStamina.Value = Math.Min(swapStamina.Value + (int)characterParams.resourceRecoveryQuantity,
+                        (int)characterParams.maxHasStamina);
+                })
+                .AddTo(playerModelTimer);
         }
 
         public event Action OnAttack;
@@ -112,12 +167,12 @@ namespace Feature.Model
 
         public void Swapped()
         {
-            swapResource.Value = Math.Max(swapResource.Value - (int)characterParams.swapExecUseResource, 0);
+            swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapExecUseStamina, 0);
         }
 
-        public void SwapUsingUpdate()
+        private void SwapUsingUpdate()
         {
-            swapResource.Value = Math.Max(swapResource.Value - (int)characterParams.swapModeStaminaUsage, 0);
+            swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapModeStaminaUsage, 0);
         }
 
         public void Attack()

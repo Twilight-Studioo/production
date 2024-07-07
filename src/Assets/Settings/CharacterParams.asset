@@ -18,10 +18,14 @@ MonoBehaviour:
   attackPower: 2
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
-  maxHasResource: 12
-  recoveryResourceTimeMillis: 800
   canSwapDistance: 10
-  swapContinuedUseResource: 1
-  swapContinueUsageTimeMillis: 1000
-  swapExecUseResource: 3
+  swapReturnTimeMillis: 1000
+  swapReturnCurve: 3
+  maxHasStamina: 15
+  enterSwapUseStamina: 3
+  swapModeStaminaUsageIntervalMillis: 500
+  swapModeStaminaUsage: 1
+  swapExecUseStamina: 2
+  recoveryTimeMillis: 800
   resourceRecoveryQuantity: 1
+  recoveryStaminaTimeMillis: 800

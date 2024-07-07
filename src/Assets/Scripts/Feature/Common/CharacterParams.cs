@@ -49,12 +49,17 @@ namespace Feature.Common
 
 
         [Tooltip("スワップした時に消費するスタミナ"), Space(10),]
-        public uint swapExecUseResource = 3;
+        public uint swapExecUseStamina = 3;
 
-        [Tooltip("1回の回復で増えるスタミナの量"), Space(10),]
+        [Tooltip("スワップして何秒で回復し始めるか"), Space(10),]
+        public uint recoveryTimeMillis = 800;
+        
+        [Tooltip("1回の回復で増えるスタミナの量")]
         public uint resourceRecoveryQuantity = 1;
 
-        [Tooltip("何ミリ秒ごとにリソースが回復するか")] public uint recoveryResourceTimeMillis = 800;
+        [Tooltip("何ミリ秒ごとにリソースが回復するか")] 
+        public uint recoveryStaminaTimeMillis = 800;
+
     }
 
     [Serializable]
