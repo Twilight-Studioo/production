@@ -38,7 +38,7 @@ jobs:
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
         with:
-          args: --project-dir,./src,--results-dir,${{ runner.temp }}/qodana
+          args: --project-dir,./src
           upload-result: true
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
