@@ -88,7 +88,7 @@ namespace Feature.Presenter
 
             // on used
             Observable
-                .Interval(TimeSpan.FromMilliseconds(characterParams.swapContinueUsageTimeMillis * Time.timeScale))
+                .Interval(TimeSpan.FromMilliseconds(characterParams.swapModeStaminaUsageIntervalMillis * Time.timeScale))
                 .Subscribe(_ =>
                 {
                     if (playerModel.State.Value == PlayerModel.PlayerState.Idle)

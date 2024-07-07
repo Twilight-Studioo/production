@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using UnityEngine;
 
 #endregion
@@ -18,49 +19,50 @@ namespace Feature.Common
         public int attackPower = 2;
 
 
-        /// <summary>
-        ///     スワップの最大継続時間(Milli)
-        /// </summary>
+        // スワップ関連
+
+        [Tooltip("スワップの最大継続時間(Milli)"), Space(10),]
         public float swapContinueMaxMillis = 4000f;
 
-        /// <summary>
-        ///     スワップ中のTimeScale
-        /// </summary>
-        [Range(0.01f, 1.0f)] public float swapContinueTimeScale = 0.2f;
+        [Tooltip("スワップ中のTimeScale"), Range(0.01f, 1.0f),]
+        public float swapContinueTimeScale = 0.2f;
 
-        /// <summary>
-        ///     リソースを持つ最大値
-        /// </summary>
-        public uint maxHasResource = 12;
+        [Tooltip("スワップ可能な最大距離")] public float canSwapDistance = 10.0f;
 
-        /// <summary>
-        ///     何ミリ秒ごとにリソースが回復するか
-        /// </summary>
-        public uint recoveryResourceTimeMillis = 800;
+        [Tooltip("スワップ後何秒で元のタイムスケールに戻るか"), Space(10),]
+        public uint swapReturnTimeMillis = 1000;
 
-        /// <summary>
-        ///     スワップ可能な最大距離
-        /// </summary>
-        public float canSwapDistance = 10.0f;
+        [Tooltip("元のタイムスケールへの戻り方")] public SwapReturnCurve swapReturnCurve = SwapReturnCurve.Linear;
 
-        /// <summary>
-        ///     スワップモード中に継続して消費するリソース
-        /// </summary>
-        public uint swapContinuedUseResource = 1;
 
-        /// <summary>
-        ///     スワップモード中何秒ごとにリソースを消費するか
-        /// </summary>
-        public uint swapContinueUsageTimeMillis = 1000;
+        // スタミナ関連
 
-        /// <summary>
-        ///     スワップした時に消費するリソース
-        /// </summary>
+        [Tooltip("スタミナを持つ最大値"), Space(5),] public uint maxHasStamina = 12;
+
+        [Tooltip("スワップモードに入ったときのスタミナ消費量"), Space(10),]
+        public uint enterSwapUseStamina = 3;
+
+        [Tooltip("スワップモード中何秒ごとにスタミナを消費するか"), Space(10),]
+        public uint swapModeStaminaUsageIntervalMillis = 1000;
+
+        [Tooltip("スワップモード中に継続して消費するスタミナ")] public uint swapModeStaminaUsage = 1;
+
+
+        [Tooltip("スワップした時に消費するスタミナ"), Space(10),]
         public uint swapExecUseResource = 3;
 
-        /// <summary>
-        ///     1回の回復で増えるリソースの量
-        /// </summary>
+        [Tooltip("1回の回復で増えるスタミナの量"), Space(10),]
         public uint resourceRecoveryQuantity = 1;
+
+        [Tooltip("何ミリ秒ごとにリソースが回復するか")] public uint recoveryResourceTimeMillis = 800;
+    }
+
+    [Serializable]
+    public enum SwapReturnCurve
+    {
+        Linear,
+        EaseIn,
+        EaseOut,
+        EaseInOut,
     }
 }

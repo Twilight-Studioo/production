@@ -45,7 +45,7 @@ namespace Feature.Model
         {
             gameUIView = ui;
             characterParams = character;
-            swapResource = new ReactiveProperty<int>((int)characterParams.maxHasResource);
+            swapResource = new ReactiveProperty<int>((int)characterParams.maxHasStamina);
             SwapResource = swapResource.ToReadOnlyReactiveProperty();
             playerState = new ReactiveProperty<PlayerState>(PlayerState.Idle);
             State = playerState.ToReadOnlyReactiveProperty();
@@ -56,13 +56,13 @@ namespace Feature.Model
                 .Interval(TimeSpan.FromMilliseconds(characterParams.recoveryResourceTimeMillis))
                 .Subscribe(x =>
                 {
-                    if (swapResource.Value >= characterParams.maxHasResource || playerState.Value == PlayerState.DoSwap)
+                    if (swapResource.Value >= characterParams.maxHasStamina || playerState.Value == PlayerState.DoSwap)
                     {
                         return;
                     }
 
                     swapResource.Value = Math.Min(swapResource.Value + (int)characterParams.resourceRecoveryQuantity,
-                        (int)characterParams.maxHasResource);
+                        (int)characterParams.maxHasStamina);
                 })
                 .AddTo(recoverTimer);
 
@@ -77,7 +77,7 @@ namespace Feature.Model
             swapResource
                 .Subscribe(x =>
                 {
-                    var volume = (float)x / characterParams.maxHasResource;
+                    var volume = (float)x / characterParams.maxHasStamina;
                     gameUIView.SetVolume(volume);
                 })
                 .AddTo(recoverTimer);
@@ -98,8 +98,8 @@ namespace Feature.Model
 
         public void Start()
         {
-            swapResource.Value = (int)characterParams.maxHasResource;
-            var volume = (float)swapResource.Value / characterParams.maxHasResource;
+            swapResource.Value = (int)characterParams.maxHasStamina;
+            var volume = (float)swapResource.Value / characterParams.maxHasStamina;
             gameUIView.SetVolume(volume * 100);
         }
 
@@ -117,7 +117,7 @@ namespace Feature.Model
 
         public void SwapUsingUpdate()
         {
-            swapResource.Value = Math.Max(swapResource.Value - (int)characterParams.swapContinuedUseResource, 0);
+            swapResource.Value = Math.Max(swapResource.Value - (int)characterParams.swapModeStaminaUsage, 0);
         }
 
         public void Attack()
