@@ -99,7 +99,6 @@ namespace Script.Feature.View
         {
             attack = modelAttack;
             Sword.SetActive(true);
-            Debug.Log(direction);
             // 攻撃方向に応じたアニメーションを再生
             if (direction == Vector2.zero)
             {
