@@ -21,7 +21,9 @@ namespace Script.Main.Controller
         private PlayerPresenter playerPresenter;
         private InputPlayer inputPlayer;
         private float horizontalInput;
-
+        private Vector2 attackDirection;
+        
+        
         private void Start()
         {
             // プレイヤーのモデル、ビュー、プレゼンターを初期化
@@ -40,22 +42,21 @@ namespace Script.Main.Controller
             // bool SwapInput = inputPlayer.Player.SwapMode.triggered;
             // プレゼンターに入力を渡す
             playerPresenter.Move(horizontalInput);
-            
+            //moveDirection = inputPlayer.ReadValue<Vector2>();
         }
 
         public void OnMove(InputAction.CallbackContext context)
         {
             if (context.phase==InputActionPhase.Performed)
-            {
-                Vector2 input = context.ReadValue<Vector2>();
+            { 
+                attackDirection = context.ReadValue<Vector2>();
                 
-                horizontalInput = input.x;
+                horizontalInput = attackDirection.x;
             }
-
             if (context.phase == InputActionPhase.Canceled)
             {
-                Vector2 input = Vector2.zero;
-                horizontalInput = input.x;
+                attackDirection = Vector2.zero;
+                horizontalInput = attackDirection.x;
             }
         }
 
@@ -82,8 +83,9 @@ namespace Script.Main.Controller
         public void OnAttack(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Started)
-            {
-                playerPresenter.Attack();
+            { 
+                //attackDirection = inputPlayer.Player.Move.ReadValue<Vector2>();
+                playerPresenter.Attack(attackDirection);
             }
         }
     }

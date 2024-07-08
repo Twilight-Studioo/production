@@ -12,18 +12,29 @@ namespace Script.Feature.View
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Animator animator;
         private GameObject Sword;
-        private string animationName = "SwordAnimation";
 
         private void Update()
         {
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
             // 現在のアニメーションが指定したアニメーションであり、かつそのアニメーションが終了したかどうかを確認
-            if (stateInfo.IsName(animationName) && stateInfo.normalizedTime >= 1.0f)
+            if (stateInfo.IsName("SwordUp") && stateInfo.normalizedTime >= 1.0f)
             {
                 StopAnimation();
             }
-
+            if (stateInfo.IsName("SwordUpR") && stateInfo.normalizedTime >= 1.0f)
+            {
+                StopAnimation();
+            }
+            if (stateInfo.IsName("SwordRight") && stateInfo.normalizedTime >= 1.0f)
+            {
+                StopAnimation();
+            }
+            if (stateInfo.IsName("SwordDownR") && stateInfo.normalizedTime >= 1.0f)
+            {
+                StopAnimation();
+            }
+            
         }
 
         private void Awake()
@@ -43,6 +54,16 @@ namespace Script.Feature.View
 
         public void Move(float direction,float jumpMove)
         {
+            //向き
+            if (direction > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if (direction < 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+                direction = direction * -1;
+            }
             if (isGrounded)
             {
                 Vector3 movement = transform.right * (direction * Time.deltaTime);
@@ -74,11 +95,36 @@ namespace Script.Feature.View
                 Time.timeScale = 1;
         }
 
-        public void Attack(float modelAttack)
+        public void Attack(float modelAttack,Vector2 direction)
         {
             attack = modelAttack;
             Sword.SetActive(true);
-            animator.SetBool("OnAttack",true);
+            Debug.Log(direction);
+            // 攻撃方向に応じたアニメーションを再生
+            if (direction == Vector2.zero)
+            {
+                direction = Vector2.right;
+            }
+            
+            if (direction.y>=0.2f&&direction.x>=0.2f||direction.y>=0.2f&&direction.x<=-0.2f)
+            {
+                animator.SetBool("UpRight",true);
+                
+            }
+            else if (direction.y>=0.2f)
+            {
+                animator.SetBool("Up",true);
+            }
+            else if (direction.y<=-0.2f) 
+            {
+                animator.SetBool("DownRight",true);
+            }
+            else if (direction.x>=0.5f||direction.x<=-0.5f)
+            {
+                animator.SetBool("Right",true);
+            }
+
+            
         }
 
         public void AttackDamege(GameObject enemy)
@@ -88,7 +134,10 @@ namespace Script.Feature.View
         }
         private void StopAnimation()
         {
-            animator.SetBool("OnAttack",false);
+            animator.SetBool("Up",false);
+            animator.SetBool("UpRight",false);
+            animator.SetBool("Right",false);
+            animator.SetBool("DownRight",false);
             Sword.SetActive(false);
         }
         public bool IsGrounded()

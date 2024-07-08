@@ -40,9 +40,9 @@ namespace Script.Feature.Presenter
             playerView.SwapMode();
         }
         
-        public void Attack()
+        public void Attack(Vector2 direction)
         {
-            playerView.Attack(playerModel.Attack); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
+            playerView.Attack(playerModel.Attack,direction); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
         }
     }
 }
