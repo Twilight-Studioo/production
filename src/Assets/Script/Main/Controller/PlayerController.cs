@@ -18,6 +18,7 @@ namespace Script.Main.Controller
         private PlayerModel playerModel;
         private PlayerView playerView;
         private PlayerPresenter playerPresenter;
+        private VFXView vfxView;
         private InputPlayer inputPlayer;
         private float horizontalInput;
 
@@ -27,6 +28,7 @@ namespace Script.Main.Controller
             playerModel = new PlayerModel(moveSpeed, jumpForce, jumpMove);
             playerView = FindObjectOfType<PlayerView>(); // シーン内のPlayerViewを見つける
             playerPresenter = new PlayerPresenter(playerView,playerModel);
+            vfxView = FindObjectOfType<VFXView>();
             inputPlayer = new InputPlayer();
         }
 
@@ -71,10 +73,12 @@ namespace Script.Main.Controller
             if (context.phase == InputActionPhase.Performed)
             {
                 playerPresenter.Swap();
+                vfxView.PlayVFX();
             }
             if (context.phase == InputActionPhase.Canceled)
             {
                 playerPresenter.Swap();
+                vfxView.StopVFX();
             }
         }
 
