@@ -157,6 +157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 287fb10ae3b643b9afe758858d3fee3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDrawSwapRange: 0
+  swapRange: 0
 --- !u!54 &71158414
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -623,7 +625,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 564825830}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: b84f73c7c4a6c6443a3bfbb2f7a504f9, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: d56d796a34463ea42a49d881828a64f3, type: 3}
   m_InitialEventName: OnStop
   m_InitialEventNameOverriden: 1
   m_StartSeed: 0

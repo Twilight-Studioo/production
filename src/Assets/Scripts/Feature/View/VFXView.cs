@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -10,6 +11,8 @@ namespace Feature.View
     public class VFXView : MonoBehaviour
     {
         [SerializeField] private VisualEffect effect;
+
+        
 
         public void PlayVFX()
         {

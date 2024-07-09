@@ -16,7 +16,7 @@ using VContainer.Unity;
 
 namespace Main.Controller
 {
-    public class MainController : IStartable
+    public class MainController : IStartable 
     {
         private readonly EnemyFactory enemyFactory;
 
@@ -29,6 +29,8 @@ namespace Main.Controller
 
         private readonly TargetGroupManager targetGroupManager;
         private float horizontalInput;
+
+        private readonly VFXView vfxView;
 
         [Inject]
         public MainController(
@@ -52,6 +54,7 @@ namespace Main.Controller
 
         public void Start()
         {
+            
             InputEventSetup();
             Setup();
             playerPresenter.Start();
@@ -123,6 +126,7 @@ namespace Main.Controller
                         var item = swapPresenter.SelectItem();
                         swapPresenter.ResetSelector();
                         playerPresenter.EndSwap();
+                        vfxView.PlayVFX();
                         if (item == null)
                         {
                             return;

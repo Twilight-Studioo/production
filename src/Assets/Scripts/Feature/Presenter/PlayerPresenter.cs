@@ -18,6 +18,7 @@ namespace Feature.Presenter
         private readonly CharacterParams characterParams;
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
+        private readonly VFXView vfxView;
 
         private readonly CompositeDisposable swapTimer;
 
