@@ -1,5 +1,9 @@
 ide: QDNET
 version: 1.0
+profile:
+  name: qodana.recommended
+dotnet:
+  solution: src.sln
 exclude:
   - name: All
     paths:
@@ -24,5 +28,3 @@ exclude:
     paths:
       - Assets/Scripts
   - name: ArrangeTrailingCommaInSinglelineLists
-profile:
-  name: qodana.recommended

@@ -91,11 +91,17 @@ namespace Main.Controller
                 .DistinctUntilChanged()
                 .Subscribe(_ => { playerPresenter.Jump(); });
 
-            var attachEvent = inputActionAccessor.CreateAction(Player.Attack);
+            var attackEvent = inputActionAccessor.CreateAction(Player.Attack);
             Observable.EveryFixedUpdate()
-                .Select(_ => attachEvent.ReadValue<float>() > 0f)
+                .Select(_ => attackEvent.ReadValue<float>() > 0f)
                 .DistinctUntilChanged()
-                .Subscribe(_ => { playerPresenter.Attack(); });
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        playerPresenter.Attack();
+                    }
+                });
 
             var swapEvent = inputActionAccessor.CreateAction(Player.SwapMode);
             Observable.EveryFixedUpdate()

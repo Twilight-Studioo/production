@@ -180,8 +180,11 @@ namespace Feature.Model
             OnAttack?.Invoke();
         }
 
+        public Vector3 Forward {get; private set;}
         public void UpdatePosition(Vector3 pos)
         {
+            // TODO: 要件に合わせて、方向は限定する
+            Forward = (pos - position.Value).normalized;
             position.Value = pos;
         }
     }

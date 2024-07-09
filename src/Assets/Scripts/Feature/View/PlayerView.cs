@@ -12,16 +12,45 @@ namespace Feature.View
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
+        private GameObject sword;
+        private Animator animator;
         
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            sword = transform.Find("Sword").gameObject;
+            animator = sword.GetComponent<Animator>();
         }
 
         private void Update()
         {
             Position.Value = transform.position;
+
+            // TODO: Updateは辞めて、delegateで受け取る
+            if (!animator.isActiveAndEnabled)
+            {
+                return;
+            }
+            var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+            // 現在のアニメーションが指定したアニメーションであり、かつそのアニメーションが終了したかどうかを確認
+            if (stateInfo.IsName("SwordUp") && stateInfo.normalizedTime >= 1.0f)
+            {
+                StopAnimation();
+            }
+            if (stateInfo.IsName("SwordUpR") && stateInfo.normalizedTime >= 1.0f)
+            {
+                StopAnimation();
+            }
+            if (stateInfo.IsName("SwordRight") && stateInfo.normalizedTime >= 1.0f)
+            {
+                StopAnimation();
+            }
+            if (stateInfo.IsName("SwordDownR") && stateInfo.normalizedTime >= 1.0f)
+            {
+                StopAnimation();
+            }
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -81,6 +110,44 @@ namespace Feature.View
                 isGrounded = false; // ジャンプ中になるので接地フラグをfalseにする
             }
         }
+        
+        public void Attack(Vector2 direction)
+        {
+            sword.SetActive(true);
+            // 攻撃方向に応じたアニメーションを再生
+            if (direction == Vector2.zero)
+            {
+                direction = Vector2.right;
+            }
+            
+            if (direction.y>=0.2f&&direction.x>=0.2f||direction.y>=0.2f&&direction.x<=-0.2f)
+            {
+                animator.SetBool("UpRight",true);
+                
+            }
+            else if (direction.y>=0.2f)
+            {
+                animator.SetBool("Up",true);
+            }
+            else if (direction.y<=-0.2f) 
+            {
+                animator.SetBool("DownRight",true);
+            }
+            else if (direction.x>=0.5f||direction.x<=-0.5f)
+            {
+                animator.SetBool("Right",true);
+            }
+        }
+        
+        private void StopAnimation()
+        {
+            animator.SetBool("Up", false);
+            animator.SetBool("UpRight", false);
+            animator.SetBool("Right", false);
+            animator.SetBool("DownRight", false);
+            sword.SetActive(false);
+        }
+
 
         public bool IsGrounded() => isGrounded;
     }

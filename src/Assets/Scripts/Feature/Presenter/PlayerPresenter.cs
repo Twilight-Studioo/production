@@ -144,7 +144,8 @@ namespace Feature.Presenter
 
         public void Attack()
         {
-            playerModel.Attack(); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
+            var direction = playerModel.Forward;
+            playerView.Attack(direction); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
         }
     }
 }
