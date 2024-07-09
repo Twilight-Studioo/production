@@ -12,12 +12,12 @@ namespace Script.Feature.Presenter
     {
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
+        private readonly VFXView vfxView;
 
         
         public PlayerPresenter(
             PlayerView view,
-            PlayerModel model
-            
+            PlayerModel model 
         )
         {
             this.playerView = view;
