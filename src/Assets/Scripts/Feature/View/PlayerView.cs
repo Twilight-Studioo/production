@@ -9,12 +9,17 @@ namespace Feature.View
 {
     public class PlayerView : MonoBehaviour
     {
+        // ----TODO Draft----
+
+        public bool isDrawSwapRange;
+
+        public float swapRange;
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
+        private Animator animator;
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
         private GameObject sword;
-        private Animator animator;
-        
+
 
         private void Awake()
         {
@@ -32,6 +37,7 @@ namespace Feature.View
             {
                 return;
             }
+
             var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
             // 現在のアニメーションが指定したアニメーションであり、かつそのアニメーションが終了したかどうかを確認
@@ -39,14 +45,17 @@ namespace Feature.View
             {
                 StopAnimation();
             }
+
             if (stateInfo.IsName("SwordUpR") && stateInfo.normalizedTime >= 1.0f)
             {
                 StopAnimation();
             }
+
             if (stateInfo.IsName("SwordRight") && stateInfo.normalizedTime >= 1.0f)
             {
                 StopAnimation();
             }
+
             if (stateInfo.IsName("SwordDownR") && stateInfo.normalizedTime >= 1.0f)
             {
                 StopAnimation();
@@ -60,12 +69,6 @@ namespace Feature.View
                 isGrounded = true;
             }
         }
-
-        // ----TODO Draft----
-        
-        public bool isDrawSwapRange;
-
-        public float swapRange;
 
         private void OnDrawGizmos()
         {
@@ -85,7 +88,7 @@ namespace Feature.View
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
         }
-        
+
         // ----TODO Draft----
 
         public void Move(float direction, float jumpMove)
@@ -110,7 +113,7 @@ namespace Feature.View
                 isGrounded = false; // ジャンプ中になるので接地フラグをfalseにする
             }
         }
-        
+
         public void Attack(Vector2 direction)
         {
             sword.SetActive(true);
@@ -119,26 +122,25 @@ namespace Feature.View
             {
                 direction = Vector2.right;
             }
-            
-            if (direction.y>=0.2f&&direction.x>=0.2f||direction.y>=0.2f&&direction.x<=-0.2f)
+
+            if ((direction.y >= 0.2f && direction.x >= 0.2f) || (direction.y >= 0.2f && direction.x <= -0.2f))
             {
-                animator.SetBool("UpRight",true);
-                
+                animator.SetBool("UpRight", true);
             }
-            else if (direction.y>=0.2f)
+            else if (direction.y >= 0.2f)
             {
-                animator.SetBool("Up",true);
+                animator.SetBool("Up", true);
             }
-            else if (direction.y<=-0.2f) 
+            else if (direction.y <= -0.2f)
             {
-                animator.SetBool("DownRight",true);
+                animator.SetBool("DownRight", true);
             }
-            else if (direction.x>=0.5f||direction.x<=-0.5f)
+            else if (direction.x >= 0.5f || direction.x <= -0.5f)
             {
-                animator.SetBool("Right",true);
+                animator.SetBool("Right", true);
             }
         }
-        
+
         private void StopAnimation()
         {
             animator.SetBool("Up", false);

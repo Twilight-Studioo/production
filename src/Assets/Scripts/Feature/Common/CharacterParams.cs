@@ -53,13 +53,10 @@ namespace Feature.Common
 
         [Tooltip("スワップして何秒で回復し始めるか"), Space(10),]
         public uint recoveryTimeMillis = 800;
-        
-        [Tooltip("1回の回復で増えるスタミナの量")]
-        public uint resourceRecoveryQuantity = 1;
 
-        [Tooltip("何ミリ秒ごとにリソースが回復するか")] 
-        public uint recoveryStaminaTimeMillis = 800;
+        [Tooltip("1回の回復で増えるスタミナの量")] public uint resourceRecoveryQuantity = 1;
 
+        [Tooltip("何ミリ秒ごとにリソースが回復するか")] public uint recoveryStaminaTimeMillis = 800;
     }
 
     [Serializable]

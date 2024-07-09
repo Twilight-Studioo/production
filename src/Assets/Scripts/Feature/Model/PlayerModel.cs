@@ -19,28 +19,29 @@ namespace Feature.Model
             DoSwap,
         }
 
-        private readonly CharacterParams characterParams;
-
-        private readonly IReactiveProperty<bool> canStartSwap = new ReactiveProperty<bool>(false);
-        public readonly IReadOnlyReactiveProperty<bool> CanStartSwap;
         private readonly IReactiveProperty<bool> canEndSwap = new ReactiveProperty<bool>(false);
         public readonly IReadOnlyReactiveProperty<bool> CanEndSwap;
 
+        private readonly IReactiveProperty<bool> canStartSwap = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> CanStartSwap;
+
+        private readonly CharacterParams characterParams;
+
         private readonly GameUIView gameUIView;
+
+        private readonly CompositeDisposable playerModelTimer = new();
 
         private readonly IReactiveProperty<PlayerState> playerState;
 
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
 
-        private readonly CompositeDisposable playerModelTimer = new();
-
         private readonly IReactiveProperty<int> swapStamina;
 
         public readonly IReadOnlyReactiveProperty<int> SwapStamina;
-        
+
         private IDisposable recoverStaminaSubscription;
-        
+
         private IDisposable swapUseStaminaSubscription;
 
         [Inject]
@@ -59,16 +60,17 @@ namespace Feature.Model
             CanStartSwap = canStartSwap.ToReadOnlyReactiveProperty();
             CanEndSwap = canEndSwap.ToReadOnlyReactiveProperty();
             // recover stamina
-           
+
 
             Observable
                 .EveryUpdate()
                 .Subscribe(_ =>
                 {
-                    canStartSwap.Value = IfCanStartSwapRate <= (float)swapStamina.Value / characterParams.maxHasStamina;
+                    canStartSwap.Value =
+                        IfCanStartSwapRate <= (float)swapStamina.Value / characterParams.maxHasStamina;
                 })
                 .AddTo(playerModelTimer);
-            
+
             Observable
                 .EveryUpdate()
                 .Subscribe(_ =>
@@ -86,10 +88,12 @@ namespace Feature.Model
                 })
                 .AddTo(playerModelTimer);
         }
-        
+
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
-        private float IfCanStartSwapRate => (float)(characterParams.enterSwapUseStamina + characterParams.swapExecUseStamina) / characterParams.maxHasStamina;
-        
+        private float IfCanStartSwapRate =>
+            (float)(characterParams.enterSwapUseStamina + characterParams.swapExecUseStamina) /
+            characterParams.maxHasStamina;
+
         private float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
 
         public float MoveSpeed => characterParams.speed;
@@ -99,6 +103,8 @@ namespace Feature.Model
 
         public IReadOnlyReactiveProperty<PlayerState> State { get; }
         public IReadOnlyReactiveProperty<Vector3> Position { get; private set; }
+
+        public Vector3 Forward { get; private set; }
 
         public void Dispose()
         {
@@ -115,16 +121,17 @@ namespace Feature.Model
             gameUIView.SetExecSwapLine(IfCanEndSwapRate);
             gameUIView.SetStartSwapLine(IfCanStartSwapRate);
         }
-        
+
         public void OnStartSwap()
         {
             swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.enterSwapUseStamina, 0);
             // スワップ中は回復を停止する
             recoverStaminaSubscription?.Dispose();
             swapUseStaminaSubscription?.Dispose();
-            
+
             swapUseStaminaSubscription = Observable
-                .Interval(TimeSpan.FromMilliseconds(characterParams.swapModeStaminaUsageIntervalMillis * characterParams.swapContinueTimeScale))
+                .Interval(TimeSpan.FromMilliseconds(characterParams.swapModeStaminaUsageIntervalMillis *
+                                                    characterParams.swapContinueTimeScale))
                 .Subscribe(_ =>
                 {
                     if (playerState.Value == PlayerState.Idle)
@@ -137,14 +144,15 @@ namespace Feature.Model
                 .AddTo(playerModelTimer);
         }
 
-        
+
         public void OnEndSwap()
         {
             swapUseStaminaSubscription?.Dispose();
             recoverStaminaSubscription?.Dispose();
             recoverStaminaSubscription = Observable
                 .Timer(TimeSpan.FromMilliseconds(characterParams.recoveryTimeMillis))
-                .SelectMany(_ => Observable.Interval(TimeSpan.FromMilliseconds(characterParams.recoveryStaminaTimeMillis)))
+                .SelectMany(_ =>
+                    Observable.Interval(TimeSpan.FromMilliseconds(characterParams.recoveryStaminaTimeMillis)))
                 .Subscribe(_ =>
                 {
                     if (swapStamina.Value >= characterParams.maxHasStamina || playerState.Value == PlayerState.DoSwap)
@@ -180,7 +188,6 @@ namespace Feature.Model
             OnAttack?.Invoke();
         }
 
-        public Vector3 Forward {get; private set;}
         public void UpdatePosition(Vector3 pos)
         {
             // TODO: 要件に合わせて、方向は限定する

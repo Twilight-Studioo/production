@@ -1,6 +1,5 @@
 #region
 
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,16 +17,11 @@ namespace Feature.View
 
         private float swapExecValue;
         private float swapStartValue;
-        
+
         private void Start()
         {
             slider.minValue = 0;
             slider.maxValue = 1;
-        }
-
-        public void SetVolume(float volume)
-        {
-            slider.value = volume;
         }
 
         private void Update()
@@ -38,6 +32,11 @@ namespace Feature.View
             swapExecLine.anchoredPosition = pos;
         }
 
+        public void SetVolume(float volume)
+        {
+            slider.value = volume;
+        }
+
         public void SetExecSwapLine(float value)
         {
             swapExecValue = value;
@@ -45,7 +44,7 @@ namespace Feature.View
             pos.x = fillArea.rect.x + value * fillArea.rect.width;
             swapExecLine.anchoredPosition = pos;
         }
-        
+
         public void SetStartSwapLine(float value)
         {
             swapStartValue = value;

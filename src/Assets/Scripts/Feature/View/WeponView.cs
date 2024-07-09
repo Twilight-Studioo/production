@@ -1,7 +1,10 @@
-﻿using System;
-using Feature.View;
+﻿#region
+
 using UnityEngine;
-namespace Scripts.Feature.View
+
+#endregion
+
+namespace Feature.View
 {
     public class WeponView : MonoBehaviour
     {
@@ -11,6 +14,7 @@ namespace Scripts.Feature.View
         {
             playerView = GetComponentInParent<PlayerView>();
         }
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Enemy"))

@@ -1,34 +1,39 @@
 #if UNITY_EDITOR
+
+#region
+
 using UnityEditor;
 using UnityEngine;
+
+#endregion
 
 namespace Feature.Common
 {
     [CustomEditor(typeof(CharacterParams))]
     public class CharacterParamsEditor : Editor
     {
-        private SerializedProperty health;
-        private SerializedProperty speed;
-        private SerializedProperty jumpPower;
         private SerializedProperty attackPower;
+        private SerializedProperty canSwapDistance;
+        private SerializedProperty enterSwapUseStamina;
+        private SerializedProperty health;
+        private SerializedProperty jumpPower;
+
+        private SerializedProperty maxHasStamina;
+        private SerializedProperty recoveryResourceTimeMillis;
+        private SerializedProperty recoveryTimeMillis;
+        private SerializedProperty resourceRecoveryQuantity;
+        private bool showStaminaParameters = true;
+
+        private bool showSwapParameters = true;
+        private SerializedProperty speed;
 
         private SerializedProperty swapContinueMaxMillis;
         private SerializedProperty swapContinueTimeScale;
-        private SerializedProperty canSwapDistance;
-        private SerializedProperty swapReturnTimeMillis;
-        private SerializedProperty swapReturnCurve;
-
-        private SerializedProperty maxHasStamina;
-        private SerializedProperty enterSwapUseStamina;
-        private SerializedProperty swapModeStaminaUsageIntervalMillis;
-        private SerializedProperty swapModeStaminaUsage;
         private SerializedProperty swapExecUseResource;
-        private SerializedProperty resourceRecoveryQuantity;
-        private SerializedProperty recoveryResourceTimeMillis;
-        private SerializedProperty recoveryTimeMillis;
-
-        private bool showSwapParameters = true;
-        private bool showStaminaParameters = true;
+        private SerializedProperty swapModeStaminaUsage;
+        private SerializedProperty swapModeStaminaUsageIntervalMillis;
+        private SerializedProperty swapReturnCurve;
+        private SerializedProperty swapReturnTimeMillis;
 
         private void OnEnable()
         {
@@ -83,7 +88,8 @@ namespace Feature.Common
             {
                 EditorGUILayout.PropertyField(maxHasStamina, new GUIContent("スタミナを持つ最大値"));
                 EditorGUILayout.PropertyField(enterSwapUseStamina, new GUIContent("スワップモードに入ったときのスタミナ消費量"));
-                EditorGUILayout.PropertyField(swapModeStaminaUsageIntervalMillis, new GUIContent("スワップモード中何秒ごとにスタミナを消費するか"));
+                EditorGUILayout.PropertyField(swapModeStaminaUsageIntervalMillis,
+                    new GUIContent("スワップモード中何秒ごとにスタミナを消費するか"));
                 EditorGUILayout.PropertyField(swapModeStaminaUsage, new GUIContent("スワップモード中に継続して消費するスタミナ"));
                 EditorGUILayout.PropertyField(swapExecUseResource, new GUIContent("スワップした時に消費するスタミナ"));
                 EditorGUILayout.PropertyField(recoveryTimeMillis, new GUIContent("スワップして何秒で回復し始めるか"));

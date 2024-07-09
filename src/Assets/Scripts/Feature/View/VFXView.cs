@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿#region
+
+using UnityEngine;
 using UnityEngine.VFX;
+
+#endregion
 
 namespace Feature.View
 {
     public class VFXView : MonoBehaviour
     {
-        [SerializeField] VisualEffect effect;
+        [SerializeField] private VisualEffect effect;
 
         public void PlayVFX()
         {
@@ -14,6 +18,7 @@ namespace Feature.View
                 effect.SendEvent("OnPlay");
             }
         }
+
         public void StopVFX()
         {
             if (effect != null)
@@ -21,6 +26,5 @@ namespace Feature.View
                 effect.SendEvent("StopPlay");
             }
         }
-        
     }
 }

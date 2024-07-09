@@ -119,6 +119,7 @@ namespace Main.Controller
                         {
                             return;
                         }
+
                         var item = swapPresenter.SelectItem();
                         swapPresenter.ResetSelector();
                         playerPresenter.EndSwap();

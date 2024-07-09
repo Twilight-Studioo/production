@@ -68,11 +68,9 @@ namespace Feature.Presenter
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
             playerModel.OnStartSwap();
             Observable
-                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis * characterParams.swapContinueTimeScale))
-                .Subscribe(_ =>
-                {
-                    EndSwap();
-                })
+                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis *
+                                                 characterParams.swapContinueTimeScale))
+                .Subscribe(_ => { EndSwap(); })
                 .AddTo(swapTimer);
             playerModel.CanEndSwap
                 .DistinctUntilChanged()
@@ -93,9 +91,10 @@ namespace Feature.Presenter
             {
                 return;
             }
+
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            
+
             Func<float, float> easingFunction;
 
             switch (characterParams.swapReturnCurve)
@@ -114,23 +113,24 @@ namespace Feature.Presenter
                     easingFunction = Easing.Linear;
                     break;
             }
-            
+
             var initialTimeScale = characterParams.swapContinueTimeScale;
             const float targetTimeScale = 1.0f;
-            var duration = characterParams.swapReturnTimeMillis / 1000f; 
+            var duration = characterParams.swapReturnTimeMillis / 1000f;
             var elapsedTime = 0f;
-            
+
             Observable.EveryUpdate()
                 .Subscribe(_ =>
                 {
                     elapsedTime += Time.unscaledDeltaTime; // Update elapsed time with unscaled time
                     var t = Mathf.Clamp01(elapsedTime / duration); // Calculate normalized time
-                    Time.timeScale = Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); // Apply easing function
+                    Time.timeScale =
+                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); // Apply easing function
                     if (t >= 1.0f) // If the transition is complete
                     {
                         playerView.isDrawSwapRange = false;
                         playerModel.ChangeState(PlayerModel.PlayerState.Idle);
-                        Time.timeScale = targetTimeScale; 
+                        Time.timeScale = targetTimeScale;
                         swapTimer.Clear();
                     }
                 })
