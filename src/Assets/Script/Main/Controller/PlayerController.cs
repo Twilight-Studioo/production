@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Core.Camera;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -20,9 +22,17 @@ namespace Script.Main.Controller
         private PlayerModel playerModel;
         private PlayerView playerView;
         private PlayerPresenter playerPresenter;
+        private VFXView vfxView;
         private InputPlayer inputPlayer;
         private float horizontalInput;
         private Vector2 attackDirection;
+       
+        [SerializeField]
+        private TargetGroupManager targetGroupManager;
+
+        [SerializeField]
+        private Transform[] enemies;
+
 
         private InputAction playerAction;
         
@@ -32,12 +42,23 @@ namespace Script.Main.Controller
             playerModel = new PlayerModel(moveSpeed, jumpForce, jumpMove, attack);
             playerView = FindObjectOfType<PlayerView>(); // シーン内のPlayerViewを見つける
             playerPresenter = new PlayerPresenter(playerView,playerModel);
+            vfxView = FindObjectOfType<VFXView>();
             inputPlayer = new InputPlayer();
-            //inputPlayer.Player.Move.performed += OnMove;
-            //inputPlayer.Player.Jump.performed += OnJump;
-            //inputPlayer.Player.SwapMode.performed += OnSwap;
-            //inputPlayer.Player.Attack.performed += OnAttack;
             inputPlayer.Enable();
+            if (targetGroupManager == null)
+            {
+                // TODO: diでちゃんと管理する
+                var manager = FindObjectOfType<TargetGroupManager>();
+                if (manager == null)
+                {
+                    throw new NotImplementedException("TargetGroupManagerが見つかりませんでした");
+                }
+                targetGroupManager = manager;
+            }
+            targetGroupManager.AddTarget(playerView.transform, CameraTargetGroupTag.Player());
+            enemies.ToList().ForEach((enemy) => 
+                targetGroupManager.AddTarget(enemy, CameraTargetGroupTag.Enemy())
+            );
         }
 
         private void Update()
@@ -60,11 +81,20 @@ namespace Script.Main.Controller
             if (inputPlayer.Player.Jump.triggered)
             {
                 playerPresenter.Jump();
+            }  
+        }
+        public void OnSwap(InputAction.CallbackContext context)
+        {
+            if (context.phase == InputActionPhase.Performed)
+            {
+                playerPresenter.Swap();
+                vfxView.PlayVFX();
             }
 
             if (inputPlayer.Player.SwapMode.triggered)
             {
                 playerPresenter.Swap();
+                vfxView.StopVFX();
             }
         }
 
