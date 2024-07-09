@@ -18,29 +18,33 @@ namespace Script.Main.Controller
         public float moveSpeed = 5f;
         public float jumpForce = 10f;
         public float jumpMove = 2;
+        public float attack = 1;
         private PlayerModel playerModel;
         private PlayerView playerView;
         private PlayerPresenter playerPresenter;
         private VFXView vfxView;
         private InputPlayer inputPlayer;
         private float horizontalInput;
-        
+        private Vector2 attackDirection;
+       
         [SerializeField]
         private TargetGroupManager targetGroupManager;
 
         [SerializeField]
         private Transform[] enemies;
-        
 
-        private void Start()
+
+        private InputAction playerAction;
+        
+        private void Awake()
         {
             // プレイヤーのモデル、ビュー、プレゼンターを初期化
-            playerModel = new PlayerModel(moveSpeed, jumpForce, jumpMove);
+            playerModel = new PlayerModel(moveSpeed, jumpForce, jumpMove, attack);
             playerView = FindObjectOfType<PlayerView>(); // シーン内のPlayerViewを見つける
             playerPresenter = new PlayerPresenter(playerView,playerModel);
             vfxView = FindObjectOfType<VFXView>();
             inputPlayer = new InputPlayer();
-            
+            inputPlayer.Enable();
             if (targetGroupManager == null)
             {
                 // TODO: diでちゃんと管理する
@@ -65,34 +69,20 @@ namespace Script.Main.Controller
             // bool attackInput = inputPlayer.Player.Attack.triggered;
             // bool SwapInput = inputPlayer.Player.SwapMode.triggered;
             // プレゼンターに入力を渡す
+            attackDirection = inputPlayer.Player.Move.ReadValue<Vector2>();
+            horizontalInput = attackDirection.x;
             playerPresenter.Move(horizontalInput);
             
-        }
-
-        public void OnMove(InputAction.CallbackContext context)
-        {
-            if (context.phase==InputActionPhase.Performed)
+            if (inputPlayer.Player.Attack.triggered)
             {
-                Vector2 input = context.ReadValue<Vector2>();
-                
-                horizontalInput = input.x;
+                playerPresenter.Attack(attackDirection);
             }
 
-            if (context.phase == InputActionPhase.Canceled)
-            {
-                Vector2 input = Vector2.zero;
-                horizontalInput = input.x;
-            }
-        }
-
-        public void OnJump(InputAction.CallbackContext context)
-        {
-            if (context.phase == InputActionPhase.Started)
+            if (inputPlayer.Player.Jump.triggered)
             {
                 playerPresenter.Jump();
             }  
         }
-
         public void OnSwap(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Performed)
@@ -100,20 +90,56 @@ namespace Script.Main.Controller
                 playerPresenter.Swap();
                 vfxView.PlayVFX();
             }
-            if (context.phase == InputActionPhase.Canceled)
+
+            if (inputPlayer.Player.SwapMode.triggered)
             {
                 playerPresenter.Swap();
                 vfxView.StopVFX();
             }
         }
 
-        public void OnAttack(InputAction.CallbackContext context)
-        {
-            if (context.phase == InputActionPhase.Started)
-            {
-                playerPresenter.Attack();
-            }
-        }
+        // public void OnMove(InputAction.CallbackContext context)
+        // {
+        //     if (context.phase==InputActionPhase.Performed)
+        //     { 
+        //         attackDirection = context.ReadValue<Vector2>();
+        //         
+        //         horizontalInput = attackDirection.x;
+        //     }
+        //     if (context.phase == InputActionPhase.Canceled)
+        //     {
+        //         attackDirection = Vector2.zero;
+        //         horizontalInput = attackDirection.x;
+        //     }
+        // }
+
+        // public void OnJump(InputAction.CallbackContext context)
+        // {
+        //     if (context.phase == InputActionPhase.Started)
+        //     {
+        //         playerPresenter.Jump();
+        //     }  
+        // }
+
+        // public void OnSwap(InputAction.CallbackContext context)
+        // {
+        //     if (context.phase == InputActionPhase.Performed)
+        //     {
+        //         playerPresenter.Swap();
+        //     }
+        //     if (context.phase == InputActionPhase.Canceled)
+        //     {
+        //         playerPresenter.Swap();
+        //     }
+        // }
+
+        // public void OnAttack(InputAction.CallbackContext context)
+        // {
+        //     if (context.phase == InputActionPhase.Started)
+        //     { 
+        //         playerPresenter.Attack(attackDirection);
+        //     }
+        // }
     }
 }
 
