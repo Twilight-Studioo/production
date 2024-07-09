@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
@@ -6,8 +7,9 @@ public class EnemyAI : MonoBehaviour
     public float detectionRange = 10f;
     public LayerMask playerLayer;
     private Transform player;
-    private PlayerHP playerHP;
+    private PlayerHP playerHealth;
     private bool isPlayerInRange;
+    private bool isAttacking;
 
     void Update()
     {
@@ -24,7 +26,7 @@ public class EnemyAI : MonoBehaviour
         if (hitColliders.Length > 0)
         {
             player = hitColliders[0].transform;
-            playerHP = player.GetComponent<PlayerHP>();
+            playerHealth = player.GetComponent<PlayerHP>();
             isPlayerInRange = true;
         }
         else
@@ -38,15 +40,36 @@ public class EnemyAI : MonoBehaviour
         if (player != null)
         {
             Vector3 direction = (player.position - transform.position).normalized;
+            direction.y = 0;
+            direction.z = 0;
             transform.position += direction * moveSpeed * Time.deltaTime;
         }
     }
 
-    void OnCollisionStay(Collision collision)
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && !isAttacking)
+        {
+            StartCoroutine(AttackPlayer());
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            playerHP.TakeDamage(10);
+            StopCoroutine(AttackPlayer());
+            isAttacking = false;
+        }
+    }
+
+    IEnumerator AttackPlayer()
+    {
+        isAttacking = true;
+        while (isAttacking)
+        {
+            playerHealth.TakeDamage(10);
+            yield return new WaitForSeconds(2f);
         }
     }
 }
