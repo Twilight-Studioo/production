@@ -21,11 +21,14 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
 
+        private readonly VFXView vfxView;
+
         [Inject]
         public PlayerPresenter(
             PlayerView view,
             PlayerModel model,
-            CharacterParams characterParams
+            CharacterParams characterParams,
+            VFXView vfxView
         )
         {
             playerView = view;
@@ -33,6 +36,7 @@ namespace Feature.Presenter
             this.characterParams = characterParams;
             swapTimer = new();
             playerView.swapRange = characterParams.canSwapDistance;
+            this.vfxView = vfxView;
         }
 
         public void Start()
@@ -97,6 +101,8 @@ namespace Feature.Presenter
 
             Func<float, float> easingFunction;
 
+            vfxView.PlayVFX();
+            
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:

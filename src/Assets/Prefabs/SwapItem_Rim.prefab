@@ -118,3 +118,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 493fc45227594a5a92b7412761dc4bad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hilightRimThreashold: 0.7
