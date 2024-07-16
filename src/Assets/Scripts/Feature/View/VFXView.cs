@@ -1,30 +1,30 @@
-﻿#region
+﻿    #region
 
-using UnityEngine;
-using UnityEngine.VFX;
+    using UnityEngine;
+    using UnityEngine.VFX;
 
-#endregion
+    #endregion
 
-namespace Feature.View
-{
-    public class VFXView : MonoBehaviour
+    namespace Feature.View
     {
-        [SerializeField] private VisualEffect effect;
-
-        public void PlayVFX()
+        public class VFXView : MonoBehaviour
         {
-            if (effect != null)
+            [SerializeField] private VisualEffect effect;
+
+            public void PlayVFX()
             {
-                effect.SendEvent("OnPlay");
+                if (effect != null)
+                {
+                    effect.SendEvent("OnPlay");
+                }
             }
-        }
 
-        public void StopVFX()
-        {
-            if (effect != null)
+            public void StopVFX()
             {
-                effect.SendEvent("StopPlay");
+                if (effect != null)
+                {
+                    effect.SendEvent("StopPlay");
+                }
             }
         }
     }
-}

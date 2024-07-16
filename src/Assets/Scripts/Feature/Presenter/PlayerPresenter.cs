@@ -42,7 +42,11 @@ namespace Feature.Presenter
         public void Start()
         {
             playerView.Position
-                .Subscribe(position => { playerModel.UpdatePosition(position); })
+                .Subscribe(position =>
+                {
+                    playerModel.UpdatePosition(position);
+                    //スワップ中ならば一覧を取得してhilightの処理を呼び出す
+                })
                 .AddTo(playerView);
             playerModel.Start();
         }
@@ -84,7 +88,6 @@ namespace Feature.Presenter
                     {
                         return;
                     }
-
                     EndSwap();
                 });
         }
@@ -95,13 +98,13 @@ namespace Feature.Presenter
             {
                 return;
             }
-
+            vfxView.PlayVFX();
             swapTimer.Clear();
             playerModel.OnEndSwap();
 
             Func<float, float> easingFunction;
 
-            vfxView.PlayVFX();
+            
             
             switch (characterParams.swapReturnCurve)
             {

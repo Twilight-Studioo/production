@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 71158415}
   - component: {fileID: 71158414}
   - component: {fileID: 71158413}
+  - component: {fileID: 71158419}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -276,6 +277,19 @@ Transform:
   - {fileID: 408408051}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &71158419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71158411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46ece038ddfe4c5b98b03c262d1a0678, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effect: {fileID: 408408053}
 --- !u!1001 &184450283
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -284,6 +298,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2759782174040926502, guid: 3873ebe43c8eccb4e99edfad73e1da29,
+        type: 3}
+      propertyPath: effect
+      value: 
+      objectReference: {fileID: 1312844821}
     - target: {fileID: 7431141687404098442, guid: 3873ebe43c8eccb4e99edfad73e1da29,
         type: 3}
       propertyPath: m_Name
@@ -352,6 +371,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2759782174040926502, guid: 3873ebe43c8eccb4e99edfad73e1da29,
+        type: 3}
+      propertyPath: effect
+      value: 
+      objectReference: {fileID: 934653342}
     - target: {fileID: 7045295896679102268, guid: 3873ebe43c8eccb4e99edfad73e1da29,
         type: 3}
       propertyPath: targetRenderer
@@ -936,9 +960,8 @@ GameObject:
   - component: {fileID: 408408051}
   - component: {fileID: 408408053}
   - component: {fileID: 408408052}
-  - component: {fileID: 408408054}
   m_Layer: 0
-  m_Name: Swap Effect
+  m_Name: Player Swap Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1037,19 +1060,12 @@ VisualEffect:
       m_Array: []
     m_Bool:
       m_Array: []
---- !u!114 &408408054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+--- !u!2083052967 &408477806 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 218460593818761923, guid: 3873ebe43c8eccb4e99edfad73e1da29,
+    type: 3}
+  m_PrefabInstance: {fileID: 421835408}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 408408050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46ece038ddfe4c5b98b03c262d1a0678, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  effect: {fileID: 408408053}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1176,6 +1192,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2759782174040926502, guid: 3873ebe43c8eccb4e99edfad73e1da29,
+        type: 3}
+      propertyPath: effect
+      value: 
+      objectReference: {fileID: 408477806}
     - target: {fileID: 7045295896679102268, guid: 3873ebe43c8eccb4e99edfad73e1da29,
         type: 3}
       propertyPath: targetRenderer
@@ -1499,6 +1520,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputActionAsset: {fileID: -944628639613478452, guid: 76d496628dadb6f4d8f915bb7ea2aaaf,
     type: 3}
+--- !u!2083052967 &934653342 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 218460593818761923, guid: 3873ebe43c8eccb4e99edfad73e1da29,
+    type: 3}
+  m_PrefabInstance: {fileID: 205113508}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &936820067
 GameObject:
   m_ObjectHideFlags: 0
@@ -1798,6 +1825,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1288413710}
   m_CullTransparentMesh: 1
+--- !u!2083052967 &1312844821 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 218460593818761923, guid: 3873ebe43c8eccb4e99edfad73e1da29,
+    type: 3}
+  m_PrefabInstance: {fileID: 184450283}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1411658148
 GameObject:
   m_ObjectHideFlags: 0
