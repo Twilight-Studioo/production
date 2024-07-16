@@ -14,14 +14,15 @@ namespace Feature.View
         private GameObject playerObject;
         private float lifeTime = 0.5f;
         private Animator animator;
+        private Rigidbody rb;
         private void Start()
         {
             playerView = GetComponentInParent<PlayerView>();
             playerObject = GameObject.Find("Player").gameObject;
             Vector3 playerPos = playerObject.transform.position;
             Destroy(this.gameObject,lifeTime);
-            animator = GetComponent<Animator>();
-            animator.SetBool("Right", true);
+            Destroy(transform.parent.gameObject,lifeTime);
+            rb = GetComponent<Rigidbody>();
         }
 
         private void Update()

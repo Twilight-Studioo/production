@@ -158,7 +158,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isDrawSwapRange: 0
   swapRange: 0
-  slashingEffect: {fileID: 2506109944503021825, guid: 5960ef15c19132d4e8a85dcdef4f4f44,
+  slashingEffect: {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851,
     type: 3}
 --- !u!54 &71158414
 Rigidbody:

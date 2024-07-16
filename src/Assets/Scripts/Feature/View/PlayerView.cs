@@ -20,6 +20,8 @@ namespace Feature.View
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
         private float z;
+        private float zRight = -20;
+        private float zLeft = 200;
         [SerializeField] private GameObject slashingEffect;
 
         private void Awake()
@@ -67,13 +69,13 @@ namespace Feature.View
             if (direction > 0)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0);
-                z = 0;
+                z = zRight;
             }
             else if (direction < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
                 direction = direction * -1;
-                z = 180;
+                z = zLeft;
             }
             if (isGrounded)
             {
@@ -107,36 +109,49 @@ namespace Feature.View
             if ((direction.y >= 0.2f && direction.x >= 0.2f) || (direction.y >= 0.2f && direction.x <= -0.2f))
             {
                 //斜め上
-                if (z == 0)
+                if (z == zRight)
                 { 
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-140,90,z),this.transform);
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,40),this.transform);
                 }
                 else
                 {
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-40,90,z),this.transform);
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,180,40),this.transform);
                 }
             }
             else if (direction.y >= 0.2f)
             {
                 //上
-                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,90,z),this.transform);
+                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,90),this.transform);
             }
-            else if (direction.y <= -0.2f)
+            else if ((direction.y <= -0.2f&&direction.x>=0.2f)||(direction.y <= -0.2f&&direction.x>=-0.2f))
             {
                 //斜め下
-                if (z == 0)
+                if (z == zRight)
                 { 
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-40,90,z),this.transform);
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,-40),this.transform);
                 }
                 else
                 {
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-140,90,z),this.transform);
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,90),this.transform);
                 }
+            }
+            else if(direction.y<=-0.2f)
+            {                                                                                                    
+                //した
+                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,180,-40),this.transform);
             }
             else if (direction.x >= 0.5f || direction.x <= -0.5f)
             {
                 //横
-                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-90,90,z),this.transform);
+                if (z == zRight)
+                {
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0, 0, 0), this.transform);
+                }
+                else
+                {
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0, 180, 0), this.transform);
+                }
+                
             }
         }
         
