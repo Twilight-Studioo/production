@@ -142,10 +142,12 @@ namespace Feature.Presenter
             playerView.transform.position = position;
         }
 
-        public void Attack()
+        public void Attack(Vector2 direction)
         {
-            var direction = playerModel.Forward;
-            playerView.Attack(direction); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
+            // var direction = playerModel.Forward;
+            // playerView.Attack(direction); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
+            var normalizedDirection = direction.normalized; 
+            playerView.Attack(normalizedDirection); 
         }
     }
 }

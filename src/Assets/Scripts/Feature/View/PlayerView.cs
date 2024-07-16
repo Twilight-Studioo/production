@@ -1,5 +1,7 @@
 ﻿#region
 
+using Core.Input.Generated;
+using Feature.Presenter;
 using UniRx;
 using UnityEngine;
 
@@ -15,51 +17,19 @@ namespace Feature.View
 
         public float swapRange;
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-        private Animator animator;
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
-        private GameObject sword;
-
+        private float z;
+        [SerializeField] private GameObject slashingEffect;
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
-            sword = transform.Find("Sword").gameObject;
-            animator = sword.GetComponent<Animator>();
         }
 
         private void Update()
         {
-            Position.Value = transform.position;
 
-            // TODO: Updateは辞めて、delegateで受け取る
-            if (!animator.isActiveAndEnabled)
-            {
-                return;
-            }
-
-            var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-            // 現在のアニメーションが指定したアニメーションであり、かつそのアニメーションが終了したかどうかを確認
-            if (stateInfo.IsName("SwordUp") && stateInfo.normalizedTime >= 1.0f)
-            {
-                StopAnimation();
-            }
-
-            if (stateInfo.IsName("SwordUpR") && stateInfo.normalizedTime >= 1.0f)
-            {
-                StopAnimation();
-            }
-
-            if (stateInfo.IsName("SwordRight") && stateInfo.normalizedTime >= 1.0f)
-            {
-                StopAnimation();
-            }
-
-            if (stateInfo.IsName("SwordDownR") && stateInfo.normalizedTime >= 1.0f)
-            {
-                StopAnimation();
-            }
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -93,18 +63,30 @@ namespace Feature.View
 
         public void Move(float direction, float jumpMove)
         {
+            //向き
+            if (direction > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+                z = 0;
+            }
+            else if (direction < 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+                direction = direction * -1;
+                z = 180;
+            }
             if (isGrounded)
             {
-                var movement = transform.right * (direction * Time.deltaTime);
+                Vector3 movement = transform.right * (direction * Time.deltaTime);
                 rb.MovePosition(rb.position + movement);
+        
             }
             else
             {
-                var movement = transform.right * (direction * Time.deltaTime) / jumpMove;
+                Vector3 movement = transform.right * (direction * Time.deltaTime)/jumpMove;
                 rb.MovePosition(rb.position + movement);
             }
         }
-
         public void Jump(float jumpForce)
         {
             if (isGrounded)
@@ -116,7 +98,6 @@ namespace Feature.View
 
         public void Attack(Vector2 direction)
         {
-            sword.SetActive(true);
             // 攻撃方向に応じたアニメーションを再生
             if (direction == Vector2.zero)
             {
@@ -125,30 +106,40 @@ namespace Feature.View
 
             if ((direction.y >= 0.2f && direction.x >= 0.2f) || (direction.y >= 0.2f && direction.x <= -0.2f))
             {
-                animator.SetBool("UpRight", true);
+                //斜め上
+                if (z == 0)
+                { 
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-140,90,z),this.transform);
+                }
+                else
+                {
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-40,90,z),this.transform);
+                }
             }
             else if (direction.y >= 0.2f)
             {
-                animator.SetBool("Up", true);
+                //上
+                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,90,z),this.transform);
             }
             else if (direction.y <= -0.2f)
             {
-                animator.SetBool("DownRight", true);
+                //斜め下
+                if (z == 0)
+                { 
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-40,90,z),this.transform);
+                }
+                else
+                {
+                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-140,90,z),this.transform);
+                }
             }
             else if (direction.x >= 0.5f || direction.x <= -0.5f)
             {
-                animator.SetBool("Right", true);
+                //横
+                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(-90,90,z),this.transform);
             }
         }
-
-        private void StopAnimation()
-        {
-            animator.SetBool("Up", false);
-            animator.SetBool("UpRight", false);
-            animator.SetBool("Right", false);
-            animator.SetBool("DownRight", false);
-            sword.SetActive(false);
-        }
+        
 
 
         public bool IsGrounded() => isGrounded;

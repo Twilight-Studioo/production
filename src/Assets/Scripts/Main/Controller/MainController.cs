@@ -29,6 +29,7 @@ namespace Main.Controller
 
         private readonly TargetGroupManager targetGroupManager;
         private float horizontalInput;
+        private Vector2 attackDirection;
 
         [Inject]
         public MainController(
@@ -75,6 +76,7 @@ namespace Main.Controller
                 .Where(v => v.x != 0f || v.y != 0f)
                 .Subscribe(v =>
                 {
+                    attackDirection = v;
                     if (playerModel.State.Value == PlayerModel.PlayerState.DoSwap)
                     {
                         swapPresenter.MoveSelector(v, playerModel.Position.Value);
@@ -89,7 +91,7 @@ namespace Main.Controller
             Observable.EveryFixedUpdate()
                 .Select(_ => jumpEvent.ReadValue<float>() > 0f)
                 .DistinctUntilChanged()
-                .Subscribe(_ => { playerPresenter.Jump(); });
+                .Subscribe(_ => { playerPresenter.Jump();});
 
             var attackEvent = inputActionAccessor.CreateAction(Player.Attack);
             Observable.EveryFixedUpdate()
@@ -99,7 +101,7 @@ namespace Main.Controller
                 {
                     if (x)
                     {
-                        playerPresenter.Attack();
+                        playerPresenter.Attack(attackDirection);
                     }
                 });
 
