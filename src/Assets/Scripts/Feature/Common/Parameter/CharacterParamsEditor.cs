@@ -7,7 +7,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Feature.Common
+namespace Feature.Common.Parameter
 {
     [CustomEditor(typeof(CharacterParams))]
     public class CharacterParamsEditor : Editor

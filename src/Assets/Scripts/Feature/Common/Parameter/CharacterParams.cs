@@ -5,7 +5,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Feature.Common
+namespace Feature.Common.Parameter
 {
     [CreateAssetMenu(fileName = "CharacterParams.asset", menuName = "CharacterParams", order = 0)]
     public class CharacterParams : ScriptableObject

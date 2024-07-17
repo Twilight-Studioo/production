@@ -3,6 +3,7 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Feature.Common.Environment;
 using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
@@ -16,7 +17,7 @@ using VContainer.Unity;
 
 namespace Main.Controller
 {
-    public class MainController : IStartable
+    public class MainController : IGameController
     {
         private readonly EnemyFactory enemyFactory;
 
@@ -32,7 +33,6 @@ namespace Main.Controller
 
         [Inject]
         public MainController(
-            PlayerView playerView,
             PlayerModel playerModel,
             PlayerPresenter playerPresenter,
             SwapPresenter swapPresenter,
@@ -54,7 +54,6 @@ namespace Main.Controller
         {
             InputEventSetup();
             Setup();
-            playerPresenter.Start();
         }
 
         private void Setup()
@@ -135,6 +134,12 @@ namespace Main.Controller
                         playerModel.Swapped();
                     }
                 });
+        }
+
+        public void OnPossess(PlayerView view)
+        {
+            playerPresenter.OnPossess(view);
+            targetGroupManager.AddTarget(view.transform, CameraTargetGroupTag.Player());
         }
     }
 }

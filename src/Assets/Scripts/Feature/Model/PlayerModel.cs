@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using Feature.Common;
+using Feature.Common.Parameter;
 using Feature.View;
 using UniRx;
 using UnityEngine;

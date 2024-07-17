@@ -2,7 +2,7 @@
 
 using System;
 using Core.Utilities;
-using Feature.Common;
+using Feature.Common.Parameter;
 using Feature.Model;
 using Feature.View;
 using UniRx;
@@ -17,26 +17,25 @@ namespace Feature.Presenter
     {
         private readonly CharacterParams characterParams;
         private readonly PlayerModel playerModel;
-        private readonly PlayerView playerView;
 
         private readonly CompositeDisposable swapTimer;
+        private PlayerView playerView;
 
         [Inject]
         public PlayerPresenter(
-            PlayerView view,
             PlayerModel model,
             CharacterParams characterParams
         )
         {
-            playerView = view;
             playerModel = model;
             this.characterParams = characterParams;
             swapTimer = new();
-            playerView.swapRange = characterParams.canSwapDistance;
         }
 
-        public void Start()
+        public void OnPossess(PlayerView view)
         {
+            playerView = view;
+            playerView.swapRange = characterParams.canSwapDistance;
             playerView.Position
                 .Subscribe(position => { playerModel.UpdatePosition(position); })
                 .AddTo(playerView);

@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.matuyuhi.dynamicactflow": {
+      "version": "https://github.com/Matuyuhi/DynamicActFlow.git?path=Assets/DynamicActFlow#v0.3.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "6e5c1aba834d61743c9e5f2f4e4ab57634ccd05c"
+    },
     "com.unity.burst": {
       "version": "1.8.12",
       "depth": 1,
