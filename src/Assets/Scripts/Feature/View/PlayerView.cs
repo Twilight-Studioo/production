@@ -19,9 +19,6 @@ namespace Feature.View
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
-        private float z;
-        private float zRight = -20;
-        private float zLeft = 200;
         [SerializeField] private GameObject slashingEffect;
 
         private void Awake()
@@ -69,13 +66,11 @@ namespace Feature.View
             if (direction > 0)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0);
-                z = zRight;
             }
             else if (direction < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
                 direction = direction * -1;
-                z = zLeft;
             }
             if (isGrounded)
             {
@@ -102,9 +97,6 @@ namespace Feature.View
         {
             Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
         }
-        
-
-
         public bool IsGrounded() => isGrounded;
     }
 }

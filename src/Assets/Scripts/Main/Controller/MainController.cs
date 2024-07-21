@@ -29,7 +29,6 @@ namespace Main.Controller
 
         private readonly TargetGroupManager targetGroupManager;
         private float horizontalInput;
-        private Vector2 attackDirection;
 
         [Inject]
         public MainController(
@@ -76,7 +75,6 @@ namespace Main.Controller
                 .Where(v => v.x != 0f || v.y != 0f)
                 .Subscribe(v =>
                 {
-                    attackDirection = v;
                     if (playerModel.State.Value == PlayerModel.PlayerState.DoSwap)
                     {
                         swapPresenter.MoveSelector(v, playerModel.Position.Value);

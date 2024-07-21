@@ -14,7 +14,6 @@ namespace Feature.View
         private GameObject playerObject;
         private float lifeTime = 0.5f;
         private Animator animator;
-        private Rigidbody rb;
         private void Start()
         {
             playerView = GetComponentInParent<PlayerView>();
@@ -22,7 +21,6 @@ namespace Feature.View
             Vector3 playerPos = playerObject.transform.position;
             Destroy(this.gameObject,lifeTime);
             Destroy(transform.parent.gameObject,lifeTime);
-            rb = GetComponent<Rigidbody>();
         }
 
         private void Update()
