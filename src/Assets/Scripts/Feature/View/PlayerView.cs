@@ -98,61 +98,9 @@ namespace Feature.View
             }
         }
 
-        public void Attack(Vector2 direction)
+        public void Attack(float degree)
         {
-            // 攻撃方向に応じたアニメーションを再生
-            if (direction == Vector2.zero)
-            {
-                direction = Vector2.right;
-            }
-
-            if ((direction.y >= 0.2f && direction.x >= 0.2f) || (direction.y >= 0.2f && direction.x <= -0.2f))
-            {
-                //斜め上
-                if (z == zRight)
-                { 
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,40),this.transform);
-                }
-                else
-                {
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,180,40),this.transform);
-                }
-            }
-            else if (direction.y >= 0.2f)
-            {
-                //上
-                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,90),this.transform);
-            }
-            else if ((direction.y <= -0.2f&&direction.x>=0.2f)||(direction.y <= -0.2f&&direction.x>=-0.2f))
-            {
-                //斜め下
-                if (z == zRight)
-                { 
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,-40),this.transform);
-                }
-                else
-                {
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,90),this.transform);
-                }
-            }
-            else if(direction.y<=-0.2f)
-            {                                                                                                    
-                //した
-                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,180,-40),this.transform);
-            }
-            else if (direction.x >= 0.5f || direction.x <= -0.5f)
-            {
-                //横
-                if (z == zRight)
-                {
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0, 0, 0), this.transform);
-                }
-                else
-                {
-                    Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0, 180, 0), this.transform);
-                }
-                
-            }
+            Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
         }
         
 

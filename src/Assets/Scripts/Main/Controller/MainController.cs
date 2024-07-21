@@ -101,7 +101,14 @@ namespace Main.Controller
                 {
                     if (x)
                     {
-                        playerPresenter.Attack(attackDirection);
+                        var h = Input.GetAxis("Horizontal");
+                        var v = Input.GetAxis("Vertical");
+                        float degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                        if (degree < 0)
+                        {
+                            degree += 360;
+                        }
+                        playerPresenter.Attack(degree);
                     }
                 });
 
