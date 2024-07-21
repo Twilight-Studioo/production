@@ -70,7 +70,6 @@ namespace Feature.Presenter
             }
 
             playerView.isDrawSwapRange = true;
-
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);

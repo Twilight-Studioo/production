@@ -290,6 +290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effect: {fileID: 408408053}
+  onStopTime: 1
 --- !u!1001 &184450283
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -303,6 +304,11 @@ PrefabInstance:
       propertyPath: effect
       value: 
       objectReference: {fileID: 1312844821}
+    - target: {fileID: 2759782174040926502, guid: 3873ebe43c8eccb4e99edfad73e1da29,
+        type: 3}
+      propertyPath: onStopTime
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7431141687404098442, guid: 3873ebe43c8eccb4e99edfad73e1da29,
         type: 3}
       propertyPath: m_Name

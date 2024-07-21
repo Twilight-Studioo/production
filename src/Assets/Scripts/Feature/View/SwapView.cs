@@ -81,6 +81,7 @@
                 else
                 {
                     material.SetFloat("_RimThreashould", 1);
+                    vfxView.StopVFX();
                 }
             }
 
