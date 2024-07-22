@@ -22,7 +22,8 @@ namespace Feature.Presenter
         private readonly CompositeDisposable rememberItemPosition;
         private readonly SwapModel swapItemsModel;
         private readonly VFXView vfxView;
-        private Dictionary<Guid, SwapView> swapItemViews;
+        private Dictionary<Guid, SwapView > swapItemViews;
+        private Dictionary<Guid, VFXView> swapItemVFXViews;
 
         [Inject]
         public SwapPresenter(
@@ -37,6 +38,7 @@ namespace Feature.Presenter
             var list = Object.FindObjectsOfType<SwapView>().ToList();
             rememberItemPosition = new();
             AddItems(list);
+            AddVFXItems(list);
         }
 
         public void Dispose()
@@ -65,6 +67,31 @@ namespace Feature.Presenter
             {
                 throw new InvalidOperationException("Failed to add items.");
             }
+
+            swapItemsModel.AddItems(
+                dats.Select(data => new SwapItem
+                    {
+                        Id = data.id,
+                        Position = data.item.Position.Value,
+                    }
+                ).ToList());
+        }
+        private void AddVFXItems(List<SwapView> items)
+        {
+            if (swapItemVFXViews == null)
+            {
+                swapItemVFXViews = new();
+            }
+
+            var dats = items.Select(item =>
+            {
+                var id = Guid.NewGuid();
+                item.SetHighlight(false);
+                item.Position
+                    .Subscribe(_ => { swapItemsModel.UpdateItemPosition(id, item.Position.Value); })
+                    .AddTo(rememberItemPosition);
+                return (id, item);
+            }).ToList();
 
             swapItemsModel.AddItems(
                 dats.Select(data => new SwapItem
@@ -114,7 +141,7 @@ namespace Feature.Presenter
                 swapItemViews[item.Value.Id].SetHighlight(false);
             }
             
-            
+            swapItemVFXViews[select.Value.Id].StartSwap();
             swapItemViews[select.Value.Id].SetHighlight(true);
             swapItemsModel.SetItem(select.Value.Id);
         }
