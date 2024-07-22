@@ -21,16 +21,19 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable rememberItemPosition;
         private readonly SwapModel swapItemsModel;
+        private readonly VFXView vfxView;
         private Dictionary<Guid, SwapView> swapItemViews;
 
         [Inject]
         public SwapPresenter(
-            SwapModel swapItemsModel,
+            SwapModel swapItemsModel, 
+            VFXView vfxView,
             CharacterParams characterParams
         )
         {
             this.swapItemsModel = swapItemsModel;
             this.characterParams = characterParams;
+            this.vfxView = vfxView;
             var list = Object.FindObjectsOfType<SwapView>().ToList();
             rememberItemPosition = new();
             AddItems(list);
@@ -110,7 +113,8 @@ namespace Feature.Presenter
             {
                 swapItemViews[item.Value.Id].SetHighlight(false);
             }
-
+            
+            
             swapItemViews[select.Value.Id].SetHighlight(true);
             swapItemsModel.SetItem(select.Value.Id);
         }

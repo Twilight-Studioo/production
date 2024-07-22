@@ -21,7 +21,7 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
 
-        private readonly VFXView vfxView;
+        private VFXView vfxView;
 
         [Inject]
         public PlayerPresenter(
@@ -87,8 +87,10 @@ namespace Feature.Presenter
                     {
                         return;
                     }
+                    
                     EndSwap();
                 });
+            
         }
 
         public void EndSwap()
@@ -97,6 +99,7 @@ namespace Feature.Presenter
             {
                 return;
             }
+            vfxView.StartSwap();
             vfxView.PlayVFX();
             swapTimer.Clear();
             playerModel.OnEndSwap();
@@ -143,6 +146,7 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(swapTimer);
+            //vfxView.EndSwap();
         }
 
         public void SetPosition(Vector3 position)
