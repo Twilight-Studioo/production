@@ -18,25 +18,25 @@ namespace Feature.Presenter
         private readonly CharacterParams characterParams;
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
+        private readonly SwapView swapView;
 
         private readonly CompositeDisposable swapTimer;
-
-        private VFXView vfxView;
+        
 
         [Inject]
         public PlayerPresenter(
             PlayerView view,
             PlayerModel model,
             CharacterParams characterParams,
-            VFXView vfxView
+            SwapView swapViews
         )
         {
             playerView = view;
             playerModel = model;
+            swapView = swapViews;
             this.characterParams = characterParams;
             swapTimer = new();
             playerView.swapRange = characterParams.canSwapDistance;
-            this.vfxView = vfxView;
         }
 
         public void Start()
@@ -99,11 +99,10 @@ namespace Feature.Presenter
             {
                 return;
             }
-            vfxView.StartSwap();
-            vfxView.PlayVFX();
+            
             swapTimer.Clear();
             playerModel.OnEndSwap();
-
+            swapView.StartSwap();
             Func<float, float> easingFunction;
 
             
@@ -146,6 +145,8 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(swapTimer);
+            
+            //swapView.PlayVFX();
             //vfxView.EndSwap();
         }
 

@@ -136,8 +136,8 @@ GameObject:
   - component: {fileID: 71158416}
   - component: {fileID: 71158415}
   - component: {fileID: 71158414}
-  - component: {fileID: 71158413}
   - component: {fileID: 71158419}
+  - component: {fileID: 71158413}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -286,12 +286,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 71158411}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46ece038ddfe4c5b98b03c262d1a0678, type: 3}
+  m_Script: {fileID: 11500000, guid: 493fc45227594a5a92b7412761dc4bad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   effect: {fileID: 408408053}
   onStopTime: 1
   isSwap: 0
+  hilightRimThreashold: 0
 --- !u!1001 &184450283
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -314,6 +315,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onStopTime
       value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045295896679102268, guid: 3873ebe43c8eccb4e99edfad73e1da29,
+        type: 3}
+      propertyPath: isSwap
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7431141687404098442, guid: 3873ebe43c8eccb4e99edfad73e1da29,
         type: 3}
@@ -370,7 +376,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2759782174040926502, guid: 3873ebe43c8eccb4e99edfad73e1da29, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

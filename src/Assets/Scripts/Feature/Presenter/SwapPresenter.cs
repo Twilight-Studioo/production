@@ -21,24 +21,20 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable rememberItemPosition;
         private readonly SwapModel swapItemsModel;
-        private readonly VFXView vfxView;
         private Dictionary<Guid, SwapView > swapItemViews;
         private Dictionary<Guid, VFXView> swapItemVFXViews;
 
         [Inject]
         public SwapPresenter(
             SwapModel swapItemsModel, 
-            VFXView vfxView,
             CharacterParams characterParams
         )
         {
             this.swapItemsModel = swapItemsModel;
             this.characterParams = characterParams;
-            this.vfxView = vfxView;
             var list = Object.FindObjectsOfType<SwapView>().ToList();
             rememberItemPosition = new();
             AddItems(list);
-            AddVFXItems(list);
         }
 
         public void Dispose()
@@ -52,6 +48,7 @@ namespace Feature.Presenter
             {
                 swapItemViews = new();
             }
+            
 
             var dats = items.Select(item =>
             {
@@ -76,46 +73,7 @@ namespace Feature.Presenter
                     }
                 ).ToList());
         }
-        private void AddVFXItems(List<SwapView> items)
-        {
-            if (swapItemVFXViews == null)
-            {
-                swapItemVFXViews = new();
-            }
-
-            var dats = items.Select(item =>
-            {
-                var id = Guid.NewGuid();
-                item.SetHighlight(false);
-                item.Position
-                    .Subscribe(_ => { swapItemsModel.UpdateItemPosition(id, item.Position.Value); })
-                    .AddTo(rememberItemPosition);
-                return (id, item);
-            }).ToList();
-
-            swapItemsModel.AddItems(
-                dats.Select(data => new SwapItem
-                    {
-                        Id = data.id,
-                        Position = data.item.Position.Value,
-                    }
-                ).ToList());
-        }
-
-        public void RemoveItems(List<SwapView> items)
-        {
-            if (items == null)
-            {
-                return;
-            }
-
-            foreach (var swapItemViewBase in items)
-            {
-                var found = swapItemViews.First(x => x.Value == swapItemViewBase);
-                swapItemsModel.RemoveItem(found.Key);
-                swapItemViews.Remove(found.Key);
-            }
-        }
+       
 
         public void Clear()
         {
@@ -141,7 +99,7 @@ namespace Feature.Presenter
                 swapItemViews[item.Value.Id].SetHighlight(false);
             }
             
-            swapItemVFXViews[select.Value.Id].StartSwap();
+            swapItemViews[select.Value.Id].PlayVFX();
             swapItemViews[select.Value.Id].SetHighlight(true);
             swapItemsModel.SetItem(select.Value.Id);
         }

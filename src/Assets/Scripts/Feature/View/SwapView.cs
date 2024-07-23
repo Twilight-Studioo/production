@@ -3,6 +3,7 @@
     using System;
     using UniRx;
     using UnityEngine;
+    using UnityEngine.VFX;
 
     #endregion
 
@@ -15,23 +16,24 @@
             public readonly IReactiveProperty<Vector2> Position = new ReactiveProperty<Vector2>();
 
             [NonSerialized] protected bool IsActive;
-
+            [SerializeField] private VisualEffect effect;
+            [SerializeField] private float onStopTime = 1f;
+            [SerializeField] private bool isSwap = false;
+            
             private Material material;
             private Renderer targetRenderer;
             [SerializeField] private float hilightRimThreashold = 0f;
-
-            private VFXView vfxView;
 
             protected virtual void Start()
             {
                 IsActive = true;
                 targetRenderer = GetComponent<Renderer>();
                 material = targetRenderer.material;
-                vfxView = this.GetComponent<VFXView>();
+                /*vfxView = this.GetComponent<VFXView>();
                 if (vfxView == null)
                 {
                     Debug.LogWarning("VFXView component is missing.");
-                }
+                }*/
             }
 
             private void Update()
@@ -69,14 +71,6 @@
                 {
                     //選択されている場合強調表示
                     material.SetFloat("_RimThreashould", hilightRimThreashold);
-                    if (vfxView != null)
-                    {
-                        vfxView.PlayVFX();
-                    }
-                    else
-                    {
-                        Debug.LogWarning("vfxView is null. Cannot play VFX.");
-                    }
                 }
                 else
                 {
@@ -101,5 +95,42 @@
                     }
                 }
             }*/
+            public void PlayVFX()
+            {
+                if (effect != null)
+                {
+                    if (isSwap) 
+                    {
+                        effect.SendEvent("OnPlay");
+                        Invoke("StopVFX", onStopTime);
+                    }
+                }
+            }
+
+            public void StopVFX()
+            {
+                if (effect != null)
+                {
+                    effect.SendEvent("OnStop");
+                }
+            }
+
+            public void StartSwap()
+            {
+                isSwap = true;
+                Debug.Log($"StartSwap called. isSwapActive = {isSwap}");
+                Invoke("EndSwap", onStopTime);
+            }
+
+            public void EndSwap()
+            {
+                isSwap = false;
+                Debug.Log($"EndSwap called. isSwapActive = {isSwap}");
+            }
+        
+            public bool IsSwap()
+            {
+                return isSwap;
+            }
         }
     }
