@@ -1,5 +1,7 @@
 ﻿#region
 
+using Feature.Common;
+using System.Collections;
 using UniRx;
 using UnityEngine;
 
@@ -9,17 +11,20 @@ namespace Feature.View
 {
     public class PlayerView : MonoBehaviour
     {
-        // ----TODO Draft----
-
         public bool isDrawSwapRange;
 
         public float swapRange;
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
         private Animator animator;
-        private bool isGrounded; // 地面に接触しているかどうかのフラグ
+        private bool isGrounded;
         private Rigidbody rb;
         private GameObject sword;
+        private Coroutine damageCoroutine;
 
+        public CharacterParams characterParams;
+        public EnemyParams enemyParams;
+
+        public IReactiveProperty<int> Health { get; } = new ReactiveProperty<int>();
 
         private void Awake()
         {
@@ -28,11 +33,20 @@ namespace Feature.View
             animator = sword.GetComponent<Animator>();
         }
 
+        private void Start()
+        {
+            Health.Value = characterParams.health;
+
+            Health
+                .Where(hp => hp <= 0)
+                .Subscribe(_ => OnPlayerDeath())
+                .AddTo(this);
+        }
+
         private void Update()
         {
             Position.Value = transform.position;
 
-            // TODO: Updateは辞めて、delegateで受け取る
             if (!animator.isActiveAndEnabled)
             {
                 return;
@@ -40,7 +54,6 @@ namespace Feature.View
 
             var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-            // 現在のアニメーションが指定したアニメーションであり、かつそのアニメーションが終了したかどうかを確認
             if (stateInfo.IsName("SwordUp") && stateInfo.normalizedTime >= 1.0f)
             {
                 StopAnimation();
@@ -70,6 +83,43 @@ namespace Feature.View
             }
         }
 
+        private void OnCollisionStay(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                if (damageCoroutine == null)
+                {
+                    damageCoroutine = StartCoroutine(TakeDamageOverTime());
+                }
+            }
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                if (damageCoroutine != null)
+                {
+                    StopCoroutine(damageCoroutine);
+                    damageCoroutine = null;
+                }
+            }
+
+            if (collision.gameObject.CompareTag("Ground"))
+            {
+                isGrounded = false;
+            }
+        }
+
+        private IEnumerator TakeDamageOverTime()
+        {
+            while (true)
+            {
+                Health.Value = Mathf.Max(Health.Value - enemyParams.damage, 0);
+                yield return new WaitForSeconds(characterParams.takeDamageOverTime);
+            }
+        }
+
         private void OnDrawGizmos()
         {
             if (swapRange != 0 && isDrawSwapRange)
@@ -83,13 +133,11 @@ namespace Feature.View
             var oldColor = Gizmos.color;
             Gizmos.color = color;
             var oldMatrix = Gizmos.matrix;
-            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new(1, 1, 1));
+            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new Vector3(1, 1, 1));
             Gizmos.DrawWireSphere(Vector3.zero, radius);
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
         }
-
-        // ----TODO Draft----
 
         public void Move(float direction, float jumpMove)
         {
@@ -110,14 +158,14 @@ namespace Feature.View
             if (isGrounded)
             {
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                isGrounded = false; // ジャンプ中になるので接地フラグをfalseにする
+                isGrounded = false;
             }
         }
 
         public void Attack(Vector2 direction)
         {
             sword.SetActive(true);
-            // 攻撃方向に応じたアニメーションを再生
+
             if (direction == Vector2.zero)
             {
                 direction = Vector2.right;
@@ -150,7 +198,16 @@ namespace Feature.View
             sword.SetActive(false);
         }
 
-
         public bool IsGrounded() => isGrounded;
+
+        private void OnPlayerDeath()
+        {
+            Debug.Log("Player has died. Stopping game.");
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
     }
 }

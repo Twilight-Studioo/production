@@ -16,6 +16,7 @@ namespace Feature.Presenter
     public class PlayerPresenter
     {
         private readonly CharacterParams characterParams;
+        private readonly EnemyParams enemyParams;
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
 
@@ -40,6 +41,18 @@ namespace Feature.Presenter
             playerView.Position
                 .Subscribe(position => { playerModel.UpdatePosition(position); })
                 .AddTo(playerView);
+
+            playerView.Health
+                .Subscribe(health =>
+                {
+                    playerModel.TakeDamage(enemyParams.damage);
+                    if (health <= 0)
+                    {
+                        Debug.Log("Player has died.");
+                    }
+                })
+                .AddTo(playerView);
+
             playerModel.Start();
         }
 
@@ -52,7 +65,6 @@ namespace Feature.Presenter
         {
             playerView.Jump(playerModel.JumpForce);
         }
-
 
         public void StartSwap()
         {
@@ -122,10 +134,10 @@ namespace Feature.Presenter
             Observable.EveryUpdate()
                 .Subscribe(_ =>
                 {
-                    elapsedTime += Time.unscaledDeltaTime; // Update elapsed time with unscaled time
-                    var t = Mathf.Clamp01(elapsedTime / duration); // Calculate normalized time
+                    elapsedTime += Time.unscaledDeltaTime; 
+                    var t = Mathf.Clamp01(elapsedTime / duration); 
                     Time.timeScale =
-                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); // Apply easing function
+                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); 
                     if (t >= 1.0f) // If the transition is complete
                     {
                         playerView.isDrawSwapRange = false;
