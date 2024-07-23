@@ -110,6 +110,25 @@ namespace Main.Controller
                     }
                 });
 
+            // var daggerEvent = inputActionAccessor.CreateAction(Player.Dagger);
+            // Observable.EveryFixedUpdate()
+            //     .Select(_ => daggerEvent.ReadValue<float>() > 0f)
+            //     .DistinctUntilChanged()
+            //     .Subscribe(x =>
+            //     {
+            //         if (x)
+            //         {
+            //             var h = Input.GetAxis("Horizontal");
+            //             var v = Input.GetAxis("Vertical");
+            //             float degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+            //             if (degree < 0)
+            //             {
+            //                 degree += 360;
+            //             }
+            //
+            //             playerPresenter.Dagger(degree);
+            //         }
+            //     });
             var swapEvent = inputActionAccessor.CreateAction(Player.SwapMode);
             Observable.EveryFixedUpdate()
                 .Select(_ => swapEvent.ReadValue<float>() > 0f)

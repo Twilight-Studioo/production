@@ -146,5 +146,10 @@ namespace Feature.Presenter
         {
             playerView.Attack(degree); 
         }
+
+        public void Dagger(float degree)
+        {
+            playerView.Dagger(degree);
+        }
     }
 }

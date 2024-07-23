@@ -20,6 +20,7 @@ namespace Feature.View
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
         [SerializeField] private GameObject slashingEffect;
+        [SerializeField] private GameObject dagger;
 
         private void Awake()
         {
@@ -94,8 +95,18 @@ namespace Feature.View
         }
 
         public void Attack(float degree)
+        { 
+            if (degree == 0&&this.transform.rotation.y==-180f)
+            {
+                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,180),this.transform);
+            }
+            else 
+                Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
+        }
+
+        public void Dagger(float degree)
         {
-            Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
+            Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, degree), this.transform);
         }
         public bool IsGrounded() => isGrounded;
     }
