@@ -196,6 +196,7 @@ namespace Feature.Model
         public void UpdatePosition(Vector3 pos)
         {
             // TODO: 要件に合わせて、方向は限定する
+            var newPos = new Vector3(pos.x, position.Value.y, position.Value.z);
             Forward = (pos - position.Value).normalized;
             position.Value = pos;
         }
