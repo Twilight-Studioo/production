@@ -11,11 +11,10 @@ namespace Feature.Common.Environment
 {
     public class GameManager : IStartable, IDisposable
     {
+        private readonly IGameController gameController;
         private readonly PlayerPresenter playerPresenter;
         private readonly PlayerStart playerStart;
 
-        private readonly IGameController gameController;
-        
         private bool isStarted;
 
         [Inject]
@@ -39,12 +38,14 @@ namespace Feature.Common.Environment
             {
                 return;
             }
+
             isStarted = true;
             var player = playerStart.OnStart();
             if (player == null)
             {
-                throw new Exception("Player is not spawned");
+                throw new("Player is not spawned");
             }
+
             gameController.OnPossess(player);
             gameController.Start();
         }
