@@ -1,4 +1,8 @@
+#region
+
 using Feature.View;
+
+#endregion
 
 namespace Feature.Common.Environment
 {

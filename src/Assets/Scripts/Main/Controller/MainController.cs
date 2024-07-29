@@ -11,7 +11,6 @@ using Main.Factory;
 using UniRx;
 using UnityEngine;
 using VContainer;
-using VContainer.Unity;
 
 #endregion
 
@@ -54,6 +53,12 @@ namespace Main.Controller
         {
             InputEventSetup();
             Setup();
+        }
+
+        public void OnPossess(PlayerView view)
+        {
+            playerPresenter.OnPossess(view);
+            targetGroupManager.AddTarget(view.transform, CameraTargetGroupTag.Player());
         }
 
         private void Setup()
@@ -134,12 +139,6 @@ namespace Main.Controller
                         playerModel.Swapped();
                     }
                 });
-        }
-
-        public void OnPossess(PlayerView view)
-        {
-            playerPresenter.OnPossess(view);
-            targetGroupManager.AddTarget(view.transform, CameraTargetGroupTag.Player());
         }
     }
 }
