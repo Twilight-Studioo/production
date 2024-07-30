@@ -19,6 +19,7 @@ namespace Feature.Presenter
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
         private readonly SwapView swapView;
+        private readonly VFXView vfxView;
 
         private readonly CompositeDisposable swapTimer;
         
@@ -28,7 +29,8 @@ namespace Feature.Presenter
             PlayerView view,
             PlayerModel model,
             CharacterParams characterParams,
-            SwapView swapViews
+            SwapView swapViews,
+            VFXView vfxView
         )
         {
             playerView = view;
@@ -37,6 +39,7 @@ namespace Feature.Presenter
             this.characterParams = characterParams;
             swapTimer = new();
             playerView.swapRange = characterParams.canSwapDistance;
+            this.vfxView = vfxView;
         }
 
         public void Start()
@@ -102,7 +105,13 @@ namespace Feature.Presenter
             
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            swapView.StartSwap();
+            
+            var swapViews = UnityEngine.Object.FindObjectsOfType<SwapView>();
+            foreach (var swap in swapViews)
+            {
+                swap.PlayVFX();
+            }
+            vfxView.PlayVFX();
             Func<float, float> easingFunction;
 
             
@@ -145,9 +154,6 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(swapTimer);
-            
-            //swapView.PlayVFX();
-            //vfxView.EndSwap();
         }
 
         public void SetPosition(Vector3 position)

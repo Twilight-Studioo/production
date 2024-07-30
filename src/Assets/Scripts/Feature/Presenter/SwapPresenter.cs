@@ -99,7 +99,7 @@ namespace Feature.Presenter
                 swapItemViews[item.Value.Id].SetHighlight(false);
             }
             
-            swapItemViews[select.Value.Id].PlayVFX();
+            swapItemViews[select.Value.Id].StartSwap();
             swapItemViews[select.Value.Id].SetHighlight(true);
             swapItemsModel.SetItem(select.Value.Id);
         }

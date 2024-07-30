@@ -99,8 +99,10 @@
             {
                 if (effect != null)
                 {
+                    Debug.Log("Call PlayVFX");
                     if (isSwap) 
                     {
+                        Debug.Log("Do PlayVFX");
                         effect.SendEvent("OnPlay");
                         Invoke("StopVFX", onStopTime);
                     }
