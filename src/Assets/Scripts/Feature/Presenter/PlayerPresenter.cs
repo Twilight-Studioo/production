@@ -19,27 +19,38 @@ namespace Feature.Presenter
         private readonly EnemyParams enemyParams;
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
+        private readonly SwapView swapView;
+        private readonly VFXView vfxView;
 
         private readonly CompositeDisposable swapTimer;
+        
 
         [Inject]
         public PlayerPresenter(
             PlayerView view,
             PlayerModel model,
-            CharacterParams characterParams
+            CharacterParams characterParams,
+            SwapView swapViews,
+            VFXView vfxView
         )
         {
             playerView = view;
             playerModel = model;
+            swapView = swapViews;
             this.characterParams = characterParams;
             swapTimer = new();
             playerView.swapRange = characterParams.canSwapDistance;
+            this.vfxView = vfxView;
         }
 
         public void Start()
         {
             playerView.Position
-                .Subscribe(position => { playerModel.UpdatePosition(position); })
+                .Subscribe(position =>
+                {
+                    playerModel.UpdatePosition(position);
+                    //スワップ中ならば一覧を取得してhilightの処理を呼び出す
+                })
                 .AddTo(playerView);
 
             playerView.Health
@@ -74,7 +85,6 @@ namespace Feature.Presenter
             }
 
             playerView.isDrawSwapRange = true;
-
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
@@ -92,9 +102,10 @@ namespace Feature.Presenter
                     {
                         return;
                     }
-
+                    
                     EndSwap();
                 });
+            
         }
 
         public void EndSwap()
@@ -103,12 +114,20 @@ namespace Feature.Presenter
             {
                 return;
             }
-
+            
             swapTimer.Clear();
             playerModel.OnEndSwap();
-
+            
+            var swapViews = UnityEngine.Object.FindObjectsOfType<SwapView>();
+            foreach (var swap in swapViews)
+            {
+                swap.PlayVFX();
+            }
+            vfxView.PlayVFX();
             Func<float, float> easingFunction;
 
+            
+            
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:
