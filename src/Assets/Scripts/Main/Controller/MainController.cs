@@ -67,6 +67,7 @@ namespace Main.Controller
             {
                 targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.Enemy());
             };
+            enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
         }
 
         // TODO: この辺りのinput制御を別クラスに切り分ける

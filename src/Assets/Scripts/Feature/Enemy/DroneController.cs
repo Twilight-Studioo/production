@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections;
 using Core.Utilities.Health;
 using DynamicActFlow.Runtime.Core.Flow;
@@ -25,6 +26,8 @@ namespace Feature.Enemy
         {
             CurrentHealth -= damage;
         }
+
+        public event Action OnDestroyEvent;
 
         public uint MaxHealth => maxHealth;
         public uint CurrentHealth { get; private set; }

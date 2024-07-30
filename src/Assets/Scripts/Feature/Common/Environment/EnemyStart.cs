@@ -2,12 +2,17 @@
 
 using System.Collections.Generic;
 using Feature.Common.Constants;
+using Feature.Interface;
 using UnityEngine;
 
 #endregion
 
 namespace Feature.Common.Environment
 {
+    public delegate IEnemy OnRequestSpawnEvent(Transform transform);
+
+    public delegate Transform GetTransform();
+
     public class EnemyStart : MonoBehaviour
     {
         [SerializeField] private EnemyType spawnEnemyType = EnemyType.SimpleEnemy1;
@@ -17,7 +22,18 @@ namespace Feature.Common.Environment
 
         [SerializeField, Header("巡回地点"),] private List<Vector3> points;
 
+        public GetTransform GetPlayerTransform;
+
+        private bool isSpawned;
+
+        public OnRequestSpawnEvent OnRequestSpawn;
+
         public EnemyType SpawnEnemyType => spawnEnemyType;
+
+        private void FixedUpdate()
+        {
+            SpawnCheck();
+        }
 
         private void OnDrawGizmos()
         {
@@ -30,6 +46,28 @@ namespace Feature.Common.Environment
         {
             PointGizmos();
             SpawnAreaGizmos();
+        }
+
+        private void SpawnCheck()
+        {
+            if (isSpawned || OnRequestSpawn == null || GetPlayerTransform == null)
+            {
+                return;
+            }
+
+            if (Vector3.Distance(transform.position, GetPlayerTransform().position) > resumeDistance.x)
+            {
+                return;
+            }
+
+            var enemy = OnRequestSpawn(transform);
+            if (enemy == null)
+            {
+                return;
+            }
+
+            isSpawned = true;
+            enemy.OnDestroyEvent += () => isSpawned = false;
         }
 
         private void SpawnAreaGizmos()

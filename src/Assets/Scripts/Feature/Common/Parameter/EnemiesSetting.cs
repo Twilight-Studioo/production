@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Feature.Common.Constants;
+using Feature.Interface;
 using UnityEngine;
 
 #endregion
@@ -28,12 +29,20 @@ namespace Feature.Common.Parameter
 
         public void SettingValidate()
         {
-            // 同じtypeが存在しないかチェック
             GetEnemyTypes().ForEach(type =>
             {
+                // 同じtypeが存在しないかチェック
                 if (GetEnemyTypes().FindAll(x => x == type).Count > 1)
                 {
                     throw new($"Duplicate EnemyType {type}");
+                }
+            });
+
+            reference.ForEach(x =>
+            {
+                if (x.reference.GetComponent<IEnemy>() == null)
+                {
+                    throw new($"EnemyType {x.type} is not implement IEnemy");
                 }
             });
             Debug.Log("EnemiesSetting Success Validate");

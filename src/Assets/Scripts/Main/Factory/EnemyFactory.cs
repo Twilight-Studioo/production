@@ -5,6 +5,8 @@ using System.Linq;
 using Feature.Common.Constants;
 using Feature.Common.Environment;
 using Feature.Common.Parameter;
+using Feature.Enemy;
+using Feature.Interface;
 using UnityEngine;
 
 #endregion
@@ -14,6 +16,8 @@ namespace Main.Factory
     public class EnemyFactory : MonoBehaviour
     {
         [SerializeField] private EnemiesSetting settings;
+
+        public GetTransform GetPlayerTransform;
 
         private void Awake()
         {
@@ -31,14 +35,22 @@ namespace Main.Factory
                 {
                     throw new($"EnemyType {enemyStart.SpawnEnemyType} is not found in settings");
                 }
+
+                enemyStart.GetPlayerTransform = () => GetPlayerTransform();
+                enemyStart.OnRequestSpawn = t => SpawnEnemy(enemyStart.SpawnEnemyType, t);
             }
         }
 
-        private void SpawnEnemy(EnemyType type)
+        private IEnemy SpawnEnemy(EnemyType type, Transform transform)
         {
             var enemyRef = settings.reference.Find(x => x.type == type);
-            var enemy = Instantiate(enemyRef.reference, new(0, 2, 0), Quaternion.identity);
+            var enemy = Instantiate(enemyRef.reference, transform.position, transform.rotation);
             OnAddField?.Invoke(enemy);
+            var enemyComponent = enemy.GetComponent<IEnemy>();
+            var enemyParams = enemy.GetComponent<IEnemyAgent>();
+            enemyParams.SetParams(enemyRef.parameters);
+            enemyParams.SetPlayerTransform(GetPlayerTransform());
+            return enemyComponent;
         }
 
         public event Action<GameObject> OnAddField;

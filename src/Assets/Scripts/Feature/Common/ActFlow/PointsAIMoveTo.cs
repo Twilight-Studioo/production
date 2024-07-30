@@ -18,6 +18,8 @@ namespace Feature.Common.ActFlow
         private int currentIdx;
         [ActionParameter("Points")] private List<Vector3> TargetPoints { get; set; }
 
+        [ActionParameter("MoveSpeed")] private float MoveSpeed { get; }
+
         public override void OnCreated()
         {
             base.OnCreated();
@@ -32,6 +34,7 @@ namespace Feature.Common.ActFlow
             agent.autoRepath = true; // 自動経路再計算を有効にする
             agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
             agent.SetDestination(TargetPoints[currentIdx]);
+            agent.speed = 3.5f * MoveSpeed;
         }
 
         protected override void FixedUpdate()
