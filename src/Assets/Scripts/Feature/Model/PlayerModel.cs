@@ -44,6 +44,9 @@ namespace Feature.Model
 
         private IDisposable swapUseStaminaSubscription;
 
+        private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
+        public IReadOnlyReactiveProperty<int> Health => health.ToReadOnlyReactiveProperty();
+
         [Inject]
         public PlayerModel(
             CharacterParams character,
@@ -87,6 +90,8 @@ namespace Feature.Model
                     gameUIView.SetVolume(volume);
                 })
                 .AddTo(playerModelTimer);
+
+            health.Value = characterParams.health;
         }
 
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
@@ -191,8 +196,14 @@ namespace Feature.Model
         public void UpdatePosition(Vector3 pos)
         {
             // TODO: 要件に合わせて、方向は限定する
+            var newPos = new Vector3(pos.x, position.Value.y, position.Value.z);
             Forward = (pos - position.Value).normalized;
             position.Value = pos;
+        }
+
+        public void TakeDamage(int damage)
+        {
+            health.Value = Mathf.Max(health.Value - damage, 0);
         }
     }
 }

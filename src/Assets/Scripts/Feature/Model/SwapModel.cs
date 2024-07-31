@@ -13,11 +13,13 @@ namespace Feature.Model
     {
         public Guid Id;
         public Vector3 Position;
+        public Renderer Renderer; 
 
-        public SwapItem(Guid id, Vector3 position)
+        public SwapItem(Guid id, Vector3 position,Renderer renderer)
         {
             Id = id;
             Position = position;
+            Renderer = renderer;
         }
     }
 
@@ -153,6 +155,14 @@ namespace Feature.Model
             }
 
             return nearestItem;
+        }
+
+        public List<SwapItem> ItemInRangeHilight(Vector3 position,float maxDistance)
+        {
+            var itemsInRange = swapItems
+                .Where(item => Vector3.Distance(item.Position, position) < maxDistance)
+                .ToList();
+            return itemsInRange;
         }
     }
 }

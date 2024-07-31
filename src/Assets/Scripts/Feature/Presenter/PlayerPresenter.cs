@@ -16,20 +16,24 @@ namespace Feature.Presenter
     public class PlayerPresenter
     {
         private readonly CharacterParams characterParams;
+        private readonly EnemyParams enemyParams;
         private readonly PlayerModel playerModel;
 
         private readonly CompositeDisposable swapTimer;
         private PlayerView playerView;
+        private readonly VFXView vfxView;
 
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
-            CharacterParams characterParams
+            CharacterParams characterParams,
+            VFXView vfxView
         )
         {
             playerModel = model;
             this.characterParams = characterParams;
             swapTimer = new();
+            this.vfxView = vfxView;
         }
 
         public void OnPossess(PlayerView view)
@@ -37,8 +41,13 @@ namespace Feature.Presenter
             playerView = view;
             playerView.swapRange = characterParams.canSwapDistance;
             playerView.Position
-                .Subscribe(position => { playerModel.UpdatePosition(position); })
+                .Subscribe(position =>
+                {
+                    playerModel.UpdatePosition(position);
+                    //スワップ中ならば一覧を取得してhighlightの処理を呼び出す
+                })
                 .AddTo(playerView);
+
             playerModel.Start();
         }
 
@@ -52,7 +61,6 @@ namespace Feature.Presenter
             playerView.Jump(playerModel.JumpForce);
         }
 
-
         public void StartSwap()
         {
             if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
@@ -61,27 +69,22 @@ namespace Feature.Presenter
             }
 
             playerView.isDrawSwapRange = true;
-
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
             playerModel.OnStartSwap();
             Observable
-                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis *
-                                                 characterParams.swapContinueTimeScale))
+                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis * characterParams.swapContinueTimeScale))
                 .Subscribe(_ => { EndSwap(); })
                 .AddTo(swapTimer);
             playerModel.CanEndSwap
                 .DistinctUntilChanged()
                 .Subscribe(x =>
                 {
-                    if (x)
-                    {
-                        return;
-                    }
-
+                    if (x) { return; }
                     EndSwap();
                 });
+            
         }
 
         public void EndSwap()
@@ -90,12 +93,20 @@ namespace Feature.Presenter
             {
                 return;
             }
-
+            
             swapTimer.Clear();
             playerModel.OnEndSwap();
-
+            
+            var swapViews = UnityEngine.Object.FindObjectsOfType<SwapView>();
+            foreach (var swap in swapViews)
+            {
+                swap.PlayVFX();
+            }
+            vfxView.PlayVFX();
             Func<float, float> easingFunction;
 
+            
+            
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:
@@ -121,10 +132,10 @@ namespace Feature.Presenter
             Observable.EveryUpdate()
                 .Subscribe(_ =>
                 {
-                    elapsedTime += Time.unscaledDeltaTime; // Update elapsed time with unscaled time
-                    var t = Mathf.Clamp01(elapsedTime / duration); // Calculate normalized time
+                    elapsedTime += Time.unscaledDeltaTime; 
+                    var t = Mathf.Clamp01(elapsedTime / duration); 
                     Time.timeScale =
-                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); // Apply easing function
+                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); 
                     if (t >= 1.0f) // If the transition is complete
                     {
                         playerView.isDrawSwapRange = false;
@@ -141,10 +152,9 @@ namespace Feature.Presenter
             playerView.transform.position = position;
         }
 
-        public void Attack()
+        public void Attack(float degree)
         {
-            var direction = playerModel.Forward;
-            playerView.Attack(direction); // モデルの攻撃メソッドを呼び出し、ビューの攻撃アニメーションをトリガーする
+            playerView.Attack(degree);
         }
 
         public Transform GetTransform() => playerView.transform;
