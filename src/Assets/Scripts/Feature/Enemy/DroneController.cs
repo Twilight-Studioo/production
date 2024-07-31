@@ -29,6 +29,10 @@ namespace Feature.Enemy
 
         public event Action OnDestroyEvent;
 
+        public void Execute()
+        {
+        }
+
         public uint MaxHealth => maxHealth;
         public uint CurrentHealth { get; private set; }
 

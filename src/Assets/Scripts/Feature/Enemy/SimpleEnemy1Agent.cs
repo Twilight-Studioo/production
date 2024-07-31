@@ -7,6 +7,7 @@ using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
 using Feature.Common.Parameter;
 using UnityEngine;
+using UnityEngine.AI;
 
 #endregion
 
@@ -14,13 +15,20 @@ namespace Feature.Enemy
 {
     public class SimpleEnemy1Agent : FlowScope, IEnemyAgent
     {
-        [SerializeField] public List<Vector3> points;
+        public List<Vector3> points;
 
         private readonly OnHitRushAttack onHitRushAttack = () => { Debug.Log("Rush Attack"); };
+
+        private NavMeshAgent agent;
 
         private SimpleEnemy1Params enemyParams;
 
         private Transform playerTransform;
+
+        private void Awake()
+        {
+            agent = GetComponent<NavMeshAgent>();
+        }
 
 
         public void FlowCancel()
@@ -45,15 +53,32 @@ namespace Feature.Enemy
             }
         }
 
+        public void SetPatrolPoints(List<Vector3> pts)
+        {
+            points = pts;
+        }
+
         public void SetPlayerTransform(Transform player)
         {
+            Debug.Log("SetPlayerTransform", player);
             playerTransform = player;
         }
 
         private TriggerRef MoveTrigger() =>
             Trigger("AnyDistance")
-                .Param("Distances", new List<float> { enemyParams.rushStartDistance, enemyParams.pursuitDistance, })
+                .Param("Distances", new List<float> { enemyParams.rushStartDistance, enemyParams.foundDistance, })
                 .Param("TargetTransform", playerTransform);
+
+        private TriggerRef RushStart() =>
+            Trigger("Distance")
+                .Param("Target", enemyParams.rushStartDistance)
+                .Param("Object", playerTransform);
+
+        private TriggerRef UnFocusTrigger() =>
+            Trigger("Distance")
+                .Param("Target", enemyParams.pursuitDistance)
+                .Param("IsClose", false)
+                .Param("Object", playerTransform);
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
@@ -64,7 +89,8 @@ namespace Feature.Enemy
 
             while (true)
             {
-                Debug.Log("Patrol");
+                Debug.Log($"Patrol {Time.time}");
+                agent.ResetPath();
                 yield return Action("PointsAIMoveTo")
                     .Param("Points", points)
                     .Param("MoveSpeed", enemyParams.patrolSpeed)
@@ -73,20 +99,26 @@ namespace Feature.Enemy
                             .Build()
                     )
                     .Build();
-                if (enemyParams.rushStartDistance > Vector3.Distance(playerTransform.position, transform.position))
+                var distance = Vector3.Distance(playerTransform.position, transform.position);
+                if (enemyParams.rushStartDistance > distance)
                 {
                     yield return Attack();
                 }
-                else
+
+                if (enemyParams.foundDistance > distance)
                 {
                     Debug.Log("Pursuit");
+                    agent.ResetPath();
                     yield return Action("AIMoveToFollow")
                         .Param("FollowTransform", playerTransform)
                         .Param("MoveSpeed", enemyParams.pursuitSpeed)
-                        .IfEnd(
-                            MoveTrigger()
-                                .Build()
-                        )
+                        .IfEnd(new[]
+                        {
+                            UnFocusTrigger()
+                                .Build(),
+                            RushStart()
+                                .Build(),
+                        })
                         .Build();
                 }
             }
@@ -95,6 +127,7 @@ namespace Feature.Enemy
         private IEnumerator Attack()
         {
             Debug.Log("Rush Wait");
+            agent.ResetPath();
             yield return Wait(enemyParams.rushBeforeDelay);
             Debug.Log("Rush");
             yield return Action("AIRushToPosition")
@@ -102,6 +135,7 @@ namespace Feature.Enemy
                 .Param("TargetTransform", playerTransform)
                 .Param("OnHitRushAttack", onHitRushAttack)
                 .Build();
+            yield return Wait(enemyParams.rushAfterDelay);
         }
     }
 }

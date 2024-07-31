@@ -16,8 +16,8 @@ namespace Feature.Common.Parameter
 
         [Tooltip("HP")] public uint maxHp = 100;
 
-        [Tooltip("巡回中の移動速度")] public float patrolSpeed = 1f;
+        [Tooltip("巡回中の移動速度")] public float patrolSpeed = 1.0f;
 
-        [Tooltip("追跡中の移動速度")] public float pursuitSpeed = 1.2f;
+        [Tooltip("追跡中の移動速度")] public float pursuitSpeed = 1.4f;
     }
 }

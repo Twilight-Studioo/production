@@ -15,11 +15,12 @@ namespace Feature.Common.ActFlow
     {
         [TriggerParameter("Distances")] private List<float> Distances { get; set; }
 
-        [TriggerParameter("TargetTransform")] public Transform TargetPosition { get; set; }
+        [TriggerParameter("TargetTransform")] private Transform TargetPosition { get; set; }
 
         public override void OnCreated()
         {
             Distances = new();
+            TargetPosition = null;
         }
 
         public override bool IfEnd(MonoBehaviour owner)

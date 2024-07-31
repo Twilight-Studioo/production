@@ -28,6 +28,8 @@ namespace Feature.Common.Environment
 
         public OnRequestSpawnEvent OnRequestSpawn;
 
+        public List<Vector3> Points => points;
+
         public EnemyType SpawnEnemyType => spawnEnemyType;
 
         private void FixedUpdate()

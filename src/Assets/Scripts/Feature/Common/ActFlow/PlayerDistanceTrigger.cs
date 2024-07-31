@@ -11,9 +11,8 @@ namespace Feature.Common.ActFlow
     [TriggerTag("PlayerDistance")]
     public class PlayerDistanceTrigger : TriggerBase
     {
-        [TriggerParameter("Distance")] public float Distance;
-
         private Transform playerTransform;
+        [TriggerParameter("Distance")] private float Distance { get; set; }
 
         public override void OnCreated()
         {

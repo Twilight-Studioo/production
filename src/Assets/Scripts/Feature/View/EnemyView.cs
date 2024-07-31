@@ -14,7 +14,7 @@ namespace Feature.View
     {
         private IEnemyAgent agent;
 
-        private void Start()
+        public void Execute()
         {
             agent = GetComponent<IEnemyAgent>();
             agent.FlowExecute();

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using DynamicActFlow.Runtime.Core;
 using DynamicActFlow.Runtime.Core.Action;
+using Feature.Common.Constants;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,12 +19,13 @@ namespace Feature.Common.ActFlow
         private int currentIdx;
         [ActionParameter("Points")] private List<Vector3> TargetPoints { get; set; }
 
-        [ActionParameter("MoveSpeed")] private float MoveSpeed { get; }
+        [ActionParameter("MoveSpeed")] private float MoveSpeed { get; set; }
 
         public override void OnCreated()
         {
             base.OnCreated();
             TargetPoints = new();
+            MoveSpeed = 1.0f;
         }
 
         protected override void Start()
@@ -34,7 +36,7 @@ namespace Feature.Common.ActFlow
             agent.autoRepath = true; // 自動経路再計算を有効にする
             agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
             agent.SetDestination(TargetPoints[currentIdx]);
-            agent.speed = 3.5f * MoveSpeed;
+            agent.speed = ParameterEx.MergePlayerAgentSpeed(3.5f * MoveSpeed);
         }
 
         protected override void FixedUpdate()

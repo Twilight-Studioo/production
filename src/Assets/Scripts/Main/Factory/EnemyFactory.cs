@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using Feature.Common.Constants;
 using Feature.Common.Environment;
 using Feature.Common.Parameter;
 using Feature.Enemy;
@@ -37,19 +36,21 @@ namespace Main.Factory
                 }
 
                 enemyStart.GetPlayerTransform = () => GetPlayerTransform();
-                enemyStart.OnRequestSpawn = t => SpawnEnemy(enemyStart.SpawnEnemyType, t);
+                enemyStart.OnRequestSpawn = t => SpawnEnemy(enemyStart, t);
             }
         }
 
-        private IEnemy SpawnEnemy(EnemyType type, Transform transform)
+        private IEnemy SpawnEnemy(EnemyStart start, Transform t)
         {
-            var enemyRef = settings.reference.Find(x => x.type == type);
-            var enemy = Instantiate(enemyRef.reference, transform.position, transform.rotation);
+            var enemyRef = settings.reference.Find(x => x.type == start.SpawnEnemyType);
+            var enemy = Instantiate(enemyRef.reference, t.position, t.rotation);
             OnAddField?.Invoke(enemy);
             var enemyComponent = enemy.GetComponent<IEnemy>();
             var enemyParams = enemy.GetComponent<IEnemyAgent>();
             enemyParams.SetParams(enemyRef.parameters);
             enemyParams.SetPlayerTransform(GetPlayerTransform());
+            enemyParams.SetPatrolPoints(start.Points);
+            enemyComponent.Execute();
             return enemyComponent;
         }
 

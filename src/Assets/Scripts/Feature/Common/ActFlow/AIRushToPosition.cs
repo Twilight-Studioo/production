@@ -2,6 +2,7 @@
 
 using DynamicActFlow.Runtime.Core;
 using DynamicActFlow.Runtime.Core.Action;
+using Feature.Common.Constants;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,23 +17,25 @@ namespace Feature.Common.ActFlow
     {
         private NavMeshAgent agent;
 
-        [ActionParameter("TargetTransform")] private Transform PlayerTransform { get; }
+        [ActionParameter("TargetTransform")] private Transform PlayerTransform { get; set; }
 
         [ActionParameter("RushSpeed")] private float Speed { get; set; }
 
-        [ActionParameter("OnHitRushAttack")] private OnHitRushAttack OnHitRushAttack { get; }
+        [ActionParameter("OnHitRushAttack")] private OnHitRushAttack OnHitRushAttack { get; set; }
 
         public override void OnCreated()
         {
             base.OnCreated();
-            Speed = 3.5f;
+            Speed = 1f;
+            PlayerTransform = null;
+            OnHitRushAttack = null;
         }
 
         protected override void Start()
         {
             agent = Owner.GetComponent<NavMeshAgent>();
             agent.SetDestination(PlayerTransform.position);
-            agent.speed = 3.5f * Speed;
+            agent.speed = ParameterEx.MergePlayerAgentSpeed(3.5f * Speed);
         }
 
         protected override void FixedUpdate()
@@ -42,7 +45,7 @@ namespace Feature.Common.ActFlow
 
         protected override bool CheckIfEnd()
         {
-            var check = Vector3.Distance(Owner.transform.position, PlayerTransform.position) < 1.0f;
+            var check = Vector3.Distance(Owner.transform.position, PlayerTransform.position) < 1.5f;
             if (check && OnHitRushAttack != null)
             {
                 OnHitRushAttack();

@@ -18,6 +18,6 @@ MonoBehaviour:
   maxHp: 100
   patrolSpeed: 1
   pursuitSpeed: 1.2
-  rushBeforeDelay: 1
+  rushBeforeDelay: 0.2
   rushStartDistance: 3
-  rushSpeed: 2
+  rushSpeed: 5

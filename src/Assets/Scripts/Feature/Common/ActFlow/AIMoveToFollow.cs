@@ -2,6 +2,7 @@
 
 using DynamicActFlow.Runtime.Core;
 using DynamicActFlow.Runtime.Core.Action;
+using Feature.Common.Constants;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,17 +15,26 @@ namespace Feature.Common.ActFlow
     {
         private NavMeshAgent agent;
 
-        [ActionParameter("FollowTransform")] private Transform FollowTransform { get; }
+        [ActionParameter("FollowTransform")] private Transform FollowTransform { get; set; }
 
-        [ActionParameter("FinishDistance")] private float FinishDistance { get; }
+        [ActionParameter("FinishDistance")] private float FinishDistance { get; set; }
 
-        [ActionParameter("MoveSpeed")] private float MoveSpeed { get; }
+        [ActionParameter("MoveSpeed")] private float MoveSpeed { get; set; }
+
+
+        public override void OnCreated()
+        {
+            base.OnCreated();
+            FinishDistance = 1.0f;
+            MoveSpeed = 1.0f;
+            FollowTransform = null;
+        }
 
         protected override void Start()
         {
             agent = Owner.GetComponent<NavMeshAgent>();
             agent.SetDestination(FollowTransform.position);
-            agent.speed = 3.5f * MoveSpeed;
+            agent.speed = ParameterEx.MergePlayerAgentSpeed(3.5f * MoveSpeed);
         }
 
         protected override void FixedUpdate()
