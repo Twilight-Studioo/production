@@ -57,6 +57,8 @@ namespace Feature.Common
         [Tooltip("1回の回復で増えるスタミナの量")] public uint resourceRecoveryQuantity = 1;
 
         [Tooltip("何ミリ秒ごとにリソースが回復するか")] public uint recoveryStaminaTimeMillis = 800;
+
+        [Tooltip("クナイを飛ばしたときのスタミナ消費")] public uint useDaggerUseStamina = 2;
     }
 
     [Serializable]

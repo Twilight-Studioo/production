@@ -147,9 +147,14 @@ namespace Feature.Presenter
             playerView.Attack(degree); 
         }
 
-        public void Dagger(float degree)
+        public void Dagger(float degree,float h,float v)
         {
-            playerView.Dagger(degree);
+            playerModel.OnDagger();
+            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
+            {
+                return;
+            }
+            playerView.Dagger(degree,h,v);
         }
     }
 }

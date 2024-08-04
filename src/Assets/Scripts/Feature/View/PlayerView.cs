@@ -21,6 +21,9 @@ namespace Feature.View
         private Rigidbody rb;
         [SerializeField] private GameObject slashingEffect;
         [SerializeField] private GameObject dagger;
+        public bool Right=true;
+        public float hx;
+        public float vy;
 
         private void Awake()
         {
@@ -67,11 +70,13 @@ namespace Feature.View
             if (direction > 0)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0);
+                Right = true;
             }
             else if (direction < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
                 direction = direction * -1;
+                Right = false;
             }
             if (isGrounded)
             {
@@ -96,7 +101,7 @@ namespace Feature.View
 
         public void Attack(float degree)
         { 
-            if (degree == 0&&this.transform.rotation.y==-180f)
+            if (degree == 0&&Right==false)//degree == 0&&transform.rotation.y==-180f
             {
                 Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,180),this.transform);
             }
@@ -104,9 +109,27 @@ namespace Feature.View
                 Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
         }
 
-        public void Dagger(float degree)
+        public void Dagger(float degree,float h,float v)
         {
-            Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, degree), this.transform);
+            GameObject instantiateDagger;
+            if (degree == 0&&Right==false)
+            {
+               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, -180), this.transform);
+            }
+            else
+               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, degree), this.transform);
+
+            if (h == 0 && v == 0)
+            {
+                if (Right) 
+                {
+                    h = 1;
+                }
+                else 
+                    h = -1;
+            }
+            DaggerView daggerView = instantiateDagger.GetComponentInChildren<DaggerView>();
+            daggerView.HorizontalVertical(h,v);
         }
         public bool IsGrounded() => isGrounded;
     }

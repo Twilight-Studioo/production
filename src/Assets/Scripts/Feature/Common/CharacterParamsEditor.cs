@@ -34,6 +34,8 @@ namespace Feature.Common
         private SerializedProperty swapModeStaminaUsageIntervalMillis;
         private SerializedProperty swapReturnCurve;
         private SerializedProperty swapReturnTimeMillis;
+        
+        private SerializedProperty useDaggerUseStamina;
 
         private void OnEnable()
         {
@@ -59,6 +61,7 @@ namespace Feature.Common
             recoveryTimeMillis = serializedObject.FindProperty("recoveryTimeMillis");
             resourceRecoveryQuantity = serializedObject.FindProperty("resourceRecoveryQuantity");
             recoveryResourceTimeMillis = serializedObject.FindProperty("recoveryStaminaTimeMillis");
+            useDaggerUseStamina = serializedObject.FindProperty("useDaggerUseStamina");
         }
 
         public override void OnInspectorGUI()
@@ -95,6 +98,7 @@ namespace Feature.Common
                 EditorGUILayout.PropertyField(recoveryTimeMillis, new GUIContent("スワップして何秒で回復し始めるか"));
                 EditorGUILayout.PropertyField(resourceRecoveryQuantity, new GUIContent("1回の回復で増えるスタミナの量"));
                 EditorGUILayout.PropertyField(recoveryResourceTimeMillis, new GUIContent("何ミリ秒ごとにリソースが回復するか"));
+                EditorGUILayout.PropertyField(useDaggerUseStamina, new GUIContent("クナイを飛ばしたときのスタミナ消費"));
             }
 
             serializedObject.ApplyModifiedProperties();

@@ -29,3 +29,4 @@ MonoBehaviour:
   recoveryTimeMillis: 500
   resourceRecoveryQuantity: 1
   recoveryStaminaTimeMillis: 10
+  useDaggerUseStamina: 20
