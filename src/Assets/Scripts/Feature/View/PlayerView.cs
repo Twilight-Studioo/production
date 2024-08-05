@@ -2,6 +2,10 @@
 
 using System;
 using Feature.Interface;
+using Feature.Common;
+using System.Collections;
+using Core.Input.Generated;
+using Feature.Presenter;
 using UniRx;
 using UnityEngine;
 
@@ -18,7 +22,6 @@ namespace Feature.View
         [NonSerialized]
         public float SwapRange;
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-        private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
         private VFXView vfxView;
         
@@ -27,10 +30,26 @@ namespace Feature.View
         
         public event Action<uint> OnDamageEvent;
 
+        private Animator animator;
+        private IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
+        private Vector3 previousPosition;
+        private float speed;
+        private static readonly int Speed = Animator.StringToHash("Speed");
+        private static readonly int OnJump = Animator.StringToHash("OnJump");
+        private static readonly int IsFalling = Animator.StringToHash("IsFalling");
+
+        public IReactiveProperty<int> Health { get; } = new ReactiveProperty<int>();
+
         private void Awake()
         {
-            rb = GetComponent<Rigidbody>();
+            rb = GetComponentInChildren<Rigidbody>();
+            animator = GetComponentInChildren<Animator>();
             vfxView = GetComponent<VFXView>();
+            isGrounded
+                .Subscribe(x =>
+                {
+                    animator.SetBool(IsFalling, !x);
+                });
         }
 
         private void Update()
@@ -38,12 +57,18 @@ namespace Feature.View
             Position.Value = transform.position;
         }
 
+        private void FixedUpdate()
+        {
+            speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
+            previousPosition = rb.position;
+            animator.SetFloat(Speed, speed);
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.CompareTag("Ground"))
             {
-                isGrounded = true;
-                Debug.Log("Grounded");
+                isGrounded.Value = true;
             }
         }
 
@@ -75,17 +100,7 @@ namespace Feature.View
 
         public void Move(float direction, float jumpMove)
         {
-            //向き
-            if (direction > 0)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else if (direction < 0)
-            {
-                transform.rotation = Quaternion.Euler(0, 180, 0);
-                direction = direction * -1;
-            }
-            if (isGrounded)
+            if (isGrounded.Value)
             {
                 Vector3 movement = transform.right * (direction * Time.deltaTime);
                 rb.MovePosition(rb.position + movement);
@@ -96,19 +111,30 @@ namespace Feature.View
                 Vector3 movement = transform.right * (direction * Time.deltaTime)/jumpMove;
                 rb.MovePosition(rb.position + movement);
             }
+            // //向き
+            // if (direction > 0)
+            // {
+            //     transform.rotation = Quaternion.Euler(0, 0, 0);
+            // }
+            // else if (direction < 0)
+            // {
+            //     transform.rotation = Quaternion.Euler(0, 180, 0);
+            //     direction = direction * -1;
+            // }
         }
         public void Jump(float jumpForce)
         {
-            if (isGrounded)
+            if (isGrounded.Value)
             {
+                animator.SetTrigger(OnJump);
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                isGrounded = false;
+                isGrounded.Value = false; // ジャンプ中になるので接地フラグをfalseにする
             }
         }
 
         public void Attack(float degree, uint damage)
         {
-            var obj = Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
+            var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0f), Quaternion.Euler(0,0,degree));
             var slash = obj.GetComponent<SlashView>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
@@ -119,17 +145,7 @@ namespace Feature.View
             vfxView.PlayVFX();
         }
 
-        public bool IsGrounded() => isGrounded;
-
-        private void OnPlayerDeath()
-        {
-            Debug.Log("Player has died. Stopping game.");
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-        }
+        public bool IsGrounded() => isGrounded.Value;
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {

@@ -55,6 +55,10 @@ namespace Feature.Presenter
                 .Subscribe(x =>
                 {
                     playerHpBar.UpdateHealthBar(x, characterParams.health);
+                    if (x <= 0)
+                    {
+                        //OnPlayerDeath();
+                    }
                 })
                 .AddTo(playerHpBar);
         }
@@ -165,5 +169,15 @@ namespace Feature.Presenter
         }
 
         public Transform GetTransform() => playerView.transform;
+        
+        private void OnPlayerDeath()
+        {
+            Debug.Log("Player has died. Stopping game.");
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
     }
 }
