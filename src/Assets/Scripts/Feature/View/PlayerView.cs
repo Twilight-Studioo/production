@@ -1,11 +1,10 @@
 ﻿#region
 
-
+using System;
 using Feature.Common;
 using System.Collections;
 using Core.Input.Generated;
 using Feature.Presenter;
-
 using UniRx;
 using UnityEngine;
 
@@ -20,19 +19,31 @@ namespace Feature.View
         public float swapRange;
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
         private Animator animator;
+        private IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
+        private Rigidbody rb;
+        private Vector3 previousPosition;
+        private float speed;
+        private static readonly int Speed = Animator.StringToHash("Speed");
+        private static readonly int OnJump = Animator.StringToHash("OnJump");
+        private static readonly int IsFalling = Animator.StringToHash("IsFalling");
+        
         private Coroutine damageCoroutine;
 
         public CharacterParams characterParams;
         public EnemyParams enemyParams;
 
         public IReactiveProperty<int> Health { get; } = new ReactiveProperty<int>();
-        private bool isGrounded; // 地面に接触しているかどうかのフラグ
-        private Rigidbody rb;
         [SerializeField] private GameObject slashingEffect;
 
         private void Awake()
         {
-            rb = GetComponent<Rigidbody>();
+            rb = GetComponentInChildren<Rigidbody>();
+            animator = GetComponentInChildren<Animator>();
+            isGrounded
+                .Subscribe(x =>
+                {
+                    animator.SetBool(IsFalling, !x);
+                });
         }
 
         private void Start()
@@ -47,14 +58,26 @@ namespace Feature.View
 
         private void Update()
         {
+            
+            // TODO: Updateは辞めて、delegateで受け取る
+            if (animator == null || !animator.isActiveAndEnabled)
+            {
+                return;
+            }
+        }
 
+        private void FixedUpdate()
+        {
+            speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
+            previousPosition = rb.position;
+            animator.SetFloat(Speed, speed);
         }
 
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.CompareTag("Ground"))
             {
-                isGrounded = true;
+                isGrounded.Value = true;
             }
         }
 
@@ -82,7 +105,7 @@ namespace Feature.View
 
             if (collision.gameObject.CompareTag("Ground"))
             {
-                isGrounded = false;
+                isGrounded.Value = false;
             }
         }
 
@@ -116,17 +139,7 @@ namespace Feature.View
 
         public void Move(float direction, float jumpMove)
         {
-            //向き
-            if (direction > 0)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else if (direction < 0)
-            {
-                transform.rotation = Quaternion.Euler(0, 180, 0);
-                direction = direction * -1;
-            }
-            if (isGrounded)
+            if (isGrounded.Value)
             {
                 Vector3 movement = transform.right * (direction * Time.deltaTime);
                 rb.MovePosition(rb.position + movement);
@@ -137,13 +150,24 @@ namespace Feature.View
                 Vector3 movement = transform.right * (direction * Time.deltaTime)/jumpMove;
                 rb.MovePosition(rb.position + movement);
             }
+            //向き
+            if (direction > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if (direction < 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+                direction = direction * -1;
+            }
         }
         public void Jump(float jumpForce)
         {
-            if (isGrounded)
+            if (isGrounded.Value)
             {
+                animator.SetTrigger(OnJump);
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                isGrounded = false;
+                isGrounded.Value = false; // ジャンプ中になるので接地フラグをfalseにする
             }
         }
 
@@ -152,7 +176,7 @@ namespace Feature.View
             Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
         }
 
-        public bool IsGrounded() => isGrounded;
+        public bool IsGrounded() => isGrounded.Value;
 
         private void OnPlayerDeath()
         {
