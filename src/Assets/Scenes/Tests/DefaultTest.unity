@@ -1928,10 +1928,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4405070501164296380, guid: 39a8be28af42342ae99fefa756ba705b,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 4669128229998783180, guid: 39a8be28af42342ae99fefa756ba705b,
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8464598598048927369, guid: 39a8be28af42342ae99fefa756ba705b,
+        type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 2c2d43ae97d9bcd4cb8decf3dc761991, type: 3}
+    - target: {fileID: 8464598598048927369, guid: 39a8be28af42342ae99fefa756ba705b,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: cfc2cd1aeba914525ae03257fa112d29, type: 2}
+    - target: {fileID: 8464598598048927369, guid: 39a8be28af42342ae99fefa756ba705b,
+        type: 3}
+      propertyPath: m_UpdateMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8464598598048927369, guid: 39a8be28af42342ae99fefa756ba705b,
+        type: 3}
+      propertyPath: m_CullingMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8464598598048927369, guid: 39a8be28af42342ae99fefa756ba705b,
+        type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8464598598048927369, guid: 39a8be28af42342ae99fefa756ba705b,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
