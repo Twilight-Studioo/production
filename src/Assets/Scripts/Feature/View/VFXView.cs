@@ -12,12 +12,14 @@ namespace Feature.View
         [SerializeField] private VisualEffect effect;
         [SerializeField] private float onStopTime = 1f;
 
+        private bool isPlaySwapEffect;
+
         public void PlayVFX()
         {
-            if (effect != null)
+            if (effect != null && !isPlaySwapEffect)
             {
-                Debug.Log("PlayerVFXPlay");
                 effect.SendEvent("OnPlay");
+                isPlaySwapEffect = true;
                 Invoke("StopVFX", onStopTime);
             }
         }
@@ -28,6 +30,8 @@ namespace Feature.View
             {
                 effect.SendEvent("OnStop");
             }
+
+            isPlaySwapEffect = false;
         }
     }
 }

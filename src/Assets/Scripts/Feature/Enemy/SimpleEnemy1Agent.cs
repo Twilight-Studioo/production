@@ -1,11 +1,14 @@
 #region
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
 using Feature.Common.Parameter;
+using Feature.Interface;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,7 +20,7 @@ namespace Feature.Enemy
     {
         public List<Vector3> points;
 
-        private readonly OnHitRushAttack onHitRushAttack = () => { Debug.Log("Rush Attack"); };
+        private OnHitRushAttack onHitRushAttack;
 
         private NavMeshAgent agent;
 
@@ -126,6 +129,7 @@ namespace Feature.Enemy
 
         private IEnumerator Attack()
         {
+            onHitRushAttack = TakeDamage;
             Debug.Log("Rush Wait");
             agent.ResetPath();
             yield return Wait(enemyParams.rushBeforeDelay);
@@ -137,5 +141,26 @@ namespace Feature.Enemy
                 .Build();
             yield return Wait(enemyParams.rushAfterDelay);
         }
+        
+        private void TakeDamage()
+        {
+            var player = ObjectFactory.FindPlayer();
+            if (player == null)
+            {
+                return;
+            }
+
+            var view = player.GetComponent<IDamaged>();
+            view.OnDamage(enemyParams.damage, transform.position, transform);
+        }
+
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        {
+            var imp = (transform.position - attacker.position).normalized;
+            imp.y += 10f;
+            StartCoroutine(transform.Knockback(imp, 10f, 0.5f));
+        }
+
+        public event Action OnTakeDamageEvent;
     }
 }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using Core.Utilities;
 using Feature.Common.Environment;
 using Feature.Common.Parameter;
 using Feature.Enemy;
@@ -18,7 +19,7 @@ namespace Main.Factory
 
         public GetTransform GetPlayerTransform;
 
-        private void Awake()
+        public void Subscribe()
         {
             if (settings == null)
             {
@@ -43,13 +44,14 @@ namespace Main.Factory
         private IEnemy SpawnEnemy(EnemyStart start, Transform t)
         {
             var enemyRef = settings.reference.Find(x => x.type == start.SpawnEnemyType);
-            var enemy = Instantiate(enemyRef.reference, t.position, t.rotation);
+            var enemy = ObjectFactory.CreateObject(enemyRef.reference, t.position, t.rotation);
             OnAddField?.Invoke(enemy);
             var enemyComponent = enemy.GetComponent<IEnemy>();
             var enemyParams = enemy.GetComponent<IEnemyAgent>();
             enemyParams.SetParams(enemyRef.parameters);
             enemyParams.SetPlayerTransform(GetPlayerTransform());
             enemyParams.SetPatrolPoints(start.Points);
+            enemyComponent.SetHealth(enemyRef.parameters.maxHp);
             enemyComponent.Execute();
             return enemyComponent;
         }

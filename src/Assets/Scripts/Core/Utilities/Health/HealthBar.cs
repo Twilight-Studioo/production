@@ -7,22 +7,25 @@ using UnityEngine.UI;
 
 namespace Core.Utilities.Health
 {
+    [RequireComponent(typeof(Slider))]
     public class HealthBar : MonoBehaviour
     {
-        public Image healthBarFill;
+        public Slider healthBar;
         private IHealthBar target;
 
         private void Update()
         {
             if (target != null)
             {
-                healthBarFill.fillAmount = target.CurrentHealth / target.MaxHealth;
+                var value = (float)target.CurrentHealth / target.MaxHealth;
+                healthBar.value = value;
             }
         }
 
         public void Initialize(IHealthBar healthTarget)
         {
             target = healthTarget;
+            healthBar = GetComponent<Slider>();
         }
     }
 }

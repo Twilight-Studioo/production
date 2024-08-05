@@ -10,9 +10,16 @@ using UnityEngine;
 
 namespace Feature.View
 {
-    public class EnemyView : MonoBehaviour, IHealthBar, IEnemy
+    public class EnemyView : MonoBehaviour, IHealthBar, IEnemy, IDamaged
     {
         private IEnemyAgent agent;
+        
+        private uint maxHealth;
+        private uint currentHealth;
+
+        public event Action OnDamageEvent;
+        
+        public event Action OnTakeDamageEvent;
 
         public void Execute()
         {
@@ -20,14 +27,21 @@ namespace Feature.View
             agent.FlowExecute();
         }
 
-        public void OnDamage(uint damage)
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            throw new NotImplementedException();
+            OnDamageEvent?.Invoke();
+            currentHealth -= damage;
+        }
+        
+        public void SetHealth(uint health)
+        {
+            maxHealth = health;
+            currentHealth = health;
         }
 
         public event Action OnDestroyEvent;
-        public uint MaxHealth { get; }
-        public uint CurrentHealth { get; }
+        public uint MaxHealth => maxHealth;
+        public uint CurrentHealth => currentHealth;
 
         public bool IsVisible => true;
     }

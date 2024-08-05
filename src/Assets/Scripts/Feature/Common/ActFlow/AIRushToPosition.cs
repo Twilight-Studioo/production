@@ -10,7 +10,7 @@ using UnityEngine.AI;
 
 namespace Feature.Common.ActFlow
 {
-    internal delegate void OnHitRushAttack();
+    public delegate void OnHitRushAttack();
 
     [ActionTag("AIRushToPosition")]
     public class AIRushToPosition : FixedUpdatedAction
@@ -45,7 +45,7 @@ namespace Feature.Common.ActFlow
 
         protected override bool CheckIfEnd()
         {
-            var check = Vector3.Distance(Owner.transform.position, PlayerTransform.position) < 1.5f;
+            var check = Vector3.Distance(Owner.transform.position, PlayerTransform.position) < 2f;
             if (check && OnHitRushAttack != null)
             {
                 OnHitRushAttack();

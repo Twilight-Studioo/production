@@ -22,7 +22,6 @@ namespace Feature.Presenter
         private readonly CompositeDisposable rememberItemPosition;
         private readonly SwapModel swapItemsModel;
         private Dictionary<Guid, SwapView > swapItemViews;
-        private Dictionary<Guid, VFXView> swapItemVFXViews;
 
         [Inject]
         public SwapPresenter(

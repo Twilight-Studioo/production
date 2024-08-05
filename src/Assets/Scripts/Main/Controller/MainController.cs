@@ -68,6 +68,7 @@ namespace Main.Controller
                 targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.Enemy());
             };
             enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
+            enemyFactory.Subscribe();
         }
 
         // TODO: この辺りのinput制御を別クラスに切り分ける
@@ -133,12 +134,15 @@ namespace Main.Controller
                         }
 
                         var item = swapPresenter.SelectItem();
+                        
                         swapPresenter.ResetSelector();
                         playerPresenter.EndSwap();
                         if (item == null)
                         {
                             return;
                         }
+                        item.PlayVFX();
+                        playerPresenter.PlayVFX();
 
                         var pos = playerModel.Position.Value;
                         playerPresenter.SetPosition(item.transform.position);

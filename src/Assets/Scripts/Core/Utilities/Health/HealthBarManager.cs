@@ -1,5 +1,6 @@
 #region
 
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,17 +8,42 @@ using UnityEngine;
 
 namespace Core.Utilities.Health
 {
-    public sealed class HealthBarManager
+    public class HealthBarManager : MonoBehaviour
     {
-        public GameObject healthBarPrefab;
+        [SerializeField]
+        private GameObject healthBarPrefab;
+        [SerializeField]
+        private GameObject canvas;
+        private readonly List<IHealthBar> trackedHealthBars = new();
 
-        public void Start()
+        private void Awake()
         {
-            // シーン内の全てのオブジェクトをチェック
-            var healthObjects = Object.FindObjectsOfType<MonoBehaviour>(true).OfType<IHealthBar>().ToArray();
+            SubscribeToNewObjectEvents();
+        }
+
+        private void Start()
+        {
+            var healthObjects = FindObjectsOfType<MonoBehaviour>(true).OfType<IHealthBar>().ToArray();
             foreach (var healthObject in healthObjects)
             {
                 AttachHealthBar(healthObject);
+                trackedHealthBars.Add(healthObject);
+            }
+        }
+
+        private void SubscribeToNewObjectEvents()
+        {
+            // イベントサブスクライブの例
+            ObjectFactory.OnObjectCreated += HandleNewObject;
+        }
+
+        private void HandleNewObject(GameObject newObj)
+        {
+            var healthComponent = newObj.GetComponent<IHealthBar>();
+            if (healthComponent != null)
+            {
+                AttachHealthBar(healthComponent);
+                trackedHealthBars.Add(healthComponent);
             }
         }
 
@@ -29,7 +55,6 @@ namespace Core.Utilities.Health
                 return;
             }
 
-            // collisionがある場合はcollisionの上にHPバーを表示する
             var collider = @object.GetComponent<Collider>();
             if (collider != null)
             {
@@ -43,16 +68,24 @@ namespace Core.Utilities.Health
 
         private void AttachHealthBarToCollider(IHealthBar healthObject, Collider collider)
         {
-            var healthBar = Object.Instantiate(healthBarPrefab, collider.transform);
-            healthBar.transform.localPosition = Vector3.up * collider.bounds.size.y;
+            var healthBar = Instantiate(healthBarPrefab, collider.transform);
+            healthBar.transform.SetParent(canvas.transform);
             healthBar.GetComponent<HealthBar>().Initialize(healthObject);
+            var follow = healthBar.GetComponent<FollowObject>();
+            follow.canvas = canvas.GetComponent<Canvas>();
+            follow.target = collider.transform;
+            follow.offset = Vector3.up * collider.bounds.size.y;
         }
 
         private void AttachHealthBarToTransform(IHealthBar healthObject, Transform transform)
         {
-            var healthBar = Object.Instantiate(healthBarPrefab, transform);
-            healthBar.transform.localPosition = Vector3.up * 2f;
+            var healthBar = Instantiate(healthBarPrefab, transform);
+            healthBar.transform.SetParent(canvas.transform);
             healthBar.GetComponent<HealthBar>().Initialize(healthObject);
+            var follow = healthBar.GetComponent<FollowObject>();
+            follow.canvas = canvas.GetComponent<Canvas>();
+            follow.target = transform;
+            follow.offset = Vector3.up * 2f;
         }
     }
 }

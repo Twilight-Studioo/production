@@ -48,9 +48,9 @@ namespace Feature.Common.ActFlow
                 {
                     currentIdx = 0;
                 }
-
-                agent.SetDestination(TargetPoints[currentIdx]);
+                
             }
+            agent.SetDestination(TargetPoints[currentIdx]);
         }
 
         protected override bool CheckIfEnd() => TargetPoints.Count == 0;

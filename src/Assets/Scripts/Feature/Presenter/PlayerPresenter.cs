@@ -3,6 +3,7 @@
 using System;
 using Core.Utilities;
 using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Model;
 using Feature.View;
 using UniRx;
@@ -21,25 +22,24 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
         private PlayerView playerView;
-        private readonly VFXView vfxView;
 
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
-            CharacterParams characterParams,
-            VFXView vfxView
+            CharacterParams characterParams
         )
         {
             playerModel = model;
             this.characterParams = characterParams;
             swapTimer = new();
-            this.vfxView = vfxView;
         }
 
         public void OnPossess(PlayerView view)
         {
             playerView = view;
-            playerView.swapRange = characterParams.canSwapDistance;
+
+            playerView.OnDamageEvent += playerModel.TakeDamage;
+            playerView.SwapRange = characterParams.canSwapDistance;
             playerView.Position
                 .Subscribe(position =>
                 {
@@ -49,6 +49,14 @@ namespace Feature.Presenter
                 .AddTo(playerView);
 
             playerModel.Start();
+            
+            var playerHpBar = UnityEngine.Object.FindObjectOfType<PlayerHPBar>();
+            playerModel.Health
+                .Subscribe(x =>
+                {
+                    playerHpBar.UpdateHealthBar(x, characterParams.health);
+                })
+                .AddTo(playerHpBar);
         }
 
         public void Move(float direction)
@@ -97,12 +105,6 @@ namespace Feature.Presenter
             swapTimer.Clear();
             playerModel.OnEndSwap();
             
-            var swapViews = UnityEngine.Object.FindObjectsOfType<SwapView>();
-            foreach (var swap in swapViews)
-            {
-                swap.PlayVFX();
-            }
-            vfxView.PlayVFX();
             Func<float, float> easingFunction;
 
             
@@ -154,7 +156,12 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            playerView.Attack(degree);
+            playerView.Attack(degree, (uint)characterParams.attackPower);
+        }
+
+        public void PlayVFX()
+        {
+            playerView.PlayVFX();
         }
 
         public Transform GetTransform() => playerView.transform;

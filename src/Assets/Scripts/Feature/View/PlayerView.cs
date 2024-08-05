@@ -1,6 +1,7 @@
 ﻿#region
 
-using System.Collections;
+using System;
+using Feature.Interface;
 using UniRx;
 using UnityEngine;
 
@@ -8,32 +9,33 @@ using UnityEngine;
 
 namespace Feature.View
 {
-    public class PlayerView : MonoBehaviour
+    [RequireComponent(typeof(VFXView))]
+    public class PlayerView : MonoBehaviour, IDamaged
     {
+        
         public bool isDrawSwapRange;
 
-        public float swapRange;
+        [NonSerialized]
+        public float SwapRange;
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-        private Animator animator;
-        private Coroutine damageCoroutine;
         private bool isGrounded; // 地面に接触しているかどうかのフラグ
         private Rigidbody rb;
+        private VFXView vfxView;
         
         [SerializeField] 
         private GameObject slashingEffect;
+        
+        public event Action<uint> OnDamageEvent;
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
-        }
-
-        private void Start()
-        {
+            vfxView = GetComponent<VFXView>();
         }
 
         private void Update()
         {
-
+            Position.Value = transform.position;
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -41,6 +43,7 @@ namespace Feature.View
             if (collision.gameObject.CompareTag("Ground"))
             {
                 isGrounded = true;
+                Debug.Log("Grounded");
             }
         }
 
@@ -51,23 +54,11 @@ namespace Feature.View
             }
         }
 
-        private void OnCollisionExit(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Enemy"))
-            {
-            }
-
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                isGrounded = false;
-            }
-        }
-
         private void OnDrawGizmos()
         {
-            if (swapRange != 0 && isDrawSwapRange)
+            if (SwapRange != 0 && isDrawSwapRange)
             {
-                DrawWireDisk(transform.position, swapRange, Color.magenta);
+                DrawWireDisk(transform.position, SwapRange, Color.magenta);
             }
         }
 
@@ -115,9 +106,17 @@ namespace Feature.View
             }
         }
 
-        public void Attack(float degree)
+        public void Attack(float degree, uint damage)
         {
-            Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
+            var obj = Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
+            var slash = obj.GetComponent<SlashView>();
+            slash.SetDamage(damage);
+            Destroy(obj, 0.5f);
+        }
+        
+        public void PlayVFX()
+        {
+            vfxView.PlayVFX();
         }
 
         public bool IsGrounded() => isGrounded;
@@ -130,6 +129,14 @@ namespace Feature.View
 #else
             Application.Quit();
 #endif
+        }
+
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        {
+            var imp = (transform.position - attacker.position).normalized;
+            imp.y += 1f;
+            rb.AddForce(imp * 5f, ForceMode.Impulse);
+            OnDamageEvent?.Invoke(damage);
         }
     }
 }

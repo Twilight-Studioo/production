@@ -1,5 +1,6 @@
 #region
 
+using Core.Utilities;
 using Feature.View;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace Feature.Common.Environment
 {
     public class PlayerStart : MonoBehaviour
     {
-        [SerializeField] private PlayerView playerRef;
+        [SerializeField] private GameObject playerRef;
 
         private bool isPlayerSpawned;
 
@@ -28,8 +29,8 @@ namespace Feature.Common.Environment
             }
 
             isPlayerSpawned = true;
-            var player = Instantiate(playerRef, transform.position, Quaternion.identity);
-            return player;
+            var player = ObjectFactory.CreateObject(playerRef, transform.position, Quaternion.identity);
+            return player.GetComponent<PlayerView>();
         }
     }
 }

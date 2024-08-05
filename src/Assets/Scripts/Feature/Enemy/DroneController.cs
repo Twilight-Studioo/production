@@ -14,6 +14,7 @@ namespace Feature.Enemy
     public class DroneController : FlowScope, IHealthBar, IEnemy
     {
         [SerializeField] private uint maxHealth = 100;
+        private IEnemy enemyImplementation;
 
         private void Awake()
         {
@@ -27,10 +28,22 @@ namespace Feature.Enemy
             CurrentHealth -= damage;
         }
 
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        {
+            throw new NotImplementedException();
+        }
+
         public event Action OnDestroyEvent;
+        public event Action OnDamageEvent;
+        public event Action OnTakeDamageEvent;
 
         public void Execute()
         {
+        }
+
+        public void SetHealth(uint health)
+        {
+            throw new NotImplementedException();
         }
 
         public uint MaxHealth => maxHealth;

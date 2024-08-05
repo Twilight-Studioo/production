@@ -29,11 +29,6 @@
                 IsActive = true;
                 targetRenderer = GetComponent<Renderer>();
                 material = targetRenderer.material;
-                /*vfxView = this.GetComponent<VFXView>();
-                if (vfxView == null)
-                {
-                    Debug.LogWarning("VFXView component is missing.");
-                }*/
             }
 
             private void Update()
@@ -99,13 +94,8 @@
             {
                 if (effect != null)
                 {
-                    Debug.Log("Call PlayVFX");
-                    if (isSwap) 
-                    {
-                        Debug.Log("Do PlayVFX");
-                        effect.SendEvent("OnPlay");
-                        Invoke("StopVFX", onStopTime);
-                    }
+                    effect.SendEvent("OnPlay");
+                    Invoke("StopVFX", onStopTime);
                 }
             }
 
@@ -120,8 +110,6 @@
             public void StartSwap()
             {
                 isSwap = true;
-                Debug.Log($"StartSwap called. isSwapActive = {isSwap}");
-                Invoke("EndSwap", onStopTime);
             }
 
             public void EndSwap()

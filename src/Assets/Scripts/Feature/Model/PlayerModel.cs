@@ -201,9 +201,9 @@ namespace Feature.Model
             position.Value = pos;
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(uint damage)
         {
-            health.Value = Mathf.Max(health.Value - damage, 0);
+            health.Value = Mathf.Max((int)(health.Value - damage), 0);
         }
     }
 }
