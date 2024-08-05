@@ -1,6 +1,10 @@
 ﻿#region
 
 using System;
+using Feature.Common;
+using System.Collections;
+using Core.Input.Generated;
+using Feature.Presenter;
 using UniRx;
 using UnityEngine;
 
@@ -10,8 +14,6 @@ namespace Feature.View
 {
     public class PlayerView : MonoBehaviour
     {
-        // ----TODO Draft----
-
         public bool isDrawSwapRange;
 
         public float swapRange;
@@ -24,7 +26,14 @@ namespace Feature.View
         private static readonly int Speed = Animator.StringToHash("Speed");
         private static readonly int OnJump = Animator.StringToHash("OnJump");
         private static readonly int IsFalling = Animator.StringToHash("IsFalling");
+        
+        private Coroutine damageCoroutine;
 
+        public CharacterParams characterParams;
+        public EnemyParams enemyParams;
+
+        public IReactiveProperty<int> Health { get; } = new ReactiveProperty<int>();
+        [SerializeField] private GameObject slashingEffect;
 
         private void Awake()
         {
@@ -37,10 +46,19 @@ namespace Feature.View
                 });
         }
 
+        private void Start()
+        {
+            Health.Value = characterParams.health;
+
+            Health
+                .Where(hp => hp <= 0)
+                .Subscribe(_ => OnPlayerDeath())
+                .AddTo(this);
+        }
+
         private void Update()
         {
-            Position.Value = transform.position;
-
+            
             // TODO: Updateは辞めて、delegateで受け取る
             if (animator == null || !animator.isActiveAndEnabled)
             {
@@ -63,6 +81,43 @@ namespace Feature.View
             }
         }
 
+        private void OnCollisionStay(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                if (damageCoroutine == null)
+                {
+                    damageCoroutine = StartCoroutine(TakeDamageOverTime());
+                }
+            }
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                if (damageCoroutine != null)
+                {
+                    StopCoroutine(damageCoroutine);
+                    damageCoroutine = null;
+                }
+            }
+
+            if (collision.gameObject.CompareTag("Ground"))
+            {
+                isGrounded.Value = false;
+            }
+        }
+
+        private IEnumerator TakeDamageOverTime()
+        {
+            while (true)
+            {
+                Health.Value = Mathf.Max(Health.Value - enemyParams.damage, 0);
+                yield return new WaitForSeconds(characterParams.takeDamageOverTime);
+            }
+        }
+
         private void OnDrawGizmos()
         {
             if (swapRange != 0 && isDrawSwapRange)
@@ -76,28 +131,36 @@ namespace Feature.View
             var oldColor = Gizmos.color;
             Gizmos.color = color;
             var oldMatrix = Gizmos.matrix;
-            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new(1, 1, 1));
+            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new Vector3(1, 1, 1));
             Gizmos.DrawWireSphere(Vector3.zero, radius);
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
         }
 
-        // ----TODO Draft----
-
         public void Move(float direction, float jumpMove)
         {
             if (isGrounded.Value)
             {
-                var movement = transform.right * (direction * Time.deltaTime);
+                Vector3 movement = transform.right * (direction * Time.deltaTime);
                 rb.MovePosition(rb.position + movement);
+        
             }
             else
             {
-                var movement = transform.right * (direction * Time.deltaTime) / jumpMove;
+                Vector3 movement = transform.right * (direction * Time.deltaTime)/jumpMove;
                 rb.MovePosition(rb.position + movement);
             }
+            //向き
+            if (direction > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if (direction < 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+                direction = direction * -1;
+            }
         }
-
         public void Jump(float jumpForce)
         {
             if (isGrounded.Value)
@@ -108,21 +171,21 @@ namespace Feature.View
             }
         }
 
-        public void Attack(Vector2 direction)
+        public void Attack(float degree)
         {
-            // 攻撃方向に応じたアニメーションを再生
-            if (direction == Vector2.zero)
-            {
-                direction = Vector2.right;
-            }
+            Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
         }
-
-        private void StopAnimation()
-        {
-            
-        }
-
 
         public bool IsGrounded() => isGrounded.Value;
+
+        private void OnPlayerDeath()
+        {
+            Debug.Log("Player has died. Stopping game.");
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
     }
 }

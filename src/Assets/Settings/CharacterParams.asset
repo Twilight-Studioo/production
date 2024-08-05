@@ -12,20 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8589ddc99af04180a128a537e285a9e2, type: 3}
   m_Name: CharacterParams
   m_EditorClassIdentifier: 
-  health: 1
+  health: 100
   speed: 5
   jumpPower: 7
   attackPower: 2
+  takeDamageOverTime: 2
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10
-  swapReturnTimeMillis: 200
-  swapReturnCurve: 1
-  maxHasStamina: 100
-  enterSwapUseStamina: 10
-  swapModeStaminaUsageIntervalMillis: 300
+  swapReturnTimeMillis: 1000
+  swapReturnCurve: 0
+  maxHasStamina: 12
+  enterSwapUseStamina: 3
+  swapModeStaminaUsageIntervalMillis: 1000
   swapModeStaminaUsage: 1
-  swapExecUseStamina: 2
-  recoveryTimeMillis: 500
+  swapExecUseStamina: 3
+  recoveryTimeMillis: 800
   resourceRecoveryQuantity: 1
-  recoveryStaminaTimeMillis: 10
+  recoveryStaminaTimeMillis: 800
