@@ -10,10 +10,10 @@ namespace Core.Utilities.Health
 {
     public class HealthBarManager : MonoBehaviour
     {
-        [SerializeField]
-        private GameObject healthBarPrefab;
-        [SerializeField]
-        private GameObject canvas;
+        [SerializeField] private GameObject healthBarPrefab;
+
+        [SerializeField] private GameObject canvas;
+
         private readonly List<IHealthBar> trackedHealthBars = new();
 
         private void Awake()

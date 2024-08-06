@@ -1,126 +1,126 @@
-﻿    #region
+﻿#region
 
-    using System;
-    using UniRx;
-    using UnityEngine;
-    using UnityEngine.VFX;
+using System;
+using UniRx;
+using UnityEngine;
+using UnityEngine.VFX;
 
-    #endregion
+#endregion
 
-    namespace Feature.View
+namespace Feature.View
+{
+    [RequireComponent(typeof(Material))]
+    public class SwapView : MonoBehaviour
     {
-        [RequireComponent(typeof(Material))]
-        public class SwapView : MonoBehaviour
+        [SerializeField] private VisualEffect effect;
+        [SerializeField] private float onStopTime = 1f;
+        [SerializeField] private bool isSwap;
+        [SerializeField] private float hilightRimThreashold;
+
+        // ReSharper disable once MemberCanBePrivate.Local
+        public readonly IReactiveProperty<Vector2> Position = new ReactiveProperty<Vector2>();
+
+        [NonSerialized] protected bool IsActive;
+
+        private Material material;
+        private Renderer targetRenderer;
+
+        protected virtual void Start()
         {
-            // ReSharper disable once MemberCanBePrivate.Local
-            public readonly IReactiveProperty<Vector2> Position = new ReactiveProperty<Vector2>();
+            IsActive = true;
+            targetRenderer = GetComponent<Renderer>();
+            material = targetRenderer.material;
+        }
 
-            [NonSerialized] protected bool IsActive;
-            [SerializeField] private VisualEffect effect;
-            [SerializeField] private float onStopTime = 1f;
-            [SerializeField] private bool isSwap = false;
-            
-            private Material material;
-            private Renderer targetRenderer;
-            [SerializeField] private float hilightRimThreashold = 0f;
+        private void Update()
+        {
+            Position.Value = transform.position;
+        }
 
-            protected virtual void Start()
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            OnTrigger?.Invoke(other);
+        }
+
+        public virtual void Dispose()
+        {
+            OnDestroy = null;
+            OnTrigger = null;
+        }
+
+        public event Action OnDestroy;
+
+        protected event Action<Collider2D> OnTrigger;
+
+        public void SetPosition(Vector2 position)
+        {
+            transform.position = position;
+        }
+
+        public void SetHighlight(bool isHighlight)
+        {
+            if (material == null)
             {
-                IsActive = true;
-                targetRenderer = GetComponent<Renderer>();
-                material = targetRenderer.material;
+                return;
             }
 
-            private void Update()
+            if (isHighlight)
             {
-                Position.Value = transform.position;
+                //選択されている場合強調表示
+                material.SetFloat("_RimThreashould", hilightRimThreashold);
             }
-
-            private void OnTriggerEnter2D(Collider2D other)
+            else
             {
-                OnTrigger?.Invoke(other);
-            }
-
-            public virtual void Dispose()
-            {
-                OnDestroy = null;
-                OnTrigger = null;
-            }
-
-            public event Action OnDestroy;
-
-            protected event Action<Collider2D> OnTrigger;
-
-            public void SetPosition(Vector2 position)
-            {
-                transform.position = position;
-            }
-
-            public void SetHighlight(bool isHighlight)
-            {
-                if (material == null)
-                {
-                    return;
-                }
-                if (isHighlight == true)
-                {
-                    //選択されている場合強調表示
-                    material.SetFloat("_RimThreashould", hilightRimThreashold);
-                }
-                else
-                {
-                    material.SetFloat("_RimThreashould", 1);
-                }
-            }
-
-            protected void Delete()
-            {
-                OnDestroy?.Invoke();
-                Destroy(gameObject);
-            }
-            //public void UpdateRimThreshold(Guid id, float newThreshold)
-            /*{
-                var item = swapItems.FirstOrDefault(x => x.Id == id);
-                if (item.Renderer != null)
-                {
-                    var material = item.Renderer.material;
-                    if (material.HasProperty("_RimThreshold"))
-                    {
-                        material.SetFloat("_RimThreshold", newThreshold);
-                    }
-                }
-            }*/
-            public void PlayVFX()
-            {
-                if (effect != null)
-                {
-                    effect.SendEvent("OnPlay");
-                    Invoke("StopVFX", onStopTime);
-                }
-            }
-
-            public void StopVFX()
-            {
-                if (effect != null)
-                {
-                    effect.SendEvent("OnStop");
-                }
-            }
-
-            public void StartSwap()
-            {
-                isSwap = true;
-            }
-
-            public void EndSwap()
-            {
-                isSwap = false;
-                Debug.Log($"EndSwap called. isSwapActive = {isSwap}");
-            }
-        
-            public bool IsSwap()
-            {
-                return isSwap;
+                material.SetFloat("_RimThreashould", 1);
             }
         }
+
+        protected void Delete()
+        {
+            OnDestroy?.Invoke();
+            Destroy(gameObject);
+        }
+
+        //public void UpdateRimThreshold(Guid id, float newThreshold)
+        /*{
+            var item = swapItems.FirstOrDefault(x => x.Id == id);
+            if (item.Renderer != null)
+            {
+                var material = item.Renderer.material;
+                if (material.HasProperty("_RimThreshold"))
+                {
+                    material.SetFloat("_RimThreshold", newThreshold);
+                }
+            }
+        }*/
+        public void PlayVFX()
+        {
+            if (effect != null)
+            {
+                effect.SendEvent("OnPlay");
+                Invoke("StopVFX", onStopTime);
+            }
+        }
+
+        public void StopVFX()
+        {
+            if (effect != null)
+            {
+                effect.SendEvent("OnStop");
+            }
+        }
+
+        public void StartSwap()
+        {
+            isSwap = true;
+        }
+
+        public void EndSwap()
+        {
+            isSwap = false;
+            Debug.Log($"EndSwap called. isSwapActive = {isSwap}");
+        }
+
+        public bool IsSwap() => isSwap;
     }
+}

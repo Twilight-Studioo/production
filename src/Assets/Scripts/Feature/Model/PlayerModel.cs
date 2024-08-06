@@ -29,6 +29,8 @@ namespace Feature.Model
 
         private readonly GameUIView gameUIView;
 
+        private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
+
         private readonly CompositeDisposable playerModelTimer = new();
 
         private readonly IReactiveProperty<PlayerState> playerState;
@@ -43,9 +45,6 @@ namespace Feature.Model
         private IDisposable recoverStaminaSubscription;
 
         private IDisposable swapUseStaminaSubscription;
-
-        private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
-        public IReadOnlyReactiveProperty<int> Health => health.ToReadOnlyReactiveProperty();
 
         [Inject]
         public PlayerModel(
@@ -93,6 +92,8 @@ namespace Feature.Model
 
             health.Value = characterParams.health;
         }
+
+        public IReadOnlyReactiveProperty<int> Health => health.ToReadOnlyReactiveProperty();
 
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
         private float IfCanStartSwapRate =>

@@ -20,11 +20,11 @@ namespace Feature.Enemy
     {
         public List<Vector3> points;
 
-        private OnHitRushAttack onHitRushAttack;
-
         private NavMeshAgent agent;
 
         private SimpleEnemy1Params enemyParams;
+
+        private OnHitRushAttack onHitRushAttack;
 
         private Transform playerTransform;
 
@@ -66,6 +66,15 @@ namespace Feature.Enemy
             Debug.Log("SetPlayerTransform", player);
             playerTransform = player;
         }
+
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        {
+            var imp = (transform.position - attacker.position).normalized;
+            imp.y += 10f;
+            StartCoroutine(transform.Knockback(imp, 10f, 0.5f));
+        }
+
+        public event Action OnTakeDamageEvent;
 
         private TriggerRef MoveTrigger() =>
             Trigger("AnyDistance")
@@ -141,7 +150,7 @@ namespace Feature.Enemy
                 .Build();
             yield return Wait(enemyParams.rushAfterDelay);
         }
-        
+
         private void TakeDamage()
         {
             var player = ObjectFactory.FindPlayer();
@@ -153,14 +162,5 @@ namespace Feature.Enemy
             var view = player.GetComponent<IDamaged>();
             view.OnDamage(enemyParams.damage, transform.position, transform);
         }
-
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
-        {
-            var imp = (transform.position - attacker.position).normalized;
-            imp.y += 10f;
-            StartCoroutine(transform.Knockback(imp, 10f, 0.5f));
-        }
-
-        public event Action OnTakeDamageEvent;
     }
 }

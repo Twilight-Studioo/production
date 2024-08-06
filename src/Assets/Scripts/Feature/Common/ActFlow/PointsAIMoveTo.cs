@@ -48,8 +48,8 @@ namespace Feature.Common.ActFlow
                 {
                     currentIdx = 0;
                 }
-                
             }
+
             agent.SetDestination(TargetPoints[currentIdx]);
         }
 

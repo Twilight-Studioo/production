@@ -31,7 +31,7 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<InputActionAccessor>();
             builder.RegisterComponentInHierarchy<GameUIView>();
             builder.RegisterComponentInHierarchy<SwapView>();
-            
+
             builder.Register<SwapPresenter>(Lifetime.Scoped);
             builder.Register<SwapModel>(Lifetime.Scoped);
             builder.RegisterComponent(characterParams);

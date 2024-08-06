@@ -13,12 +13,9 @@ namespace Feature.View
     public class EnemyView : MonoBehaviour, IHealthBar, IEnemy, IDamaged
     {
         private IEnemyAgent agent;
-        
-        private uint maxHealth;
-        private uint currentHealth;
 
         public event Action OnDamageEvent;
-        
+
         public event Action OnTakeDamageEvent;
 
         public void Execute()
@@ -30,18 +27,19 @@ namespace Feature.View
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             OnDamageEvent?.Invoke();
-            currentHealth -= damage;
+            CurrentHealth -= damage;
         }
-        
+
         public void SetHealth(uint health)
         {
-            maxHealth = health;
-            currentHealth = health;
+            MaxHealth = health;
+            CurrentHealth = health;
         }
 
         public event Action OnDestroyEvent;
-        public uint MaxHealth => maxHealth;
-        public uint CurrentHealth => currentHealth;
+        public uint MaxHealth { get; private set; }
+
+        public uint CurrentHealth { get; private set; }
 
         public bool IsVisible => true;
     }

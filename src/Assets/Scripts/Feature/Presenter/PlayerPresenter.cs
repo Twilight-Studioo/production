@@ -7,8 +7,10 @@ using Feature.Component;
 using Feature.Model;
 using Feature.View;
 using UniRx;
+using UnityEditor;
 using UnityEngine;
 using VContainer;
+using Object = UnityEngine.Object;
 
 #endregion
 
@@ -49,8 +51,8 @@ namespace Feature.Presenter
                 .AddTo(playerView);
 
             playerModel.Start();
-            
-            var playerHpBar = UnityEngine.Object.FindObjectOfType<PlayerHPBar>();
+
+            var playerHpBar = Object.FindObjectOfType<PlayerHPBar>();
             playerModel.Health
                 .Subscribe(x =>
                 {
@@ -86,17 +88,21 @@ namespace Feature.Presenter
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
             playerModel.OnStartSwap();
             Observable
-                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis * characterParams.swapContinueTimeScale))
+                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis *
+                                                 characterParams.swapContinueTimeScale))
                 .Subscribe(_ => { EndSwap(); })
                 .AddTo(swapTimer);
             playerModel.CanEndSwap
                 .DistinctUntilChanged()
                 .Subscribe(x =>
                 {
-                    if (x) { return; }
+                    if (x)
+                    {
+                        return;
+                    }
+
                     EndSwap();
                 });
-            
         }
 
         public void EndSwap()
@@ -105,14 +111,13 @@ namespace Feature.Presenter
             {
                 return;
             }
-            
+
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            
+
             Func<float, float> easingFunction;
 
-            
-            
+
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:
@@ -138,10 +143,10 @@ namespace Feature.Presenter
             Observable.EveryUpdate()
                 .Subscribe(_ =>
                 {
-                    elapsedTime += Time.unscaledDeltaTime; 
-                    var t = Mathf.Clamp01(elapsedTime / duration); 
+                    elapsedTime += Time.unscaledDeltaTime;
+                    var t = Mathf.Clamp01(elapsedTime / duration);
                     Time.timeScale =
-                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); 
+                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t));
                     if (t >= 1.0f) // If the transition is complete
                     {
                         playerView.isDrawSwapRange = false;
@@ -169,12 +174,12 @@ namespace Feature.Presenter
         }
 
         public Transform GetTransform() => playerView.transform;
-        
+
         private void OnPlayerDeath()
         {
             Debug.Log("Player has died. Stopping game.");
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+            EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif

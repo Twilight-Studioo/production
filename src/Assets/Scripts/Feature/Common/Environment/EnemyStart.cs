@@ -70,7 +70,6 @@ namespace Feature.Common.Environment
 
             isSpawned = true;
             enemy.OnDestroyEvent += () => isSpawned = false;
-            
         }
 
         private void SpawnAreaGizmos()

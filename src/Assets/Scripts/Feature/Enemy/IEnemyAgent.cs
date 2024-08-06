@@ -10,6 +10,7 @@ using UnityEngine;
 namespace Feature.Enemy
 {
     public delegate void OnTakeDamage();
+
     public interface IEnemyAgent
     {
         public void FlowExecute();
@@ -23,7 +24,7 @@ namespace Feature.Enemy
         public void SetPatrolPoints(List<Vector3> pts);
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
-        
+
         public event Action OnTakeDamageEvent;
     }
 }

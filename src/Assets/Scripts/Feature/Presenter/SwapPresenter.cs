@@ -21,11 +21,11 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable rememberItemPosition;
         private readonly SwapModel swapItemsModel;
-        private Dictionary<Guid, SwapView > swapItemViews;
+        private Dictionary<Guid, SwapView> swapItemViews;
 
         [Inject]
         public SwapPresenter(
-            SwapModel swapItemsModel, 
+            SwapModel swapItemsModel,
             CharacterParams characterParams
         )
         {
@@ -47,7 +47,7 @@ namespace Feature.Presenter
             {
                 swapItemViews = new();
             }
-            
+
 
             var dats = items.Select(item =>
             {
@@ -72,7 +72,7 @@ namespace Feature.Presenter
                     }
                 ).ToList());
         }
-       
+
 
         public void Clear()
         {
@@ -97,7 +97,7 @@ namespace Feature.Presenter
             {
                 swapItemViews[item.Value.Id].SetHighlight(false);
             }
-            
+
             swapItemViews[select.Value.Id].StartSwap();
             swapItemViews[select.Value.Id].SetHighlight(true);
             swapItemsModel.SetItem(select.Value.Id);

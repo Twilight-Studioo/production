@@ -95,7 +95,7 @@ namespace Main.Controller
             Observable.EveryFixedUpdate()
                 .Select(_ => jumpEvent.ReadValue<float>() > 0f)
                 .DistinctUntilChanged()
-                .Subscribe(_ => { playerPresenter.Jump();});
+                .Subscribe(_ => { playerPresenter.Jump(); });
 
             var attackEvent = inputActionAccessor.CreateAction(Player.Attack);
             Observable.EveryFixedUpdate()
@@ -107,11 +107,12 @@ namespace Main.Controller
                     {
                         var h = Input.GetAxis("Horizontal");
                         var v = Input.GetAxis("Vertical");
-                        float degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                        var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
                         if (degree < 0)
                         {
                             degree += 360;
                         }
+
                         playerPresenter.Attack(degree);
                     }
                 });
@@ -134,13 +135,14 @@ namespace Main.Controller
                         }
 
                         var item = swapPresenter.SelectItem();
-                        
+
                         swapPresenter.ResetSelector();
                         playerPresenter.EndSwap();
                         if (item == null)
                         {
                             return;
                         }
+
                         item.PlayVFX();
                         playerPresenter.PlayVFX();
 

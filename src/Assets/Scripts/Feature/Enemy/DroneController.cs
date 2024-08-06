@@ -22,12 +22,6 @@ namespace Feature.Enemy
             IsVisible = false;
         }
 
-
-        public void OnDamage(uint damage)
-        {
-            CurrentHealth -= damage;
-        }
-
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             throw new NotImplementedException();
@@ -50,6 +44,12 @@ namespace Feature.Enemy
         public uint CurrentHealth { get; private set; }
 
         public bool IsVisible { get; private set; }
+
+
+        public void OnDamage(uint damage)
+        {
+            CurrentHealth -= damage;
+        }
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {

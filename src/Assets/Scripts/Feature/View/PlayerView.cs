@@ -2,10 +2,6 @@
 
 using System;
 using Feature.Interface;
-using Feature.Common;
-using System.Collections;
-using Core.Input.Generated;
-using Feature.Presenter;
 using UniRx;
 using UnityEngine;
 
@@ -16,27 +12,25 @@ namespace Feature.View
     [RequireComponent(typeof(VFXView))]
     public class PlayerView : MonoBehaviour, IDamaged
     {
-        
-        public bool isDrawSwapRange;
-
-        [NonSerialized]
-        public float SwapRange;
-        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-        private Rigidbody rb;
-        private VFXView vfxView;
-        
-        [SerializeField] 
-        private GameObject slashingEffect;
-        
-        public event Action<uint> OnDamageEvent;
-
-        private Animator animator;
-        private IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
-        private Vector3 previousPosition;
-        private float speed;
         private static readonly int Speed = Animator.StringToHash("Speed");
         private static readonly int OnJump = Animator.StringToHash("OnJump");
         private static readonly int IsFalling = Animator.StringToHash("IsFalling");
+
+        public bool isDrawSwapRange;
+
+        [SerializeField] private GameObject slashingEffect;
+
+        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
+
+        private Animator animator;
+        private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
+        private Vector3 previousPosition;
+        private Rigidbody rb;
+        private float speed;
+
+        [NonSerialized] public float SwapRange;
+
+        private VFXView vfxView;
 
         public IReactiveProperty<int> Health { get; } = new ReactiveProperty<int>();
 
@@ -46,10 +40,7 @@ namespace Feature.View
             animator = GetComponentInChildren<Animator>();
             vfxView = GetComponent<VFXView>();
             isGrounded
-                .Subscribe(x =>
-                {
-                    animator.SetBool(IsFalling, !x);
-                });
+                .Subscribe(x => { animator.SetBool(IsFalling, !x); });
         }
 
         private void Update()
@@ -87,12 +78,22 @@ namespace Feature.View
             }
         }
 
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        {
+            var imp = (transform.position - attacker.position).normalized;
+            imp.y += 1f;
+            rb.AddForce(imp * 5f, ForceMode.Impulse);
+            OnDamageEvent?.Invoke(damage);
+        }
+
+        public event Action<uint> OnDamageEvent;
+
         private static void DrawWireDisk(Vector3 position, float radius, Color color)
         {
             var oldColor = Gizmos.color;
             Gizmos.color = color;
             var oldMatrix = Gizmos.matrix;
-            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new Vector3(1, 1, 1));
+            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new(1, 1, 1));
             Gizmos.DrawWireSphere(Vector3.zero, radius);
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
@@ -102,13 +103,12 @@ namespace Feature.View
         {
             if (isGrounded.Value)
             {
-                Vector3 movement = transform.right * (direction * Time.deltaTime);
+                var movement = transform.right * (direction * Time.deltaTime);
                 rb.MovePosition(rb.position + movement);
-        
             }
             else
             {
-                Vector3 movement = transform.right * (direction * Time.deltaTime)/jumpMove;
+                var movement = transform.right * (direction * Time.deltaTime) / jumpMove;
                 rb.MovePosition(rb.position + movement);
             }
             // //向き
@@ -122,6 +122,7 @@ namespace Feature.View
             //     direction = direction * -1;
             // }
         }
+
         public void Jump(float jumpForce)
         {
             if (isGrounded.Value)
@@ -134,25 +135,18 @@ namespace Feature.View
 
         public void Attack(float degree, uint damage)
         {
-            var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0f), Quaternion.Euler(0,0,degree));
+            var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0f),
+                Quaternion.Euler(0, 0, degree));
             var slash = obj.GetComponent<SlashView>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
         }
-        
+
         public void PlayVFX()
         {
             vfxView.PlayVFX();
         }
 
         public bool IsGrounded() => isGrounded.Value;
-
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
-        {
-            var imp = (transform.position - attacker.position).normalized;
-            imp.y += 1f;
-            rb.AddForce(imp * 5f, ForceMode.Impulse);
-            OnDamageEvent?.Invoke(damage);
-        }
     }
 }
