@@ -1,10 +1,7 @@
 ﻿#region
 
 using System;
-using Feature.Common;
-using System.Collections;
-using Core.Input.Generated;
-using Feature.Presenter;
+using Feature.Interface;
 using UniRx;
 using UnityEngine;
 
@@ -12,58 +9,41 @@ using UnityEngine;
 
 namespace Feature.View
 {
-    public class PlayerView : MonoBehaviour
+    [RequireComponent(typeof(VFXView))]
+    public class PlayerView : MonoBehaviour, IDamaged
     {
-        public bool isDrawSwapRange;
-
-        public float swapRange;
-        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-        private Animator animator;
-        private IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
-        private Rigidbody rb;
-        private Vector3 previousPosition;
-        private float speed;
         private static readonly int Speed = Animator.StringToHash("Speed");
         private static readonly int OnJump = Animator.StringToHash("OnJump");
         private static readonly int IsFalling = Animator.StringToHash("IsFalling");
-        
-        private Coroutine damageCoroutine;
 
-        public CharacterParams characterParams;
-        public EnemyParams enemyParams;
+        public bool isDrawSwapRange;
 
-        public IReactiveProperty<int> Health { get; } = new ReactiveProperty<int>();
         [SerializeField] private GameObject slashingEffect;
+
+        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
+
+        private Animator animator;
+        private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
+        private Vector3 previousPosition;
+        private Rigidbody rb;
+        private float speed;
+
+        [NonSerialized] public float SwapRange;
+
+        private VFXView vfxView;
 
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
             animator = GetComponentInChildren<Animator>();
+            vfxView = GetComponent<VFXView>();
             isGrounded
-                .Subscribe(x =>
-                {
-                    animator.SetBool(IsFalling, !x);
-                });
-        }
-
-        private void Start()
-        {
-            Health.Value = characterParams.health;
-
-            Health
-                .Where(hp => hp <= 0)
-                .Subscribe(_ => OnPlayerDeath())
-                .AddTo(this);
+                .Subscribe(x => { animator.SetBool(IsFalling, !x); });
         }
 
         private void Update()
         {
-            
-            // TODO: Updateは辞めて、delegateで受け取る
-            if (animator == null || !animator.isActiveAndEnabled)
-            {
-                return;
-            }
+            Position.Value = transform.position;
         }
 
         private void FixedUpdate()
@@ -85,53 +65,33 @@ namespace Feature.View
         {
             if (collision.gameObject.CompareTag("Enemy"))
             {
-                if (damageCoroutine == null)
-                {
-                    damageCoroutine = StartCoroutine(TakeDamageOverTime());
-                }
-            }
-        }
-
-        private void OnCollisionExit(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Enemy"))
-            {
-                if (damageCoroutine != null)
-                {
-                    StopCoroutine(damageCoroutine);
-                    damageCoroutine = null;
-                }
-            }
-
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                isGrounded.Value = false;
-            }
-        }
-
-        private IEnumerator TakeDamageOverTime()
-        {
-            while (true)
-            {
-                Health.Value = Mathf.Max(Health.Value - enemyParams.damage, 0);
-                yield return new WaitForSeconds(characterParams.takeDamageOverTime);
             }
         }
 
         private void OnDrawGizmos()
         {
-            if (swapRange != 0 && isDrawSwapRange)
+            if (SwapRange != 0 && isDrawSwapRange)
             {
-                DrawWireDisk(transform.position, swapRange, Color.magenta);
+                DrawWireDisk(transform.position, SwapRange, Color.magenta);
             }
         }
+
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        {
+            var imp = (transform.position - attacker.position).normalized;
+            imp.y += 1f;
+            rb.AddForce(imp * 5f, ForceMode.Impulse);
+            OnDamageEvent?.Invoke(damage);
+        }
+
+        public event Action<uint> OnDamageEvent;
 
         private static void DrawWireDisk(Vector3 position, float radius, Color color)
         {
             var oldColor = Gizmos.color;
             Gizmos.color = color;
             var oldMatrix = Gizmos.matrix;
-            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new Vector3(1, 1, 1));
+            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new(1, 1, 1));
             Gizmos.DrawWireSphere(Vector3.zero, radius);
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
@@ -141,26 +101,26 @@ namespace Feature.View
         {
             if (isGrounded.Value)
             {
-                Vector3 movement = transform.right * (direction * Time.deltaTime);
+                var movement = transform.right * (direction * Time.deltaTime);
                 rb.MovePosition(rb.position + movement);
-        
             }
             else
             {
-                Vector3 movement = transform.right * (direction * Time.deltaTime)/jumpMove;
+                var movement = transform.right * (direction * Time.deltaTime) / jumpMove;
                 rb.MovePosition(rb.position + movement);
             }
-            //向き
-            if (direction > 0)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else if (direction < 0)
-            {
-                transform.rotation = Quaternion.Euler(0, 180, 0);
-                direction = direction * -1;
-            }
+            // //向き
+            // if (direction > 0)
+            // {
+            //     transform.rotation = Quaternion.Euler(0, 0, 0);
+            // }
+            // else if (direction < 0)
+            // {
+            //     transform.rotation = Quaternion.Euler(0, 180, 0);
+            //     direction = direction * -1;
+            // }
         }
+
         public void Jump(float jumpForce)
         {
             if (isGrounded.Value)
@@ -171,21 +131,20 @@ namespace Feature.View
             }
         }
 
-        public void Attack(float degree)
+        public void Attack(float degree, uint damage)
         {
-            Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
+            var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0f),
+                Quaternion.Euler(0, 0, degree));
+            var slash = obj.GetComponent<SlashView>();
+            slash.SetDamage(damage);
+            Destroy(obj, 0.5f);
+        }
+
+        public void PlayVFX()
+        {
+            vfxView.PlayVFX();
         }
 
         public bool IsGrounded() => isGrounded.Value;
-
-        private void OnPlayerDeath()
-        {
-            Debug.Log("Player has died. Stopping game.");
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-        }
     }
 }

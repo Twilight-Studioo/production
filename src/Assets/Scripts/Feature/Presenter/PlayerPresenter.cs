@@ -2,12 +2,15 @@
 
 using System;
 using Core.Utilities;
-using Feature.Common;
+using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Model;
 using Feature.View;
 using UniRx;
+using UnityEditor;
 using UnityEngine;
 using VContainer;
+using Object = UnityEngine.Object;
 
 #endregion
 
@@ -18,53 +21,48 @@ namespace Feature.Presenter
         private readonly CharacterParams characterParams;
         private readonly EnemyParams enemyParams;
         private readonly PlayerModel playerModel;
-        private readonly PlayerView playerView;
-        private readonly SwapView swapView;
-        private readonly VFXView vfxView;
 
         private readonly CompositeDisposable swapTimer;
-        
+        private PlayerView playerView;
 
         [Inject]
         public PlayerPresenter(
-            PlayerView view,
             PlayerModel model,
-            CharacterParams characterParams,
-            SwapView swapViews,
-            VFXView vfxView
+            CharacterParams characterParams
         )
         {
-            playerView = view;
             playerModel = model;
-            swapView = swapViews;
             this.characterParams = characterParams;
             swapTimer = new();
-            playerView.swapRange = characterParams.canSwapDistance;
-            this.vfxView = vfxView;
         }
 
-        public void Start()
+        public void OnPossess(PlayerView view)
         {
+            playerView = view;
+
+            playerView.OnDamageEvent += playerModel.TakeDamage;
+            playerView.SwapRange = characterParams.canSwapDistance;
             playerView.Position
                 .Subscribe(position =>
                 {
                     playerModel.UpdatePosition(position);
-                    //スワップ中ならば一覧を取得してhilightの処理を呼び出す
-                })
-                .AddTo(playerView);
-
-            playerView.Health
-                .Subscribe(health =>
-                {
-                    playerModel.TakeDamage(enemyParams.damage);
-                    if (health <= 0)
-                    {
-                        Debug.Log("Player has died.");
-                    }
+                    //スワップ中ならば一覧を取得してhighlightの処理を呼び出す
                 })
                 .AddTo(playerView);
 
             playerModel.Start();
+
+            var playerHpBar = Object.FindObjectOfType<PlayerHPBar>();
+            playerModel.Health
+                .Subscribe(x =>
+                {
+                    playerHpBar.UpdateHealthBar(x, characterParams.health);
+                    if (x <= 0)
+                    {
+                        //OnPlayerDeath();
+                    }
+                })
+                .AddTo(playerHpBar);
         }
 
         public void Move(float direction)
@@ -102,10 +100,9 @@ namespace Feature.Presenter
                     {
                         return;
                     }
-                    
+
                     EndSwap();
                 });
-            
         }
 
         public void EndSwap()
@@ -114,20 +111,13 @@ namespace Feature.Presenter
             {
                 return;
             }
-            
+
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            
-            var swapViews = UnityEngine.Object.FindObjectsOfType<SwapView>();
-            foreach (var swap in swapViews)
-            {
-                swap.PlayVFX();
-            }
-            vfxView.PlayVFX();
+
             Func<float, float> easingFunction;
 
-            
-            
+
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:
@@ -153,10 +143,10 @@ namespace Feature.Presenter
             Observable.EveryUpdate()
                 .Subscribe(_ =>
                 {
-                    elapsedTime += Time.unscaledDeltaTime; 
-                    var t = Mathf.Clamp01(elapsedTime / duration); 
+                    elapsedTime += Time.unscaledDeltaTime;
+                    var t = Mathf.Clamp01(elapsedTime / duration);
                     Time.timeScale =
-                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); 
+                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t));
                     if (t >= 1.0f) // If the transition is complete
                     {
                         playerView.isDrawSwapRange = false;
@@ -175,7 +165,24 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            playerView.Attack(degree); 
+            playerView.Attack(degree, (uint)characterParams.attackPower);
+        }
+
+        public void PlayVFX()
+        {
+            playerView.PlayVFX();
+        }
+
+        public Transform GetTransform() => playerView.transform;
+
+        private void OnPlayerDeath()
+        {
+            Debug.Log("Player has died. Stopping game.");
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
     }
 }

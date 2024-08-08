@@ -11,7 +11,7 @@ namespace Core.Camera
         public int Weight { get; }
         public int Radius { get; }
 
-        public static CameraTargetGroupTag Player() => new(5, 3);
+        public static CameraTargetGroupTag Player() => new(7, 3);
 
         public static CameraTargetGroupTag Boss() => new(3, 3);
 

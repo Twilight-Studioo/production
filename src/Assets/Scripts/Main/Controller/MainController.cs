@@ -3,6 +3,7 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Feature.Common.Environment;
 using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
@@ -10,13 +11,12 @@ using Main.Factory;
 using UniRx;
 using UnityEngine;
 using VContainer;
-using VContainer.Unity;
 
 #endregion
 
 namespace Main.Controller
 {
-    public class MainController : IStartable
+    public class MainController : IGameController
     {
         private readonly EnemyFactory enemyFactory;
 
@@ -32,7 +32,6 @@ namespace Main.Controller
 
         [Inject]
         public MainController(
-            PlayerView playerView,
             PlayerModel playerModel,
             PlayerPresenter playerPresenter,
             SwapPresenter swapPresenter,
@@ -54,7 +53,12 @@ namespace Main.Controller
         {
             InputEventSetup();
             Setup();
-            playerPresenter.Start();
+        }
+
+        public void OnPossess(PlayerView view)
+        {
+            playerPresenter.OnPossess(view);
+            targetGroupManager.AddTarget(view.transform, CameraTargetGroupTag.Player());
         }
 
         private void Setup()
@@ -63,6 +67,12 @@ namespace Main.Controller
             {
                 targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.Enemy());
             };
+            enemyFactory.OnRemoveField += obj =>
+            {
+                targetGroupManager.RemoveTarget(obj.transform);
+            };
+            enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
+            enemyFactory.Subscribe();
         }
 
         // TODO: この辺りのinput制御を別クラスに切り分ける
@@ -89,7 +99,7 @@ namespace Main.Controller
             Observable.EveryFixedUpdate()
                 .Select(_ => jumpEvent.ReadValue<float>() > 0f)
                 .DistinctUntilChanged()
-                .Subscribe(_ => { playerPresenter.Jump();});
+                .Subscribe(_ => { playerPresenter.Jump(); });
 
             var attackEvent = inputActionAccessor.CreateAction(Player.Attack);
             Observable.EveryFixedUpdate()
@@ -101,11 +111,12 @@ namespace Main.Controller
                     {
                         var h = Input.GetAxis("Horizontal");
                         var v = Input.GetAxis("Vertical");
-                        float degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                        var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
                         if (degree < 0)
                         {
                             degree += 360;
                         }
+
                         playerPresenter.Attack(degree);
                     }
                 });
@@ -128,12 +139,16 @@ namespace Main.Controller
                         }
 
                         var item = swapPresenter.SelectItem();
+
                         swapPresenter.ResetSelector();
                         playerPresenter.EndSwap();
                         if (item == null)
                         {
                             return;
                         }
+
+                        item.PlayVFX();
+                        playerPresenter.PlayVFX();
 
                         var pos = playerModel.Position.Value;
                         playerPresenter.SetPosition(item.transform.position);

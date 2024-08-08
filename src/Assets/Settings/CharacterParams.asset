@@ -15,8 +15,7 @@ MonoBehaviour:
   health: 100
   speed: 5
   jumpPower: 7
-  attackPower: 2
-  takeDamageOverTime: 2
+  attackPower: 5
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10

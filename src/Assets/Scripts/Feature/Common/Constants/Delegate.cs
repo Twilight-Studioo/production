@@ -1,0 +1,3 @@
+namespace Feature.Common.Constants
+{
+}
