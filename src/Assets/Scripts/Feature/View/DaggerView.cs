@@ -13,9 +13,10 @@ namespace Feature.View
     public class DaggerView : MonoBehaviour
     {
         //後にScriptable化するヨ
-        private float lifeTime = 3f;
+        [SerializeField]private float lifeTime = 3f;
         private Rigidbody rb;
-        private float speed=20;
+        [SerializeField]private float speed = 20;
+        [SerializeField] private float damage = 1;
         private float h;
         private float v;
         
@@ -46,6 +47,9 @@ namespace Feature.View
                 // 敵に当たった場合の処理
                 // 敵にダメージを与える
                 // ナイフがはじかれる
+                
+                //ダメージ体力出来次第実装
+                //collision.gameObject.GetComponent<Enemy>(damage);
                 Destroy(collision.gameObject);
                 if (rb != null)
                 { 
