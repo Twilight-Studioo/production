@@ -1,11 +1,7 @@
 #if UNITY_EDITOR
 
-#region
-
 using UnityEditor;
 using UnityEngine;
-
-#endregion
 
 namespace Feature.Common
 {
@@ -17,6 +13,7 @@ namespace Feature.Common
         private SerializedProperty enterSwapUseStamina;
         private SerializedProperty health;
         private SerializedProperty jumpPower;
+        private SerializedProperty takeDamageOverTime;
 
         private SerializedProperty maxHasStamina;
         private SerializedProperty recoveryResourceTimeMillis;
@@ -44,6 +41,7 @@ namespace Feature.Common
             speed = serializedObject.FindProperty("speed");
             jumpPower = serializedObject.FindProperty("jumpPower");
             attackPower = serializedObject.FindProperty("attackPower");
+            takeDamageOverTime = serializedObject.FindProperty("takeDamageOverTime");
 
             // スワップ関連
             swapContinueMaxMillis = serializedObject.FindProperty("swapContinueMaxMillis");
@@ -73,6 +71,7 @@ namespace Feature.Common
             EditorGUILayout.PropertyField(speed);
             EditorGUILayout.PropertyField(jumpPower);
             EditorGUILayout.PropertyField(attackPower);
+            EditorGUILayout.PropertyField(takeDamageOverTime);
 
             EditorGUILayout.Space();
             showSwapParameters = EditorGUILayout.Foldout(showSwapParameters, "スワップパラメーター");

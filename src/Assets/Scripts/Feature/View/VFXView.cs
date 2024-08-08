@@ -10,12 +10,15 @@ namespace Feature.View
     public class VFXView : MonoBehaviour
     {
         [SerializeField] private VisualEffect effect;
+        [SerializeField] private float onStopTime = 1f;
 
         public void PlayVFX()
         {
             if (effect != null)
             {
+                Debug.Log("PlayerVFXPlay");
                 effect.SendEvent("OnPlay");
+                Invoke("StopVFX", onStopTime);
             }
         }
 
@@ -23,7 +26,7 @@ namespace Feature.View
         {
             if (effect != null)
             {
-                effect.SendEvent("StopPlay");
+                effect.SendEvent("OnStop");
             }
         }
     }

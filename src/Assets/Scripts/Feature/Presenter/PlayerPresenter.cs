@@ -16,30 +16,54 @@ namespace Feature.Presenter
     public class PlayerPresenter
     {
         private readonly CharacterParams characterParams;
+        private readonly EnemyParams enemyParams;
         private readonly PlayerModel playerModel;
         private readonly PlayerView playerView;
+        private readonly SwapView swapView;
+        private readonly VFXView vfxView;
 
         private readonly CompositeDisposable swapTimer;
+        
 
         [Inject]
         public PlayerPresenter(
             PlayerView view,
             PlayerModel model,
-            CharacterParams characterParams
+            CharacterParams characterParams,
+            SwapView swapViews,
+            VFXView vfxView
         )
         {
             playerView = view;
             playerModel = model;
+            swapView = swapViews;
             this.characterParams = characterParams;
             swapTimer = new();
             playerView.swapRange = characterParams.canSwapDistance;
+            this.vfxView = vfxView;
         }
 
         public void Start()
         {
             playerView.Position
-                .Subscribe(position => { playerModel.UpdatePosition(position); })
+                .Subscribe(position =>
+                {
+                    playerModel.UpdatePosition(position);
+                    //スワップ中ならば一覧を取得してhilightの処理を呼び出す
+                })
                 .AddTo(playerView);
+
+            playerView.Health
+                .Subscribe(health =>
+                {
+                    playerModel.TakeDamage(enemyParams.damage);
+                    if (health <= 0)
+                    {
+                        Debug.Log("Player has died.");
+                    }
+                })
+                .AddTo(playerView);
+
             playerModel.Start();
         }
 
@@ -53,7 +77,6 @@ namespace Feature.Presenter
             playerView.Jump(playerModel.JumpForce);
         }
 
-
         public void StartSwap()
         {
             if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
@@ -62,7 +85,6 @@ namespace Feature.Presenter
             }
 
             playerView.isDrawSwapRange = true;
-
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
@@ -80,9 +102,10 @@ namespace Feature.Presenter
                     {
                         return;
                     }
-
+                    
                     EndSwap();
                 });
+            
         }
 
         public void EndSwap()
@@ -91,12 +114,20 @@ namespace Feature.Presenter
             {
                 return;
             }
-
+            
             swapTimer.Clear();
             playerModel.OnEndSwap();
-
+            
+            var swapViews = UnityEngine.Object.FindObjectsOfType<SwapView>();
+            foreach (var swap in swapViews)
+            {
+                swap.PlayVFX();
+            }
+            vfxView.PlayVFX();
             Func<float, float> easingFunction;
 
+            
+            
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:
@@ -122,10 +153,10 @@ namespace Feature.Presenter
             Observable.EveryUpdate()
                 .Subscribe(_ =>
                 {
-                    elapsedTime += Time.unscaledDeltaTime; // Update elapsed time with unscaled time
-                    var t = Mathf.Clamp01(elapsedTime / duration); // Calculate normalized time
+                    elapsedTime += Time.unscaledDeltaTime; 
+                    var t = Mathf.Clamp01(elapsedTime / duration); 
                     Time.timeScale =
-                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); // Apply easing function
+                        Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t)); 
                     if (t >= 1.0f) // If the transition is complete
                     {
                         playerView.isDrawSwapRange = false;
