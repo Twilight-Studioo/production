@@ -11,7 +11,7 @@ namespace Feature.Interface
     {
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
 
-        public event Action OnDestroyEvent;
+        public event Action OnHealth0Event;
 
         public event Action OnDamageEvent;
 

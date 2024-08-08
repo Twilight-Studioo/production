@@ -27,7 +27,7 @@ namespace Feature.Enemy
             throw new NotImplementedException();
         }
 
-        public event Action OnDestroyEvent;
+        public event Action OnHealth0Event;
         public event Action OnDamageEvent;
         public event Action OnTakeDamageEvent;
 
@@ -44,6 +44,7 @@ namespace Feature.Enemy
         public uint CurrentHealth { get; private set; }
 
         public bool IsVisible { get; private set; }
+        public event Action OnRemoveEvent;
 
 
         public void OnDamage(uint damage)

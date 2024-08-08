@@ -76,6 +76,8 @@ MonoBehaviour:
   - dependency: {fileID: 919132149155446097, guid: b1227c7a7e46bf24dadcbda538612ae1,
       type: 3}
     instantiationMode: 0
+  - dependency: {fileID: 11400000, guid: 9bc1fedeb81094a2abd676cde49e83f5, type: 2}
+    instantiationMode: 1
   - dependency: {fileID: 9100000, guid: cfc2cd1aeba914525ae03257fa112d29, type: 2}
     instantiationMode: 0
   - dependency: {fileID: 2800000, guid: 2fd6421f253b4ef1a19526541f9ffc0c, type: 3}
@@ -90,6 +92,9 @@ MonoBehaviour:
       type: 3}
     instantiationMode: 0
   - dependency: {fileID: 2100000, guid: 7e57bd745a13c8f479734ec1edde4c0e, type: 2}
+    instantiationMode: 0
+  - dependency: {fileID: 7359196021201563163, guid: d0e23bcee8f76406db28e20292aa6f84,
+      type: 3}
     instantiationMode: 0
   - dependency: {fileID: 8664596846592558342, guid: 2d8d86cda01124d609fe6b4b8f0c6203,
       type: 3}
@@ -116,9 +121,12 @@ MonoBehaviour:
     instantiationMode: 0
   - dependency: {fileID: 2800000, guid: c7ae8ac3886b3ae41a1e4636d3ecc2bb, type: 3}
     instantiationMode: 0
-  - dependency: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-    instantiationMode: 1
+  - dependency: {fileID: 1867458220199271070, guid: 8e20af2c5d9e646bf990a8cbd113e4dc,
+      type: 3}
+    instantiationMode: 0
   - dependency: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+    instantiationMode: 1
+  - dependency: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     instantiationMode: 1
   - dependency: {fileID: 23800000, guid: 7de2014e60fe442d7b25abcb3f1eafb0, type: 2}
     instantiationMode: 0
@@ -139,6 +147,9 @@ MonoBehaviour:
     instantiationMode: 1
   - dependency: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
     instantiationMode: 1
+  - dependency: {fileID: 8529875732360637480, guid: a1bb7634d6aec412b97028e350fb9469,
+      type: 3}
+    instantiationMode: 0
   - dependency: {fileID: 11400000, guid: a6560a915ef98420e9faacc1c7438823, type: 2}
     instantiationMode: 1
   - dependency: {fileID: 7729599276646446907, guid: 2536c13a70eb64bbdb5c44fa72e0f117,

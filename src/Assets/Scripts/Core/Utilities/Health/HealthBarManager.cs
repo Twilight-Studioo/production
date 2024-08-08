@@ -56,36 +56,43 @@ namespace Core.Utilities.Health
             }
 
             var collider = @object.GetComponent<Collider>();
+            GameObject bar;
             if (collider != null)
             {
-                AttachHealthBarToCollider(healthObject, collider);
+                bar = AttachHealthBarToCollider(collider);
             }
             else
             {
-                AttachHealthBarToTransform(healthObject, @object.transform);
+                bar = AttachHealthBarToTransform(@object.transform);
             }
+            healthObject.OnRemoveEvent += () =>
+            {
+                trackedHealthBars.Remove(healthObject);
+                Destroy(bar);
+            };
+            bar.transform.SetParent(canvas.transform);
+            bar.GetComponent<HealthBar>().Initialize(healthObject);
         }
 
-        private void AttachHealthBarToCollider(IHealthBar healthObject, Collider collider)
+        private GameObject AttachHealthBarToCollider(Collider cl)
         {
-            var healthBar = Instantiate(healthBarPrefab, collider.transform);
-            healthBar.transform.SetParent(canvas.transform);
-            healthBar.GetComponent<HealthBar>().Initialize(healthObject);
+            var healthBar = Instantiate(healthBarPrefab, cl.transform);
             var follow = healthBar.GetComponent<FollowObject>();
             follow.canvas = canvas.GetComponent<Canvas>();
-            follow.target = collider.transform;
-            follow.offset = Vector3.up * collider.bounds.size.y;
+            follow.target = cl.transform;
+            follow.offset = Vector3.up * cl.bounds.size.y;
+            return healthBar;
         }
 
-        private void AttachHealthBarToTransform(IHealthBar healthObject, Transform transform)
+        private GameObject AttachHealthBarToTransform(Transform tf)
         {
-            var healthBar = Instantiate(healthBarPrefab, transform);
-            healthBar.transform.SetParent(canvas.transform);
-            healthBar.GetComponent<HealthBar>().Initialize(healthObject);
+            var healthBar = Instantiate(healthBarPrefab, tf);
             var follow = healthBar.GetComponent<FollowObject>();
             follow.canvas = canvas.GetComponent<Canvas>();
-            follow.target = transform;
+            follow.target = tf;
             follow.offset = Vector3.up * 2f;
+            
+            return healthBar;
         }
     }
 }

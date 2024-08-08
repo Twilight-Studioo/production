@@ -1,3 +1,5 @@
+using System;
+
 namespace Core.Utilities.Health
 {
     public interface IHealthBar
@@ -7,5 +9,7 @@ namespace Core.Utilities.Health
         public uint CurrentHealth { get; }
 
         public bool IsVisible { get; }
+        
+        public event Action OnRemoveEvent;
     }
 }

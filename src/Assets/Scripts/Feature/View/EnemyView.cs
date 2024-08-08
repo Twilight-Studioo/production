@@ -22,12 +22,20 @@ namespace Feature.View
         {
             agent = GetComponent<IEnemyAgent>();
             agent.FlowExecute();
+            agent.OnTakeDamageEvent += () => OnTakeDamageEvent?.Invoke();
         }
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             OnDamageEvent?.Invoke();
             CurrentHealth -= damage;
+            if (CurrentHealth <= 0)
+            {
+                OnHealth0Event?.Invoke();
+                agent.FlowCancel();
+                Destroy(gameObject);
+                OnRemoveEvent?.Invoke();
+            }
         }
 
         public void SetHealth(uint health)
@@ -36,7 +44,9 @@ namespace Feature.View
             CurrentHealth = health;
         }
 
-        public event Action OnDestroyEvent;
+        public event Action OnHealth0Event;
+
+        public event Action OnRemoveEvent;
         public uint MaxHealth { get; private set; }
 
         public uint CurrentHealth { get; private set; }

@@ -53,9 +53,12 @@ namespace Main.Factory
             enemyParams.SetPatrolPoints(start.Points);
             enemyComponent.SetHealth(enemyRef.parameters.maxHp);
             enemyComponent.Execute();
+            enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(enemy);
             return enemyComponent;
         }
 
         public event Action<GameObject> OnAddField;
+        
+        public event Action<GameObject> OnRemoveField; 
     }
 }

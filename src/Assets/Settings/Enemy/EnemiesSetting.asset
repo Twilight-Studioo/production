@@ -17,3 +17,7 @@ MonoBehaviour:
     reference: {fileID: 1867458220199271070, guid: 4fdc069e2d7d64d24959564e14a50722,
       type: 3}
     parameters: {fileID: 11400000, guid: c927c5de164fd4d77a639d0f7a73fda4, type: 2}
+  - type: 1
+    reference: {fileID: 1867458220199271070, guid: 8e20af2c5d9e646bf990a8cbd113e4dc,
+      type: 3}
+    parameters: {fileID: 11400000, guid: 9bc1fedeb81094a2abd676cde49e83f5, type: 2}

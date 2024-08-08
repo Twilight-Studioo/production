@@ -1,5 +1,3 @@
-#region
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,25 +6,26 @@ using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
 using Feature.Common.Parameter;
-using Feature.Interface;
+using Feature.Component;
 using UnityEngine;
 using UnityEngine.AI;
 
-#endregion
-
 namespace Feature.Enemy
 {
-    public class SimpleEnemy1Agent : FlowScope, IEnemyAgent
+    public class SimpleEnemy2Agent : FlowScope, IEnemyAgent
     {
-        public List<Vector3> points;
+        private List<Vector3> points;
 
         private NavMeshAgent agent;
 
-        private SimpleEnemy1Params enemyParams;
+        private SimpleEnemy2Params enemyParams;
 
-        private OnHitRushAttack onHitRushAttack;
+        private OnHitRushAttack onHitBullet;
 
         private Transform playerTransform;
+        
+        [SerializeField]
+        private GameObject bulletPrefab;
 
         private void Awake()
         {
@@ -46,7 +45,7 @@ namespace Feature.Enemy
 
         public void SetParams(EnemyParams @params)
         {
-            if (@params is SimpleEnemy1Params enemy1Params)
+            if (@params is SimpleEnemy2Params enemy1Params)
             {
                 enemyParams = enemy1Params;
             }
@@ -63,7 +62,6 @@ namespace Feature.Enemy
 
         public void SetPlayerTransform(Transform player)
         {
-            Debug.Log("SetPlayerTransform", player);
             playerTransform = player;
         }
 
@@ -76,14 +74,10 @@ namespace Feature.Enemy
 
         public event Action OnTakeDamageEvent;
 
-        private TriggerRef MoveTrigger() =>
-            Trigger("AnyDistance")
-                .Param("Distances", new List<float> { enemyParams.rushStartDistance, enemyParams.foundDistance, })
-                .Param("TargetTransform", playerTransform);
-
-        private TriggerRef RushStart() =>
+        private TriggerRef FocusTrigger() =>
             Trigger("Distance")
-                .Param("Target", enemyParams.rushStartDistance)
+                .Param("Target", enemyParams.foundDistance)
+                .Param("IsClose", true)
                 .Param("Object", playerTransform);
 
         private TriggerRef UnFocusTrigger() =>
@@ -102,16 +96,22 @@ namespace Feature.Enemy
             while (true)
             {
                 agent.ResetPath();
+                Debug.Log("Patrol");
                 yield return Action("PointsAIMoveTo")
                     .Param("Points", points)
                     .Param("MoveSpeed", enemyParams.patrolSpeed)
                     .IfEnd(
-                        MoveTrigger()
-                            .Build()
+                        new []
+                        {
+                            FocusTrigger()
+                                .Build(),
+                            UnFocusTrigger()
+                                .Build(),
+                        }
                     )
                     .Build();
                 var distance = Vector3.Distance(playerTransform.position, transform.position);
-                if (enemyParams.rushStartDistance > distance)
+                if (Math.Abs(enemyParams.shootDistance - distance) < 0.2f)
                 {
                     yield return Attack();
                 }
@@ -119,16 +119,15 @@ namespace Feature.Enemy
                 if (enemyParams.foundDistance > distance)
                 {
                     agent.ResetPath();
-                    yield return Action("AIMoveToFollow")
-                        .Param("FollowTransform", playerTransform)
-                        .Param("MoveSpeed", enemyParams.pursuitSpeed)
-                        .IfEnd(new[]
-                        {
+                    Debug.Log("MoveToBeforeShoot");
+                    yield return Action("AIMoveToTargetDistance")
+                        .Param("Target", playerTransform)
+                        .Param("Distance", enemyParams.shootDistance)
+                        .Param("MoveSpeed", 1f)
+                        .IfEnd(
                             UnFocusTrigger()
-                                .Build(),
-                            RushStart()
-                                .Build(),
-                        })
+                                .Build()
+                        )
                         .Build();
                 }
             }
@@ -136,28 +135,19 @@ namespace Feature.Enemy
 
         private IEnumerator Attack()
         {
-            onHitRushAttack = TakeDamage;
-            agent.ResetPath();
-            yield return Wait(enemyParams.rushBeforeDelay);
-            yield return Action("AIRushToPosition")
-                .Param("RushSpeed", enemyParams.rushSpeed)
-                .Param("TargetTransform", playerTransform)
-                .Param("OnHitRushAttack", onHitRushAttack)
-                .Build();
-            yield return Wait(enemyParams.rushAfterDelay);
-        }
-
-        private void TakeDamage()
-        {
-            var player = ObjectFactory.FindPlayer();
-            if (player == null)
+            var dir = (playerTransform.position - transform.position).normalized;
+            for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
-                return;
+                Debug.Log("Bullet");
+                var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+                var bulletRb = bullet.GetComponent<DamagedTrigger>();
+                bulletRb.SetHitObject(false, true);
+                bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage);
+                yield return Wait(enemyParams.shootIntervalSec);
             }
 
-            var view = player.GetComponent<IDamaged>();
-            view.OnDamage(enemyParams.damage, transform.position, transform);
-            OnTakeDamageEvent?.Invoke();
+            yield return Wait(enemyParams.shootAfterSec);
+
         }
     }
 }

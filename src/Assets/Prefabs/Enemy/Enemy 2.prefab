@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: 8352834168837096423}
   - component: {fileID: 7825780840392936028}
   - component: {fileID: 270098745973290507}
-  - component: {fileID: 2302970512711207260}
   - component: {fileID: -6441825914621669738}
+  - component: {fileID: 6606299975491687514}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Enemy 2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,22 +160,6 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &2302970512711207260
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1867458220199271070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 277dfe83172c42348810d641b09cfacc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  autoPlay: 0
-  points:
-  - {x: 22, y: 2, z: 0}
-  - {x: 12, y: 2, z: 0}
 --- !u!114 &-6441825914621669738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,3 +172,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0a796b97fa4669a3d0593ff8d6ce5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6606299975491687514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867458220199271070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90ca8209229145bea4dac8be028b67b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoPlay: 0
+  points: []
+  bulletPrefab: {fileID: 7359196021201563163, guid: d0e23bcee8f76406db28e20292aa6f84,
+    type: 3}

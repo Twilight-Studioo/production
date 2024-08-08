@@ -67,6 +67,10 @@ namespace Main.Controller
             {
                 targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.Enemy());
             };
+            enemyFactory.OnRemoveField += obj =>
+            {
+                targetGroupManager.RemoveTarget(obj.transform);
+            };
             enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
             enemyFactory.Subscribe();
         }

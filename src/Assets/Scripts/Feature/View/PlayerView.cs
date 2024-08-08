@@ -32,8 +32,6 @@ namespace Feature.View
 
         private VFXView vfxView;
 
-        public IReactiveProperty<int> Health { get; } = new ReactiveProperty<int>();
-
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();

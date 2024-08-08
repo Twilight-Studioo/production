@@ -1,8 +1,10 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using Feature.Common.Constants;
 using Feature.Interface;
+using UniRx;
 using UnityEngine;
 
 #endregion
@@ -21,10 +23,14 @@ namespace Feature.Common.Environment
         private Vector2 resumeDistance = new(20f, 10f);
 
         [SerializeField, Header("巡回地点"),] private List<Vector3> points;
+        
+        [SerializeField] private float respawnTimeSec = 5f;
 
         public GetTransform GetPlayerTransform;
 
         private bool isSpawned;
+        
+        private bool canSpawn = true;
 
         public OnRequestSpawnEvent OnRequestSpawn;
 
@@ -52,7 +58,7 @@ namespace Feature.Common.Environment
 
         private void SpawnCheck()
         {
-            if (isSpawned || OnRequestSpawn == null || GetPlayerTransform == null)
+            if (!canSpawn || isSpawned || OnRequestSpawn == null || GetPlayerTransform == null)
             {
                 return;
             }
@@ -69,7 +75,14 @@ namespace Feature.Common.Environment
             }
 
             isSpawned = true;
-            enemy.OnDestroyEvent += () => isSpawned = false;
+            canSpawn = false;
+            enemy.OnHealth0Event += () =>
+            {
+                isSpawned = false;
+                Observable
+                    .Timer(TimeSpan.FromSeconds(respawnTimeSec))
+                    .Subscribe(_ => canSpawn = true);
+            };
         }
 
         private void SpawnAreaGizmos()
