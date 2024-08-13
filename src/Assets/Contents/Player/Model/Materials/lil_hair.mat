@@ -610,10 +610,10 @@ Material:
     - _ShadowStrength: 1
     - _ShadowStrengthMaskLOD: 0
     - _ShiftBackfaceUV: 0
-    - _Smoothness: 0.43
+    - _Smoothness: 0.51
     - _SmoothnessTextureChannel: 0
     - _SpecularBlur: 0.04
-    - _SpecularBorder: 0.34
+    - _SpecularBorder: 0.68
     - _SpecularHighlights: 1
     - _SpecularNormalStrength: 1
     - _SpecularToon: 1
