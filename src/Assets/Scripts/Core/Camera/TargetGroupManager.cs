@@ -21,5 +21,10 @@ namespace Core.Camera
         {
             targetGroup.AddMember(target, tag.Weight, tag.Radius);
         }
+        
+        public void RemoveTarget(Transform target)
+        {
+            targetGroup.RemoveMember(target);
+        }
     }
 }

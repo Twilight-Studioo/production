@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using Feature.Common;
+using Feature.Common.Parameter;
 using Feature.View;
 using UniRx;
 using UnityEngine;
@@ -32,6 +32,8 @@ namespace Feature.Model
 
         private readonly GameUIView gameUIView;
 
+        private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
+
         private readonly CompositeDisposable playerModelTimer = new();
 
         private readonly IReactiveProperty<PlayerState> playerState;
@@ -49,9 +51,6 @@ namespace Feature.Model
 
         private IDisposable swapUseStaminaSubscription;
         private IDisposable useDaggerUseStamina;
-
-        private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
-        public IReadOnlyReactiveProperty<int> Health => health.ToReadOnlyReactiveProperty();
 
         [Inject]
         public PlayerModel(
@@ -110,6 +109,8 @@ namespace Feature.Model
 
             health.Value = characterParams.health;
         }
+
+        public IReadOnlyReactiveProperty<int> Health => health.ToReadOnlyReactiveProperty();
 
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
         private float IfCanStartSwapRate =>
@@ -228,9 +229,9 @@ namespace Feature.Model
             position.Value = pos;
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(uint damage)
         {
-            health.Value = Mathf.Max(health.Value - damage, 0);
+            health.Value = Mathf.Max((int)(health.Value - damage), 0);
         }
     }
 }

@@ -1,49 +1,56 @@
+#region
+
+using System;
+using Core.Utilities.Health;
+using Feature.Enemy;
+using Feature.Interface;
 using UnityEngine;
 
-public class EnemyView : MonoBehaviour
+#endregion
+
+namespace Feature.View
 {
-    public Transform player;
-
-    private EnemyPresenter _presenter;
-
-    private void Awake()
+    public class EnemyView : MonoBehaviour, IHealthBar, IEnemy, IDamaged
     {
+        private IEnemyAgent agent;
 
-    }
+        public event Action OnDamageEvent;
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
+        public event Action OnTakeDamageEvent;
+
+        public void Execute()
         {
-            _presenter?.StopChasing();
+            agent = GetComponent<IEnemyAgent>();
+            agent.FlowExecute();
+            agent.OnTakeDamageEvent += () => OnTakeDamageEvent?.Invoke();
         }
-    }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            _presenter?.StartChasing();
+            OnDamageEvent?.Invoke();
+            CurrentHealth -= damage;
+            if (CurrentHealth <= 0)
+            {
+                OnHealth0Event?.Invoke();
+                agent.FlowCancel();
+                Destroy(gameObject);
+                OnRemoveEvent?.Invoke();
+            }
         }
-    }
 
-    public void SetPresenter(EnemyPresenter presenter)
-    {
-        _presenter = presenter;
-    }
+        public void SetHealth(uint health)
+        {
+            MaxHealth = health;
+            CurrentHealth = health;
+        }
 
-    public void UpdatePosition(Vector3 position)
-    {
-        transform.position = position;
-    }
+        public event Action OnHealth0Event;
 
-    public Vector3 GetCurrentPosition()
-    {
-        return transform.position;
-    }
+        public event Action OnRemoveEvent;
+        public uint MaxHealth { get; private set; }
 
-    public Vector3 GetPlayerPosition()
-    {
-        return player.position;
+        public uint CurrentHealth { get; private set; }
+
+        public bool IsVisible => true;
     }
 }
