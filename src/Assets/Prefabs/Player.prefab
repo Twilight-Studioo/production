@@ -102,6 +102,10 @@ MonoBehaviour:
   isDrawSwapRange: 0
   slashingEffect: {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851,
     type: 3}
+  dagger: {fileID: 1714581555819581919, guid: 9c1be308684fde246ba5cab8b034a1e9, type: 3}
+  Right: 1
+  hx: 0
+  vy: 0
 --- !u!114 &-6116646425731907792
 MonoBehaviour:
   m_ObjectHideFlags: 0

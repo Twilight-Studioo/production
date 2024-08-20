@@ -184,5 +184,15 @@ namespace Feature.Presenter
             Application.Quit();
 #endif
         }
+
+        public void Dagger(float degree,float h,float v)
+        {
+            playerModel.OnDagger();
+            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
+            {
+                return;
+            }
+            playerView.Dagger(degree,h,v);
+        }
     }
 }
