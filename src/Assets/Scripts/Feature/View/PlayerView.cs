@@ -162,10 +162,10 @@ namespace Feature.View
             GameObject instantiateDagger;
             if (degree == 0&&Right==false)
             {
-               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, -180), this.transform);
+               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, -180));
             }
             else
-               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, degree), this.transform);
+               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {

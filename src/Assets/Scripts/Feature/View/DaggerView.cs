@@ -5,6 +5,7 @@ using UnityEngine;
 using VContainer;
 using Quaternion = System.Numerics.Quaternion;
 using UniRx;
+using Feature.Interface;
 
 #endregion
 
@@ -16,17 +17,17 @@ namespace Feature.View
         [SerializeField]private float lifeTime = 3f;
         private Rigidbody rb;
         [SerializeField]private float speed = 20;
-        [SerializeField] private float damage = 1;
+        [SerializeField] private uint damage = 1;
         private float h;
         private float v;
-        
+        public CapsuleCollider capsuleCollider;
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
             Destroy(this.gameObject,lifeTime);
             Destroy(transform.parent.gameObject,lifeTime);
-            transform.parent.parent = null;
-
+            //transform.parent.parent = null;
+            capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
         }
 
         public void HorizontalVertical(float hx,float vy)
@@ -48,9 +49,10 @@ namespace Feature.View
                 // 敵にダメージを与える
                 // ナイフがはじかれる
                 
-                //ダメージ体力出来次第実装
-                //collision.gameObject.GetComponent<Enemy>(damage);
-                Destroy(collision.gameObject);
+                var enemy = collision.gameObject.GetComponent<IEnemy>()
+                            ?? collision.gameObject.GetComponentInParent<IEnemy>();
+                enemy?.OnDamage(damage, collision.transform.position, transform);
+                capsuleCollider.isTrigger = false;
                 if (rb != null)
                 { 
                     rb.isKinematic = true; // ナイフが動かないようにする
