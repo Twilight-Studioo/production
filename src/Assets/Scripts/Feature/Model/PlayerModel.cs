@@ -2,7 +2,6 @@
 
 using System;
 using Feature.Common.Parameter;
-using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -30,8 +29,6 @@ namespace Feature.Model
 
         private readonly CharacterParams characterParams;
 
-        private readonly GameUIView gameUIView;
-
         private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
 
         private readonly CompositeDisposable playerModelTimer = new();
@@ -54,11 +51,9 @@ namespace Feature.Model
 
         [Inject]
         public PlayerModel(
-            CharacterParams character,
-            GameUIView ui
+            CharacterParams character
         )
         {
-            gameUIView = ui;
             characterParams = character;
             swapStamina = new ReactiveProperty<int>((int)characterParams.maxHasStamina);
             SwapStamina = swapStamina.ToReadOnlyReactiveProperty();
@@ -98,27 +93,18 @@ namespace Feature.Model
                 })
                 .AddTo(playerModelTimer);
 
-            // update ui
-            swapStamina
-                .Subscribe(x =>
-                {
-                    var volume = (float)x / characterParams.maxHasStamina;
-                    gameUIView.SetVolume(volume);
-                })
-                .AddTo(playerModelTimer);
-
             health.Value = characterParams.health;
         }
 
         public IReadOnlyReactiveProperty<int> Health => health.ToReadOnlyReactiveProperty();
 
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
-        private float IfCanStartSwapRate =>
+        public float IfCanStartSwapRate =>
             (float)(characterParams.enterSwapUseStamina + characterParams.swapExecUseStamina) /
             characterParams.maxHasStamina;
 
-        private float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
-        
+        public float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
+
         private float IfCanDaggerRate => (float)characterParams.useDaggerUseStamina / characterParams.maxHasStamina;
         public float MoveSpeed => characterParams.speed;
         public float JumpForce => characterParams.jumpPower;
@@ -141,10 +127,6 @@ namespace Feature.Model
         public void Start()
         {
             swapStamina.Value = (int)characterParams.maxHasStamina;
-            var volume = (float)swapStamina.Value / characterParams.maxHasStamina;
-            gameUIView.SetVolume(volume * 100);
-            gameUIView.SetExecSwapLine(IfCanEndSwapRate);
-            gameUIView.SetStartSwapLine(IfCanStartSwapRate);
         }
 
         public void OnStartSwap()

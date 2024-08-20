@@ -3,10 +3,10 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
-using Feature.Common.Environment;
 using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
+using Main.Environment;
 using Main.Factory;
 using UniRx;
 using UnityEngine;

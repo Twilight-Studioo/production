@@ -7,7 +7,7 @@ using VContainer.Unity;
 
 #endregion
 
-namespace Feature.Common.Environment
+namespace Main.Environment
 {
     public class GameManager : IStartable, IDisposable
     {

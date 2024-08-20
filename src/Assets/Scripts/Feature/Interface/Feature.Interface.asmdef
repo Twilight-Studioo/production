@@ -1,0 +1,17 @@
+{
+    "name": "Feature.Interface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f2d12220e8ba244b0a3bbac6b49b3cbd",
+        "GUID:db9310a783d9f406199eff722e946dc5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
