@@ -115,7 +115,7 @@ namespace Feature.View
                 direction = direction * -1;
                 Right = false;
             }
-            if (isGrounded)
+            if (isGrounded.Value)
             {
                 var movement = transform.right * (direction * Time.deltaTime);
                 rb.MovePosition(rb.position + movement);
