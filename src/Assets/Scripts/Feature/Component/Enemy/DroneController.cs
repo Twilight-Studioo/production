@@ -9,7 +9,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Feature.Enemy
+namespace Feature.Component.Enemy
 {
     public class DroneController : FlowScope, IHealthBar, IEnemy
     {

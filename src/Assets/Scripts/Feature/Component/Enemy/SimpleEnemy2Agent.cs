@@ -6,11 +6,11 @@ using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
 using Feature.Common.Parameter;
-using Feature.Component;
+using Feature.Enemy;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Feature.Enemy
+namespace Feature.Component.Enemy
 {
     public class SimpleEnemy2Agent : FlowScope, IEnemyAgent
     {

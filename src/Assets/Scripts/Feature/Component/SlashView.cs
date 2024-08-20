@@ -5,7 +5,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Feature.View
+namespace Feature.Component
 {
     public class SlashView : MonoBehaviour
     {

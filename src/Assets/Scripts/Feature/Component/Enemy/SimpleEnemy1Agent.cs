@@ -8,13 +8,14 @@ using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
 using Feature.Common.Parameter;
+using Feature.Enemy;
 using Feature.Interface;
 using UnityEngine;
 using UnityEngine.AI;
 
 #endregion
 
-namespace Feature.Enemy
+namespace Feature.Component.Enemy
 {
     public class SimpleEnemy1Agent : FlowScope, IEnemyAgent
     {

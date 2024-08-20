@@ -5,7 +5,7 @@ using UnityEngine.VFX;
 
 #endregion
 
-namespace Feature.View
+namespace Feature.Component
 {
     public class VFXView : MonoBehaviour
     {

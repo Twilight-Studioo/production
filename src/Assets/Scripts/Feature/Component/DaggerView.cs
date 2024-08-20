@@ -2,14 +2,12 @@
 
 using System;
 using UnityEngine;
-using VContainer;
-using Quaternion = System.Numerics.Quaternion;
 using UniRx;
 using Feature.Interface;
 
 #endregion
 
-namespace Feature.View
+namespace Feature.Component
 {
     public class DaggerView : MonoBehaviour
     {
