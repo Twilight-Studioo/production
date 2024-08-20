@@ -9,7 +9,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Feature.Common.Environment
+namespace Main.Environment
 {
     public delegate IEnemy OnRequestSpawnEvent(Transform transform);
 

@@ -6,7 +6,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Feature.Common.Environment
+namespace Main.Environment
 {
     public class PlayerStart : MonoBehaviour
     {

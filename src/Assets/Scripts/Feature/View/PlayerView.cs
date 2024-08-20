@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;

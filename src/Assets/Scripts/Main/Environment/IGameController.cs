@@ -4,7 +4,7 @@ using Feature.View;
 
 #endregion
 
-namespace Feature.Common.Environment
+namespace Main.Environment
 {
     public interface IGameController
     {
