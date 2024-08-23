@@ -17,6 +17,8 @@ namespace Feature.Common.Parameter
         public float jumpPower = 7f;
 
         public int attackPower = 2;
+        
+        
 
 
         // スワップ関連
@@ -55,6 +57,16 @@ namespace Feature.Common.Parameter
         [Tooltip("1回の回復で増えるスタミナの量")] public uint resourceRecoveryQuantity = 1;
 
         [Tooltip("何ミリ秒ごとにリソースが回復するか")] public uint recoveryStaminaTimeMillis = 800;
+        
+        //ボルテージ関連
+        [Tooltip("攻撃時に使うボルテージの量")] 
+        public float useVoltageAttackValue = 50f;
+            
+        [Tooltip("1回のスワップで増えるボルテージの量")] 
+        public float addVoltageSwapValue = 10f;
+                
+        [Tooltip("ボルテージ使用時の攻撃上昇倍率")] 
+        public int voltageAttackPowerValue = 2;
     }
 
     [Serializable]

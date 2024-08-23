@@ -102,6 +102,9 @@ namespace Feature.Model
 
         private float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
 
+        private float voltageValue = 0;
+        private const float MAXVOLTAGEVALUE = 100;
+        private const float MINVOLTAGEVALUE = 0;
         public float MoveSpeed => characterParams.speed;
         public float JumpForce => characterParams.jumpPower;
 
@@ -206,5 +209,23 @@ namespace Feature.Model
         {
             health.Value = Mathf.Max((int)(health.Value - damage), 0);
         }
+        
+        public void AddVoltageSwap()
+        {
+            voltageValue += characterParams.addVoltageSwapValue;
+            voltageValue = Mathf.Clamp(voltageValue, MINVOLTAGEVALUE, MAXVOLTAGEVALUE);
+        }
+        
+        public int UseVoltageAttack()
+        {
+            if (voltageValue >= characterParams.useVoltageAttackValue)
+            {
+                voltageValue -= characterParams.addVoltageSwapValue;
+                return characterParams.attackPower * characterParams.voltageAttackPowerValue;
+            }
+            return characterParams.attackPower;
+        }
+        
+        
     }
 }

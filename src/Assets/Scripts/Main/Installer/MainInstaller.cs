@@ -32,7 +32,6 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<GameUIView>();
             builder.RegisterComponentInHierarchy<SwapView>();
             
-            builder.RegisterComponentInHierarchy<VoltageView>();
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);
             builder.Register<SwapModel>(Lifetime.Scoped);

@@ -24,18 +24,15 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
         private PlayerView playerView;
-        private VoltageView voltageView;
 
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
-            CharacterParams characterParams,
-            VoltageView voltageView
+            CharacterParams characterParams
         )
         {
             playerModel = model;
             this.characterParams = characterParams;
-            this.voltageView = voltageView;
             swapTimer = new();
         }
 
@@ -117,7 +114,7 @@ namespace Feature.Presenter
 
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            voltageView.AddVoltageSwap();
+            playerModel.AddVoltageSwap();
 
             Func<float, float> easingFunction;
 
@@ -169,7 +166,7 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            playerView.Attack(degree, (uint)voltageView.UseVoltageAttack());
+            playerView.Attack(degree, (uint)playerModel.UseVoltageAttack());
         }
 
         public void PlayVFX()
