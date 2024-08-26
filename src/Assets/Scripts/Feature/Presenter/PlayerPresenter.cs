@@ -114,7 +114,7 @@ namespace Feature.Presenter
 
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            playerModel.AddVoltageSwap();
+            
 
             Func<float, float> easingFunction;
 
@@ -135,7 +135,7 @@ namespace Feature.Presenter
                     easingFunction = Easing.Linear;
                     break;
             }
-
+            
             var initialTimeScale = characterParams.swapContinueTimeScale;
             const float targetTimeScale = 1.0f;
             var duration = characterParams.swapReturnTimeMillis / 1000f;
@@ -157,6 +157,7 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(swapTimer);
+            
         }
 
         public void SetPosition(Vector3 position)
@@ -171,6 +172,7 @@ namespace Feature.Presenter
 
         public void PlayVFX()
         {
+            playerModel.AddVoltageSwap();
             playerView.PlayVFX();
         }
 

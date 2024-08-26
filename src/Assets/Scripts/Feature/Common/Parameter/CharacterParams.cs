@@ -60,13 +60,15 @@ namespace Feature.Common.Parameter
         
         //ボルテージ関連
         [Tooltip("攻撃時に使うボルテージの量")] 
-        public float useVoltageAttackValue = 50f;
+        public int useVoltageAttackValue = 50;
             
         [Tooltip("1回のスワップで増えるボルテージの量")] 
-        public float addVoltageSwapValue = 10f;
+        public int addVoltageSwapValue = 10;
                 
         [Tooltip("ボルテージ使用時の攻撃上昇倍率")] 
         public int voltageAttackPowerValue = 2;
+
+        public int voltageValue = 0;
     }
 
     [Serializable]

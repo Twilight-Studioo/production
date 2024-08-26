@@ -4,6 +4,7 @@ using Core.Camera;
 using Core.Input;
 using Feature.Common.Environment;
 using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
@@ -31,6 +32,7 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<InputActionAccessor>();
             builder.RegisterComponentInHierarchy<GameUIView>();
             builder.RegisterComponentInHierarchy<SwapView>();
+            builder.RegisterComponentInHierarchy<VoltageBar>();
             
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);

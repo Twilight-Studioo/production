@@ -2,6 +2,7 @@
 
 using System;
 using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.View;
 using UniRx;
 using UnityEngine;
@@ -29,6 +30,8 @@ namespace Feature.Model
 
         private readonly GameUIView gameUIView;
 
+        private readonly VoltageBar voltageBar;
+
         private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
 
         private readonly CompositeDisposable playerModelTimer = new();
@@ -49,11 +52,13 @@ namespace Feature.Model
         [Inject]
         public PlayerModel(
             CharacterParams character,
-            GameUIView ui
+            GameUIView ui,
+            VoltageBar voltageBar
         )
         {
             gameUIView = ui;
             characterParams = character;
+            this.voltageBar = voltageBar;
             swapStamina = new ReactiveProperty<int>((int)characterParams.maxHasStamina);
             SwapStamina = swapStamina.ToReadOnlyReactiveProperty();
             playerState = new ReactiveProperty<PlayerState>(PlayerState.Idle);
@@ -101,10 +106,9 @@ namespace Feature.Model
             characterParams.maxHasStamina;
 
         private float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
-
-        private float voltageValue = 0;
-        private const float MAXVOLTAGEVALUE = 100;
-        private const float MINVOLTAGEVALUE = 0;
+        
+        private const int MAXVOLTAGEVALUE = 100;
+        private const int MINVOLTAGEVALUE = 0;
         public float MoveSpeed => characterParams.speed;
         public float JumpForce => characterParams.jumpPower;
 
@@ -212,15 +216,17 @@ namespace Feature.Model
         
         public void AddVoltageSwap()
         {
-            voltageValue += characterParams.addVoltageSwapValue;
-            voltageValue = Mathf.Clamp(voltageValue, MINVOLTAGEVALUE, MAXVOLTAGEVALUE);
+            characterParams.voltageValue += characterParams.addVoltageSwapValue;
+            characterParams.voltageValue = Mathf.Clamp(characterParams.voltageValue, MINVOLTAGEVALUE, MAXVOLTAGEVALUE);
+            voltageBar.UpdateVoltageBar();
         }
         
         public int UseVoltageAttack()
         {
-            if (voltageValue >= characterParams.useVoltageAttackValue)
+            if (characterParams.voltageValue >= characterParams.useVoltageAttackValue)
             {
-                voltageValue -= characterParams.addVoltageSwapValue;
+                characterParams.voltageValue -= characterParams.useVoltageAttackValue;
+                voltageBar.UpdateVoltageBar();
                 return characterParams.attackPower * characterParams.voltageAttackPowerValue;
             }
             return characterParams.attackPower;
