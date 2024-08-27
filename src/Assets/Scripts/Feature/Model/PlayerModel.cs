@@ -25,6 +25,9 @@ namespace Feature.Model
 
         private readonly IReactiveProperty<bool> canStartSwap = new ReactiveProperty<bool>(false);
         public readonly IReadOnlyReactiveProperty<bool> CanStartSwap;
+        
+        private readonly IReactiveProperty<bool> canDagger = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> CanDagger;
 
         private readonly CharacterParams characterParams;
 
@@ -42,12 +45,15 @@ namespace Feature.Model
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
 
         private readonly IReactiveProperty<int> swapStamina;
+        private readonly IReactiveProperty<int> daggerStamina;
 
         public readonly IReadOnlyReactiveProperty<int> SwapStamina;
+        public readonly IReadOnlyReactiveProperty<int> DaggerStamina;
 
         private IDisposable recoverStaminaSubscription;
 
         private IDisposable swapUseStaminaSubscription;
+        private IDisposable useDaggerUseStamina;
 
         [Inject]
         public PlayerModel(
@@ -56,11 +62,12 @@ namespace Feature.Model
             VoltageBar voltageBar
         )
         {
-            gameUIView = ui;
             characterParams = character;
             this.voltageBar = voltageBar;
             swapStamina = new ReactiveProperty<int>((int)characterParams.maxHasStamina);
             SwapStamina = swapStamina.ToReadOnlyReactiveProperty();
+            daggerStamina = new ReactiveProperty<int>((int)characterParams.maxHasStamina);
+            DaggerStamina = daggerStamina.ToReadOnlyReactiveProperty();
             playerState = new ReactiveProperty<PlayerState>(PlayerState.Idle);
             State = playerState.ToReadOnlyReactiveProperty();
             Position = position.ToReadOnlyReactiveProperty();
@@ -85,13 +92,13 @@ namespace Feature.Model
                     canEndSwap.Value = IfCanEndSwapRate <= (float)swapStamina.Value / characterParams.maxHasStamina;
                 })
                 .AddTo(playerModelTimer);
-
-            // update ui
-            swapStamina
-                .Subscribe(x =>
+            
+            Observable
+                .EveryUpdate()
+                .Subscribe(_ =>
                 {
-                    var volume = (float)x / characterParams.maxHasStamina;
-                    gameUIView.SetVolume(volume);
+                    canDagger.Value =
+                        IfCanDaggerRate <= (float)swapStamina.Value / characterParams.maxHasStamina;
                 })
                 .AddTo(playerModelTimer);
 
@@ -101,12 +108,13 @@ namespace Feature.Model
         public IReadOnlyReactiveProperty<int> Health => health.ToReadOnlyReactiveProperty();
 
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
-        private float IfCanStartSwapRate =>
+        public float IfCanStartSwapRate =>
             (float)(characterParams.enterSwapUseStamina + characterParams.swapExecUseStamina) /
             characterParams.maxHasStamina;
 
-        private float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
-        
+        public float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
+
+        private float IfCanDaggerRate => (float)characterParams.useDaggerUseStamina / characterParams.maxHasStamina;
         private const int MAXVOLTAGEVALUE = 100;
         private const int MINVOLTAGEVALUE = 0;
         public float MoveSpeed => characterParams.speed;
@@ -124,15 +132,12 @@ namespace Feature.Model
             swapUseStaminaSubscription?.Dispose();
             recoverStaminaSubscription?.Dispose();
             playerModelTimer.Dispose();
+            useDaggerUseStamina?.Dispose();
         }
 
         public void Start()
         {
             swapStamina.Value = (int)characterParams.maxHasStamina;
-            var volume = (float)swapStamina.Value / characterParams.maxHasStamina;
-            gameUIView.SetVolume(volume * 100);
-            gameUIView.SetExecSwapLine(IfCanEndSwapRate);
-            gameUIView.SetStartSwapLine(IfCanStartSwapRate);
         }
 
         public void OnStartSwap()
@@ -179,6 +184,15 @@ namespace Feature.Model
                 .AddTo(playerModelTimer);
         }
 
+        public void OnDagger()
+        {
+            int daggerUseStamina = (int)characterParams.useDaggerUseStamina;
+            if (swapStamina.Value < daggerUseStamina)
+            {
+                return;
+            }
+            swapStamina.Value = Math.Max(swapStamina.Value - daggerUseStamina, 0);
+        }
         public event Action OnAttack;
 
         public void ChangeState(PlayerState state)
@@ -195,7 +209,6 @@ namespace Feature.Model
         {
             swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapModeStaminaUsage, 0);
         }
-
         public void Attack()
         {
             OnAttack?.Invoke();

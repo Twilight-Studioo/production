@@ -69,6 +69,8 @@ namespace Feature.Common.Parameter
         public int voltageAttackPowerValue = 2;
 
         public int voltageValue = 0;
+
+        [Tooltip("クナイを飛ばしたときのスタミナ消費")] public uint useDaggerUseStamina = 2;
     }
 
     [Serializable]

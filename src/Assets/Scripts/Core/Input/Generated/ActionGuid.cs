@@ -20,6 +20,7 @@ namespace Core.Input.Generated
        public static readonly Guid Jump = new Guid("0ef756fd-97d6-4fb7-8b0c-fe5da894a614");
        public static readonly Guid SwapMode = new Guid("51eecf42-f703-42cd-a667-3941c0056639");
        public static readonly Guid Attack = new Guid("b77e5174-cc61-4725-863d-8fc280d8c6ea");
+       public static readonly Guid Dagger = new Guid("27a6ca71-fdae-40e1-823f-dbde8ae312e2");
     }
 
 
