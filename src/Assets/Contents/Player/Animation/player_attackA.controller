@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1107 &-3138400542281475269
+--- !u!1107 &-2952635592733662780
 AnimatorStateMachine:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -10,8 +10,8 @@ AnimatorStateMachine:
   m_Name: Base Layer
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: -2389834254045204506}
-    m_Position: {x: 287.69354, y: 143.86023, z: 0}
+    m_State: {fileID: -1247844125278601637}
+    m_Position: {x: 240, y: 170, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -21,15 +21,15 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: -2389834254045204506}
---- !u!1102 &-2389834254045204506
+  m_DefaultState: {fileID: -1247844125278601637}
+--- !u!1102 &-1247844125278601637
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Damage Taken
+  m_Name: SJK_attackA
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -42,7 +42,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1117445854703981971, guid: e2d3c608a9ef30c4da24f12649de9893,
+  m_Motion: {fileID: -524587296983608147, guid: 6564f02b76f4a19499163525237fb6e4,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -55,13 +55,13 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player_Damage Taken
+  m_Name: player_attackA
   serializedVersion: 5
   m_AnimatorParameters: []
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
-    m_StateMachine: {fileID: -3138400542281475269}
+    m_StateMachine: {fileID: -2952635592733662780}
     m_Mask: {fileID: 0}
     m_Motions: []
     m_Behaviours: []
