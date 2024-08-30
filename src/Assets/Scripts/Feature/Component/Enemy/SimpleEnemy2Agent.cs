@@ -27,6 +27,8 @@ namespace Feature.Component.Enemy
         [SerializeField]
         private GameObject bulletPrefab;
 
+        private bool canBullet;
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -85,6 +87,12 @@ namespace Feature.Component.Enemy
                 .Param("Target", enemyParams.pursuitDistance)
                 .Param("IsClose", false)
                 .Param("Object", playerTransform);
+        
+        private TriggerRef AttackTrigger() =>
+            Trigger("Distance")
+                .Param("Target", enemyParams.shootDistance)
+                .Param("IsClose", true)
+                .Param("Object", playerTransform);
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
@@ -95,38 +103,37 @@ namespace Feature.Component.Enemy
 
             while (true)
             {
+                // パトロール状態
                 agent.ResetPath();
-                Debug.Log("Patrol");
-                yield return Action("PointsAIMoveTo")
-                    .Param("Points", points)
-                    .Param("MoveSpeed", enemyParams.patrolSpeed)
-                    .IfEnd(
-                        new []
-                        {
-                            FocusTrigger()
-                                .Build(),
-                            UnFocusTrigger()
-                                .Build(),
-                        }
-                    )
-                    .Build();
+                
                 var distance = Vector3.Distance(playerTransform.position, transform.position);
-                if (Math.Abs(enemyParams.shootDistance - distance) < 0.2f)
+                
+                if (Math.Abs(enemyParams.shootDistance - distance) < 1f || canBullet)
                 {
+                    canBullet = false;
                     yield return Attack();
                 }
-
-                if (enemyParams.foundDistance > distance)
+                else if (enemyParams.pursuitDistance > distance)
                 {
-                    agent.ResetPath();
-                    Debug.Log("MoveToBeforeShoot");
                     yield return Action("AIMoveToTargetDistance")
                         .Param("Target", playerTransform)
                         .Param("Distance", enemyParams.shootDistance)
                         .Param("MoveSpeed", 1f)
                         .IfEnd(
-                            UnFocusTrigger()
-                                .Build()
+                            UnFocusTrigger().Build(), // プレイヤーを見失った場合のトリガー
+                            AttackTrigger().Build()
+                        )
+                        .Build();
+                    canBullet = true;
+                }
+                else
+                {
+                    yield return Action("PointsAIMoveTo")
+                        .Param("Points", points)
+                        .Param("MoveSpeed", enemyParams.patrolSpeed)
+                        .IfEnd(
+                            FocusTrigger().Build(), // プレイヤー発見のトリガー
+                            AttackTrigger().Build() // 攻撃モードのトリガー
                         )
                         .Build();
                 }
@@ -138,11 +145,11 @@ namespace Feature.Component.Enemy
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
-                Debug.Log("Bullet");
                 var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
                 bulletRb.SetHitObject(false, true);
                 bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage);
+                bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                 yield return Wait(enemyParams.shootIntervalSec);
             }
 
