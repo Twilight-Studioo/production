@@ -42,7 +42,7 @@ jobs:
           buildMethod: Packages.Rider.Editor.RiderScriptEditor.SyncSolution
           targetPlatform: StandaloneWindows64
       - name: 'Qodana Scan'
-        uses: JetBrains/qodana-action@v2024.1
+        uses: JetBrains/qodana-action@v2024.1.9
         with:
           args: --project-dir,./src
           upload-result: true
