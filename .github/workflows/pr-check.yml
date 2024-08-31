@@ -6,11 +6,15 @@ on:
       - 'src/Assets/Scripts/**'
       - '**/*.cs'
   push:
-    tags:
-      - 'v*'
     paths:
       - 'src/Assets/Scripts/**'
       - '**/*.cs'
+    branches:
+      - main
+      - develop
+      - 'release/*'
+    tags:
+      - 'v*'
 
 jobs:
   build:
