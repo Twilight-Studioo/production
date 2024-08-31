@@ -1,4 +1,4 @@
-name: PR Check
+name: code-check-build.yml
 on:
   workflow_dispatch:
   pull_request:
