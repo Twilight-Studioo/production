@@ -54,3 +54,15 @@ jobs:
 #        with:
 #          name: logs
 #          path: ${{ runner.temp }}/qodana/
+      - uses: game-ci/unity-test-runner@v4
+        id: myTestStep 
+        with:
+          projectPath: src
+          unityVersion: auto
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          testMode: All
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Test results
+          path: ${{ steps.myTestStep.outputs.artifactsPath }}
