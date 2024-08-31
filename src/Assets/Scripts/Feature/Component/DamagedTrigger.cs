@@ -1,3 +1,4 @@
+using System;
 using Feature.Interface;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ namespace Feature.Component
         
         private bool canHitEnemy = false;
         private bool canHitPlayer = false;
+        
+        public event Action OnHitEvent;
         
         public void SetHitObject(bool hitEnemy, bool hitPlayer)
         {
@@ -41,6 +44,7 @@ namespace Feature.Component
             if ((canHitPlayer && other.gameObject.CompareTag("Player")) || (canHitEnemy && other.gameObject.CompareTag("Enemy")))
             {
                 other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+                OnHitEvent?.Invoke();
                 Destroy(gameObject);
             }
         }
