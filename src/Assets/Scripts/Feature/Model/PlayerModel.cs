@@ -30,6 +30,7 @@ namespace Feature.Model
         private readonly CharacterParams characterParams;
 
         private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
+        public IReadOnlyReactiveProperty<int> Health;
 
         private readonly CompositeDisposable playerModelTimer = new();
 
@@ -64,6 +65,8 @@ namespace Feature.Model
             Position = position.ToReadOnlyReactiveProperty();
             CanStartSwap = canStartSwap.ToReadOnlyReactiveProperty();
             CanEndSwap = canEndSwap.ToReadOnlyReactiveProperty();
+            CanDagger = canDagger.ToReadOnlyReactiveProperty();
+            Health = health.ToReadOnlyReactiveProperty();
             // recover stamina
 
 
@@ -96,8 +99,6 @@ namespace Feature.Model
             health.Value = characterParams.health;
         }
 
-        public IReadOnlyReactiveProperty<int> Health => health.ToReadOnlyReactiveProperty();
-
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
         public float IfCanStartSwapRate =>
             (float)(characterParams.enterSwapUseStamina + characterParams.swapExecUseStamina) /
@@ -111,8 +112,8 @@ namespace Feature.Model
 
         public float JumpMove => characterParams.speed / 2;
 
-        public IReadOnlyReactiveProperty<PlayerState> State { get; }
-        public IReadOnlyReactiveProperty<Vector3> Position { get; private set; }
+        public readonly IReadOnlyReactiveProperty<PlayerState> State;
+        public readonly IReadOnlyReactiveProperty<Vector3> Position;
 
         public Vector3 Forward { get; private set; }
 

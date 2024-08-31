@@ -1,16 +1,15 @@
 {
-    "name": "Tests",
+    "name": "Editor.Tests.Common",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "VContainer",
-        "Feature.Model",
-        "UniRx",
-        "Editor.Tests.Common",
-        "Feature.Common.Parameter"
+        "UniRx"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
@@ -18,8 +17,8 @@
         "nunit.framework.dll",
         "Moq.dll",
         "Castle.Core.dll",
-        "System.Diagnostics.EventLog.dll",
-        "System.Runtime.CompilerServices.Unsafe.dll"
+        "System.Runtime.CompilerServices.Unsafe.dll",
+        "System.Diagnostics.EventLog.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
