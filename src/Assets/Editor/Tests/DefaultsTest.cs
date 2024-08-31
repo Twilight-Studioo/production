@@ -14,7 +14,7 @@ namespace Editor.Tests
         [Test]
         public void ResolveTest()
         {
-
+            
             Assert.AreEqual("hoge", "hoge");
         }
 

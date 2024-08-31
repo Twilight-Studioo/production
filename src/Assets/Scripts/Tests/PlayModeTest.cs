@@ -1,12 +1,9 @@
-using UnityEditor;
-
 namespace Tests
 {
-    public class DefaultTest
+    public class PlayModeTest
     {
-
         [NUnit.Framework.Test]
-        public void DefaultTestSimplePasses()
+        public void PlayModeTestSimplePasses()
         {
             // Use the Assert class to test conditions.
             
@@ -15,7 +12,7 @@ namespace Tests
         // A UnityTest behaves like a coroutine in PlayMode
         // and allows you to yield null to skip a frame in EditMode
         [UnityEngine.TestTools.UnityTest]
-        public System.Collections.IEnumerator DefaultTestWithEnumeratorPasses()
+        public System.Collections.IEnumerator PlayModeTestWithEnumeratorPasses()
         {
             // Use the Assert class to test conditions.
             // yield to skip a frame
