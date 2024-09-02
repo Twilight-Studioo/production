@@ -106,6 +106,9 @@ MonoBehaviour:
   Right: 1
   hx: 0
   vy: 0
+  comboTimeWindow: 1
+  comboAngleOffset: 50
+  maxComboCount: 2
 --- !u!114 &-6116646425731907792
 MonoBehaviour:
   m_ObjectHideFlags: 0

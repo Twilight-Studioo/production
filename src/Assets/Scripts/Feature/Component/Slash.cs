@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Feature.Component
 {
-    public class SlashView : MonoBehaviour
+    public class Slash : MonoBehaviour
     {
         private uint damage;
 
