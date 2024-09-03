@@ -205,17 +205,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: cfc2cd1aeba914525ae03257fa112d29, type: 2}
+      objectReference: {fileID: 9100000, guid: dbd3cb90435ebeb4a8f9a4d7c742c66f, type: 2}
     - target: {fileID: 5866666021909216657, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'SJK02:Hips'\n\tTransform 'SJK02:RightUpLeg'\n\tTransform
-        'SJK02:LeftUpLeg'\n\tTransform 'SJK02:Chest'\n\tTransform 'SJK02:LeftFoot'\n\tTransform
-        'SJK02:RightFoot'\n\tTransform 'SJK02:RightLeg'\n\tTransform 'SJK02:Spine'\n\tTransform
-        'SJK02:LeftLeg'\n\tTransform 'SJK02:Hips'\n\tand more ...\n\tFrom animation
-        clip 'Move'\n\tFrom animation clip 'Move'"
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6868716418057165105, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
