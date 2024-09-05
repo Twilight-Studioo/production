@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
@@ -19,6 +20,10 @@ namespace Feature.View
         public bool isDrawSwapRange;
 
         [SerializeField] private GameObject slashingEffect;
+        [SerializeField] private GameObject dagger;
+        public bool Right=true;
+        public float hx;
+        public float vy;
 
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
 
@@ -99,6 +104,18 @@ namespace Feature.View
 
         public void Move(float direction, float jumpMove)
         {
+            //向き
+            if (direction > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+                Right = true;
+            }
+            else if (direction < 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+                direction = direction * -1;
+                Right = false;
+            }
             if (isGrounded.Value)
             {
                 var movement = transform.right * (direction * Time.deltaTime);
@@ -129,6 +146,39 @@ namespace Feature.View
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
                 isGrounded.Value = false; // ジャンプ中になるので接地フラグをfalseにする
             }
+        }
+
+        // public void Attack(float degree)
+        // { 
+        //     if (degree == 0&&Right==false)//degree == 0&&transform.rotation.y==-180f
+        //     {
+        //         Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,180),this.transform);
+        //     }
+        //     else 
+        //         Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
+        // }
+
+        public void Dagger(float degree,float h,float v)
+        {
+            GameObject instantiateDagger;
+            if (degree == 0&&Right==false)
+            {
+               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, -180));
+            }
+            else
+               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, degree));
+
+            if (h == 0 && v == 0)
+            {
+                if (Right) 
+                {
+                    h = 1;
+                }
+                else 
+                    h = -1;
+            }
+            DaggerView daggerView = instantiateDagger.GetComponentInChildren<DaggerView>();
+            daggerView.HorizontalVertical(h,v);
         }
 
         public void Attack(float degree, uint damage)

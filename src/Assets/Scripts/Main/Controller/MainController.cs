@@ -3,10 +3,10 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
-using Feature.Common.Environment;
 using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
+using Main.Environment;
 using Main.Factory;
 using UniRx;
 using UnityEngine;
@@ -30,6 +30,8 @@ namespace Main.Controller
         private readonly TargetGroupManager targetGroupManager;
         private float horizontalInput;
 
+        private float lastDaggerTime; 
+        private const float daggerCooldown = 0.5f; 
         [Inject]
         public MainController(
             PlayerModel playerModel,
@@ -121,6 +123,30 @@ namespace Main.Controller
                     }
                 });
 
+            var daggerEvent = inputActionAccessor.CreateAction(Player.Dagger);
+            Observable.EveryFixedUpdate()
+                .Select(_ => daggerEvent.ReadValue<float>() > 0f)
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        if (Time.time >= lastDaggerTime + daggerCooldown)
+                        {
+                            lastDaggerTime = Time.time; 
+                            
+                            var h = Input.GetAxis("Horizontal");
+                            var v = Input.GetAxis("Vertical");
+                            float degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                            if (degree < 0)
+                            {
+                                degree += 360;
+                            }
+
+                            playerPresenter.Dagger(degree, h, v);
+                        }
+                    }
+                });
             var swapEvent = inputActionAccessor.CreateAction(Player.SwapMode);
             Observable.EveryFixedUpdate()
                 .Select(_ => swapEvent.ReadValue<float>() > 0f)

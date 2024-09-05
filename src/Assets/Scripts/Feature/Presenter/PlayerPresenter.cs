@@ -16,7 +16,7 @@ using Object = UnityEngine.Object;
 
 namespace Feature.Presenter
 {
-    public class PlayerPresenter
+    public class PlayerPresenter: IDisposable
     {
         private readonly CharacterParams characterParams;
         private readonly EnemyParams enemyParams;
@@ -24,15 +24,20 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
         private PlayerView playerView;
+        private readonly GameUIView gameUIView;
+
+        private readonly CompositeDisposable presenterDisposable = new();
 
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
-            CharacterParams characterParams
+            CharacterParams characterParams,
+            GameUIView ui
         )
         {
             playerModel = model;
             this.characterParams = characterParams;
+            gameUIView = ui;
             swapTimer = new();
         }
 
@@ -51,6 +56,19 @@ namespace Feature.Presenter
                 .AddTo(playerView);
 
             playerModel.Start();
+            var volume = (float)playerModel.SwapStamina.Value / characterParams.maxHasStamina;
+            gameUIView.SetVolume(volume * 100);
+            gameUIView.SetExecSwapLine(playerModel.IfCanEndSwapRate);
+            gameUIView.SetStartSwapLine(playerModel.IfCanStartSwapRate);
+            
+            // update ui
+            playerModel.SwapStamina
+                .Subscribe(x =>
+                {
+                    var volume = (float)x / characterParams.maxHasStamina;
+                    gameUIView.SetVolume(volume);
+                })
+                .AddTo(presenterDisposable);
 
             var playerHpBar = Object.FindObjectOfType<PlayerHPBar>();
             playerModel.Health
@@ -186,6 +204,22 @@ namespace Feature.Presenter
 #else
             Application.Quit();
 #endif
+        }
+
+        public void Dagger(float degree,float h,float v)
+        {
+            playerModel.OnDagger();
+            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
+            {
+                return;
+            }
+            playerView.Dagger(degree,h,v);
+        }
+
+        public void Dispose()
+        {
+            presenterDisposable.Dispose();
+            swapTimer.Dispose();
         }
     }
 }
