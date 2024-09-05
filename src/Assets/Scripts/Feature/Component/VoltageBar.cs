@@ -16,7 +16,6 @@ namespace Feature.Component
         {
             this.characterParams = characterParams;
         }
-
         public void UpdateVoltageBar()
         {
             if (characterParams.voltageValue >= characterParams.useVoltageAttackValue)
