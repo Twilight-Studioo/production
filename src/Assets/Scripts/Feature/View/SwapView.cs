@@ -59,20 +59,20 @@ namespace Feature.View
 
         public void SetHighlight(bool isHighlight)
         {
-            if (material == null)
-            {
-                return;
-            }
-
-            if (isHighlight)
-            {
-                //選択されている場合強調表示
-                material.SetFloat("_RimThreashould", hilightRimThreashold);
-            }
-            else
-            {
-                material.SetFloat("_RimThreashould", 1);
-            }
+            // if (material == null)
+            // {
+            //     return;
+            // }
+            //
+            // if (isHighlight)
+            // {
+            //     //選択されている場合強調表示
+            //     material.SetFloat("_RimThreashould", hilightRimThreashold);
+            // }
+            // else
+            // {
+            //     material.SetFloat("_RimThreashould", 1);
+            // }
         }
 
         protected void Delete()
@@ -122,5 +122,24 @@ namespace Feature.View
         }
 
         public bool IsSwap() => isSwap;
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (other.gameObject.name == "CanSwapSpace")
+            {
+                if (isSwap)
+                {
+                    material.SetFloat("_RimThreashould", hilightRimThreashold);
+                }
+                else
+                {
+                    material.SetFloat("_RimThreashould", 1);
+                }
+            }
+            else
+            {
+                material.SetFloat("_RimThreashould", 1);
+            }
+        }
     }
 }

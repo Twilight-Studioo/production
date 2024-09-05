@@ -167,6 +167,7 @@ namespace Main.Controller
                         var item = swapPresenter.SelectItem();
 
                         swapPresenter.ResetSelector();
+                        swapPresenter.EndSwap();
                         playerPresenter.EndSwap();
                         if (item == null)
                         {
@@ -175,6 +176,7 @@ namespace Main.Controller
 
                         item.PlayVFX();
                         playerPresenter.PlayVFX();
+                        
 
                         var pos = playerModel.Position.Value;
                         playerPresenter.SetPosition(item.transform.position);
