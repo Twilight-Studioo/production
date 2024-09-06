@@ -5,6 +5,8 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 #endregion
 
@@ -27,11 +29,16 @@ namespace Feature.View
         public float comboTimeWindow = 1f; // 〇秒以内の連続攻撃を許可
         public float comboAngleOffset = 60f; // 連続攻撃時の角度変化
         public int maxComboCount = 3; // 連続攻撃の最大回数
+
+        //URP関連
+        [SerializeField] private Volume volume;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
 
         private Animator animator;
+        private ColorAdjustments colorAdjustments; // 追加: ColorAdjustments の参照
+        private ColorCurves colorCurves;
         private int comboCount;
 
         private float lastAttackTime;
@@ -42,6 +49,7 @@ namespace Feature.View
         [NonSerialized] public float SwapRange;
 
         private VFXView vfxView;
+        private Vignette vignette;
         private float yDegree; //y座標の回転
 
         private void Awake()
@@ -51,6 +59,16 @@ namespace Feature.View
             vfxView = GetComponent<VFXView>();
             isGrounded
                 .Subscribe(x => { animator.SetBool(IsFalling, !x); });
+
+            volume = FindObjectOfType<Volume>();
+            //URP 背景変更
+            if (volume != null)
+            {
+                // Vignette取得
+                volume.profile.TryGet(out vignette);
+                // ColorAdjustments取得
+                volume.profile.TryGet(out colorAdjustments);
+            }
         }
 
         private void Update()
@@ -202,6 +220,48 @@ namespace Feature.View
         public bool IsGrounded()
         {
             return isGrounded.Value;
+        }
+
+        public void SwapStartURP()
+        {
+            EnableGrayscale();
+            VignetteRedColor();
+        }
+
+        public void SwapFinishURP()
+        {
+            DisableGrayscale();
+            VignetteBlackColor();
+        }
+
+        private void VignetteRedColor()
+        {
+            if (volume.profile.TryGet(out vignette))
+                ChangeVignetteColorTo(Color.red);
+        }
+
+        private void VignetteBlackColor()
+        {
+            if (volume.profile.TryGet(out vignette))
+                ChangeVignetteColorTo(Color.black);
+        }
+
+        // Vignetteの色を変更する
+        private void ChangeVignetteColorTo(Color newColor)
+        {
+            if (vignette != null) vignette.color.Override(newColor);
+        }
+
+        // 画面を白黒にする
+        private void EnableGrayscale()
+        {
+            if (colorAdjustments != null) colorAdjustments.saturation.Override(-100f); // 彩度を下げる
+        }
+
+        // 白黒を解除する
+        private void DisableGrayscale()
+        {
+            if (colorAdjustments != null) colorAdjustments.saturation.Override(0f); // 彩度を元に戻す
         }
     }
 }

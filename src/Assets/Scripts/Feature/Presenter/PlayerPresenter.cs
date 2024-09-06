@@ -16,17 +16,17 @@ using Object = UnityEngine.Object;
 
 namespace Feature.Presenter
 {
-    public class PlayerPresenter: IDisposable
+    public class PlayerPresenter : IDisposable
     {
         private readonly CharacterParams characterParams;
         private readonly EnemyParams enemyParams;
+        private readonly GameUIView gameUIView;
         private readonly PlayerModel playerModel;
+
+        private readonly CompositeDisposable presenterDisposable = new();
 
         private readonly CompositeDisposable swapTimer;
         private PlayerView playerView;
-        private readonly GameUIView gameUIView;
-
-        private readonly CompositeDisposable presenterDisposable = new();
 
         [Inject]
         public PlayerPresenter(
@@ -38,7 +38,13 @@ namespace Feature.Presenter
             playerModel = model;
             this.characterParams = characterParams;
             gameUIView = ui;
-            swapTimer = new();
+            swapTimer = new CompositeDisposable();
+        }
+
+        public void Dispose()
+        {
+            presenterDisposable.Dispose();
+            swapTimer.Dispose();
         }
 
         public void OnPossess(PlayerView view)
@@ -60,7 +66,7 @@ namespace Feature.Presenter
             gameUIView.SetVolume(volume * 100);
             gameUIView.SetExecSwapLine(playerModel.IfCanEndSwapRate);
             gameUIView.SetStartSwapLine(playerModel.IfCanStartSwapRate);
-            
+
             // update ui
             playerModel.SwapStamina
                 .Subscribe(x =>
@@ -95,12 +101,10 @@ namespace Feature.Presenter
 
         public void StartSwap()
         {
-            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
-            {
-                return;
-            }
+            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value) return;
 
             playerView.isDrawSwapRange = true;
+            playerView.SwapStartURP();
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
@@ -114,10 +118,7 @@ namespace Feature.Presenter
                 .DistinctUntilChanged()
                 .Subscribe(x =>
                 {
-                    if (x)
-                    {
-                        return;
-                    }
+                    if (x) return;
 
                     EndSwap();
                 });
@@ -125,11 +126,9 @@ namespace Feature.Presenter
 
         public void EndSwap()
         {
-            if (playerModel.State.Value != PlayerModel.PlayerState.DoSwap)
-            {
-                return;
-            }
+            if (playerModel.State.Value != PlayerModel.PlayerState.DoSwap) return;
 
+            playerView.SwapFinishURP();
             swapTimer.Clear();
             playerModel.OnEndSwap();
 
@@ -191,7 +190,10 @@ namespace Feature.Presenter
             playerView.PlayVFX();
         }
 
-        public Transform GetTransform() => playerView.transform;
+        public Transform GetTransform()
+        {
+            return playerView.transform;
+        }
 
         private void OnPlayerDeath()
         {
@@ -203,20 +205,11 @@ namespace Feature.Presenter
 #endif
         }
 
-        public void Dagger(float degree,float h,float v)
+        public void Dagger(float degree, float h, float v)
         {
             playerModel.OnDagger();
-            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
-            {
-                return;
-            }
-            playerView.Dagger(degree,h,v);
-        }
-
-        public void Dispose()
-        {
-            presenterDisposable.Dispose();
-            swapTimer.Dispose();
+            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value) return;
+            playerView.Dagger(degree, h, v);
         }
     }
 }
