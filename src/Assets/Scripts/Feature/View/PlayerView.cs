@@ -13,9 +13,6 @@ namespace Feature.View
     [RequireComponent(typeof(VFXView))]
     public class PlayerView : MonoBehaviour, IDamaged
     {
-        private static readonly int Speed = Animator.StringToHash("Speed");
-        private static readonly int OnJump = Animator.StringToHash("OnJump");
-        private static readonly int IsFalling = Animator.StringToHash("IsFalling");
 
         public bool isDrawSwapRange;
 
@@ -50,7 +47,8 @@ namespace Feature.View
             animator = GetComponentInChildren<Animator>();
             vfxView = GetComponent<VFXView>();
             isGrounded
-                .Subscribe(x => { animator.SetBool(IsFalling, !x); });
+                .Where(x => !x)
+                .Subscribe(animator.SetIsFalling);
         }
 
         private void Update()
@@ -62,7 +60,7 @@ namespace Feature.View
         {
             speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
             previousPosition = rb.position;
-            animator.SetFloat(Speed, speed);
+            animator.SetSpeed(speed);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -88,6 +86,7 @@ namespace Feature.View
             imp.y += 1f;
             rb.AddForce(imp * 5f, ForceMode.Impulse);
             OnDamageEvent?.Invoke(damage);
+            animator.OnTakeDamage();
         }
 
         public event Action<uint> OnDamageEvent;
@@ -134,7 +133,7 @@ namespace Feature.View
         {
             if (isGrounded.Value)
             {
-                animator.SetTrigger(OnJump);
+                animator.OnJump();
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
                 isGrounded.Value = false; // ジャンプ中になるので接地フラグをfalseにする
             }
@@ -158,6 +157,7 @@ namespace Feature.View
 
             var dagger = instantiateDagger.GetComponentInChildren<Dagger>();
             dagger.HorizontalVertical(h, v);
+            animator.OnDagger();
         }
 
         public void Attack(float degree, uint damage)
@@ -181,6 +181,7 @@ namespace Feature.View
             {
                 yDegree = 0;
             }
+            animator.SetAttackComboCount(comboCount);
 
             if (degree == 0 && Right == false) degree = -180f;
             var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0),
@@ -188,6 +189,7 @@ namespace Feature.View
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
+            animator.OnAttack();
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
