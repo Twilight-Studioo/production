@@ -52,6 +52,8 @@ namespace Feature.View
         private Vignette vignette;
         private float yDegree; //y座標の回転
 
+        public float vignetteChange = 0.5f;//赤くなるまでの時間
+
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
@@ -225,7 +227,7 @@ namespace Feature.View
         public void SwapStartURP()
         {
             EnableGrayscale();
-            VignetteRedColor();
+            Invoke("VignetteRedColor",vignetteChange);
         }
 
         public void SwapFinishURP()
@@ -255,13 +257,13 @@ namespace Feature.View
         // 画面を白黒にする
         private void EnableGrayscale()
         {
-            if (colorAdjustments != null) colorAdjustments.saturation.Override(-100f); // 彩度を下げる
+            if (colorAdjustments != null) colorAdjustments.saturation.Override(-50f);
         }
 
         // 白黒を解除する
         private void DisableGrayscale()
         {
-            if (colorAdjustments != null) colorAdjustments.saturation.Override(0f); // 彩度を元に戻す
+            if (colorAdjustments != null) colorAdjustments.saturation.Override(0f);
         }
     }
 }
