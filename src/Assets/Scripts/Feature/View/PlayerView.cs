@@ -28,7 +28,7 @@ namespace Feature.View
 
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
 
-        private Animator animator;
+        private AnimationWrapper animator;
         private int comboCount;
 
         private float lastAttackTime;
@@ -44,7 +44,7 @@ namespace Feature.View
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
-            animator = GetComponentInChildren<Animator>();
+            animator = new (GetComponentInChildren<Animator>());
             vfxView = GetComponent<VFXView>();
             isGrounded
                 .Where(x => !x)
