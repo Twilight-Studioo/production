@@ -18,9 +18,6 @@ namespace Feature.Common.Parameter
 
         public int attackPower = 2;
         
-        
-
-
         // スワップ関連
 
         [Tooltip("スワップの最大継続時間(Milli)"), Space(10),]
@@ -67,8 +64,6 @@ namespace Feature.Common.Parameter
                 
         [Tooltip("ボルテージ使用時の攻撃上昇倍率")] 
         public int voltageAttackPowerValue = 2;
-
-        public int voltageValue = 0;
     }
 
     [Serializable]

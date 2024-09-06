@@ -1,25 +1,17 @@
-﻿using Feature.Common.Parameter;
-using UnityEngine;
-using VContainer;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Feature.Component
 {
     public class VoltageBar :MonoBehaviour
     {
-        private CharacterParams characterParams;
         [SerializeField] private Slider voltageBar;
         [SerializeField] private Image fill;
-
-        [Inject]
-        public void Initialize(CharacterParams characterParams)
-        {
-            this.characterParams = characterParams;
-        }
         
-        public void UpdateVoltageBar()
+        
+        public void UpdateVoltageBar(int voltageValue,int useVoltageAttackValue)
         {
-            if (characterParams.voltageValue >= characterParams.useVoltageAttackValue)
+            if (voltageValue >= useVoltageAttackValue)
             {
                 fill.color = Color.yellow;
             }
@@ -27,8 +19,7 @@ namespace Feature.Component
             {
                 fill.color = Color.blue;
             }
-            Debug.Log(characterParams.voltageValue);
-            voltageBar.value = (float)characterParams.voltageValue;
+            voltageBar.value = (float)voltageValue;
         }
     }
 }

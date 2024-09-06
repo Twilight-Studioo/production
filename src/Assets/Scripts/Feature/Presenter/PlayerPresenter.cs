@@ -23,17 +23,20 @@ namespace Feature.Presenter
         private readonly PlayerModel playerModel;
 
         private readonly CompositeDisposable swapTimer;
-        private PlayerView playerView;
+        private  PlayerView playerView;
+        private readonly VoltageBar voltageBar;
 
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
-            CharacterParams characterParams
+            CharacterParams characterParams,
+            VoltageBar voltageBar
         )
         {
             playerModel = model;
             this.characterParams = characterParams;
             swapTimer = new();
+            this.voltageBar = voltageBar;
         }
 
         public void OnPossess(PlayerView view)
@@ -115,10 +118,8 @@ namespace Feature.Presenter
             swapTimer.Clear();
             playerModel.OnEndSwap();
             
-
             Func<float, float> easingFunction;
-
-
+            
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:
@@ -157,7 +158,6 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(swapTimer);
-            
         }
 
         public void SetPosition(Vector3 position)
@@ -167,12 +167,14 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            playerView.Attack(degree, (uint)playerModel.UseVoltageAttack());
+            playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
+            voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
         }
 
         public void PlayVFX()
         {
             playerModel.AddVoltageSwap();
+            voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
             playerView.PlayVFX();
         }
 
