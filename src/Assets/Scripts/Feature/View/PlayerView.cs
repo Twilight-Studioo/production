@@ -26,12 +26,12 @@ namespace Feature.View
         public bool Right = true;
         public float hx;
         public float vy;
-        public float comboTimeWindow = 1f; // 〇秒以内の連続攻撃を許可
-        public float comboAngleOffset = 60f; // 連続攻撃時の角度変化
-        public int maxComboCount = 3; // 連続攻撃の最大回数
+        private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
+        private float comboAngleOffset; // 連続攻撃時の角度変化
+        private int maxComboCount; // 連続攻撃の最大回数
 
         //URP関連
-        [SerializeField] private Volume volume;
+        private Volume volume;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
@@ -52,8 +52,8 @@ namespace Feature.View
         private Vignette vignette;
         private float yDegree; //y座標の回転
 
-        public float vignetteChange = 0.5f;//赤くなるまでの時間
-
+        private float vignetteChange;//赤くなるまでの時間
+        
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
@@ -85,6 +85,13 @@ namespace Feature.View
             animator.SetFloat(Speed, speed);
         }
 
+        public void SetParam(float ComboTimeWindow,float ComboAngleOffset,int MaxComboCount,float VignetteChange)
+        {
+            comboTimeWindow = ComboTimeWindow;
+            comboAngleOffset = ComboAngleOffset;
+            maxComboCount = MaxComboCount;
+            vignetteChange = VignetteChange;
+        }
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.CompareTag("Ground")) isGrounded.Value = true;
@@ -228,12 +235,14 @@ namespace Feature.View
         {
             EnableGrayscale();
             Invoke("VignetteRedColor",vignetteChange);
+            
         }
 
         public void SwapFinishURP()
         {
             DisableGrayscale();
             VignetteBlackColor();
+            CancelInvoke("VignetteRedColor");
         }
 
         private void VignetteRedColor()

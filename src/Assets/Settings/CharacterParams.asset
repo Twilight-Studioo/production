@@ -16,6 +16,10 @@ MonoBehaviour:
   speed: 5
   jumpPower: 7
   attackPower: 5
+  comboTimeWindow: 1
+  comboAngleOffset: 60
+  maxComboCount: 3
+  vignetteChange: 0.5
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10
@@ -30,5 +34,3 @@ MonoBehaviour:
   resourceRecoveryQuantity: 1
   recoveryStaminaTimeMillis: 10
   useDaggerUseStamina: 20
-  recoveryStaminaTimeMillis: 800
-

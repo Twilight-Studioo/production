@@ -111,6 +111,10 @@ namespace Feature.Model
 
         public float JumpMove => characterParams.speed / 2;
 
+        public float ComboTimeWindow => characterParams.comboTimeWindow;
+        public float ComboAngleOffset => characterParams.comboAngleOffset;
+        public int MaxComboCount => characterParams.maxComboCount;
+        public float VignetteChange => characterParams.vignetteChange;
         public IReadOnlyReactiveProperty<PlayerState> State { get; }
         public IReadOnlyReactiveProperty<Vector3> Position { get; private set; }
 
