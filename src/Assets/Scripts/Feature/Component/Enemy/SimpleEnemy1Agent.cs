@@ -123,13 +123,12 @@ namespace Feature.Component.Enemy
                     yield return Action("AIMoveToFollow")
                         .Param("FollowTransform", playerTransform)
                         .Param("MoveSpeed", enemyParams.pursuitSpeed)
-                        .IfEnd(new[]
-                        {
+                        .IfEnd(
                             UnFocusTrigger()
                                 .Build(),
                             RushStart()
-                                .Build(),
-                        })
+                                .Build()
+                        )
                         .Build();
                 }
             }

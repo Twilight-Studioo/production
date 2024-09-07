@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Feature.Model
 {
-    public struct SwapItem
+    public struct SwapItem : IEquatable<SwapItem>
     {
         public Guid Id;
         public Vector3 Position;
@@ -21,6 +21,12 @@ namespace Feature.Model
             Position = position;
             Renderer = renderer;
         }
+
+        public bool Equals(SwapItem other) => Id.Equals(other.Id);
+
+        public override bool Equals(object obj) => obj is SwapItem other && Equals(other);
+
+        public override int GetHashCode() => HashCode.Combine(Id, Position, Renderer);
     }
 
     public class SwapModel

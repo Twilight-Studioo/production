@@ -15,9 +15,6 @@ namespace Feature.View
     [RequireComponent(typeof(VFXView))]
     public class PlayerView : MonoBehaviour, IDamaged
     {
-        private static readonly int Speed = Animator.StringToHash("Speed");
-        private static readonly int OnJump = Animator.StringToHash("OnJump");
-        private static readonly int IsFalling = Animator.StringToHash("IsFalling");
 
         public bool isDrawSwapRange;
 
@@ -35,10 +32,11 @@ namespace Feature.View
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-
-        private Animator animator;
+        
         private ColorAdjustments colorAdjustments; // 追加: ColorAdjustments の参照
         private ColorCurves colorCurves;
+        
+        private AnimationWrapper animator;
         private int comboCount;
 
         private float lastAttackTime;
@@ -57,13 +55,13 @@ namespace Feature.View
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
-            animator = GetComponentInChildren<Animator>();
+            animator = new (GetComponentInChildren<Animator>());
             vfxView = GetComponent<VFXView>();
             isGrounded
-                .Subscribe(x => { animator.SetBool(IsFalling, !x); });
-
-            volume = FindObjectOfType<Volume>();
-            //URP 背景変更
+                .Where(x => !x)
+                .Subscribe(animator.SetIsFalling);
+                
+            volume = FindObjectOfType<Volume>();            //URP 背景変更
             if (volume != null)
             {
                 // Vignette取得
@@ -82,7 +80,7 @@ namespace Feature.View
         {
             speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
             previousPosition = rb.position;
-            animator.SetFloat(Speed, speed);
+            animator.SetSpeed(speed);
         }
 
         public void SetParam(float ComboTimeWindow,float ComboAngleOffset,int MaxComboCount,float VignetteChange)
@@ -115,6 +113,7 @@ namespace Feature.View
             imp.y += 1f;
             rb.AddForce(imp * 5f, ForceMode.Impulse);
             OnDamageEvent?.Invoke(damage);
+            animator.OnTakeDamage();
         }
 
         public event Action<uint> OnDamageEvent;
@@ -161,7 +160,7 @@ namespace Feature.View
         {
             if (isGrounded.Value)
             {
-                animator.SetTrigger(OnJump);
+                animator.OnJump();
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
                 isGrounded.Value = false; // ジャンプ中になるので接地フラグをfalseにする
             }
@@ -185,6 +184,7 @@ namespace Feature.View
 
             var dagger = instantiateDagger.GetComponentInChildren<Dagger>();
             dagger.HorizontalVertical(h, v);
+            animator.OnDagger();
         }
 
         public void Attack(float degree, uint damage)
@@ -208,6 +208,7 @@ namespace Feature.View
             {
                 yDegree = 0;
             }
+            animator.SetAttackComboCount(comboCount);
 
             if (degree == 0 && Right == false) degree = -180f;
             var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0),
@@ -215,6 +216,7 @@ namespace Feature.View
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
+            animator.OnAttack();
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
