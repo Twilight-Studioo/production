@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2320110100350635330}
   - component: {fileID: 5612375394115558322}
   - component: {fileID: -6116646425731907792}
+  - component: {fileID: 3899239073509753326}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -106,9 +107,6 @@ MonoBehaviour:
   Right: 1
   hx: 0
   vy: 0
-  comboTimeWindow: 1
-  comboAngleOffset: 50
-  maxComboCount: 2
 --- !u!114 &-6116646425731907792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +121,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effect: {fileID: 7604104440151457739}
   onStopTime: 1
+--- !u!114 &3899239073509753326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690427865376889176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59a9b82c08c68642a8f4cbc5680f7f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2874913418483568561
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -10,8 +10,10 @@ using Main.Controller;
 using Main.Environment;
 using Main.Factory;
 using UnityEngine;
+using UnityEngine.Rendering;
 using VContainer;
 using VContainer.Unity;
+using Feature.Component;
 
 #endregion
 
@@ -31,6 +33,7 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<InputActionAccessor>();
             builder.RegisterComponentInHierarchy<GameUIView>();
             builder.RegisterComponentInHierarchy<SwapView>();
+            builder.RegisterComponentInHierarchy<URP>();
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);
             builder.Register<SwapModel>(Lifetime.Scoped);
@@ -39,7 +42,7 @@ namespace Main.Installer
             builder.Register<PlayerModel>(Lifetime.Scoped);
             builder.Register<PlayerPresenter>(Lifetime.Scoped);
             builder.Register<IGameController, MainController>(Lifetime.Scoped);
-
+            
             GameManager.Register(builder);
             builder.RegisterEntryPoint<GameManager>(Lifetime.Scoped);
         }

@@ -5,8 +5,6 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 #endregion
 
@@ -26,15 +24,10 @@ namespace Feature.View
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private float comboAngleOffset; // 連続攻撃時の角度変化
         private int maxComboCount; // 連続攻撃の最大回数
-
-        //URP関連
-        private Volume volume;
+        
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-        
-        private ColorAdjustments colorAdjustments; // 追加: ColorAdjustments の参照
-        private ColorCurves colorCurves;
         
         private AnimationWrapper animator;
         private int comboCount;
@@ -47,11 +40,10 @@ namespace Feature.View
         [NonSerialized] public float SwapRange;
 
         private VFXView vfxView;
-        private Vignette vignette;
         private float yDegree; //y座標の回転
 
         private float vignetteChange;//赤くなるまでの時間
-        
+        private URP urp;
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
@@ -60,15 +52,6 @@ namespace Feature.View
             isGrounded
                 .Where(x => !x)
                 .Subscribe(animator.SetIsFalling);
-                
-            volume = FindObjectOfType<Volume>();            //URP 背景変更
-            if (volume != null)
-            {
-                // Vignette取得
-                volume.profile.TryGet(out vignette);
-                // ColorAdjustments取得
-                volume.profile.TryGet(out colorAdjustments);
-            }
         }
 
         private void Update()
@@ -83,12 +66,13 @@ namespace Feature.View
             animator.SetSpeed(speed);
         }
 
-        public void SetParam(float ComboTimeWindow,float ComboAngleOffset,int MaxComboCount,float VignetteChange)
+        public void SetParam(float ComboTimeWindow,float ComboAngleOffset,int MaxComboCount,float VignetteChange,URP _urp)
         {
             comboTimeWindow = ComboTimeWindow;
             comboAngleOffset = ComboAngleOffset;
             maxComboCount = MaxComboCount;
             vignetteChange = VignetteChange;
+            urp = _urp;
         }
         private void OnCollisionEnter(Collision collision)
         {
@@ -233,48 +217,14 @@ namespace Feature.View
             return isGrounded.Value;
         }
 
-        public void SwapStartURP()
+        public void SwapTimeStartURP()
         {
-            EnableGrayscale();
-            Invoke("VignetteRedColor",vignetteChange);
-            
+            urp.SwapStartURP(vignetteChange);
         }
 
-        public void SwapFinishURP()
+        public void SwapTimeFinishURP()
         {
-            DisableGrayscale();
-            VignetteBlackColor();
-            CancelInvoke("VignetteRedColor");
-        }
-
-        private void VignetteRedColor()
-        {
-            if (volume.profile.TryGet(out vignette))
-                ChangeVignetteColorTo(Color.red);
-        }
-
-        private void VignetteBlackColor()
-        {
-            if (volume.profile.TryGet(out vignette))
-                ChangeVignetteColorTo(Color.black);
-        }
-
-        // Vignetteの色を変更する
-        private void ChangeVignetteColorTo(Color newColor)
-        {
-            if (vignette != null) vignette.color.Override(newColor);
-        }
-
-        // 画面を白黒にする
-        private void EnableGrayscale()
-        {
-            if (colorAdjustments != null) colorAdjustments.saturation.Override(-50f);
-        }
-
-        // 白黒を解除する
-        private void DisableGrayscale()
-        {
-            if (colorAdjustments != null) colorAdjustments.saturation.Override(0f);
+            urp.SwapFinishURP();
         }
     }
 }
