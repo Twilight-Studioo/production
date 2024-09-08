@@ -84,6 +84,12 @@ jobs:
   convert-to-markdown:
     runs-on: ubuntu-latest
     needs: test
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -114,4 +120,4 @@ jobs:
         if: github.event_name == 'pull_request' && hashFiles('Result.md') != ''
         with:
           recreate: true
-          path: Result.md
+          path: ./Result.md
