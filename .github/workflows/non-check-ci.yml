@@ -7,6 +7,7 @@ on:
 
 jobs:
   comment-on-pr:
+    if: "!contains(github.event.pull_request.changed_files, 'src/Assets/Scripts/') && !contains(github.event.pull_request.changed_files, '.cs')"
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
