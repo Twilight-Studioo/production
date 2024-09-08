@@ -69,7 +69,7 @@ jobs:
           key: Library-lint-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: Library-lint-
       - uses: game-ci/unity-test-runner@v4
-        id: myTestStep
+        id: tests
         with:
           projectPath: src
           unityVersion: auto
