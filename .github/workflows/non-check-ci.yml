@@ -27,7 +27,7 @@ jobs:
             It is safe to merge without further code review.
             
             #### Pull Request Summary
-  
+            
             - **Title:** [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
             - **Author:** @${{ github.actor }}
             - **Created at:** ${{ github.event.pull_request.created_at }}
@@ -36,10 +36,10 @@ jobs:
             
             <details>
             <summary>Click to expand PR details</summary>
-  
+            
             - **PR Number:** #${{ github.event.pull_request.number }}
             - **Body:**
-                > ${{ github.event.pull_request.body }}
+                ${{ github.event.pull_request.body }}
             
             </details>
             

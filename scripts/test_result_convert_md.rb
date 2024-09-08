@@ -73,48 +73,61 @@ pass_rate = (total_passed.to_f / total_tests * 100).round(2)
 
 # Markdown形式のレポートの初期化
 markdown_report = "# Test Results Summary for PR [##{pr_number} - #{pr_title}](#{pr_url})\n\n"
-markdown_report << "<details>\n<summary>pull request details</summary>\n\n"
+markdown_report << "<details>\n<summary><strong>Pull Request Details</strong></summary>\n\n"
 markdown_report << "#### ##{pr_number} origin/#{pr_base_ref} <- origin/#{pr_head_ref}\n"
-markdown_report << "### #{pr_title}\n"
-markdown_report << "#{pr_body}\n"
-markdown_report << "Created At: #{pr_created_at}\n"
+markdown_report << "**Title:** #{pr_title}\n\n"
+markdown_report << "**Description:**\n\n#{pr_body}\n\n"
+markdown_report << "**Created At:** #{pr_created_at}\n"
 markdown_report << "</details>\n\n---\n"
 
 editmode_all_passed = editmode_results[:passed] == editmode_results[:total]
 playmode_all_passed = playmode_results[:passed] == playmode_results[:total]
-# 0.01単位まで
-all_suites = editmode_results[:suites].values.sum { |suite| suite[:duration] } + playmode_results[:suites].values.sum { |suite| suite[:duration] }
+all_tests_passed = editmode_all_passed && playmode_all_passed
+
+all_suites_duration = editmode_results[:suites].values.sum { |suite| suite[:duration] } + playmode_results[:suites].values.sum { |suite| suite[:duration] }
 editmode_total_result = "#{editmode_all_passed ? '✅' : '❌'} editmode-results.xml - #{editmode_results[:passed]}/#{editmode_results[:total]} - Passed in #{editmode_results[:suites].values.sum { |suite| suite[:duration] }}s"
 playmode_total_result = "#{playmode_all_passed ? '✅' : '❌'} playmode-results.xml - #{playmode_results[:passed]}/#{playmode_results[:total]} - Passed in #{playmode_results[:suites].values.sum { |suite| suite[:duration] }}s"
-markdown_report << "## #{editmode_all_passed && playmode_all_passed ? '✅' : '❌'} Test Results - #{total_passed}/#{total_tests} - Passed in #{all_suites.round(4)}s\n"
+
+# 全体の結果
+markdown_report << "## #{all_tests_passed ? '✅' : '❌'} Overall Test Results - #{total_passed}/#{total_tests} Passed - Total Duration: #{all_suites_duration.round(4)}s\n"
 markdown_report << "### #{editmode_total_result}\n"
 markdown_report << "### #{playmode_total_result}\n\n---\n"
 
 # Editmodeの結果をMarkdownに追加
-markdown_report << "<details>\n<summary>#{editmode_total_result}</summary>\n\n"
+markdown_report << "<details>\n<summary><strong>#{editmode_total_result}</strong></summary>\n\n"
 editmode_results[:suites].each do |suite_name, suite_result|
-  markdown_report << "  - #{suite_result[:passed] == suite_result[:total] ? '✅' : '❌'} #{suite_name} - #{suite_result[:passed]}/#{suite_result[:total]} - Passed in #{suite_result[:duration]}s\n"
+  markdown_report << "- **#{suite_result[:passed] == suite_result[:total] ? '✅' : '❌'} #{suite_name}** - #{suite_result[:passed]}/#{suite_result[:total]} Passed in #{suite_result[:duration]}s\n"
   suite_result[:test_cases].each do |test_case|
-    markdown_report << "    - #{test_case[:result_icon]} #{test_case[:name]} - #{test_case[:result]} in #{test_case[:duration]}s\n"
+    markdown_report << "  - #{test_case[:result_icon]} #{test_case[:name]} - #{test_case[:result]} in #{test_case[:duration]}s\n"
   end
+  markdown_report << "\n"
 end
-markdown_report << "</details>\n\n<br>\n"
+markdown_report << "</details>\n\n"
 
 # Playmodeの結果をMarkdownに追加
-markdown_report << "<details>\n<summary>#{playmode_total_result}</summary>\n\n"
+markdown_report << "<details>\n<summary><strong>#{playmode_total_result}</strong></summary>\n\n"
 playmode_results[:suites].each do |suite_name, suite_result|
-  markdown_report << "  - #{suite_result[:passed] == suite_result[:total] ? '✅' : '❌'} #{suite_name} - #{suite_result[:passed]}/#{suite_result[:total]} - Passed in #{suite_result[:duration]}s\n"
+  markdown_report << "- **#{suite_result[:passed] == suite_result[:total] ? '✅' : '❌'} #{suite_name}** - #{suite_result[:passed]}/#{suite_result[:total]} Passed in #{suite_result[:duration]}s\n"
   suite_result[:test_cases].each do |test_case|
-    markdown_report << "    - #{test_case[:result_icon]} #{test_case[:name]} - #{test_case[:result]} in #{test_case[:duration]}s\n"
+    markdown_report << "  - #{test_case[:result_icon]} #{test_case[:name]} - #{test_case[:result]} in #{test_case[:duration]}s\n"
   end
+  markdown_report << "\n"
 end
-markdown_report << "</details>\n\n---\n\n"
-markdown_report << "> [!IMPORTANT]\n>\n"
-markdown_report << "> Total Tests: **#{total_tests}**\n>\n"
-markdown_report << "> Passed: **#{total_passed}**\n>\n"
-markdown_report << "> Failed: **#{total_failed}**\n>\n"
-markdown_report << "> Skipped: **#{total_skipped}**\n>\n"
-markdown_report << "> Pass Rate: **#{pass_rate}%**\n---\n"
+markdown_report << "</details>\n\n"
+
+# 結果に基づいた推奨コメントを追加
+if all_tests_passed
+  markdown_report << "---\n"
+  markdown_report << "### ✅ Ready to Merge\n\n"
+  markdown_report << "All tests have passed successfully! This pull request is safe to merge.\n\n"
+  markdown_report << "- Ensure all checks have passed.\n"
+  markdown_report << "- Verify that no additional changes are needed.\n"
+  markdown_report << "- [Merge this pull request](#{pr_url}) when ready.\n\n"
+else
+  markdown_report << "---\n"
+  markdown_report << "### ❌ Tests Failed\n\n"
+  markdown_report << "Some tests have failed. Please review the results and address any issues before merging.\n\n"
+end
 
 # Markdownファイルの保存
 puts "Generating Markdown report..."
