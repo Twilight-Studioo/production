@@ -75,22 +75,39 @@ jobs:
           unityVersion: auto
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           testMode: All
-          coverageOptions: 'generateHtmlReport;generateAdditionalReports'
       - uses: actions/upload-artifact@v4
         name: Upload Test artifacts
         if: always()
         with:
           name: test-artifacts
           path: ${{ steps.tests.outputs.artifactsPath }}
-      - uses: actions/upload-artifact@v4
-        name: Upload Test coverages
-        if: always()
+  convert-to-markdown:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Download Test Artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: test-coverages
-          path: ${{ steps.tests.outputs.coveragePath }}
+          name: test-artifacts
+          path: artifacts  # ダウンロードするパス
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+  
+      - name: Install Ruby Dependencies
+        run: |
+          gem install bundler
+          bundle install
+        working-directory: ${{ runner.workspace }}/scripts
+  
+      - name: Convert XML to Markdown
+        run: |
+          ruby scripts/test_result_convert_md.rb artifacts
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request' && hashFiles('CodeCoverage/**/Summary.md') != ''
         with:
           recreate: true
-          path: CodeCoverage/**/Summary.md
+          path: Result.md
