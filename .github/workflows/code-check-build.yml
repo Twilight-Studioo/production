@@ -77,10 +77,12 @@ jobs:
           testMode: All
           coverageOptions: 'generateHtmlReport;generateAdditionalReports'
       - uses: actions/upload-artifact@v4
+        name: Upload Test artifacts
         if: always()
         with:
           path: ${{ steps.tests.outputs.artifactsPath }}
       - uses: actions/upload-artifact@v4
+        name: Upload Test coverages
         if: always()
         with:
           path: ${{ steps.tests.outputs.coveragePath }}
