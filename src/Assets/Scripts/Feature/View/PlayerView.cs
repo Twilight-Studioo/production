@@ -44,11 +44,12 @@ namespace Feature.View
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
-            animator = new (GetComponentInChildren<Animator>());
+            animator = this.Create(GetComponentInChildren<Animator>());
             vfxView = GetComponent<VFXView>();
             isGrounded
-                .Where(x => !x)
-                .Subscribe(animator.SetIsFalling);
+                .Subscribe(x => {
+                    animator.SetIsFalling(!x);        
+                });
         }
 
         private void Update()
@@ -189,7 +190,7 @@ namespace Feature.View
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
-            animator.OnAttack();
+            animator.OnAttack(0.5f);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;

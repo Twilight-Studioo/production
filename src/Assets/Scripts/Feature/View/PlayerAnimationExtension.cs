@@ -43,6 +43,11 @@ namespace Feature.View
         private const string Attack = "OnAttack";
 
         /// <summary>
+        ///     Name of the boolean parameter used to indicate whether the player is attacking in the animation.
+        /// </summary>
+        private const string IsAttacking = "IsAttacking";
+
+        /// <summary>
         ///     Name of the integer parameter used to count the number of attack combos in the animation.
         /// </summary>
         private const string AttackComboCount = "AttackComboCount";
@@ -53,6 +58,7 @@ namespace Feature.View
         public static readonly int OnTakeDamageHash = Animator.StringToHash(TakeDamage);
         public static readonly int OnDaggerHash = Animator.StringToHash(Dagger);
         public static readonly int OnAttackHash = Animator.StringToHash(Attack);
+        public static readonly int IsAttackingHash = Animator.StringToHash(IsAttacking);
         public static readonly int AttackComboCountHash = Animator.StringToHash(AttackComboCount);
 
         public static void SetIsFalling(this IAnimator animator, bool isFalling)
@@ -80,9 +86,11 @@ namespace Feature.View
             animator.SetTrigger(OnDaggerHash);
         }
 
-        public static void OnAttack(this IAnimator animator)
+        public static void OnAttack(this IAnimator animator, float attackTime)
         {
             animator.SetTrigger(OnAttackHash);
+            animator.SetBool(IsAttackingHash, true);
+            animator.SetBoolDelay(IsAttackingHash, false, attackTime);
         }
 
         public static void SetAttackComboCount(this IAnimator animator, int count)
