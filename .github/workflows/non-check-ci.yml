@@ -19,6 +19,8 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           recreate: true
+          hide_and_recreate: true
+          header: "Ready to Merge"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
             ### ✅ Ready to Merge
