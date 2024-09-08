@@ -127,4 +127,5 @@ jobs:
         if: github.event_name == 'pull_request' && hashFiles('output.md') != ''
         with:
           recreate: true
+          header: "Ready to Merge"
           path: ./output.md

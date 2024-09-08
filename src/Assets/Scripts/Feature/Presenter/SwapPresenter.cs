@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Feature.Common.Parameter;
+using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Model;
 using UniRx;
@@ -18,7 +19,7 @@ namespace Feature.Presenter
     public class SwapPresenter
     {
         private readonly CharacterParams characterParams;
-
+        private readonly SwapEffectFactory swapEffectFactory;
         private readonly CompositeDisposable rememberItemPosition;
         private readonly SwapModel swapItemsModel;
         private Dictionary<Guid, ISwappable> swapItemViews;
@@ -26,11 +27,13 @@ namespace Feature.Presenter
         [Inject]
         public SwapPresenter(
             SwapModel swapItemsModel,
-            CharacterParams characterParams
+            CharacterParams characterParams,
+            SwapEffectFactory swapEffectFactory
         )
         {
             this.swapItemsModel = swapItemsModel;
             this.characterParams = characterParams;
+            this.swapEffectFactory = swapEffectFactory;
             var list = Object.FindObjectsOfType<MonoBehaviour>(true).OfType<ISwappable>().ToList();
             rememberItemPosition = new();
             AddItems(list);
@@ -142,6 +145,12 @@ namespace Feature.Presenter
             }
 
             return swapItemViews[item.Value.Id];
+        }
+        
+        public void Swap(Vector3 pos1, Vector3 pos2)
+        {
+            swapEffectFactory.PlayEffectAtPosition(pos1);
+            swapEffectFactory.PlayEffectAtPosition(pos2);
         }
     }
 }

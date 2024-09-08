@@ -1,32 +1,28 @@
 ﻿#region
 
 using System;
-using Core.Utilities;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
-using UnityEngine.VFX;
 
 #endregion
 
 namespace Feature.View
 {
     [RequireComponent(typeof(Material))]
-    public class SwapView : MonoBehaviour, ISwappable
+    public sealed class SwapView : MonoBehaviour, ISwappable
     {
-        [SerializeField] private VisualEffect effect;
-        [SerializeField] private float onStopTime = 1f;
         [SerializeField] private float hilightRimThreashold;
 
         // ReSharper disable once MemberCanBePrivate.Local
         public readonly IReactiveProperty<Vector2> Position = new ReactiveProperty<Vector2>();
 
-        [NonSerialized] protected bool IsActive;
+        [NonSerialized] private bool IsActive;
 
         private Material material;
         private Renderer targetRenderer;
 
-        protected virtual void Start()
+        private void Start()
         {
             IsActive = true;
             targetRenderer = GetComponent<Renderer>();
@@ -57,12 +53,12 @@ namespace Feature.View
         
         public Vector2 GetPosition() => Position.Value;
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             OnTrigger = null;
         }
 
-        protected event Action<Collider2D> OnTrigger;
+        private event Action<Collider2D> OnTrigger;
 
         private void SetHighlight(bool isHighlight)
         {
@@ -82,7 +78,7 @@ namespace Feature.View
             }
         }
 
-        protected void Delete()
+        private void Delete()
         {
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
@@ -104,26 +100,8 @@ namespace Feature.View
         public void OnSwap(Vector2 position)
         {
             transform.position = position;
-            PlayVFX();
         }
 
         public event Action OnDestroyEvent;
-
-        private void PlayVFX()
-        {
-            if (effect != null)
-            {
-                effect.SendEvent("OnPlay");
-                StartCoroutine(this.DelayMethod(onStopTime, StopVFX));
-            }
-        }
-
-        private void StopVFX()
-        {
-            if (effect != null)
-            {
-                effect.SendEvent("OnStop");
-            }
-        }
     }
 }
