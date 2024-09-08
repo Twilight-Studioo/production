@@ -11,10 +11,8 @@ using UnityEngine;
 namespace Feature.View
 {
     [RequireComponent(typeof(VFXView))]
-    public class PlayerView : MonoBehaviour, IDamaged
+    public class PlayerView : MonoBehaviour, IDamaged, IPlayerView
     {
-
-        public bool isDrawSwapRange;
 
         [SerializeField] private GameObject slashingEffect;
         [SerializeField] private GameObject dagger;
@@ -26,7 +24,7 @@ namespace Feature.View
         public int maxComboCount = 3; // 連続攻撃の最大回数
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
-        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
+        private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
 
         private AnimationWrapper animator;
         private int comboCount;
@@ -36,10 +34,13 @@ namespace Feature.View
         private Vector3 previousPosition;
         private Rigidbody rb;
         private float speed;
-        [NonSerialized] public float SwapRange;
 
         private VFXView vfxView;
         private float yDegree; //y座標の回転
+
+        public float SwapRange { get; set; }
+        
+        public bool IsDrawSwapRange { get; set; }
 
         private void Awake()
         {
@@ -54,8 +55,12 @@ namespace Feature.View
 
         private void Update()
         {
-            Position.Value = transform.position;
+            position.Value = transform.position;
         }
+        
+        public IReadOnlyReactiveProperty<Vector3> GetPositionRef() => position;
+        
+        public GameObject GetGameObject() => gameObject;
 
         private void FixedUpdate()
         {
@@ -78,8 +83,15 @@ namespace Feature.View
 
         private void OnDrawGizmos()
         {
-            if (SwapRange != 0 && isDrawSwapRange) DrawWireDisk(transform.position, SwapRange, Color.magenta);
+            if (SwapRange != 0 && IsDrawSwapRange) DrawWireDisk(transform.position, SwapRange, Color.magenta);
         }
+        
+        public void SetPosition(Vector3 p)
+        {
+            transform.position = p;
+        }
+        
+        public Transform GetTransform() => transform;
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {

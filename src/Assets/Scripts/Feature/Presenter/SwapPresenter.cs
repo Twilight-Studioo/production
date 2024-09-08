@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Feature.Common.Parameter;
+using Feature.Interface;
 using Feature.Model;
-using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -21,7 +21,7 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable rememberItemPosition;
         private readonly SwapModel swapItemsModel;
-        private Dictionary<Guid, SwapView> swapItemViews;
+        private Dictionary<Guid, ISwappable> swapItemViews;
 
         [Inject]
         public SwapPresenter(
@@ -31,7 +31,7 @@ namespace Feature.Presenter
         {
             this.swapItemsModel = swapItemsModel;
             this.characterParams = characterParams;
-            var list = Object.FindObjectsOfType<SwapView>().ToList();
+            var list = Object.FindObjectsOfType<MonoBehaviour>(true).OfType<ISwappable>().ToList();
             rememberItemPosition = new();
             AddItems(list);
         }
@@ -41,7 +41,29 @@ namespace Feature.Presenter
             rememberItemPosition.Clear();
         }
 
-        private void AddItems(List<SwapView> items)
+        public void RemoveItem(ISwappable item)
+        {
+            if (swapItemViews == null)
+            {
+                return;
+            }
+
+            var itemKey = swapItemViews.FirstOrDefault(x => x.Value == item).Key;
+            if (itemKey == Guid.Empty)
+            {
+                return;
+            }
+
+            swapItemViews.Remove(itemKey);
+            swapItemsModel.RemoveItem(itemKey);
+        }
+        
+        public void AddItem(ISwappable item)
+        {
+            AddItems(new() {item});
+        }
+
+        private void AddItems(List<ISwappable> items)
         {
             if (swapItemViews == null)
             {
@@ -52,9 +74,9 @@ namespace Feature.Presenter
             var dats = items.Select(item =>
             {
                 var id = Guid.NewGuid();
-                item.SetHighlight(false);
-                item.Position
-                    .Subscribe(_ => { swapItemsModel.UpdateItemPosition(id, item.Position.Value); })
+                item.OnDeselected();
+                item.GetPositionRef()
+                    .Subscribe(_ => { swapItemsModel.UpdateItemPosition(id, item.GetPosition()); })
                     .AddTo(rememberItemPosition);
                 return (id, item);
             }).ToList();
@@ -68,7 +90,7 @@ namespace Feature.Presenter
                 dats.Select(data => new SwapItem
                     {
                         Id = data.id,
-                        Position = data.item.Position.Value,
+                        Position = data.item.GetPosition(),
                     }
                 ).ToList());
         }
@@ -81,6 +103,11 @@ namespace Feature.Presenter
 
         public void ResetSelector()
         {
+            var item = swapItemsModel.GetCurrentItem();
+            if (item.HasValue)
+            {
+                swapItemViews[item.Value.Id].OnDeselected();
+            }
             swapItemsModel.ResetSelector();
         }
 
@@ -95,15 +122,14 @@ namespace Feature.Presenter
 
             if (item.HasValue)
             {
-                swapItemViews[item.Value.Id].SetHighlight(false);
+                swapItemViews[item.Value.Id].OnDeselected();
             }
 
-            swapItemViews[select.Value.Id].StartSwap();
-            swapItemViews[select.Value.Id].SetHighlight(true);
+            swapItemViews[select.Value.Id].OnSelected();
             swapItemsModel.SetItem(select.Value.Id);
         }
 
-        public SwapView SelectItem()
+        public ISwappable SelectItem()
         {
             var item = swapItemsModel.GetCurrentItem();
             if (!item.HasValue || item.Value.Id == Guid.Empty)

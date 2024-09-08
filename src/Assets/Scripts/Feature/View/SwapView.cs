@@ -1,6 +1,8 @@
 ﻿#region
 
 using System;
+using Core.Utilities;
+using Feature.Interface;
 using UniRx;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -10,11 +12,10 @@ using UnityEngine.VFX;
 namespace Feature.View
 {
     [RequireComponent(typeof(Material))]
-    public class SwapView : MonoBehaviour
+    public class SwapView : MonoBehaviour, ISwappable
     {
         [SerializeField] private VisualEffect effect;
         [SerializeField] private float onStopTime = 1f;
-        [SerializeField] private bool isSwap;
         [SerializeField] private float hilightRimThreashold;
 
         // ReSharper disable once MemberCanBePrivate.Local
@@ -42,6 +43,20 @@ namespace Feature.View
             OnTrigger?.Invoke(other);
         }
 
+        public void OnSelected()
+        {
+            SetHighlight(true);
+        }
+        
+        public void OnDeselected()
+        {
+            SetHighlight(false);
+        }
+
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => Position;
+        
+        public Vector2 GetPosition() => Position.Value;
+
         public virtual void Dispose()
         {
             OnDestroy = null;
@@ -52,12 +67,7 @@ namespace Feature.View
 
         protected event Action<Collider2D> OnTrigger;
 
-        public void SetPosition(Vector2 position)
-        {
-            transform.position = position;
-        }
-
-        public void SetHighlight(bool isHighlight)
+        private void SetHighlight(bool isHighlight)
         {
             if (material == null)
             {
@@ -93,34 +103,28 @@ namespace Feature.View
                 }
             }
         }*/
-        public void PlayVFX()
+        
+        public void OnSwap(Vector2 position)
+        {
+            transform.position = position;
+            PlayVFX();
+        }
+
+        private void PlayVFX()
         {
             if (effect != null)
             {
                 effect.SendEvent("OnPlay");
-                Invoke("StopVFX", onStopTime);
+                StartCoroutine(this.DelayMethod(onStopTime, StopVFX));
             }
         }
 
-        public void StopVFX()
+        private void StopVFX()
         {
             if (effect != null)
             {
                 effect.SendEvent("OnStop");
             }
         }
-
-        public void StartSwap()
-        {
-            isSwap = true;
-        }
-
-        public void EndSwap()
-        {
-            isSwap = false;
-            Debug.Log($"EndSwap called. isSwapActive = {isSwap}");
-        }
-
-        public bool IsSwap() => isSwap;
     }
 }
