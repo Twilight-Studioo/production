@@ -1,0 +1,56 @@
+name: non-check-ci.yml
+on:
+  pull_request:
+    paths-ignore:
+      - 'src/Assets/Scripts/**'
+      - '**/*.cs'
+
+jobs:
+  comment-on-pr:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - name: Add Merge Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          hide_and_recreate: true
+          header: "Ready to Merge"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            ### ✅ Ready to Merge
+            
+            This pull request does not include any changes in `src/Assets/Scripts/**` or `*.cs` files.
+            It is safe to merge without further code review.
+            
+            #### Pull Request Summary
+            
+            - **Title:** [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            - **Author:** @${{ github.actor }}
+            - **Created at:** ${{ github.event.pull_request.created_at }}
+            - **Base Branch:** `${{ github.event.pull_request.base.ref }}`
+            - **Head Branch:** `${{ github.event.pull_request.head.ref }}`
+            
+            <details>
+            <summary>Click to expand PR details</summary>
+            
+            - **PR Number:** #${{ github.event.pull_request.number }}
+            - **Body:**
+                ${{ github.event.pull_request.body }}
+            
+            </details>
+            
+            ---
+            
+            ### Next Steps
+            
+            1. Ensure all checks have passed.
+            2. Verify that no additional changes are needed.
+            3. [Merge this pull request](${{ github.event.pull_request.html_url }}) when ready.
+            
+            If you have any questions or need further clarification, please reach out to the author or reviewers.
