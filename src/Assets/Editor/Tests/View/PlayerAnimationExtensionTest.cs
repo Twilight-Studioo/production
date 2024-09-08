@@ -58,8 +58,10 @@ namespace Editor.Tests.View
         [Test]
         public void OnAttackTest()
         {
-            animatorMock.Object.OnAttack();
+            animatorMock.Object.OnAttack(0.5f);
             animatorMock.Verify(x => x.SetTrigger(PlayerAnimationExtension.OnAttackHash), Times.Once);
+            animatorMock.Verify(x => x.SetBool(PlayerAnimationExtension.IsAttackingHash, true), Times.Once);
+            animatorMock.Verify(x => x.SetBoolDelay(PlayerAnimationExtension.IsAttackingHash, false, 0.5f), Times.Once);
         }
 
         [Test]
