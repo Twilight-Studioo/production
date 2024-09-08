@@ -28,7 +28,5 @@ namespace Feature.Interface
         
         void Dagger(float degree, float h, float v);
         
-        void PlayVFX();
-        
     }
 }

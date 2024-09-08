@@ -10,7 +10,6 @@ using UnityEngine;
 
 namespace Feature.View
 {
-    [RequireComponent(typeof(VFXView))]
     public class PlayerView : MonoBehaviour, IDamaged, IPlayerView
     {
 
@@ -207,11 +206,6 @@ namespace Feature.View
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
             lastDegree = degree;
-        }
-
-        public void PlayVFX()
-        {
-            vfxView.PlayVFX();
         }
 
         public bool IsGrounded()

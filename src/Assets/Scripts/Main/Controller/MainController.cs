@@ -185,8 +185,9 @@ namespace Main.Controller
 
                         var pos = playerModel.Position.Value;
                         var itemPos = item.GetPosition();
+                        // TODO: 機能をswapPresenterにまとめる
+                        swapPresenter.Swap(itemPos, pos);
                         item.OnSwap(pos);
-                        playerPresenter.PlayVFX();
 
                         playerPresenter.SetPosition(itemPos);
                         item.OnDeselected();

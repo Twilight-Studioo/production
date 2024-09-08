@@ -3,6 +3,7 @@
 using Core.Camera;
 using Core.Input;
 using Feature.Common.Parameter;
+using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
@@ -28,6 +29,7 @@ namespace Main.Installer
 
             builder.RegisterComponentInHierarchy<TargetGroupManager>();
             builder.RegisterComponentInHierarchy<EnemyFactory>();
+            builder.RegisterComponentInHierarchy<SwapEffectFactory>();
             builder.RegisterComponentInHierarchy<InputActionAccessor>();
             builder.RegisterComponentInHierarchy<GameUIView>();
             builder.RegisterComponentInHierarchy<SwapView>();

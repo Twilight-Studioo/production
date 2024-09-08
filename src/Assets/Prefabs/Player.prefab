@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6612053570560787250}
   - component: {fileID: 2320110100350635330}
   - component: {fileID: 5612375394115558322}
-  - component: {fileID: -6116646425731907792}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -33,7 +32,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5150977705233484481}
   - {fileID: 2337095496885790810}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -99,7 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 287fb10ae3b643b9afe758858d3fee3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDrawSwapRange: 0
   slashingEffect: {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851,
     type: 3}
   dagger: {fileID: 1714581555819581919, guid: 9c1be308684fde246ba5cab8b034a1e9, type: 3}
@@ -109,20 +106,6 @@ MonoBehaviour:
   comboTimeWindow: 1
   comboAngleOffset: 50
   maxComboCount: 2
---- !u!114 &-6116646425731907792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 690427865376889176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46ece038ddfe4c5b98b03c262d1a0678, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  effect: {fileID: 7604104440151457739}
-  onStopTime: 1
 --- !u!1001 &2874913418483568561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -209,7 +192,13 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
       propertyPath: m_WarningMessage
-      value: 
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'SJK02:Hips'\n\tTransform 'SJK02:RightUpLeg'\n\tTransform
+        'SJK02:LeftUpLeg'\n\tTransform 'SJK02:Chest'\n\tTransform 'SJK02:LeftFoot'\n\tTransform
+        'SJK02:RightFoot'\n\tTransform 'SJK02:RightLeg'\n\tTransform 'SJK02:Spine'\n\tTransform
+        'SJK02:LeftLeg'\n\tTransform 'SJK02:Hips'\n\tand more ...\n\tFrom animation
+        clip 'Move'"
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
@@ -236,84 +225,4 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
     type: 3}
   m_PrefabInstance: {fileID: 2874913418483568561}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &8632504417074306291
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 2113007197219777006}
-    m_Modifications:
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4919690633393672407, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-        type: 3}
-      propertyPath: m_Name
-      value: Player Swap Effect
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32, type: 3}
---- !u!4 &5150977705233484481 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3510313919465018930, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-    type: 3}
-  m_PrefabInstance: {fileID: 8632504417074306291}
-  m_PrefabAsset: {fileID: 0}
---- !u!2083052967 &7604104440151457739 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 2183091009733714744, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
-    type: 3}
-  m_PrefabInstance: {fileID: 8632504417074306291}
   m_PrefabAsset: {fileID: 0}

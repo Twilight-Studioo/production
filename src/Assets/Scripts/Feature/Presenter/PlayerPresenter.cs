@@ -188,11 +188,6 @@ namespace Feature.Presenter
             playerView.Attack(degree, (uint)characterParams.attackPower);
         }
 
-        public void PlayVFX()
-        {
-            playerView.PlayVFX();
-        }
-
         public Transform GetTransform() => playerView.GetTransform();
 
         private void OnPlayerDeath()
