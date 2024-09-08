@@ -111,7 +111,7 @@ jobs:
           ruby scripts/test_result_convert_md.rb artifacts
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request' && hashFiles('CodeCoverage/**/Summary.md') != ''
+        if: github.event_name == 'pull_request' && hashFiles('Result.md') != ''
         with:
           recreate: true
           path: Result.md

@@ -2,6 +2,7 @@ require 'nokogiri'
 
 def parse_test_results(xml_file)
   doc = Nokogiri::XML(File.read(xml_file))
+  puts "Parsing #{xml_file}..."
 
   test_results = { total: 0, passed: 0, failed: 0, skipped: 0, test_cases: [] }
 
@@ -73,6 +74,8 @@ playmode_results[:test_cases].each do |result|
 end
 
 # Markdownファイルの保存
+puts "Generating Markdown report..."
+puts markdown_report
 File.write('Result.md', markdown_report)
 
 puts "Markdown report generated: Result.md"
