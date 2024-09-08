@@ -86,6 +86,13 @@ jobs:
     needs: test
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_URL: ${{ github.event.pull_request.html_url }}
+      PR_TITLE: ${{ github.event.pull_request.title }}
+      PR_BODY: ${{ github.event.pull_request.body }}
+      PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+      PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+      PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
     permissions:
       contents: write
       pull-requests: write
@@ -114,10 +121,10 @@ jobs:
   
       - name: Convert XML to Markdown
         run: |
-          ruby scripts/test_result_convert_md.rb artifacts
+          ruby scripts/test_result_convert_md.rb artifacts output.md
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request' && hashFiles('Result.md') != ''
+        if: github.event_name == 'pull_request' && hashFiles('output.md') != ''
         with:
           recreate: true
-          path: ./Result.md
+          path: ./output.md
