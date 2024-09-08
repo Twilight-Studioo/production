@@ -3,11 +3,10 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Feature.Component.Factory;
+using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
-using Feature.View;
-using Main.Environment;
-using Main.Factory;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -31,7 +30,7 @@ namespace Main.Controller
         private float horizontalInput;
 
         private float lastDaggerTime; 
-        private const float daggerCooldown = 0.5f; 
+        private const float DaggerCooldown = 0.5f; 
         [Inject]
         public MainController(
             PlayerModel playerModel,
@@ -57,10 +56,10 @@ namespace Main.Controller
             Setup();
         }
 
-        public void OnPossess(PlayerView view)
+        public void OnPossess(IPlayerView view)
         {
             playerPresenter.OnPossess(view);
-            targetGroupManager.AddTarget(view.transform, CameraTargetGroupTag.Player());
+            targetGroupManager.AddTarget(view.GetTransform(), CameraTargetGroupTag.Player());
         }
 
         private void Setup()
@@ -68,10 +67,20 @@ namespace Main.Controller
             enemyFactory.OnAddField += obj =>
             {
                 targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.Enemy());
+                var swappable = obj.GetComponent<ISwappable>();
+                if (swappable != null)
+                {
+                    swapPresenter.AddItem(swappable);
+                }
             };
             enemyFactory.OnRemoveField += obj =>
             {
                 targetGroupManager.RemoveTarget(obj.transform);
+                var swappable = obj.GetComponent<ISwappable>();
+                if (swappable != null)
+                {
+                    swapPresenter.RemoveItem(swappable);
+                }
             };
             enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
             enemyFactory.Subscribe();
@@ -131,13 +140,13 @@ namespace Main.Controller
                 {
                     if (x)
                     {
-                        if (Time.time >= lastDaggerTime + daggerCooldown)
+                        if (Time.time >= lastDaggerTime + DaggerCooldown)
                         {
                             lastDaggerTime = Time.time; 
                             
                             var h = Input.GetAxis("Horizontal");
                             var v = Input.GetAxis("Vertical");
-                            float degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                            var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
                             if (degree < 0)
                             {
                                 degree += 360;
@@ -173,13 +182,13 @@ namespace Main.Controller
                             return;
                         }
 
-                        item.PlayVFX();
+                        var pos = playerModel.Position.Value;
+                        var itemPos = item.GetPosition();
+                        item.OnSwap(pos);
                         playerPresenter.PlayVFX();
 
-                        var pos = playerModel.Position.Value;
-                        playerPresenter.SetPosition(item.transform.position);
-                        item.SetPosition(pos);
-                        item.SetHighlight(false);
+                        playerPresenter.SetPosition(itemPos);
+                        item.OnDeselected();
                         playerModel.Swapped();
                     }
                 });

@@ -4,14 +4,14 @@ using System;
 using System.Linq;
 using Core.Utilities;
 using Feature.Common.Parameter;
+using Feature.Component.Environment;
 using Feature.Enemy;
 using Feature.Interface;
-using Main.Environment;
 using UnityEngine;
 
 #endregion
 
-namespace Main.Factory
+namespace Feature.Component.Factory
 {
     public class EnemyFactory : MonoBehaviour
     {

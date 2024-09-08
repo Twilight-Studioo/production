@@ -1,7 +1,7 @@
-using UnityEngine.SceneManagement;
 using UnityEditor.SceneTemplate;
+using UnityEngine.SceneManagement;
 
-namespace Main.Environment
+namespace Feature.Component.Environment
 {
     public class StageSceneTemplatePipeline : ISceneTemplatePipeline
     {

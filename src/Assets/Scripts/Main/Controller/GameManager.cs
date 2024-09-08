@@ -1,13 +1,15 @@
 #region
 
 using System;
+using Feature.Component.Environment;
+using Feature.Interface;
 using Feature.Presenter;
 using VContainer;
 using VContainer.Unity;
 
 #endregion
 
-namespace Main.Environment
+namespace Main.Controller
 {
     public class GameManager : IStartable, IDisposable
     {

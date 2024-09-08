@@ -1,12 +1,12 @@
 #region
 
 using Core.Utilities;
-using Feature.View;
+using Feature.Interface;
 using UnityEngine;
 
 #endregion
 
-namespace Main.Environment
+namespace Feature.Component.Environment
 {
     public class PlayerStart : MonoBehaviour
     {
@@ -21,7 +21,7 @@ namespace Main.Environment
             Gizmos.DrawWireSphere(Vector3.zero, 2);
         }
 
-        public PlayerView OnStart()
+        public IPlayerView OnStart()
         {
             if (isPlayerSpawned)
             {
@@ -30,7 +30,7 @@ namespace Main.Environment
 
             isPlayerSpawned = true;
             var player = ObjectFactory.CreateObject(playerRef, transform.position, Quaternion.identity);
-            return player.GetComponent<PlayerView>();
+            return player.GetComponent<IPlayerView>();
         }
     }
 }

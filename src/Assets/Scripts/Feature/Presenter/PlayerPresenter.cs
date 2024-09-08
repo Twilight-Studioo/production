@@ -4,6 +4,7 @@ using System;
 using Core.Utilities;
 using Feature.Common.Parameter;
 using Feature.Component;
+using Feature.Interface;
 using Feature.Model;
 using Feature.View;
 using UniRx;
@@ -23,7 +24,7 @@ namespace Feature.Presenter
         private readonly PlayerModel playerModel;
 
         private readonly CompositeDisposable swapTimer;
-        private PlayerView playerView;
+        private IPlayerView playerView;
         private readonly GameUIView gameUIView;
 
         private readonly CompositeDisposable presenterDisposable = new();
@@ -41,19 +42,19 @@ namespace Feature.Presenter
             swapTimer = new();
         }
 
-        public void OnPossess(PlayerView view)
+        public void OnPossess(IPlayerView view)
         {
             playerView = view;
 
             playerView.OnDamageEvent += playerModel.TakeDamage;
             playerView.SwapRange = characterParams.canSwapDistance;
-            playerView.Position
+            playerView.GetPositionRef()
                 .Subscribe(position =>
                 {
                     playerModel.UpdatePosition(position);
                     //スワップ中ならば一覧を取得してhighlightの処理を呼び出す
                 })
-                .AddTo(playerView);
+                .AddTo(playerView.GetGameObject());
 
             playerModel.Start();
             var volume = (float)playerModel.SwapStamina.Value / characterParams.maxHasStamina;
@@ -100,7 +101,7 @@ namespace Feature.Presenter
                 return;
             }
 
-            playerView.isDrawSwapRange = true;
+            playerView.IsDrawSwapRange = true;
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
@@ -167,7 +168,7 @@ namespace Feature.Presenter
                         Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t));
                     if (t >= 1.0f) // If the transition is complete
                     {
-                        playerView.isDrawSwapRange = false;
+                        playerView.IsDrawSwapRange = false;
                         playerModel.ChangeState(PlayerModel.PlayerState.Idle);
                         Time.timeScale = targetTimeScale;
                         swapTimer.Clear();
@@ -178,7 +179,7 @@ namespace Feature.Presenter
 
         public void SetPosition(Vector3 position)
         {
-            playerView.transform.position = position;
+            playerView.SetPosition(position);
         }
 
         public void Attack(float degree)
@@ -191,7 +192,7 @@ namespace Feature.Presenter
             playerView.PlayVFX();
         }
 
-        public Transform GetTransform() => playerView.transform;
+        public Transform GetTransform() => playerView.GetTransform();
 
         private void OnPlayerDeath()
         {
