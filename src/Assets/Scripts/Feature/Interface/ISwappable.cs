@@ -1,3 +1,4 @@
+using System;
 using UniRx;
 using UnityEngine;
 
@@ -14,5 +15,7 @@ namespace Feature.Interface
         Vector2 GetPosition();
         
         void OnSwap(Vector2 p);
+        
+        public event Action OnDestroyEvent;
     }
 }

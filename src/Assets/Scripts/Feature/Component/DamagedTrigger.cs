@@ -1,10 +1,11 @@
 using System;
 using Feature.Interface;
+using UniRx;
 using UnityEngine;
 
 namespace Feature.Component
 {
-    public class DamagedTrigger: MonoBehaviour
+    public class DamagedTrigger: MonoBehaviour, ISwappable
     {
         private uint damage = 0;
         
@@ -15,8 +16,17 @@ namespace Feature.Component
         private bool canHitEnemy = false;
         private bool canHitPlayer = false;
         
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
+        
         public event Action OnHitEvent;
         
+        public event Action OnDestroyEvent;
+
+        private void Update()
+        {
+            position.Value = transform.position;
+        }
+
         public void SetHitObject(bool hitEnemy, bool hitPlayer)
         {
             canHitEnemy = hitEnemy;
@@ -26,12 +36,14 @@ namespace Feature.Component
         public void Execute(
             Vector3 dir,
             float s,
-            uint d
+            uint d,
+            float lifeTime
         )
         {
             direction = dir;
             speed = s;
             damage = d;
+            Invoke(nameof(TryDestroy), lifeTime);
         }
 
         private void FixedUpdate()
@@ -45,8 +57,33 @@ namespace Feature.Component
             {
                 other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
                 OnHitEvent?.Invoke();
-                Destroy(gameObject);
+                TryDestroy();
             }
+        }
+        
+        private void TryDestroy()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
+
+        public void OnSelected()
+        {
+            
+        }
+
+        public void OnDeselected()
+        {
+            
+        }
+
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
+
+        public Vector2 GetPosition() => transform.position;
+
+        public void OnSwap(Vector2 p)
+        {
+            transform.position = p;
         }
     }
 }

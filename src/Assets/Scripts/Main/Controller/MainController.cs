@@ -3,10 +3,10 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
-using Feature.Component.Factory;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
+using Main.Factory;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -66,17 +66,18 @@ namespace Main.Controller
         {
             enemyFactory.OnAddField += obj =>
             {
-                targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.Enemy());
-                var swappable = obj.GetComponent<ISwappable>();
+                targetGroupManager.AddTarget(obj.GameObject().transform, CameraTargetGroupTag.Enemy());
+                var swappable = obj.GameObject().GetComponent<ISwappable>();
                 if (swappable != null)
                 {
                     swapPresenter.AddItem(swappable);
                 }
             };
+            enemyFactory.OnAddSwappableItem += swapPresenter.AddItem;
             enemyFactory.OnRemoveField += obj =>
             {
-                targetGroupManager.RemoveTarget(obj.transform);
-                var swappable = obj.GetComponent<ISwappable>();
+                targetGroupManager.RemoveTarget(obj.GameObject().transform);
+                var swappable = obj.GameObject().GetComponent<ISwappable>();
                 if (swappable != null)
                 {
                     swapPresenter.RemoveItem(swappable);
