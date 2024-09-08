@@ -80,11 +80,13 @@ jobs:
         name: Upload Test artifacts
         if: always()
         with:
+          name: test-artifacts
           path: ${{ steps.tests.outputs.artifactsPath }}
       - uses: actions/upload-artifact@v4
         name: Upload Test coverages
         if: always()
         with:
+          name: test-coverages
           path: ${{ steps.tests.outputs.coveragePath }}
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
