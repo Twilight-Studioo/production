@@ -3,12 +3,12 @@
 using Core.Camera;
 using Core.Input;
 using Feature.Common.Parameter;
-using Feature.Component.Factory;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
 using Main.Controller;
+using Main.Factory;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;

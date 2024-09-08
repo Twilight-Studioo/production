@@ -59,11 +59,8 @@ namespace Feature.View
 
         public virtual void Dispose()
         {
-            OnDestroy = null;
             OnTrigger = null;
         }
-
-        public event Action OnDestroy;
 
         protected event Action<Collider2D> OnTrigger;
 
@@ -87,7 +84,7 @@ namespace Feature.View
 
         protected void Delete()
         {
-            OnDestroy?.Invoke();
+            OnDestroyEvent?.Invoke();
             Destroy(gameObject);
         }
 
@@ -109,6 +106,8 @@ namespace Feature.View
             transform.position = position;
             PlayVFX();
         }
+
+        public event Action OnDestroyEvent;
 
         private void PlayVFX()
         {

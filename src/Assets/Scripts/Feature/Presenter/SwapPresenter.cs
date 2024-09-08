@@ -75,6 +75,10 @@ namespace Feature.Presenter
             {
                 var id = Guid.NewGuid();
                 item.OnDeselected();
+                item.OnDestroyEvent += () =>
+                {
+                    RemoveItem(item);
+                };
                 item.GetPositionRef()
                     .Subscribe(_ => { swapItemsModel.UpdateItemPosition(id, item.GetPosition()); })
                     .AddTo(rememberItemPosition);

@@ -7,8 +7,8 @@ using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
+using Feature.Common.Constants;
 using Feature.Common.Parameter;
-using Feature.Enemy;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
@@ -84,6 +84,7 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnTakeDamageEvent;
+        public event Action<ISwappable> OnAddSwappableItem;
 
         private TriggerRef MoveTrigger() =>
             Trigger("AnyDistance")
@@ -185,5 +186,7 @@ namespace Feature.Component.Enemy
         {
             transform.position = p;
         }
+
+        public event Action OnDestroyEvent;
     }
 }
