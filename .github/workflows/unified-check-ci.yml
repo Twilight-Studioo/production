@@ -3,6 +3,11 @@ name: unified-check-ci.yml
 on:
   workflow_dispatch:
   pull_request:
+    branches:
+      - main
+      - develop
+      - 'release/*'
+      - dependabot/** # Dependabot PRs
   push:
     paths:
       - 'src/Assets/Scripts/**'
@@ -32,11 +37,14 @@ jobs:
       - name: Check for script or .cs file changes
         id: check_scripts
         run: |
-          if [[ "${{ steps.get_changed_files.outputs.all_changed_files }}" =~ (src/Assets/Scripts/|.*\.cs$) ]]; then
-            echo "script_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "script_changed=false" >> $GITHUB_OUTPUT
-          fi
+          script_changed=false
+          for file in ${{ steps.get_changed_files.outputs.all_changed_files }}; do
+            if [[ "$file" =~ (src/Assets/Scripts/|.*\.cs$) ]]; then
+              script_changed=true
+              break
+            fi
+          done
+          echo "script_changed=$script_changed" >> $GITHUB_OUTPUT
 
   code-check:
     runs-on: ubuntu-latest
@@ -149,7 +157,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request' && hashFiles('output.md') != ''
         with:
-          recreate: true
+          hide_and_recreate: true
           header: "Ready to Merge"
           path: ./output.md
 
@@ -167,7 +175,6 @@ jobs:
       - name: Add Merge Comment
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          recreate: true
           hide_and_recreate: true
           header: "Ready to Merge"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

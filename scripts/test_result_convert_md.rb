@@ -71,8 +71,12 @@ total_failed = editmode_results[:failed] + playmode_results[:failed]
 total_skipped = editmode_results[:skipped] + playmode_results[:skipped]
 pass_rate = (total_passed.to_f / total_tests * 100).round(2)
 
+editmode_all_passed = editmode_results[:passed] == editmode_results[:total]
+playmode_all_passed = playmode_results[:passed] == playmode_results[:total]
+all_tests_passed = editmode_all_passed && playmode_all_passed
+
 # Markdown形式のレポートの初期化
-markdown_report = "# Test Results Summary for PR [##{pr_number} - #{pr_title}](#{pr_url})\n\n"
+markdown_report = "### #{all_tests_passed ? '✅' : '❌'} Ready to Merge\n\n #### Test Results Summary for PR [##{pr_number} - #{pr_title}](#{pr_url})\n\n"
 markdown_report << "<details>\n<summary><strong>Pull Request Details</strong></summary>\n\n"
 markdown_report << "#### ##{pr_number} origin/#{pr_base_ref} <- origin/#{pr_head_ref}\n"
 markdown_report << "**Title:** #{pr_title}\n\n"
@@ -80,9 +84,6 @@ markdown_report << "**Description:**\n\n#{pr_body}\n\n"
 markdown_report << "**Created At:** #{pr_created_at}\n"
 markdown_report << "</details>\n\n---\n"
 
-editmode_all_passed = editmode_results[:passed] == editmode_results[:total]
-playmode_all_passed = playmode_results[:passed] == playmode_results[:total]
-all_tests_passed = editmode_all_passed && playmode_all_passed
 
 all_suites_duration = editmode_results[:suites].values.sum { |suite| suite[:duration] } + playmode_results[:suites].values.sum { |suite| suite[:duration] }
 editmode_total_result = "#{editmode_all_passed ? '✅' : '❌'} editmode-results.xml - #{editmode_results[:passed]}/#{editmode_results[:total]} - Passed in #{editmode_results[:suites].values.sum { |suite| suite[:duration] }}s"

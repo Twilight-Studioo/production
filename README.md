@@ -1,6 +1,6 @@
 # production
 
-[![BuildAndTest](https://github.com/Twilight-Studioo/production/actions/workflows/code-check-build.yml/badge.svg)](https://github.com/Twilight-Studioo/production/actions/workflows/code-check-build.yml)
+[![BuildAndTest](https://github.com/Twilight-Studioo/production/actions/workflows/unified-check-ci.yml/badge.svg)](https://github.com/Twilight-Studioo/production/actions/workflows/unified-check-ci.yml)
 
 ---
 - engine: Unity 2022.3.18f1
