@@ -1,10 +1,9 @@
-name: code-check-build.yml
+name: unified-check-ci.yml
+
 on:
   workflow_dispatch:
   pull_request:
-    paths:
-      - 'src/Assets/Scripts/**'
-      - '**/*.cs'
+    types: [opened, synchronize, reopened, edited, ready_for_review]
   push:
     paths:
       - 'src/Assets/Scripts/**'
@@ -17,8 +16,29 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  determine-changes:
     runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for script or .cs file changes
+        id: check_scripts
+        run: |
+          FILES_CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E 'src/Assets/Scripts/|\.cs$' | wc -l)
+          if [ "$FILES_CHANGED" -gt 0 ]; then
+            echo "SCRIPT_CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "SCRIPT_CHANGED=false" >> $GITHUB_ENV
+          fi
+        shell: bash
+
+  code-check:
+    runs-on: ubuntu-latest
+    needs: determine-changes
+    if: env.SCRIPT_CHANGED == 'true'
     env:
       UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -48,7 +68,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-#    needs: build  # このジョブはビルドが成功した場合のみ実行される
+    if: env.SCRIPT_CHANGED == 'true'
     env:
       UNITY_LICENSE: ${{ secrets.UNITY_V2022X_LICENSE }}
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -81,9 +101,11 @@ jobs:
         with:
           name: test-artifacts
           path: ${{ steps.tests.outputs.artifactsPath }}
+
   convert-to-markdown:
     runs-on: ubuntu-latest
     needs: test
+    if: env.SCRIPT_CHANGED == 'true'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -129,3 +151,54 @@ jobs:
           recreate: true
           header: "Ready to Merge"
           path: ./output.md
+
+  comment-on-pr:
+    runs-on: ubuntu-latest
+    needs: determine-changes
+    if: env.SCRIPT_CHANGED == 'false'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - name: Add Merge Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          hide_and_recreate: true
+          header: "Ready to Merge"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            ### ✅ Ready to Merge
+            
+            This pull request does not include any changes in `src/Assets/Scripts/**` or `*.cs` files.
+            It is safe to merge without further code review.
+            
+            #### Pull Request Summary
+            
+            - **Title:** [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            - **Author:** @${{ github.actor }}
+            - **Created at:** ${{ github.event.pull_request.created_at }}
+            - **Base Branch:** `${{ github.event.pull_request.base.ref }}`
+            - **Head Branch:** `${{ github.event.pull_request.head.ref }}`
+            
+            <details>
+            <summary>Click to expand PR details</summary>
+            
+            - **PR Number:** #${{ github.event.pull_request.number }}
+            - **Body:**
+                ${{ github.event.pull_request.body }}
+            
+            </details>
+            
+            ---
+            
+            ### Next Steps
+            
+            1. Ensure all checks have passed.
+            2. Verify that no additional changes are needed.
+            3. [Merge this pull request](${{ github.event.pull_request.html_url }}) when ready.
+            
+            If you have any questions or need further clarification, please reach out to the author or reviewers.
