@@ -64,6 +64,8 @@ namespace Feature.Common.Parameter
                 
         [Tooltip("ボルテージ使用時の攻撃上昇倍率")] 
         public int voltageAttackPowerValue = 2;
+
+        [Tooltip("クナイを飛ばしたときのスタミナ消費")] public uint useDaggerUseStamina = 2;
     }
 
     [Serializable]

@@ -1,0 +1,17 @@
+{
+    "name": "Feature.Common.ActFlow",
+    "rootNamespace": "",
+    "references": [
+        "GUID:09afbbcd7b4b84f159a243eac4f04a35",
+        "GUID:db9310a783d9f406199eff722e946dc5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

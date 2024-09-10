@@ -102,6 +102,10 @@ MonoBehaviour:
   isDrawSwapRange: 0
   slashingEffect: {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851,
     type: 3}
+  dagger: {fileID: 1714581555819581919, guid: 9c1be308684fde246ba5cab8b034a1e9, type: 3}
+  Right: 1
+  hx: 0
+  vy: 0
 --- !u!114 &-6116646425731907792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +128,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2113007197219777006}
     m_Modifications:
+    - target: {fileID: -8746058855735016753, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 211dcb522572ab343b2a7e0dd6448850, type: 2}
     - target: {fileID: -8679921383154817045, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -174,16 +183,47 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7823293702887809713, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d167abfa08208cd42933caeca3827168, type: 2}
     - target: {fileID: 919132149155446097, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
       propertyPath: m_Name
       value: shujinkou_010
       objectReference: {fileID: 0}
+    - target: {fileID: 1630794972795428178, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: df7a48e8e5dc77743a6f161ad93c3cad, type: 2}
     - target: {fileID: 5866666021909216657, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: cfc2cd1aeba914525ae03257fa112d29, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'SJK02:Hips'\n\tTransform 'SJK02:RightUpLeg'\n\tTransform
+        'SJK02:LeftUpLeg'\n\tTransform 'SJK02:Chest'\n\tTransform 'SJK02:LeftFoot'\n\tTransform
+        'SJK02:RightFoot'\n\tTransform 'SJK02:RightLeg'\n\tTransform 'SJK02:Spine'\n\tTransform
+        'SJK02:LeftLeg'\n\tTransform 'SJK02:Hips'\n\tand more ...\n\tFrom animation
+        clip 'Move'\n\tFrom animation clip 'Move'"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6868716418057165105, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1f83c9d18f6e7f04f8b9528011d949b8, type: 2}
+    - target: {fileID: 7904032248959824531, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 211dcb522572ab343b2a7e0dd6448850, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

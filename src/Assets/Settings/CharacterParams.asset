@@ -28,4 +28,7 @@ MonoBehaviour:
   swapExecUseStamina: 3
   recoveryTimeMillis: 800
   resourceRecoveryQuantity: 1
+  recoveryStaminaTimeMillis: 10
+  useDaggerUseStamina: 20
   recoveryStaminaTimeMillis: 800
+
