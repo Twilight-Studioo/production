@@ -33,7 +33,7 @@ namespace Feature.Presenter
         public PlayerPresenter(
             PlayerModel model,
             CharacterParams characterParams,
-            VoltageBar voltageBar
+            VoltageBar voltageBar,
             GameUIView ui
 
         )
