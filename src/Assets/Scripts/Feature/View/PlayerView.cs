@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using Feature.Component;
 using Feature.Interface;
 using UniRx;
@@ -13,42 +14,42 @@ namespace Feature.View
     [RequireComponent(typeof(VFXView))]
     public class PlayerView : MonoBehaviour, IDamaged
     {
-
         public bool isDrawSwapRange;
 
-        [SerializeField] private GameObject slashingEffect;
+        [SerializeField] private List<GameObject> slashingEffect;
         [SerializeField] private GameObject dagger;
         public bool Right = true;
         public float hx;
         public float vy;
-        private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
-        private float comboAngleOffset; // 連続攻撃時の角度変化
-        private int maxComboCount; // 連続攻撃の最大回数
-        
+
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-        
+
         private AnimationWrapper animator;
+        private float comboAngleOffset; // 連続攻撃時の角度変化
         private int comboCount;
+        private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
 
         private float lastAttackTime;
         private float lastDegree;
+        private int maxComboCount; // 連続攻撃の最大回数
+        private float monochrome;
         private Vector3 previousPosition;
         private Rigidbody rb;
         private float speed;
         [NonSerialized] public float SwapRange;
+        private URP urp;
 
         private VFXView vfxView;
+
+        private float vignetteChange; //赤くなるまでの時間
         private float yDegree; //y座標の回転
 
-        private float vignetteChange;//赤くなるまでの時間
-        private URP urp;
-        private float monochrome;
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
-            animator = new (GetComponentInChildren<Animator>());
+            animator = new AnimationWrapper(GetComponentInChildren<Animator>());
             vfxView = GetComponent<VFXView>();
             isGrounded
                 .Where(x => !x)
@@ -67,15 +68,6 @@ namespace Feature.View
             animator.SetSpeed(speed);
         }
 
-        public void SetParam(float ComboTimeWindow,float ComboAngleOffset,int MaxComboCount,float VignetteChange,URP _urp,float Monochrome)
-        {
-            comboTimeWindow = ComboTimeWindow;
-            comboAngleOffset = ComboAngleOffset;
-            maxComboCount = MaxComboCount;
-            vignetteChange = VignetteChange;
-            urp = _urp;
-            monochrome = Monochrome;
-        }
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.CompareTag("Ground")) isGrounded.Value = true;
@@ -100,6 +92,17 @@ namespace Feature.View
             rb.AddForce(imp * 5f, ForceMode.Impulse);
             OnDamageEvent?.Invoke(damage);
             animator.OnTakeDamage();
+        }
+
+        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount, float VignetteChange,
+            URP _urp, float Monochrome)
+        {
+            comboTimeWindow = ComboTimeWindow;
+            comboAngleOffset = ComboAngleOffset;
+            maxComboCount = MaxComboCount;
+            vignetteChange = VignetteChange;
+            urp = _urp;
+            monochrome = Monochrome;
         }
 
         public event Action<uint> OnDamageEvent;
@@ -194,11 +197,15 @@ namespace Feature.View
             {
                 yDegree = 0;
             }
+
             animator.SetAttackComboCount(comboCount);
 
+            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
+
             if (degree == 0 && Right == false) degree = -180f;
-            var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0),
+            var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
                 Quaternion.Euler(yDegree, 0, degree));
+
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
@@ -221,7 +228,7 @@ namespace Feature.View
 
         public void SwapTimeStartURP()
         {
-            urp.SwapStartURP(vignetteChange,monochrome);
+            urp.SwapStartURP(vignetteChange, monochrome);
         }
 
         public void SwapTimeFinishURP()
