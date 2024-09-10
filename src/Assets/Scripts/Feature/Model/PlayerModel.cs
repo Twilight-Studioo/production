@@ -56,8 +56,8 @@ namespace Feature.Model
 
         [Inject]
         public PlayerModel(
-            CharacterParams character,
-            GameUIView ui
+            CharacterParams character
+            // GameUIView ui
         )
         {
             characterParams = character;
