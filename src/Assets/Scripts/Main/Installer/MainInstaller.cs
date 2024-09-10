@@ -3,11 +3,12 @@
 using Core.Camera;
 using Core.Input;
 using Feature.Common.Parameter;
+using Feature.Component.Environment;
+using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
 using Main.Controller;
-using Main.Environment;
 using Main.Factory;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -30,6 +31,7 @@ namespace Main.Installer
 
             builder.RegisterComponentInHierarchy<TargetGroupManager>();
             builder.RegisterComponentInHierarchy<EnemyFactory>();
+            builder.RegisterComponentInHierarchy<SwapEffectFactory>();
             builder.RegisterComponentInHierarchy<InputActionAccessor>();
             builder.RegisterComponentInHierarchy<GameUIView>();
             builder.RegisterComponentInHierarchy<SwapView>();

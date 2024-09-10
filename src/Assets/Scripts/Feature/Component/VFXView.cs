@@ -14,17 +14,23 @@ namespace Feature.Component
 
         private bool isPlaySwapEffect;
 
-        public void PlayVFX()
+        private void OnEnable()
+        {
+            isPlaySwapEffect = false;
+            PlayVFX();
+        }
+
+        private void PlayVFX()
         {
             if (effect != null && !isPlaySwapEffect)
             {
                 effect.SendEvent("OnPlay");
                 isPlaySwapEffect = true;
-                Invoke("StopVFX", onStopTime);
+                Invoke(nameof(StopVFX), onStopTime);
             }
         }
 
-        public void StopVFX()
+        private void StopVFX()
         {
             if (effect != null)
             {
