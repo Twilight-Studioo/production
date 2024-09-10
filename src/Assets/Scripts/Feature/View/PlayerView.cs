@@ -44,6 +44,7 @@ namespace Feature.View
 
         private float vignetteChange;//赤くなるまでの時間
         private URP urp;
+        private float monochrome;
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
@@ -66,13 +67,14 @@ namespace Feature.View
             animator.SetSpeed(speed);
         }
 
-        public void SetParam(float ComboTimeWindow,float ComboAngleOffset,int MaxComboCount,float VignetteChange,URP _urp)
+        public void SetParam(float ComboTimeWindow,float ComboAngleOffset,int MaxComboCount,float VignetteChange,URP _urp,float Monochrome)
         {
             comboTimeWindow = ComboTimeWindow;
             comboAngleOffset = ComboAngleOffset;
             maxComboCount = MaxComboCount;
             vignetteChange = VignetteChange;
             urp = _urp;
+            monochrome = Monochrome;
         }
         private void OnCollisionEnter(Collision collision)
         {
@@ -219,7 +221,7 @@ namespace Feature.View
 
         public void SwapTimeStartURP()
         {
-            urp.SwapStartURP(vignetteChange);
+            urp.SwapStartURP(vignetteChange,monochrome);
         }
 
         public void SwapTimeFinishURP()

@@ -89,7 +89,7 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(playerHpBar);
-            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,playerModel.MaxComboCount,playerModel.VignetteChange,urp);
+            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,playerModel.MaxComboCount,playerModel.VignetteChange,urp,playerModel.Monochrome);
         }
 
         public void Move(float direction)

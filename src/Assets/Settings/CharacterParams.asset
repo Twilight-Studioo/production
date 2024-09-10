@@ -20,6 +20,7 @@ MonoBehaviour:
   comboAngleOffset: 60
   maxComboCount: 3
   vignetteChange: 0.5
+  monochrome: 50
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10

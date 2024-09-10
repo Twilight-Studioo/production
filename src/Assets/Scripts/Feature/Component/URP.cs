@@ -23,10 +23,10 @@ namespace Feature.Component
                 volume.profile.TryGet(out colorAdjustments);
             }
         }
-        public void SwapStartURP(float vignetteChange)
+        public void SwapStartURP(float vignetteChange,float monochrome)
         {
-            EnableGrayscale();
-            Invoke("VignetteRedColor", vignetteChange);
+            EnableGrayscale(monochrome);
+            GraduallyChangeVignetteColor(Color.black, Color.red, vignetteChange);
 
         }
 
@@ -37,15 +37,29 @@ namespace Feature.Component
             CancelInvoke("VignetteRedColor");
         }
 
-        private void VignetteRedColor()
+        private void GraduallyChangeVignetteColor(Color startColor, Color endColor, float vignetteChange)
         {
-            if (volume.profile.TryGet(out vignette))
-                ChangeVignetteColorTo(Color.red);
-        }
+            if (vignette == null) return;
 
+            float time = 0f;
+    
+            // 濃い赤色にするために RGB を調整 (例えば 0.8 の赤)
+            Color deepRed = new Color(0.95f, 0.0f, 0.0f); 
+
+            Observable.EveryUpdate()
+                .TakeWhile(_ => time < vignetteChange)
+                .Subscribe(_ =>
+                    {
+                        time += Time.deltaTime;
+                        Color newColor = Color.Lerp(startColor, deepRed, time / vignetteChange);
+                        ChangeVignetteColorTo(newColor);
+                    },
+                    () => ChangeVignetteColorTo(deepRed)); // 最後に濃い赤色に設定
+        }
+        
         private void VignetteBlackColor()
         {
-            if (volume.profile.TryGet(out vignette))
+            if (vignette != null)
                 ChangeVignetteColorTo(Color.black);
         }
 
@@ -56,9 +70,9 @@ namespace Feature.Component
         }
 
         // 画面を白黒にする
-        private void EnableGrayscale()
+        private void EnableGrayscale(float monochrome)
         {
-            if (colorAdjustments != null) colorAdjustments.saturation.Override(-55f);
+            if (colorAdjustments != null) colorAdjustments.saturation.Override(-monochrome);
         }
 
         // 白黒を解除する
