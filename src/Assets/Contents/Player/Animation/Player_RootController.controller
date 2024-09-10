@@ -159,8 +159,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1358262452650834379, guid: d7afe49566d858b499368b8424a480be,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: d88cce579272b4f4eb0324761df71d9e, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -236,7 +235,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Land
-  m_Speed: 1
+  m_Speed: 5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 8002616728897144297}
@@ -249,13 +248,12 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 6480610267109901665, guid: 7b0e2fbe6bb47284e8fb836ea71aa149,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: e91dba3a48c3e034690459456bef83b3, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: Speed
-  m_TimeParameter: 
+  m_TimeParameter: Speed
 --- !u!1101 &687111059488930462
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -392,8 +390,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -4490982102790085031, guid: d565914e852675048befa927043d81ec,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: 1152a7bb5f9fa8945935f4a37bdcb3b0, type: 2}
   m_Tag: 
   m_SpeedParameter: Speed
   m_MirrorParameter: IsFalling

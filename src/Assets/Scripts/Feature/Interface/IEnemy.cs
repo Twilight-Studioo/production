@@ -20,5 +20,7 @@ namespace Feature.Interface
         public void Execute();
 
         public void SetHealth(uint health);
+        
+        public GameObject GameObject();
     }
 }

@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 71158415}
   - component: {fileID: 71158414}
   - component: {fileID: 71158413}
+  - component: {fileID: 71158419}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -157,10 +158,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDrawSwapRange: 0
-  swapRange: 0
-  characterParams: {fileID: 0}
-  enemyParams: {fileID: 0}
   slashingEffect: {fileID: 0}
+  dagger: {fileID: 0}
+  Right: 1
+  hx: 0
+  vy: 0
 --- !u!54 &71158414
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -278,6 +280,20 @@ Transform:
   - {fileID: 1611616000}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &71158419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71158411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46ece038ddfe4c5b98b03c262d1a0678, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effect: {fileID: 0}
+  onStopTime: 1
 --- !u!1 &254718415
 GameObject:
   m_ObjectHideFlags: 0
@@ -1889,8 +1905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3519670884924655aa59823e4987798f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyRef: {fileID: 6041799735868572204, guid: 76366cd9c2cc84a9fa330a70dd06c8e8,
-    type: 3}
+  settings: {fileID: 0}
 --- !u!1001 &1864215047
 PrefabInstance:
   m_ObjectHideFlags: 0

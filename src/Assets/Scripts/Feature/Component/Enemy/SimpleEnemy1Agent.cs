@@ -7,9 +7,10 @@ using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
+using Feature.Common.Constants;
 using Feature.Common.Parameter;
-using Feature.Enemy;
 using Feature.Interface;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,7 +18,7 @@ using UnityEngine.AI;
 
 namespace Feature.Component.Enemy
 {
-    public class SimpleEnemy1Agent : FlowScope, IEnemyAgent
+    public class SimpleEnemy1Agent : FlowScope, IEnemyAgent, ISwappable
     {
         public List<Vector3> points;
 
@@ -28,10 +29,18 @@ namespace Feature.Component.Enemy
         private OnHitRushAttack onHitRushAttack;
 
         private Transform playerTransform;
+        
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            position.Value = transform.position;
+        }
+
+        private void Update()
+        {
+            position.Value = transform.position;
         }
 
 
@@ -64,7 +73,6 @@ namespace Feature.Component.Enemy
 
         public void SetPlayerTransform(Transform player)
         {
-            Debug.Log("SetPlayerTransform", player);
             playerTransform = player;
         }
 
@@ -76,6 +84,7 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnTakeDamageEvent;
+        public event Action<ISwappable> OnAddSwappableItem;
 
         private TriggerRef MoveTrigger() =>
             Trigger("AnyDistance")
@@ -123,13 +132,12 @@ namespace Feature.Component.Enemy
                     yield return Action("AIMoveToFollow")
                         .Param("FollowTransform", playerTransform)
                         .Param("MoveSpeed", enemyParams.pursuitSpeed)
-                        .IfEnd(new[]
-                        {
+                        .IfEnd(
                             UnFocusTrigger()
                                 .Build(),
                             RushStart()
-                                .Build(),
-                        })
+                                .Build()
+                        )
                         .Build();
                 }
             }
@@ -160,5 +168,25 @@ namespace Feature.Component.Enemy
             view.OnDamage(enemyParams.damage, transform.position, transform);
             OnTakeDamageEvent?.Invoke();
         }
+
+        public void OnSelected()
+        {
+            
+        }
+
+        public void OnDeselected()
+        {
+        }
+
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
+
+        public Vector2 GetPosition() => transform.position;
+
+        public void OnSwap(Vector2 p)
+        {
+            transform.position = p;
+        }
+
+        public event Action OnDestroyEvent;
     }
 }
