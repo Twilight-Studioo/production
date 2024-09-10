@@ -5,13 +5,14 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "VContainer",
-        "Main.Environment",
         "Feature.Interface",
         "Feature.View",
         "Feature.Common.ActFlow",
         "Feature.Common.Constants",
         "Feature.Common.Parameter",
-        "Feature.Model"
+        "Feature.Model",
+        "Feature.Component",
+        "Main"
     ],
     "includePlatforms": [
         "Editor"

@@ -11,8 +11,7 @@ using UnityEngine;
 
 namespace Feature.View
 {
-    [RequireComponent(typeof(VFXView))]
-    public class PlayerView : MonoBehaviour, IDamaged
+    public class PlayerView : MonoBehaviour, IDamaged, IPlayerView
     {
         public bool isDrawSwapRange;
 
@@ -24,7 +23,7 @@ namespace Feature.View
 
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
-        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
+        private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
 
         private AnimationWrapper animator;
         private float comboAngleOffset; // 連続攻撃時の角度変化
@@ -46,20 +45,29 @@ namespace Feature.View
         private float vignetteChange; //赤くなるまでの時間
         private float yDegree; //y座標の回転
 
+        public float SwapRange { get; set; }
+        
+        public bool IsDrawSwapRange { get; set; }
+
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
-            animator = new AnimationWrapper(GetComponentInChildren<Animator>());
+            animator = this.Create(GetComponentInChildren<Animator>());
             vfxView = GetComponent<VFXView>();
             isGrounded
-                .Where(x => !x)
-                .Subscribe(animator.SetIsFalling);
+                .Subscribe(x => {
+                    animator.SetIsFalling(!x);        
+                });
         }
 
         private void Update()
         {
-            Position.Value = transform.position;
+            position.Value = transform.position;
         }
+        
+        public IReadOnlyReactiveProperty<Vector3> GetPositionRef() => position;
+        
+        public GameObject GetGameObject() => gameObject;
 
         private void FixedUpdate()
         {
@@ -82,8 +90,15 @@ namespace Feature.View
 
         private void OnDrawGizmos()
         {
-            if (SwapRange != 0 && isDrawSwapRange) DrawWireDisk(transform.position, SwapRange, Color.magenta);
+            if (SwapRange != 0 && IsDrawSwapRange) DrawWireDisk(transform.position, SwapRange, Color.magenta);
         }
+        
+        public void SetPosition(Vector3 p)
+        {
+            transform.position = p;
+        }
+        
+        public Transform GetTransform() => transform;
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
@@ -209,16 +224,11 @@ namespace Feature.View
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
-            animator.OnAttack();
+            animator.OnAttack(0.5f);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
             lastDegree = degree;
-        }
-
-        public void PlayVFX()
-        {
-            vfxView.PlayVFX();
         }
 
         public bool IsGrounded()

@@ -3,10 +3,9 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
-using Feature.View;
-using Main.Environment;
 using Main.Factory;
 using UniRx;
 using UnityEngine;
@@ -31,7 +30,7 @@ namespace Main.Controller
         private float horizontalInput;
 
         private float lastDaggerTime; 
-        private const float daggerCooldown = 0.5f; 
+        private const float DaggerCooldown = 0.5f; 
         [Inject]
         public MainController(
             PlayerModel playerModel,
@@ -57,21 +56,32 @@ namespace Main.Controller
             Setup();
         }
 
-        public void OnPossess(PlayerView view)
+        public void OnPossess(IPlayerView view)
         {
             playerPresenter.OnPossess(view);
-            targetGroupManager.AddTarget(view.transform, CameraTargetGroupTag.Player());
+            targetGroupManager.AddTarget(view.GetTransform(), CameraTargetGroupTag.Player());
         }
 
         private void Setup()
         {
             enemyFactory.OnAddField += obj =>
             {
-                targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.Enemy());
+                targetGroupManager.AddTarget(obj.GameObject().transform, CameraTargetGroupTag.Enemy());
+                var swappable = obj.GameObject().GetComponent<ISwappable>();
+                if (swappable != null)
+                {
+                    swapPresenter.AddItem(swappable);
+                }
             };
+            enemyFactory.OnAddSwappableItem += swapPresenter.AddItem;
             enemyFactory.OnRemoveField += obj =>
             {
-                targetGroupManager.RemoveTarget(obj.transform);
+                targetGroupManager.RemoveTarget(obj.GameObject().transform);
+                var swappable = obj.GameObject().GetComponent<ISwappable>();
+                if (swappable != null)
+                {
+                    swapPresenter.RemoveItem(swappable);
+                }
             };
             enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
             enemyFactory.Subscribe();
@@ -131,13 +141,13 @@ namespace Main.Controller
                 {
                     if (x)
                     {
-                        if (Time.time >= lastDaggerTime + daggerCooldown)
+                        if (Time.time >= lastDaggerTime + DaggerCooldown)
                         {
                             lastDaggerTime = Time.time; 
                             
                             var h = Input.GetAxis("Horizontal");
                             var v = Input.GetAxis("Vertical");
-                            float degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                            var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
                             if (degree < 0)
                             {
                                 degree += 360;
@@ -173,13 +183,14 @@ namespace Main.Controller
                             return;
                         }
 
-                        item.PlayVFX();
-                        playerPresenter.PlayVFX();
-
                         var pos = playerModel.Position.Value;
-                        playerPresenter.SetPosition(item.transform.position);
-                        item.SetPosition(pos);
-                        item.SetHighlight(false);
+                        var itemPos = item.GetPosition();
+                        // TODO: 機能をswapPresenterにまとめる
+                        swapPresenter.Swap(itemPos, pos);
+                        item.OnSwap(pos);
+
+                        playerPresenter.SetPosition(itemPos);
+                        item.OnDeselected();
                         playerModel.Swapped();
                     }
                 });
