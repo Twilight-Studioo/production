@@ -3,6 +3,7 @@
 using Core.Camera;
 using Core.Input;
 using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Model;
@@ -33,6 +34,8 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<InputActionAccessor>();
             builder.RegisterComponentInHierarchy<GameUIView>();
             builder.RegisterComponentInHierarchy<SwapView>();
+            builder.RegisterComponentInHierarchy<VoltageBar>();
+            
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);
             builder.Register<SwapModel>(Lifetime.Scoped);

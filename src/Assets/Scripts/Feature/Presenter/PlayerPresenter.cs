@@ -25,7 +25,9 @@ namespace Feature.Presenter
         private readonly PlayerModel playerModel;
 
         private readonly CompositeDisposable swapTimer;
+        private readonly VoltageBar voltageBar;
         private IPlayerView playerView;
+
         private readonly GameUIView gameUIView;
 
         private readonly CompositeDisposable presenterDisposable = new();
@@ -34,13 +36,16 @@ namespace Feature.Presenter
         public PlayerPresenter(
             PlayerModel model,
             CharacterParams characterParams,
+            VoltageBar voltageBar,
             GameUIView ui
+
         )
         {
             playerModel = model;
             this.characterParams = characterParams;
             gameUIView = ui;
             swapTimer = new();
+            this.voltageBar = voltageBar;
         }
 
         public void OnPossess(IPlayerView view)
@@ -134,10 +139,9 @@ namespace Feature.Presenter
 
             swapTimer.Clear();
             playerModel.OnEndSwap();
-
+            
             Func<float, float> easingFunction;
-
-
+            
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:
@@ -154,7 +158,7 @@ namespace Feature.Presenter
                     easingFunction = Easing.Linear;
                     break;
             }
-
+            
             var initialTimeScale = characterParams.swapContinueTimeScale;
             const float targetTimeScale = 1.0f;
             var duration = characterParams.swapReturnTimeMillis / 1000f;
@@ -185,9 +189,16 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            playerView.Attack(degree, (uint)characterParams.attackPower);
+            playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
+            voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
         }
 
+        //public void PlayVFX()
+        //{
+        //    playerModel.AddVoltageSwap();
+        //    voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
+        //    playerView.PlayVFX();
+        //}
         public Transform GetTransform() => playerView.GetTransform();
 
         private void OnPlayerDeath()

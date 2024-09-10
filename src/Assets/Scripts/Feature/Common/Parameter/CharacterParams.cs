@@ -17,8 +17,7 @@ namespace Feature.Common.Parameter
         public float jumpPower = 7f;
 
         public int attackPower = 2;
-
-
+        
         // スワップ関連
 
         [Tooltip("スワップの最大継続時間(Milli)"), Space(10),]
@@ -56,6 +55,16 @@ namespace Feature.Common.Parameter
 
         [Tooltip("何ミリ秒ごとにリソースが回復するか")] public uint recoveryStaminaTimeMillis = 800;
         
+        //ボルテージ関連
+        [Tooltip("攻撃時に使うボルテージの量")] 
+        public int useVoltageAttackValue = 50;
+            
+        [Tooltip("1回のスワップで増えるボルテージの量")] 
+        public int addVoltageSwapValue = 10;
+                
+        [Tooltip("ボルテージ使用時の攻撃上昇倍率")] 
+        public int voltageAttackPowerValue = 2;
+
         [Tooltip("クナイを飛ばしたときのスタミナ消費")] public uint useDaggerUseStamina = 2;
     }
 
