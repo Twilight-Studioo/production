@@ -3,6 +3,11 @@ name: unified-check-ci.yml
 on:
   workflow_dispatch:
   pull_request:
+    branches:
+      - main
+      - develop
+      - 'release/*'
+      - dependabot/** # Dependabot PRs
   push:
     paths:
       - 'src/Assets/Scripts/**'
