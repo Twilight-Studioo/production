@@ -124,6 +124,7 @@ namespace Feature.Model
         public float ComboAngleOffset => characterParams.comboAngleOffset;
         public int MaxComboCount => characterParams.maxComboCount;
         public float VignetteChange => characterParams.vignetteChange;
+        public float EndvignetteChange => characterParams.endvignetteChange;
 
         public float Monochrome => characterParams.monochrome;
         public readonly IReadOnlyReactiveProperty<PlayerState> State;

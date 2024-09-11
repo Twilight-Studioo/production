@@ -22,6 +22,7 @@ namespace Feature.Common.Parameter
         private SerializedProperty maxComboCount;
         private SerializedProperty vignetteChange;
         private SerializedProperty monochrome;
+        private SerializedProperty endvignetteChange;
 
         private SerializedProperty maxHasStamina;
         private SerializedProperty recoveryResourceTimeMillis;
@@ -54,6 +55,7 @@ namespace Feature.Common.Parameter
             maxComboCount = serializedObject.FindProperty("maxComboCount");
             vignetteChange = serializedObject.FindProperty("vignetteChange");
             monochrome = serializedObject.FindProperty("monochrome");
+            endvignetteChange = serializedObject.FindProperty("endvignetteChange");
 
             // スワップ関連
             swapContinueMaxMillis = serializedObject.FindProperty("swapContinueMaxMillis");
@@ -88,6 +90,7 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(maxComboCount);
             EditorGUILayout.PropertyField(vignetteChange);
             EditorGUILayout.PropertyField(monochrome);
+            EditorGUILayout.PropertyField(endvignetteChange);
 
             EditorGUILayout.Space();
             showSwapParameters = EditorGUILayout.Foldout(showSwapParameters, "スワップパラメーター");

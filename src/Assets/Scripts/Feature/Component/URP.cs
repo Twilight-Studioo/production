@@ -14,8 +14,10 @@ namespace Feature.Component
         private ColorCurves colorCurves;
         private Vignette vignette;
         private float startIntensity =0.3f;
-        private float endIntensity=0.6f;
-
+        [Header("intensityを最大どこまで高くするか")]
+        [Range(0.3f,1.0f)]
+        [SerializeField]private float endIntensity=0.6f;
+        private float endvignetteChange;
         private void Awake()
         {
             if (volume != null)
@@ -31,11 +33,11 @@ namespace Feature.Component
             GraduallyChangeVignetteColorAndIntensity(Color.black, Color.red, vignetteChange, startIntensity, endIntensity);
         }
 
-        public void SwapFinishURP()
+        public void SwapFinishURP(float endvignetteChange)
         {
             DisableGrayscale();
             VignetteBlackColor();
-            GraduallyChangeVignetteColorAndIntensity(Color.red, Color.black, 1f, 0f, 0.3f); // intensityを1から0へ
+            GraduallyChangeVignetteColorAndIntensity(Color.red, Color.black, 1f, 0f, endvignetteChange); // intensityを1から0へ
             CancelInvoke("VignetteRedColor");
         }
 
@@ -50,18 +52,15 @@ namespace Feature.Component
                 .Subscribe(_ =>
                     {
                         time += Time.deltaTime;
-
-                        // 色の補間
+                        
                         Color newColor = Color.Lerp(startColor, endColor, time / duration);
                         ChangeVignetteColorTo(newColor);
-
-                        // intensityの補間
+                        
                         float newIntensity = Mathf.Lerp(startIntensity, endIntensity, time / duration);
                         ChangeVignetteIntensityTo(newIntensity);
                     },
                     () =>
                     {
-                        // 最後に完全な色とintensityを設定
                         ChangeVignetteColorTo(endColor);
                         ChangeVignetteIntensityTo(endIntensity);
                     });

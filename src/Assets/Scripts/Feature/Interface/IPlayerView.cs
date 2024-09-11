@@ -33,6 +33,6 @@ namespace Feature.Interface
         void SwapTimeFinishUrp();
 
         void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount, float VignetteChange,
-           MonoBehaviour _urp, float Monochrome);
+           MonoBehaviour _urp, float Monochrome,float EndvignetteChange);
     }
 }

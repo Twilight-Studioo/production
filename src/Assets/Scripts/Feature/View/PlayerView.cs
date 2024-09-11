@@ -36,6 +36,7 @@ namespace Feature.View
         private float speed;
         private URP urp;
         private float vignetteChange; //赤くなるまでの時間
+        private float endvignetteChange;
         private float monochrome;
 
         private VFXView vfxView;
@@ -85,7 +86,7 @@ namespace Feature.View
         }
 
         public void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount, float VignetteChange,
-            MonoBehaviour _urp, float Monochrome)
+            MonoBehaviour _urp, float Monochrome,float EndvignetteChange)
         {
             comboTimeWindow = ComboTimeWindow;
             comboAngleOffset = ComboAngleOffset;
@@ -93,6 +94,7 @@ namespace Feature.View
             vignetteChange = VignetteChange;
             urp = (URP)_urp;
             monochrome = Monochrome;
+            endvignetteChange = EndvignetteChange;
         }
         
         private void OnDrawGizmos()
@@ -239,7 +241,7 @@ namespace Feature.View
 
         public void SwapTimeFinishUrp()
         {
-            urp.SwapFinishURP();
+            urp.SwapFinishURP(endvignetteChange);
         }
     }
 }
