@@ -17,6 +17,11 @@ namespace Feature.Common.Parameter
         private SerializedProperty enterSwapUseStamina;
         private SerializedProperty health;
         private SerializedProperty jumpPower;
+        private SerializedProperty comboTimeWindow;
+        private SerializedProperty comboAngleOffset;
+        private SerializedProperty maxComboCount;
+        private SerializedProperty vignetteChange;
+        private SerializedProperty monochrome;
 
         private SerializedProperty maxHasStamina;
         private SerializedProperty recoveryResourceTimeMillis;
@@ -44,6 +49,11 @@ namespace Feature.Common.Parameter
             speed = serializedObject.FindProperty("speed");
             jumpPower = serializedObject.FindProperty("jumpPower");
             attackPower = serializedObject.FindProperty("attackPower");
+            comboTimeWindow =serializedObject.FindProperty("comboTimeWindow");
+            comboAngleOffset = serializedObject.FindProperty("comboAngleOffset");
+            maxComboCount = serializedObject.FindProperty("maxComboCount");
+            vignetteChange = serializedObject.FindProperty("vignetteChange");
+            monochrome = serializedObject.FindProperty("monochrome");
 
             // スワップ関連
             swapContinueMaxMillis = serializedObject.FindProperty("swapContinueMaxMillis");
@@ -73,6 +83,11 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(speed);
             EditorGUILayout.PropertyField(jumpPower);
             EditorGUILayout.PropertyField(attackPower);
+            EditorGUILayout.PropertyField(comboTimeWindow);
+            EditorGUILayout.PropertyField(comboAngleOffset);
+            EditorGUILayout.PropertyField(maxComboCount);
+            EditorGUILayout.PropertyField(vignetteChange);
+            EditorGUILayout.PropertyField(monochrome);
 
             EditorGUILayout.Space();
             showSwapParameters = EditorGUILayout.Foldout(showSwapParameters, "スワップパラメーター");

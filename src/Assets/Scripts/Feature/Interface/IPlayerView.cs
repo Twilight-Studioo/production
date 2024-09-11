@@ -28,5 +28,11 @@ namespace Feature.Interface
         
         void Dagger(float degree, float h, float v);
         
+        void SwapTimeStartUrp();
+
+        void SwapTimeFinishUrp();
+
+        void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount, float VignetteChange,
+           MonoBehaviour _urp, float Monochrome);
     }
 }

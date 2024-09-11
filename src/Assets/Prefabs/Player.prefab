@@ -97,8 +97,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 287fb10ae3b643b9afe758858d3fee3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slashingEffect: {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851,
-    type: 3}
+  slashingEffect:
+  - {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851, type: 3}
+  - {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851, type: 3}
+  - {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851, type: 3}
   dagger: {fileID: 1714581555819581919, guid: 9c1be308684fde246ba5cab8b034a1e9, type: 3}
   Right: 1
   hx: 0

@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using Feature.Component;
 using Feature.Interface;
 using UniRx;
@@ -13,14 +14,14 @@ namespace Feature.View
     public class PlayerView : MonoBehaviour, IDamaged, IPlayerView
     {
 
-        [SerializeField] private GameObject slashingEffect;
+        [SerializeField] private List<GameObject> slashingEffect;
         [SerializeField] private GameObject dagger;
         public bool Right = true;
         public float hx;
         public float vy;
-        public float comboTimeWindow = 1f; // 〇秒以内の連続攻撃を許可
-        public float comboAngleOffset = 60f; // 連続攻撃時の角度変化
-        public int maxComboCount = 3; // 連続攻撃の最大回数
+        private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
+        private float comboAngleOffset; // 連続攻撃時の角度変化
+        private int maxComboCount; // 連続攻撃の最大回数
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
@@ -33,6 +34,9 @@ namespace Feature.View
         private Vector3 previousPosition;
         private Rigidbody rb;
         private float speed;
+        private URP urp;
+        private float vignetteChange; //赤くなるまでの時間
+        private float monochrome;
 
         private VFXView vfxView;
         private float yDegree; //y座標の回転
@@ -80,6 +84,17 @@ namespace Feature.View
             }
         }
 
+        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount, float VignetteChange,
+            MonoBehaviour _urp, float Monochrome)
+        {
+            comboTimeWindow = ComboTimeWindow;
+            comboAngleOffset = ComboAngleOffset;
+            maxComboCount = MaxComboCount;
+            vignetteChange = VignetteChange;
+            urp = (URP)_urp;
+            monochrome = Monochrome;
+        }
+        
         private void OnDrawGizmos()
         {
             if (SwapRange != 0 && IsDrawSwapRange) DrawWireDisk(transform.position, SwapRange, Color.magenta);
@@ -193,24 +208,38 @@ namespace Feature.View
             {
                 yDegree = 0;
             }
+
             animator.SetAttackComboCount(comboCount);
 
+            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
+
             if (degree == 0 && Right == false) degree = -180f;
-            var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0),
+            var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
                 Quaternion.Euler(yDegree, 0, degree));
+
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
-            animator.OnAttack(0.5f);
+            //animator.OnAttack();
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
             lastDegree = degree;
         }
-
+        
         public bool IsGrounded()
         {
             return isGrounded.Value;
+        }
+        
+        public void SwapTimeStartUrp()
+        {
+            urp.SwapStartURP(vignetteChange, monochrome);
+        }
+
+        public void SwapTimeFinishUrp()
+        {
+            urp.SwapFinishURP();
         }
     }
 }
