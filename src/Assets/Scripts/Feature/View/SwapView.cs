@@ -1,6 +1,8 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
+using Castle.Components.DictionaryAdapter.Xml;
 using UniRx;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -80,19 +82,7 @@ namespace Feature.View
             OnDestroy?.Invoke();
             Destroy(gameObject);
         }
-
-        //public void UpdateRimThreshold(Guid id, float newThreshold)
-        /*{
-            var item = swapItems.FirstOrDefault(x => x.Id == id);
-            if (item.Renderer != null)
-            {
-                var material = item.Renderer.material;
-                if (material.HasProperty("_RimThreshold"))
-                {
-                    material.SetFloat("_RimThreshold", newThreshold);
-                }
-            }
-        }*/
+        
         public void PlayVFX()
         {
             if (effect != null)
@@ -114,32 +104,15 @@ namespace Feature.View
         {
             isSwap = true;
         }
-
-        public void EndSwap()
-        {
-            isSwap = false;
-            Debug.Log($"EndSwap called. isSwapActive = {isSwap}");
-        }
-
         public bool IsSwap() => isSwap;
-
-        private void OnTriggerStay(Collider other)
+        public void SetRim()
         {
-            if (other.gameObject.name == "CanSwapSpace")
-            {
-                if (isSwap)
-                {
-                    material.SetFloat("_RimThreashould", hilightRimThreashold);
-                }
-                else
-                {
-                    material.SetFloat("_RimThreashould", 1);
-                }
-            }
-            else
-            {
-                material.SetFloat("_RimThreashould", 1);
-            }
+            material.SetFloat("_RimThreashould", hilightRimThreashold);
+        }
+        
+        public void ResetRim()
+        {
+            material.SetFloat("_RimThreashould", 1);
         }
     }
 }

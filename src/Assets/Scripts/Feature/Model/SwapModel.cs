@@ -13,13 +13,11 @@ namespace Feature.Model
     {
         public Guid Id;
         public Vector3 Position;
-        public Renderer Renderer;
 
-        public SwapItem(Guid id, Vector3 position, Renderer renderer)
+        public SwapItem(Guid id, Vector3 position)
         {
             Id = id;
             Position = position;
-            Renderer = renderer;
         }
     }
 

@@ -156,32 +156,31 @@ namespace Main.Controller
                     if (x)
                     {
                         playerPresenter.StartSwap();
+                        swapPresenter.InRangeHilight(playerModel.Position.Value,true);
                     }
                     else
                     {
                         if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle)
                         {
+                            swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
-
+                        swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                         swapPresenter.ResetSelector();
-                        swapPresenter.EndSwap();
                         playerPresenter.EndSwap();
                         if (item == null)
                         {
                             return;
                         }
-
+                        
+                        item.SetHighlight(false);
                         item.PlayVFX();
                         playerPresenter.PlayVFX();
-                        
-
                         var pos = playerModel.Position.Value;
                         playerPresenter.SetPosition(item.transform.position);
                         item.SetPosition(pos);
-                        item.SetHighlight(false);
                         playerModel.Swapped();
                     }
                 });

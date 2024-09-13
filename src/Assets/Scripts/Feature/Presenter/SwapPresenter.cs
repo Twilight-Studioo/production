@@ -116,9 +116,23 @@ namespace Feature.Presenter
             return swapItemViews[item.Value.Id];
         }
 
-        public void EndSwap()
+        public void InRangeHilight(Vector3 basePosition, bool isSwap)
         {
-            swapView.EndSwap();
+            var items = swapItemsModel.ItemInRangeHilight(basePosition, characterParams.canSwapDistance);
+            if (items != null)
+            {
+                foreach (var i in items)
+                {
+                    if (isSwap)
+                    {
+                        swapItemViews[i.Id].SetRim();
+                    }
+                    else
+                    {
+                        swapItemViews[i.Id].ResetRim();
+                    }
+                }
+            }
         }
     }
 }
