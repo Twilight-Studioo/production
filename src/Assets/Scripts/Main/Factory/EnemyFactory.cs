@@ -18,6 +18,8 @@ namespace Main.Factory
         [SerializeField] private EnemiesSetting settings;
 
         public GetTransform GetPlayerTransform;
+        
+        private readonly IObjectUtil objectUtil = new ObjectUtil();
 
         public void Subscribe()
         {
@@ -28,7 +30,7 @@ namespace Main.Factory
 
             settings.SettingValidate();
 
-            var points = FindObjectsOfType<EnemyStart>();
+            var points = objectUtil.FindObjectsOfType<EnemyStart>();
             foreach (var enemyStart in points)
             {
                 if (settings.GetEnemyTypes().All(x => x != enemyStart.SpawnEnemyType))
