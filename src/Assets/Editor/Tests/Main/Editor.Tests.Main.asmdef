@@ -12,7 +12,8 @@
         "Feature.Common.Parameter",
         "Feature.Model",
         "Feature.Component",
-        "Main"
+        "Main",
+        "Editor.Tests.Common"
     ],
     "includePlatforms": [
         "Editor"
