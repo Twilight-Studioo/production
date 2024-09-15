@@ -18,7 +18,7 @@ namespace Feature.Interface
         
         GameObject GetGameObject();
         
-        void Move(float direction, float speed);
+        void Move(Vector3 direction, float speed);
         
         void Jump(float jumpPower);
         

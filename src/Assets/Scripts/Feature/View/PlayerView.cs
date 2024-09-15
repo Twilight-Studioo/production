@@ -5,6 +5,7 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #endregion
 
@@ -15,7 +16,7 @@ namespace Feature.View
 
         [SerializeField] private GameObject slashingEffect;
         [SerializeField] private GameObject dagger;
-        public bool Right = true;
+        private bool right = true;
         public float hx;
         public float vy;
         public float comboTimeWindow = 1f; // 〇秒以内の連続攻撃を許可
@@ -114,29 +115,28 @@ namespace Feature.View
             Gizmos.color = oldColor;
         }
 
-        public void Move(float direction, float jumpMove)
+        public void Move(Vector3 direction, float jumpMove)
         {
             //向き
-            if (direction > 0)
+            if (direction.x > 0)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0);
-                Right = true;
+                right = true;
             }
-            else if (direction < 0)
+            else if (direction.x < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
-                direction = direction * -1;
-                Right = false;
+                right = false;
             }
 
             if (isGrounded.Value)
             {
-                var movement = transform.right * (direction * Time.deltaTime);
+                var movement = direction * Time.deltaTime;
                 rb.MovePosition(rb.position + movement);
             }
             else
             {
-                var movement = transform.right * (direction * Time.deltaTime) / jumpMove;
+                var movement = direction * Time.deltaTime / jumpMove;
                 rb.MovePosition(rb.position + movement);
             }
         }
@@ -154,14 +154,14 @@ namespace Feature.View
         public void Dagger(float degree, float h, float v)
         {
             GameObject instantiateDagger;
-            if (degree == 0 && Right == false)
+            if (degree == 0 && right == false)
                 instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, -180));
             else
                 instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {
-                if (Right)
+                if (right)
                     h = 1;
                 else
                     h = -1;
@@ -195,7 +195,7 @@ namespace Feature.View
             }
             animator.SetAttackComboCount(comboCount);
 
-            if (degree == 0 && Right == false) degree = -180f;
+            if (degree == 0 && right == false) degree = -180f;
             var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0),
                 Quaternion.Euler(yDegree, 0, degree));
             var slash = obj.GetComponent<Slash>();
