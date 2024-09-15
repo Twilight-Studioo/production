@@ -37,6 +37,8 @@ namespace Feature.Common.Parameter
         
         private SerializedProperty useDaggerUseStamina;
 
+        private SerializedProperty snapPower;
+
         private void OnEnable()
         {
             // 基本パラメータ
@@ -62,6 +64,7 @@ namespace Feature.Common.Parameter
             resourceRecoveryQuantity = serializedObject.FindProperty("resourceRecoveryQuantity");
             recoveryResourceTimeMillis = serializedObject.FindProperty("recoveryStaminaTimeMillis");
             useDaggerUseStamina = serializedObject.FindProperty("useDaggerUseStamina");
+            snapPower = serializedObject.FindProperty("snapPower");
         }
 
         public override void OnInspectorGUI()
@@ -73,6 +76,7 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(speed);
             EditorGUILayout.PropertyField(jumpPower);
             EditorGUILayout.PropertyField(attackPower);
+            EditorGUILayout.PropertyField(snapPower, new GUIContent("攻撃方向への移動量"));
 
             EditorGUILayout.Space();
             showSwapParameters = EditorGUILayout.Foldout(showSwapParameters, "スワップパラメーター");

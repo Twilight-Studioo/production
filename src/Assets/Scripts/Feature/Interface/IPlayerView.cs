@@ -20,6 +20,8 @@ namespace Feature.Interface
         
         void Move(Vector3 direction, float speed);
         
+        void AddForce(Vector3 force);
+        
         void Jump(float jumpPower);
         
         void SetPosition(Vector3 position);
@@ -27,6 +29,5 @@ namespace Feature.Interface
         void Attack(float degree, uint damage);
         
         void Dagger(float degree, float h, float v);
-        
     }
 }

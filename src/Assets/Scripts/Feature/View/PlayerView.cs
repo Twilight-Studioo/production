@@ -5,7 +5,6 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 #endregion
 
@@ -115,7 +114,7 @@ namespace Feature.View
             Gizmos.color = oldColor;
         }
 
-        public void Move(Vector3 direction, float jumpMove)
+        public void Move(Vector3 direction, float power)
         {
             //向き
             if (direction.x > 0)
@@ -131,12 +130,12 @@ namespace Feature.View
 
             if (isGrounded.Value)
             {
-                var movement = direction * Time.deltaTime;
+                var movement = direction * (Time.deltaTime * power);
                 rb.MovePosition(rb.position + movement);
             }
             else
             {
-                var movement = direction * Time.deltaTime / jumpMove;
+                var movement = direction / 0.5f * (Time.deltaTime * power);
                 rb.MovePosition(rb.position + movement);
             }
         }
@@ -208,6 +207,10 @@ namespace Feature.View
             lastDegree = degree;
         }
 
+        public void AddForce(Vector3 force)
+        {
+            rb.AddForce(force, ForceMode.Impulse);
+        }
         public bool IsGrounded()
         {
             return isGrounded.Value;

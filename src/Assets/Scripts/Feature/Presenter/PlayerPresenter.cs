@@ -94,11 +94,11 @@ namespace Feature.Presenter
         {
             if (direction > 0)
             {
-                playerView.Move(Vector3.right * playerModel.MoveSpeed, playerModel.JumpMove);
+                playerView.Move(Vector3.right, playerModel.MoveSpeed);
             }
             else if (direction < 0)
             {
-                playerView.Move(Vector3.left * playerModel.MoveSpeed, playerModel.JumpMove);
+                playerView.Move(Vector3.left, playerModel.MoveSpeed);
             }
             
         }
@@ -198,9 +198,15 @@ namespace Feature.Presenter
         public void Attack(float degree)
         {
             playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
-            // 攻撃方向に少し飛ばす
-          //  playerView.Move(1, playerModel.JumpMove);
             voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
+        
+            // 攻撃方向に少し飛ばす
+            // degreeをラジアンに変換
+            var radian = degree * Mathf.Deg2Rad;
+
+            // 力の方向を計算
+            var forceDirection = new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
+            playerView.AddForce(forceDirection * characterParams.snapPower);
         }
 
         //public void PlayVFX()
