@@ -22,7 +22,6 @@ namespace Feature.Common.Parameter
         public int maxComboCount = 3; // 連続攻撃の最大回数
         public float vignetteChange = 0.5f;//赤くなるまでの時間
         public float monochrome = 50; //高いほど濃く
-        public float endvignetteChange = 0.3f;//解除するまでの時間
         
         // スワップ関連
 

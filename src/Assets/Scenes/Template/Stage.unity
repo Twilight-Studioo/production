@@ -547,6 +547,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volume: {fileID: 320289280}
+  endIntensity: 0.6
+  endvignetteChange: 0.5
 --- !u!1001 &326508686
 PrefabInstance:
   m_ObjectHideFlags: 0

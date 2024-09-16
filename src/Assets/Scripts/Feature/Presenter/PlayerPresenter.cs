@@ -32,14 +32,14 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable presenterDisposable = new();
 
-        private URP urp;
+        private VolumeController volumeController;
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
             CharacterParams characterParams,
             VoltageBar voltageBar,
             GameUIView ui,
-                URP urp
+                VolumeController volumeController
         )
         {
             playerModel = model;
@@ -47,7 +47,7 @@ namespace Feature.Presenter
             gameUIView = ui;
             swapTimer = new();
             this.voltageBar = voltageBar;
-            this.urp = urp;
+            this.volumeController = volumeController;
         }
 
         public void OnPossess(IPlayerView view)
@@ -90,7 +90,7 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(playerHpBar);
-            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,playerModel.MaxComboCount,playerModel.VignetteChange,urp,playerModel.Monochrome,playerModel.EndvignetteChange);
+            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,playerModel.MaxComboCount,playerModel.VignetteChange,volumeController,playerModel.Monochrome);
         }
 
         public void Move(float direction)

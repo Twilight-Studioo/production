@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Feature.Component
 {
-    public class URP : MonoBehaviour
+    public class VolumeController : MonoBehaviour
     {
         //URP関連
         [SerializeField] private Volume volume;
@@ -16,8 +16,9 @@ namespace Feature.Component
         private float startIntensity =0.3f;
         [Header("intensityを最大どこまで高くするか")]
         [Range(0.3f,1.0f)]
-        [SerializeField]private float endIntensity=0.6f;
-        private float endvignetteChange;
+        [SerializeField]private float endIntensity=5.0f;
+        [Header("intensityが戻るまでの時間")]
+        public float endvignetteChange = 0.5f;
         private void Awake()
         {
             if (volume != null)
@@ -27,17 +28,17 @@ namespace Feature.Component
             }
         }
 
-        public void SwapStartURP(float vignetteChange, float monochrome)
+        public void SwapStartUrp(float vignetteChange, float monochrome)
         {
             EnableGrayscale(monochrome);
-            GraduallyChangeVignetteColorAndIntensity(Color.black, Color.red, vignetteChange, startIntensity, endIntensity);
+            GraduallyChangeVignetteColorAndIntensity(Color.black, Color.red, startIntensity, endIntensity,vignetteChange);
         }
 
-        public void SwapFinishURP(float endvignetteChange)
+        public void SwapFinishUrp()
         {
             DisableGrayscale();
             VignetteBlackColor();
-            GraduallyChangeVignetteColorAndIntensity(Color.red, Color.black, 1f, 0f, endvignetteChange); // intensityを1から0へ
+            GraduallyChangeVignetteColorAndIntensity(Color.red, Color.black, endIntensity, startIntensity, endvignetteChange);
             CancelInvoke("VignetteRedColor");
         }
 
