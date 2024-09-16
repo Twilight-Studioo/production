@@ -135,7 +135,7 @@ namespace Feature.View
             }
             else
             {
-                var movement = direction / 0.5f * (Time.deltaTime * power);
+                var movement = direction * (0.5f * (Time.deltaTime * power));
                 rb.MovePosition(rb.position + movement);
             }
         }
