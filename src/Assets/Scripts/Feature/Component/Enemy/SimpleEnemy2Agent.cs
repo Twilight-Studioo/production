@@ -5,14 +5,16 @@ using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
+using Feature.Common.Constants;
 using Feature.Common.Parameter;
-using Feature.Enemy;
+using Feature.Interface;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Feature.Component.Enemy
 {
-    public class SimpleEnemy2Agent : FlowScope, IEnemyAgent
+    public class SimpleEnemy2Agent : FlowScope, IEnemyAgent, ISwappable
     {
         private List<Vector3> points;
 
@@ -23,6 +25,8 @@ namespace Feature.Component.Enemy
         private OnHitRushAttack onHitBullet;
 
         private Transform playerTransform;
+                
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
         
         [SerializeField]
         private GameObject bulletPrefab;
@@ -32,6 +36,12 @@ namespace Feature.Component.Enemy
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            position.Value = transform.position;
+        }
+        
+        private void Update()
+        {
+            position.Value = transform.position;
         }
 
 
@@ -75,6 +85,7 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnTakeDamageEvent;
+        public event Action<ISwappable> OnAddSwappableItem;
 
         private TriggerRef FocusTrigger() =>
             Trigger("Distance")
@@ -148,7 +159,8 @@ namespace Feature.Component.Enemy
                 var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
                 bulletRb.SetHitObject(false, true);
-                bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage);
+                bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
+                OnAddSwappableItem?.Invoke(bulletRb);
                 bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                 yield return Wait(enemyParams.shootIntervalSec);
             }
@@ -156,5 +168,35 @@ namespace Feature.Component.Enemy
             yield return Wait(enemyParams.shootAfterSec);
 
         }
+
+        public void OnSelected()
+        {
+            
+        }
+
+        public void OnDeselected()
+        {
+        }
+        
+        public void OnInSelectRange()
+        {
+            
+        }
+        
+        public void OnOutSelectRange()
+        {
+            
+        }
+
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
+
+        public Vector2 GetPosition() => transform.position;
+
+        public void OnSwap(Vector2 p)
+        {
+            transform.position = p;
+        }
+
+        public event Action OnDestroyEvent;
     }
 }

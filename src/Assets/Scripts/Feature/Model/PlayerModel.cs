@@ -2,6 +2,7 @@
 
 using System;
 using Feature.Common.Parameter;
+using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -29,6 +30,9 @@ namespace Feature.Model
 
         private readonly CharacterParams characterParams;
 
+        private readonly GameUIView gameUIView;
+        
+
         private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
         public IReadOnlyReactiveProperty<int> Health;
 
@@ -53,6 +57,7 @@ namespace Feature.Model
         [Inject]
         public PlayerModel(
             CharacterParams character
+            // GameUIView ui
         )
         {
             characterParams = character;
@@ -107,6 +112,9 @@ namespace Feature.Model
         public float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
 
         private float IfCanDaggerRate => (float)characterParams.useDaggerUseStamina / characterParams.maxHasStamina;
+        private const int MAXVOLTAGEVALUE = 100;
+        private const int MINVOLTAGEVALUE = 0;
+        public int VoltageValue = 0;
         public float MoveSpeed => characterParams.speed;
         public float JumpForce => characterParams.jumpPower;
 
@@ -215,6 +223,22 @@ namespace Feature.Model
         public void TakeDamage(uint damage)
         {
             health.Value = Mathf.Max((int)(health.Value - damage), 0);
+        }
+        
+        public void AddVoltageSwap()
+        {
+            VoltageValue += characterParams.addVoltageSwapValue;
+            VoltageValue = Mathf.Clamp(VoltageValue, MINVOLTAGEVALUE, MAXVOLTAGEVALUE);
+        }
+        
+        public int GetVoltageAttackPower()
+        {
+            if (VoltageValue >= characterParams.useVoltageAttackValue)
+            {
+                VoltageValue -= characterParams.useVoltageAttackValue;
+                return characterParams.attackPower * characterParams.voltageAttackPowerValue;
+            }
+            return characterParams.attackPower;
         }
     }
 }

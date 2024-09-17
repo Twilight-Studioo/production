@@ -4,9 +4,9 @@ using System;
 using System.Linq;
 using Core.Utilities;
 using Feature.Common.Parameter;
-using Feature.Enemy;
+using Feature.Component.Environment;
 using Feature.Interface;
-using Main.Environment;
+using Feature.Presenter;
 using UnityEngine;
 
 #endregion
@@ -18,6 +18,8 @@ namespace Main.Factory
         [SerializeField] private EnemiesSetting settings;
 
         public GetTransform GetPlayerTransform;
+        
+        private readonly IObjectUtil objectUtil = new ObjectUtil();
 
         public void Subscribe()
         {
@@ -28,7 +30,7 @@ namespace Main.Factory
 
             settings.SettingValidate();
 
-            var points = FindObjectsOfType<EnemyStart>();
+            var points = objectUtil.FindObjectsOfType<EnemyStart>();
             foreach (var enemyStart in points)
             {
                 if (settings.GetEnemyTypes().All(x => x != enemyStart.SpawnEnemyType))
@@ -45,20 +47,20 @@ namespace Main.Factory
         {
             var enemyRef = settings.reference.Find(x => x.type == start.SpawnEnemyType);
             var enemy = ObjectFactory.CreateObject(enemyRef.reference, t.position, t.rotation);
-            OnAddField?.Invoke(enemy);
             var enemyComponent = enemy.GetComponent<IEnemy>();
-            var enemyParams = enemy.GetComponent<IEnemyAgent>();
-            enemyParams.SetParams(enemyRef.parameters);
-            enemyParams.SetPlayerTransform(GetPlayerTransform());
-            enemyParams.SetPatrolPoints(start.Points);
-            enemyComponent.SetHealth(enemyRef.parameters.maxHp);
-            enemyComponent.Execute();
-            enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(enemy);
+            var agent = enemy.GetComponent<IEnemyAgent>();
+            var presenter = new EnemyPresenter(enemyComponent, agent, enemyRef.parameters);
+            OnAddField?.Invoke(presenter);
+            agent.OnAddSwappableItem += OnAddSwappableItem;
+            enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);
+            presenter.Execute(GetPlayerTransform(), start.Points);
             return enemyComponent;
         }
 
-        public event Action<GameObject> OnAddField;
+        public event Action<IEnemyPresenter> OnAddField;
         
-        public event Action<GameObject> OnRemoveField; 
+        public event Action<ISwappable> OnAddSwappableItem; 
+        
+        public event Action<IEnemyPresenter> OnRemoveField; 
     }
 }

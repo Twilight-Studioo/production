@@ -181,9 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aefcbd9b2e24312bd2e115dd84110fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeTime: 3
-  speed: 20
-  damage: 1
+  daggerPrams: {fileID: 11400000, guid: d4d4a48f7e2322c43b46c2cba457b5ca, type: 2}
 --- !u!54 &8983050295202358636
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1,6 +1,8 @@
 using System;
+using Feature.Component.Environment;
+using Feature.Interface;
 using Feature.View;
-using Main.Environment;
+using Main.Controller;
 using Moq;
 using NUnit.Framework;
 using UnityEngine;

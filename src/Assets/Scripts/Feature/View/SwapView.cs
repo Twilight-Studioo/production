@@ -1,8 +1,7 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
-using Castle.Components.DictionaryAdapter.Xml;
+using Feature.Interface;
 using UniRx;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -12,7 +11,7 @@ using UnityEngine.VFX;
 namespace Feature.View
 {
     [RequireComponent(typeof(Material))]
-    public class SwapView : MonoBehaviour
+    public sealed class SwapView : MonoBehaviour, ISwappable
     {
         [SerializeField] private VisualEffect effect;
         [SerializeField] private float onStopTime = 1f;
@@ -22,12 +21,12 @@ namespace Feature.View
         // ReSharper disable once MemberCanBePrivate.Local
         public readonly IReactiveProperty<Vector2> Position = new ReactiveProperty<Vector2>();
 
-        [NonSerialized] protected bool IsActive;
+        [NonSerialized] private bool IsActive;
 
         private Material material;
         private Renderer targetRenderer;
 
-        protected virtual void Start()
+        private void Start()
         {
             IsActive = true;
             targetRenderer = GetComponent<Renderer>();
@@ -44,22 +43,28 @@ namespace Feature.View
             OnTrigger?.Invoke(other);
         }
 
-        public virtual void Dispose()
+        public void OnSelected()
         {
-            OnDestroy = null;
+            SetHighlight(true);
+        }
+        
+        public void OnDeselected()
+        {
+            SetHighlight(false);
+        }
+
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => Position;
+        
+        public Vector2 GetPosition() => Position.Value;
+
+        public void Dispose()
+        {
             OnTrigger = null;
         }
 
-        public event Action OnDestroy;
+        private event Action<Collider2D> OnTrigger;
 
-        protected event Action<Collider2D> OnTrigger;
-
-        public void SetPosition(Vector2 position)
-        {
-            transform.position = position;
-        }
-
-        public void SetHighlight(bool isHighlight)
+        private void SetHighlight(bool isHighlight)
         {
             // if (material == null)
             // {
@@ -77,42 +82,40 @@ namespace Feature.View
             // }
         }
 
-        protected void Delete()
+        private void Delete()
         {
-            OnDestroy?.Invoke();
+            OnDestroyEvent?.Invoke();
             Destroy(gameObject);
         }
+
+        //public void UpdateRimThreshold(Guid id, float newThreshold)
+        /*{
+            var item = swapItems.FirstOrDefault(x => x.Id == id);
+            if (item.Renderer != null)
+            {
+                var material = item.Renderer.material;
+                if (material.HasProperty("_RimThreshold"))
+                {
+                    material.SetFloat("_RimThreshold", newThreshold);
+                }
+            }
+        }*/
         
-        public void PlayVFX()
+        public void OnSwap(Vector2 position)
         {
-            if (effect != null)
-            {
-                effect.SendEvent("OnPlay");
-                Invoke("StopVFX", onStopTime);
-            }
-        }
-
-        public void StopVFX()
-        {
-            if (effect != null)
-            {
-                effect.SendEvent("OnStop");
-            }
-        }
-
-        public void StartSwap()
-        {
-            isSwap = true;
+            transform.position = position;
         }
         public bool IsSwap() => isSwap;
-        public void SetRim()
+        public void OnInSelectRange()
         {
             material.SetFloat("_RimThreashould", hilightRimThreashold);
         }
         
-        public void ResetRim()
+        public void OnOutSelectRange()
         {
             material.SetFloat("_RimThreashould", 1);
         }
+
+        public event Action OnDestroyEvent;
     }
 }

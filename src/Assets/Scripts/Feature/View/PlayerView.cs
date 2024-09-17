@@ -10,60 +10,67 @@ using UnityEngine;
 
 namespace Feature.View
 {
-    [RequireComponent(typeof(VFXView))]
-    public class PlayerView : MonoBehaviour, IDamaged
+    public class PlayerView : MonoBehaviour, IDamaged, IPlayerView
     {
-        private static readonly int Speed = Animator.StringToHash("Speed");
-        private static readonly int OnJump = Animator.StringToHash("OnJump");
-        private static readonly int IsFalling = Animator.StringToHash("IsFalling");
-
-        public bool isDrawSwapRange;
 
         [SerializeField] private GameObject slashingEffect;
         [SerializeField] private GameObject dagger;
-        public bool Right=true;
+        public bool Right = true;
         public float hx;
         public float vy;
-
-        public readonly IReactiveProperty<Vector3> Position = new ReactiveProperty<Vector3>();
-
-        private Animator animator;
+        public float comboTimeWindow = 1f; // 〇秒以内の連続攻撃を許可
+        public float comboAngleOffset = 60f; // 連続攻撃時の角度変化
+        public int maxComboCount = 3; // 連続攻撃の最大回数
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
+
+        private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
+
+        private AnimationWrapper animator;
+        private int comboCount;
+
+        private float lastAttackTime;
+        private float lastDegree;
         private Vector3 previousPosition;
         private Rigidbody rb;
         private float speed;
 
-        [NonSerialized] public float SwapRange;
-
         private VFXView vfxView;
+        private float yDegree; //y座標の回転
+
+        public float SwapRange { get; set; }
+        
+        public bool IsDrawSwapRange { get; set; }
 
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
-            animator = GetComponentInChildren<Animator>();
+            animator = this.Create(GetComponentInChildren<Animator>());
             vfxView = GetComponent<VFXView>();
             isGrounded
-                .Subscribe(x => { animator.SetBool(IsFalling, !x); });
+                .Subscribe(x => {
+                    animator.SetIsFalling(!x);        
+                });
         }
 
         private void Update()
         {
-            Position.Value = transform.position;
+            position.Value = transform.position;
         }
+        
+        public IReadOnlyReactiveProperty<Vector3> GetPositionRef() => position;
+        
+        public GameObject GetGameObject() => gameObject;
 
         private void FixedUpdate()
         {
             speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
             previousPosition = rb.position;
-            animator.SetFloat(Speed, speed);
+            animator.SetSpeed(speed);
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                isGrounded.Value = true;
-            }
+            if (collision.gameObject.CompareTag("Ground")) isGrounded.Value = true;
         }
 
         private void OnCollisionStay(Collision collision)
@@ -75,11 +82,15 @@ namespace Feature.View
 
         private void OnDrawGizmos()
         {
-            if (SwapRange != 0 && isDrawSwapRange)
-            {
-                DrawWireDisk(transform.position, SwapRange, Color.magenta);
-            }
+            if (SwapRange != 0 && IsDrawSwapRange) DrawWireDisk(transform.position, SwapRange, Color.magenta);
         }
+        
+        public void SetPosition(Vector3 p)
+        {
+            transform.position = p;
+        }
+        
+        public Transform GetTransform() => transform;
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
@@ -87,6 +98,7 @@ namespace Feature.View
             imp.y += 1f;
             rb.AddForce(imp * 5f, ForceMode.Impulse);
             OnDamageEvent?.Invoke(damage);
+            animator.OnTakeDamage();
         }
 
         public event Action<uint> OnDamageEvent;
@@ -96,7 +108,7 @@ namespace Feature.View
             var oldColor = Gizmos.color;
             Gizmos.color = color;
             var oldMatrix = Gizmos.matrix;
-            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new(1, 1, 1));
+            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new Vector3(1, 1, 1));
             Gizmos.DrawWireSphere(Vector3.zero, radius);
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
@@ -116,6 +128,7 @@ namespace Feature.View
                 direction = direction * -1;
                 Right = false;
             }
+
             if (isGrounded.Value)
             {
                 var movement = transform.right * (direction * Time.deltaTime);
@@ -126,75 +139,78 @@ namespace Feature.View
                 var movement = transform.right * (direction * Time.deltaTime) / jumpMove;
                 rb.MovePosition(rb.position + movement);
             }
-            // //向き
-            // if (direction > 0)
-            // {
-            //     transform.rotation = Quaternion.Euler(0, 0, 0);
-            // }
-            // else if (direction < 0)
-            // {
-            //     transform.rotation = Quaternion.Euler(0, 180, 0);
-            //     direction = direction * -1;
-            // }
         }
 
         public void Jump(float jumpForce)
         {
             if (isGrounded.Value)
             {
-                animator.SetTrigger(OnJump);
+                animator.OnJump();
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
                 isGrounded.Value = false; // ジャンプ中になるので接地フラグをfalseにする
             }
         }
 
-        // public void Attack(float degree)
-        // { 
-        //     if (degree == 0&&Right==false)//degree == 0&&transform.rotation.y==-180f
-        //     {
-        //         Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,180),this.transform);
-        //     }
-        //     else 
-        //         Instantiate(slashingEffect, this.transform.position, Quaternion.Euler(0,0,degree),this.transform);
-        // }
-
-        public void Dagger(float degree,float h,float v)
+        public void Dagger(float degree, float h, float v)
         {
             GameObject instantiateDagger;
-            if (degree == 0&&Right==false)
-            {
-               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, -180));
-            }
+            if (degree == 0 && Right == false)
+                instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, -180));
             else
-               instantiateDagger = Instantiate(dagger, this.transform.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {
-                if (Right) 
-                {
+                if (Right)
                     h = 1;
-                }
-                else 
+                else
                     h = -1;
             }
-            DaggerView daggerView = instantiateDagger.GetComponentInChildren<DaggerView>();
-            daggerView.HorizontalVertical(h,v);
+
+            var dagger = instantiateDagger.GetComponentInChildren<Dagger>();
+            dagger.HorizontalVertical(h, v);
+            animator.OnDagger();
         }
 
         public void Attack(float degree, uint damage)
         {
-            var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0f),
-                Quaternion.Euler(0, 0, degree));
-            var slash = obj.GetComponent<SlashView>();
+            var currentTime = Time.time;
+            if (currentTime - lastAttackTime <= comboTimeWindow)
+            {
+                if (comboCount < maxComboCount)
+                {
+                    comboCount++;
+                    yDegree += lastDegree + comboAngleOffset;
+                }
+                else
+                {
+                    // 最大連続攻撃回数に達した場合、リセット
+                    comboCount = 0;
+                    yDegree = 0; // 角度をリセット（必要に応じて初期角度に変更）
+                }
+            }
+            else
+            {
+                yDegree = 0;
+            }
+            animator.SetAttackComboCount(comboCount);
+
+            if (degree == 0 && Right == false) degree = -180f;
+            var obj = Instantiate(slashingEffect, transform.position + new Vector3(0f, 1f, 0),
+                Quaternion.Euler(yDegree, 0, degree));
+            var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
+            animator.OnAttack(0.5f);
+
+            // 最後の攻撃情報を更新
+            lastAttackTime = currentTime;
+            lastDegree = degree;
         }
 
-        public void PlayVFX()
+        public bool IsGrounded()
         {
-            vfxView.PlayVFX();
+            return isGrounded.Value;
         }
-
-        public bool IsGrounded() => isGrounded.Value;
     }
 }

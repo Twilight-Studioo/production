@@ -2,12 +2,12 @@
 
 using System;
 using System.Collections.Generic;
-using Feature.Common.Parameter;
+using Feature.Common.Constants;
 using UnityEngine;
 
 #endregion
 
-namespace Feature.Enemy
+namespace Feature.Interface
 {
     public delegate void OnTakeDamage();
 
@@ -26,5 +26,7 @@ namespace Feature.Enemy
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
 
         public event Action OnTakeDamageEvent;
+
+        public event Action<ISwappable> OnAddSwappableItem;
     }
 }
