@@ -84,15 +84,13 @@ namespace Feature.View
             }
         }
 
-        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount, float VignetteChange,
-            MonoBehaviour _urp, float Monochrome)
+        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount, 
+            MonoBehaviour _urp)
         {
             comboTimeWindow = ComboTimeWindow;
             comboAngleOffset = ComboAngleOffset;
             maxComboCount = MaxComboCount;
-            vignetteChange = VignetteChange;
             volumeController = (VolumeController)_urp;
-            monochrome = Monochrome;
         }
         
         private void OnDrawGizmos()
@@ -234,7 +232,7 @@ namespace Feature.View
         
         public void SwapTimeStartUrp()
         {
-            volumeController.SwapStartUrp(vignetteChange, monochrome);
+            volumeController.SwapStartUrp();
         }
 
         public void SwapTimeFinishUrp()

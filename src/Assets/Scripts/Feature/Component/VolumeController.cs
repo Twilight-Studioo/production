@@ -17,8 +17,13 @@ namespace Feature.Component
         [Header("intensityを最大どこまで高くするか")]
         [Range(0.3f,1.0f)]
         [SerializeField]private float endIntensity=5.0f;
+        [Header("赤になるまでの時間")]
+        [SerializeField]private float vignetteChange = 0.5f;
         [Header("intensityが戻るまでの時間")]
-        public float endvignetteChange = 0.5f;
+        [SerializeField]private float endvignetteChange = 0.5f;
+        [Header("白黒の濃さ")]
+        [SerializeField]private float monochrome = 50;
+        
         private void Awake()
         {
             if (volume != null)
@@ -28,7 +33,7 @@ namespace Feature.Component
             }
         }
 
-        public void SwapStartUrp(float vignetteChange, float monochrome)
+        public void SwapStartUrp()
         {
             EnableGrayscale(monochrome);
             GraduallyChangeVignetteColorAndIntensity(Color.black, Color.red, startIntensity, endIntensity,vignetteChange);
