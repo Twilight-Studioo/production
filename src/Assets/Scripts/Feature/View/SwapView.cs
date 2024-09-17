@@ -43,16 +43,6 @@ namespace Feature.View
             OnTrigger?.Invoke(other);
         }
 
-        public void OnSelected()
-        {
-            SetHighlight(true);
-        }
-        
-        public void OnDeselected()
-        {
-            SetHighlight(false);
-        }
-
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => Position;
         
         public Vector2 GetPosition() => Position.Value;
@@ -64,42 +54,21 @@ namespace Feature.View
 
         private event Action<Collider2D> OnTrigger;
 
-        private void SetHighlight(bool isHighlight)
-        {
-            // if (material == null)
-            // {
-            //     return;
-            // }
-            //
-            // if (isHighlight)
-            // {
-            //     //選択されている場合強調表示
-            //     material.SetFloat("_RimThreashould", hilightRimThreashold);
-            // }
-            // else
-            // {
-            //     material.SetFloat("_RimThreashould", 1);
-            // }
-        }
-
         private void Delete()
         {
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
         }
 
-        //public void UpdateRimThreshold(Guid id, float newThreshold)
-        /*{
-            var item = swapItems.FirstOrDefault(x => x.Id == id);
-            if (item.Renderer != null)
-            {
-                var material = item.Renderer.material;
-                if (material.HasProperty("_RimThreshold"))
-                {
-                    material.SetFloat("_RimThreshold", newThreshold);
-                }
-            }
-        }*/
+        //セレクト註のエフェクト作成で利用
+        public void OnSelected()
+        {
+            
+        }
+
+        public void OnDeselected()
+        {
+        }
         
         public void OnSwap(Vector2 position)
         {
