@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Model;
@@ -22,18 +23,21 @@ namespace Feature.Presenter
         private readonly SwapEffectFactory swapEffectFactory;
         private readonly CompositeDisposable rememberItemPosition;
         private readonly SwapModel swapItemsModel;
+        private readonly SelectorEffect selectorEffect;
         private Dictionary<Guid, ISwappable> swapItemViews;
 
         [Inject]
         public SwapPresenter(
             SwapModel swapItemsModel,
             CharacterParams characterParams,
-            SwapEffectFactory swapEffectFactory
+            SwapEffectFactory swapEffectFactory,
+            SelectorEffect selectorEffect
         )
         {
             this.swapItemsModel = swapItemsModel;
             this.characterParams = characterParams;
             this.swapEffectFactory = swapEffectFactory;
+            this.selectorEffect = selectorEffect;
             var list = Object.FindObjectsOfType<MonoBehaviour>(true).OfType<ISwappable>().ToList();
             rememberItemPosition = new();
             AddItems(list);
@@ -77,7 +81,6 @@ namespace Feature.Presenter
             var dats = items.Select(item =>
             {
                 var id = Guid.NewGuid();
-                item.OnDeselected();
                 item.OnDestroyEvent += () =>
                 {
                     RemoveItem(item);
@@ -113,7 +116,7 @@ namespace Feature.Presenter
             var item = swapItemsModel.GetCurrentItem();
             if (item.HasValue)
             {
-                swapItemViews[item.Value.Id].OnDeselected();
+                SelectorStop();
             }
             swapItemsModel.ResetSelector();
         }
@@ -126,13 +129,8 @@ namespace Feature.Presenter
             {
                 return;
             }
-
-            if (item.HasValue)
-            {
-                swapItemViews[item.Value.Id].OnDeselected();
-            }
-
-            swapItemViews[select.Value.Id].OnSelected();
+            
+            selectorEffect.Selector(select.Value.Position);
             swapItemsModel.SetItem(select.Value.Id);
         }
 
@@ -151,6 +149,11 @@ namespace Feature.Presenter
         {
             swapEffectFactory.PlayEffectAtPosition(pos1);
             swapEffectFactory.PlayEffectAtPosition(pos2);
+        }
+
+        public void SelectorStop()
+        {
+            selectorEffect.SelectorStop();
         }
     }
 }

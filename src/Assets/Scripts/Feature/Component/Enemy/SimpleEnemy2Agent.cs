@@ -168,16 +168,7 @@ namespace Feature.Component.Enemy
             yield return Wait(enemyParams.shootAfterSec);
 
         }
-
-        public void OnSelected()
-        {
-            
-        }
-
-        public void OnDeselected()
-        {
-        }
-
+        
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
 
         public Vector2 GetPosition() => transform.position;

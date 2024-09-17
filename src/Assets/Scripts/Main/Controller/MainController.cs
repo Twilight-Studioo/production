@@ -103,6 +103,7 @@ namespace Main.Controller
                     }
                     else
                     {
+                        swapPresenter.SelectorStop();
                         playerPresenter.Move(v.x);
                     }
                 });
@@ -171,6 +172,7 @@ namespace Main.Controller
                     {
                         if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle)
                         {
+                            swapPresenter.SelectorStop();
                             return;
                         }
 
@@ -190,7 +192,7 @@ namespace Main.Controller
                         item.OnSwap(pos);
 
                         playerPresenter.SetPosition(itemPos);
-                        item.OnDeselected();
+                        swapPresenter.SelectorStop();
                         playerModel.Swapped();
                     }
                 });

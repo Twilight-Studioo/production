@@ -169,15 +169,6 @@ namespace Feature.Component.Enemy
             OnTakeDamageEvent?.Invoke();
         }
 
-        public void OnSelected()
-        {
-            
-        }
-
-        public void OnDeselected()
-        {
-        }
-
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
 
         public Vector2 GetPosition() => transform.position;
