@@ -36,6 +36,7 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<SwapView>();
             builder.RegisterComponentInHierarchy<VoltageBar>();
             builder.RegisterComponentInHierarchy<SelectorEffect>();
+            builder.RegisterComponentInHierarchy<VolumeController>();
             
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);
