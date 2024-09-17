@@ -209,6 +209,7 @@ namespace Feature.View
 
         public void AddForce(Vector3 force)
         {
+            rb.velocity = Vector3.zero;
             rb.AddForce(force, ForceMode.Impulse);
         }
         public bool IsGrounded()

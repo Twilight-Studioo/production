@@ -103,7 +103,10 @@ namespace Main.Controller
                     }
                     else
                     {
-                        playerPresenter.Move(v.x);
+                        if (playerModel.CanAttack.Value)
+                        {
+                            playerPresenter.Move(v.x);
+                        }
                     }
                 });
 

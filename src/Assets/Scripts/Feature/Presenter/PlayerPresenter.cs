@@ -197,6 +197,7 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
+            playerModel.Attack();
             playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
             voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
         

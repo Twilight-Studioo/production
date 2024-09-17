@@ -28,10 +28,12 @@ namespace Feature.Model
         private readonly IReactiveProperty<bool> canDagger = new ReactiveProperty<bool>(false);
         public readonly IReadOnlyReactiveProperty<bool> CanDagger;
 
+        private readonly IReactiveProperty<bool> canAttack = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> CanAttack;
+
         private readonly CharacterParams characterParams;
 
         private readonly GameUIView gameUIView;
-        
 
         private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
         public IReadOnlyReactiveProperty<int> Health;
@@ -48,8 +50,12 @@ namespace Feature.Model
 
         public readonly IReadOnlyReactiveProperty<int> SwapStamina;
         public readonly IReadOnlyReactiveProperty<int> DaggerStamina;
+        
+        private const float AttackAfterMovableMillis = 250;
 
         private IDisposable recoverStaminaSubscription;
+        
+        private readonly CompositeDisposable attackAfterCompositeDisposable = new();
 
         private IDisposable swapUseStaminaSubscription;
         private IDisposable useDaggerUseStamina;
@@ -72,6 +78,7 @@ namespace Feature.Model
             CanEndSwap = canEndSwap.ToReadOnlyReactiveProperty();
             CanDagger = canDagger.ToReadOnlyReactiveProperty();
             Health = health.ToReadOnlyReactiveProperty();
+            CanAttack = canAttack.ToReadOnlyReactiveProperty();
             // recover stamina
 
 
@@ -102,6 +109,7 @@ namespace Feature.Model
                 .AddTo(playerModelTimer);
 
             health.Value = characterParams.health;
+            canAttack.Value = true;
         }
 
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
@@ -191,8 +199,6 @@ namespace Feature.Model
             }
             swapStamina.Value = Math.Max(swapStamina.Value - daggerUseStamina, 0);
         }
-        public event Action OnAttack;
-
         public void ChangeState(PlayerState state)
         {
             playerState.Value = state;
@@ -209,7 +215,12 @@ namespace Feature.Model
         }
         public void Attack()
         {
-            OnAttack?.Invoke();
+            attackAfterCompositeDisposable.Clear();
+            canAttack.Value = false;
+            Observable
+                .Timer(TimeSpan.FromMilliseconds(AttackAfterMovableMillis))
+                .Subscribe(_ => { canAttack.Value = true; })
+                .AddTo(attackAfterCompositeDisposable);
         }
 
         public void UpdatePosition(Vector3 pos)
