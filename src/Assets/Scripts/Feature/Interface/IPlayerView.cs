@@ -29,5 +29,12 @@ namespace Feature.Interface
         void Attack(float degree, uint damage);
         
         void Dagger(float degree, float h, float v);
+        
+        void SwapTimeStartUrp();
+
+        void SwapTimeFinishUrp();
+
+        void SetParam(float comboTimeWindow, float comboAngleOffset, int maxComboCount,
+           MonoBehaviour urp);
     }
 }

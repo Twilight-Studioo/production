@@ -32,13 +32,14 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable presenterDisposable = new();
 
+        private VolumeController volumeController;
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
             CharacterParams characterParams,
             VoltageBar voltageBar,
-            GameUIView ui
-
+            GameUIView ui,
+                VolumeController volumeController
         )
         {
             playerModel = model;
@@ -46,6 +47,7 @@ namespace Feature.Presenter
             gameUIView = ui;
             swapTimer = new();
             this.voltageBar = voltageBar;
+            this.volumeController = volumeController;
         }
 
         public void OnPossess(IPlayerView view)
@@ -88,6 +90,7 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(playerHpBar);
+            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,playerModel.MaxComboCount,volumeController);
         }
 
         public void Move(float direction)
@@ -116,6 +119,7 @@ namespace Feature.Presenter
             }
 
             playerView.IsDrawSwapRange = true;
+            playerView.SwapTimeStartUrp();
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
@@ -147,7 +151,7 @@ namespace Feature.Presenter
 
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            
+            playerView.SwapTimeFinishUrp();
             Func<float, float> easingFunction;
             
             switch (characterParams.swapReturnCurve)
