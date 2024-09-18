@@ -177,6 +177,16 @@ namespace Feature.Component.Enemy
         public void OnDeselected()
         {
         }
+        
+        public void OnInSelectRange()
+        {
+            
+        }
+        
+        public void OnOutSelectRange()
+        {
+            
+        }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
 

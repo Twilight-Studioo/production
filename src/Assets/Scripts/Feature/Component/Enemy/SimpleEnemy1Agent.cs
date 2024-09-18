@@ -178,6 +178,16 @@ namespace Feature.Component.Enemy
         {
         }
 
+        public void OnInSelectRange()
+        {
+            
+        }
+        
+        public void OnOutSelectRange()
+        {
+            
+        }
+
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
 
         public Vector2 GetPosition() => transform.position;

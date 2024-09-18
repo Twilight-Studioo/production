@@ -166,16 +166,18 @@ namespace Main.Controller
                     if (x)
                     {
                         playerPresenter.StartSwap();
+                        swapPresenter.InRangeHilight(playerModel.Position.Value,true);
                     }
                     else
                     {
                         if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle)
                         {
+                            swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
-
+                        swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                         swapPresenter.ResetSelector();
                         playerPresenter.EndSwap();
                         if (item == null)
