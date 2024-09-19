@@ -69,8 +69,6 @@ namespace Feature.Common.Parameter
         public int voltageAttackPowerValue = 2;
 
         [Tooltip("クナイを飛ばしたときのスタミナ消費")] public uint useDaggerUseStamina = 2;
-
-        [Tooltip("攻撃方向への移動量")] public float snapPower = 4f;
     }
 
     [Serializable]

@@ -204,14 +204,6 @@ namespace Feature.Presenter
             playerModel.Attack();
             playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
             voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
-        
-            // 攻撃方向に少し飛ばす
-            // degreeをラジアンに変換
-            var radian = degree * Mathf.Deg2Rad;
-
-            // 力の方向を計算
-            var forceDirection = new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
-            playerView.AddForce(forceDirection * characterParams.snapPower);
         }
 
         //public void PlayVFX()

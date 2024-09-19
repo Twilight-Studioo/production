@@ -1,7 +1,9 @@
 ﻿#region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Core.Utilities;
 using Feature.Component;
 using Feature.Interface;
 using UniRx;
@@ -40,6 +42,8 @@ namespace Feature.View
 
         private VFXView vfxView;
         private float yDegree; //y座標の回転
+        private bool isGravityDisabled;
+        private Coroutine snapCanceledToken;
 
         public float SwapRange { get; set; }
         
@@ -222,12 +226,38 @@ namespace Feature.View
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
             lastDegree = degree;
+            
+            // 攻撃方向に少し飛ばす
+            // degreeをラジアンに変換
+            var radian = degree * Mathf.Deg2Rad;
+
+            // 力の方向を計算
+            var forceDirection = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian));
+            const float force = 6f;
+            const float snapStopTime = 0.1f;
+            const float gravityDisableTime = 0.06f;
+            rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
+            if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
+            snapCanceledToken = StartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero));
+            if (!isGravityDisabled)
+            {
+                StartCoroutine(DisableGravityTemporarily(gravityDisableTime));
+            }
+        }
+        
+        private IEnumerator DisableGravityTemporarily(float duration)
+        {
+            isGravityDisabled = true;
+            rb.useGravity = false; // 重力を無効化
+            yield return new WaitForSeconds(duration); // 指定時間待機
+            rb.useGravity = true; // 重力を再有効化
+            isGravityDisabled = false;
         }
 
         public void AddForce(Vector3 force)
         {
             rb.velocity = Vector3.zero;
-            rb.AddForce(force, ForceMode.Impulse);
+            rb.AddForce(force, ForceMode.VelocityChange);
         }
 
         public bool IsGrounded()
