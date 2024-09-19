@@ -76,6 +76,16 @@ namespace Feature.Component
         {
             
         }
+        
+        public void OnInSelectRange()
+        {
+            
+        }
+        
+        public void OnOutSelectRange()
+        {
+            
+        }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
 
