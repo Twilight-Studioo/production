@@ -95,7 +95,15 @@ namespace Feature.Presenter
 
         public void Move(float direction)
         {
-            playerView.Move(direction * playerModel.MoveSpeed, playerModel.JumpMove);
+            if (direction > 0)
+            {
+                playerView.Move(Vector3.right, playerModel.MoveSpeed);
+            }
+            else if (direction < 0)
+            {
+                playerView.Move(Vector3.left, playerModel.MoveSpeed);
+            }
+            
         }
 
         public void Jump()
@@ -193,6 +201,7 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
+            playerModel.Attack();
             playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
             voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
         }
