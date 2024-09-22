@@ -117,6 +117,7 @@ namespace Feature.Presenter
             if (item.HasValue)
             {
                 SelectorStop();
+                swapItemViews[item.Value.Id].OnDeselected();
             }
             swapItemsModel.ResetSelector();
         }
