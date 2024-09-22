@@ -169,7 +169,7 @@ namespace Feature.Presenter
                 }
             }
         }
-
+        
         public void SelectorStop()
         {
             selectorEffect.SelectorStop();

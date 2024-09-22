@@ -104,7 +104,7 @@ namespace Main.Controller
                     else
                     {
                         swapPresenter.SelectorStop();
-                        playerPresenter.Move(v.x);
+
                         if (playerModel.CanAttack.Value)
                         {
                             playerPresenter.Move(v.x);
@@ -178,6 +178,7 @@ namespace Main.Controller
                         if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle)
                         {
                             swapPresenter.SelectorStop();
+
                             swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                             return;
                         }
