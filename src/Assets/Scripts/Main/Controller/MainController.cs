@@ -105,6 +105,10 @@ namespace Main.Controller
                     {
                         swapPresenter.SelectorStop();
                         playerPresenter.Move(v.x);
+                        if (playerModel.CanAttack.Value)
+                        {
+                            playerPresenter.Move(v.x);
+                        }
                     }
                 });
 
@@ -167,17 +171,19 @@ namespace Main.Controller
                     if (x)
                     {
                         playerPresenter.StartSwap();
+                        swapPresenter.InRangeHilight(playerModel.Position.Value,true);
                     }
                     else
                     {
                         if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle)
                         {
                             swapPresenter.SelectorStop();
+                            swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
-
+                        swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                         swapPresenter.ResetSelector();
                         playerPresenter.EndSwap();
                         if (item == null)
@@ -193,6 +199,7 @@ namespace Main.Controller
 
                         playerPresenter.SetPosition(itemPos);
                         swapPresenter.SelectorStop();
+                        item.OnDeselected();
                         playerModel.Swapped();
                     }
                 });

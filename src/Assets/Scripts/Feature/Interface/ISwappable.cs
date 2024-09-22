@@ -6,6 +6,10 @@ namespace Feature.Interface
 {
     public interface ISwappable
     {
+        public void OnSelected();
+
+        public void OnDeselected();
+        
         IReadOnlyReactiveProperty<Vector2> GetPositionRef();
         
         Vector2 GetPosition();
@@ -13,5 +17,9 @@ namespace Feature.Interface
         void OnSwap(Vector2 p);
         
         public event Action OnDestroyEvent;
+
+        void OnInSelectRange();
+
+        void OnOutSelectRange();
     }
 }

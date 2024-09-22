@@ -8,6 +8,7 @@ using Feature.Component;
 using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Model;
+using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -76,8 +77,7 @@ namespace Feature.Presenter
             {
                 swapItemViews = new();
             }
-
-
+            
             var dats = items.Select(item =>
             {
                 var id = Guid.NewGuid();
@@ -149,6 +149,25 @@ namespace Feature.Presenter
         {
             swapEffectFactory.PlayEffectAtPosition(pos1);
             swapEffectFactory.PlayEffectAtPosition(pos2);
+        }
+
+        public void InRangeHilight(Vector3 basePosition, bool isSwap)
+        {
+            var items = swapItemsModel.ItemInRangeHilight(basePosition, characterParams.canSwapDistance);
+            if (items != null)
+            {
+                foreach (var i in items)
+                {
+                    if (isSwap)
+                    {
+                        swapItemViews[i.Id].OnInSelectRange();
+                    }
+                    else
+                    {
+                        swapItemViews[i.Id].OnOutSelectRange();
+                    }
+                }
+            }
         }
 
         public void SelectorStop()

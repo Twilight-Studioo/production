@@ -169,6 +169,25 @@ namespace Feature.Component.Enemy
             OnTakeDamageEvent?.Invoke();
         }
 
+        public void OnSelected()
+        {
+            
+        }
+
+        public void OnDeselected()
+        {
+        }
+
+        public void OnInSelectRange()
+        {
+            
+        }
+        
+        public void OnOutSelectRange()
+        {
+            
+        }
+
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
 
         public Vector2 GetPosition() => transform.position;

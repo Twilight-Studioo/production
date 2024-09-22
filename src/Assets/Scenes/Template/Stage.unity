@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731704, g: 0.1341472, b: 0.121078566, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -832,85 +832,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1935501546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1214569207
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 690427865376889176, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_Name
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -6.044024
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.1184845
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8543094487591105056, guid: e35f659dc96364216acb46f208f83a5b,
-        type: 3}
-      propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'SJK02:Hips'\n\tTransform 'SJK02:RightUpLeg'\n\tTransform
-        'SJK02:LeftUpLeg'\n\tTransform 'SJK02:Chest'\n\tTransform 'SJK02:LeftFoot'\n\tTransform
-        'SJK02:RightFoot'\n\tTransform 'SJK02:RightLeg'\n\tTransform 'SJK02:Spine'\n\tTransform
-        'SJK02:LeftLeg'\n\tTransform 'SJK02:Hips'\n\tand more ...\n\tFrom animation
-        clip 'Move'"
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e35f659dc96364216acb46f208f83a5b, type: 3}
 --- !u!1 &1399090526
 GameObject:
   m_ObjectHideFlags: 0
@@ -2455,4 +2376,3 @@ SceneRoots:
   - {fileID: 2494931118670944904}
   - {fileID: 1503386066}
   - {fileID: 213538022}
-  - {fileID: 1214569207}
