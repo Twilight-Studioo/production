@@ -7,7 +7,7 @@ using Core.Utilities;
 using Feature.Component;
 using Feature.Interface;
 using UniRx;
-using UnityEngine;
+using UnityEngine; 
 
 #endregion
 
@@ -30,6 +30,7 @@ namespace Feature.View
 
         private AnimationWrapper animator;
         private int comboCount;
+        private int attackConboCount;
 
         private float lastAttackTime;
         private float lastDegree;
@@ -221,7 +222,7 @@ namespace Feature.View
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
-            //animator.OnAttack();
+            animator.OnAttack(1);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
