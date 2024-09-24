@@ -15,6 +15,6 @@ namespace Core.Camera
 
         public static CameraTargetGroupTag Boss() => new(3, 3);
 
-        public static CameraTargetGroupTag Enemy() => new(1, 1);
+        public static CameraTargetGroupTag Enemy() => new(3, 4);
     }
 }
