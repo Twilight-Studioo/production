@@ -13,6 +13,10 @@ namespace Feature.Component
         
         private float speed = 1.0f;
         
+        private Material material;
+        private Renderer targetRenderer;
+        [SerializeField] private float hilightRimThreashold = 0;
+        
         private bool canHitEnemy = false;
         private bool canHitPlayer = false;
         
@@ -22,6 +26,12 @@ namespace Feature.Component
         
         public event Action OnDestroyEvent;
 
+        void Awake()
+        {
+            targetRenderer = GetComponent<Renderer>();
+            material = targetRenderer.material;
+        }
+        
         private void Update()
         {
             position.Value = transform.position;
@@ -79,12 +89,12 @@ namespace Feature.Component
         
         public void OnInSelectRange()
         {
-            
+            material.SetFloat("_RimThreashould", hilightRimThreashold);
         }
         
         public void OnOutSelectRange()
         {
-            
+            material.SetFloat("_RimThreashould", 1);
         }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;

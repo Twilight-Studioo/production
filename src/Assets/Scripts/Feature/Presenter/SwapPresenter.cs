@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using Feature.Common.Parameter;
 using Feature.Component;
@@ -26,6 +27,7 @@ namespace Feature.Presenter
         private readonly SwapModel swapItemsModel;
         private readonly SelectorEffect selectorEffect;
         private Dictionary<Guid, ISwappable> swapItemViews;
+        private IDisposable updateDisposable;
 
         [Inject]
         public SwapPresenter(
@@ -160,6 +162,21 @@ namespace Feature.Presenter
         }
 
         public void InRangeHilight(Vector3 basePosition, bool isSwap)
+        {
+            if (isSwap)
+            {
+                itemUpdate(basePosition,isSwap);
+                updateDisposable = Observable.Interval(TimeSpan.FromMilliseconds(250))
+                    .Subscribe(_ => itemUpdate(basePosition,isSwap));
+            }
+            else
+            {
+                updateDisposable?.Dispose();
+                itemUpdate(basePosition,isSwap);
+            }
+        }
+
+        private void itemUpdate(Vector3 basePosition,bool isSwap)
         {
             var items = swapItemsModel.ItemInRangeHilight(basePosition, characterParams.canSwapDistance);
             if (items != null)
