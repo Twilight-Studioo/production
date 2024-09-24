@@ -182,6 +182,7 @@ namespace Main.Controller
                         var item = swapPresenter.SelectItem();
                         swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                         swapPresenter.ResetSelector();
+                        playerPresenter.AddVoltageSwap();
                         playerPresenter.EndSwap();
                         if (item == null)
                         {
