@@ -206,6 +206,11 @@ namespace Feature.Presenter
             voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
         }
 
+        public void AddVoltageSwap()
+        {
+            playerModel.AddVoltageSwap();
+            voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
+        }
         //public void PlayVFX()
         //{
         //    playerModel.AddVoltageSwap();
