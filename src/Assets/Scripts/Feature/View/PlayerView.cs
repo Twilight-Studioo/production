@@ -43,7 +43,6 @@ namespace Feature.View
         private VFXView vfxView;
         private float yDegree; //y座標の回転
         private bool isGravityDisabled;
-        private Coroutine snapCanceledToken;
 
         public float SwapRange { get; set; }
         
@@ -188,6 +187,7 @@ namespace Feature.View
             animator.OnDagger();
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public void Attack(float degree, uint damage)
         {
             var currentTime = Time.time;
@@ -237,11 +237,10 @@ namespace Feature.View
             const float snapStopTime = 0.1f;
             const float gravityDisableTime = 0.06f;
             rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
-            if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
-            snapCanceledToken = StartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero));
+            this.UniqueStartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero), "AttackedSnap");
             if (!isGravityDisabled)
             {
-                StartCoroutine(DisableGravityTemporarily(gravityDisableTime));
+                this.UniqueStartCoroutine(DisableGravityTemporarily(gravityDisableTime), "AttackedDisable");
             }
         }
         
