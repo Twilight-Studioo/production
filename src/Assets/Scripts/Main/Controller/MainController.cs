@@ -191,7 +191,8 @@ namespace Main.Controller
                         {
                             return;
                         }
-
+                        
+                        item.OnDeselected();
                         var pos = playerModel.Position.Value;
                         var itemPos = item.GetPosition();
                         // TODO: 機能をswapPresenterにまとめる

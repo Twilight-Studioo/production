@@ -81,6 +81,7 @@ namespace Feature.Presenter
             var dats = items.Select(item =>
             {
                 var id = Guid.NewGuid();
+                item.OnDeselected();
                 item.OnDestroyEvent += () =>
                 {
                     RemoveItem(item);
@@ -131,6 +132,12 @@ namespace Feature.Presenter
                 return;
             }
             
+            if (item.HasValue)
+            {
+                swapItemViews[item.Value.Id].OnDeselected();
+            }
+
+            swapItemViews[select.Value.Id].OnSelected();
             selectorEffect.Selector(select.Value.Position);
             swapItemsModel.SetItem(select.Value.Id);
         }
