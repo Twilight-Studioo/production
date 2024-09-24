@@ -17,10 +17,14 @@ namespace Feature.Common.Parameter
         public float jumpPower = 7f;
 
         public int attackPower = 2;
-        public float comboTimeWindow = 1f; // 〇秒以内の連続攻撃を許可
-        public float comboAngleOffset = 60f; // 連続攻撃時の角度変化
-        public int maxComboCount = 3; // 連続攻撃の最大回数
-        
+        [Tooltip("〇秒以内で連続攻撃")]
+        public float comboTimeWindow = 1f;
+        [Tooltip("連続攻撃時の角度変化")]
+        public float comboAngleOffset = 60f;
+        [Tooltip("連続攻撃の最大回数")]
+        public int maxComboCount = 3;
+        [Tooltip("攻撃のクールタイム")]
+        public float attackCoolTime = 0.2f;
         // スワップ関連
 
         [Tooltip("スワップの最大継続時間(Milli)"), Space(10),]

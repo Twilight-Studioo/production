@@ -5,6 +5,7 @@
 using UnityEditor;
 using UnityEngine;
 
+
 #endregion
 
 namespace Feature.Common.Parameter
@@ -20,6 +21,7 @@ namespace Feature.Common.Parameter
         private SerializedProperty comboTimeWindow;
         private SerializedProperty comboAngleOffset;
         private SerializedProperty maxComboCount;
+        private SerializedProperty attackCoolTime;
 
         private SerializedProperty maxHasStamina;
         private SerializedProperty recoveryResourceTimeMillis;
@@ -52,6 +54,7 @@ namespace Feature.Common.Parameter
             comboTimeWindow =serializedObject.FindProperty("comboTimeWindow");
             comboAngleOffset = serializedObject.FindProperty("comboAngleOffset");
             maxComboCount = serializedObject.FindProperty("maxComboCount");
+            attackCoolTime = serializedObject.FindProperty("attackCoolTime");
 
             // スワップ関連
             swapContinueMaxMillis = serializedObject.FindProperty("swapContinueMaxMillis");
@@ -82,10 +85,11 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(speed);
             EditorGUILayout.PropertyField(jumpPower);
             EditorGUILayout.PropertyField(attackPower);
-            EditorGUILayout.PropertyField(snapPower, new GUIContent("攻撃方向への移動量"));
-            EditorGUILayout.PropertyField(comboTimeWindow);
-            EditorGUILayout.PropertyField(comboAngleOffset);
-            EditorGUILayout.PropertyField(maxComboCount);
+            //EditorGUILayout.PropertyField(snapPower, new GUIContent("攻撃方向への移動量"));
+            EditorGUILayout.PropertyField(comboTimeWindow,new GUIContent("〇秒以内で連続攻撃"));
+            EditorGUILayout.PropertyField(comboAngleOffset,new GUIContent("連続攻撃時の角度変化"));
+            EditorGUILayout.PropertyField(maxComboCount,new GUIContent("連続攻撃の最大回数"));
+            EditorGUILayout.PropertyField(attackCoolTime,new GUIContent("攻撃のクールタイム"));
 
             EditorGUILayout.Space();
             showSwapParameters = EditorGUILayout.Foldout(showSwapParameters, "スワップパラメーター");
