@@ -6,8 +6,6 @@ using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
-using UnityEngine.UI;
-
 #endregion
 
 namespace Feature.Model
@@ -138,9 +136,6 @@ namespace Feature.Model
 
         public Vector3 Forward { get; private set; }
 
-        private Image endFieldImage;
-
-
         public void Dispose()
         {
             swapUseStaminaSubscription?.Dispose();
@@ -152,10 +147,6 @@ namespace Feature.Model
         public void Start()
         {
             swapStamina.Value = (int)characterParams.maxHasStamina;
-
-            endFieldImage = GameObject.Find("EndField").GetComponent<Image>();
-
-            endFieldImage.color = new Color(0, 0, 0, 0);
         }
 
         public void OnStartSwap()

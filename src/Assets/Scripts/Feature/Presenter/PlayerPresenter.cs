@@ -36,7 +36,8 @@ namespace Feature.Presenter
 
         private VolumeController volumeController;
 
-        private Image endFieldImage;
+        private EndFieldController endFieldController;
+
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
@@ -52,6 +53,7 @@ namespace Feature.Presenter
             swapTimer = new();
             this.voltageBar = voltageBar;
             this.volumeController = volumeController;
+            endFieldController = new EndFieldController();
         }
 
         public void OnPossess(IPlayerView view)
@@ -90,11 +92,11 @@ namespace Feature.Presenter
                     playerHpBar.UpdateHealthBar(x, characterParams.health);
                     if (x <= 0)
                     {
-                        OnPlayerDeath();
+                        endFieldController.SubscribeToPlayerHealth(playerModel.Health);
                     }
                 })
                 .AddTo(playerHpBar);
-            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,playerModel.MaxComboCount,volumeController);
+            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset, playerModel.MaxComboCount, volumeController);
         }
 
         public void Move(float direction)
@@ -218,38 +220,6 @@ namespace Feature.Presenter
         //}
         public Transform GetTransform() => playerView.GetTransform();
 
-        private void OnPlayerDeath()
-        {
-            Debug.Log("Player has died. Starting fade out process.");
-
-            endFieldImage = GameObject.Find("EndField").GetComponent<Image>();
-
-            endFieldImage.color = new Color(0, 0, 0, 0);
-
-            FadeToBlackAndChangeScene();
-        }
-
-        private void FadeToBlackAndChangeScene()
-        {
-            float fadeDuration = 2f; 
-            float fadeTimer = 0f;
-
-            Observable.EveryUpdate()
-                .Subscribe(_ =>
-                {
-                    fadeTimer += Time.deltaTime;
-                    float alpha = Mathf.Clamp01(fadeTimer / fadeDuration);
-
-                    endFieldImage.color = new Color(0, 0, 0, alpha);
-
-                    if (alpha >= 1)
-                    {
-                        SceneManager.LoadScene("EndScene");
-                    }
-                })
-                .AddTo(presenterDisposable); 
-        }
-
         public void Dagger(float degree,float h,float v)
         {
             playerModel.OnDagger();
@@ -266,6 +236,6 @@ namespace Feature.Presenter
             swapTimer.Dispose();
         }
 
-        
+     
     }
 }
