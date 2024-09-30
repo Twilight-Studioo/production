@@ -5,7 +5,6 @@
 using UnityEditor;
 using UnityEngine;
 
-
 #endregion
 
 namespace Feature.Common.Parameter
@@ -13,15 +12,15 @@ namespace Feature.Common.Parameter
     [CustomEditor(typeof(CharacterParams))]
     public class CharacterParamsEditor : Editor
     {
+        private SerializedProperty attackCoolTime;
         private SerializedProperty attackPower;
         private SerializedProperty canSwapDistance;
+        private SerializedProperty comboAngleOffset;
+        private SerializedProperty comboTimeWindow;
         private SerializedProperty enterSwapUseStamina;
         private SerializedProperty health;
         private SerializedProperty jumpPower;
-        private SerializedProperty comboTimeWindow;
-        private SerializedProperty comboAngleOffset;
         private SerializedProperty maxComboCount;
-        private SerializedProperty attackCoolTime;
 
         private SerializedProperty maxHasStamina;
         private SerializedProperty recoveryResourceTimeMillis;
@@ -30,6 +29,8 @@ namespace Feature.Common.Parameter
         private bool showStaminaParameters = true;
 
         private bool showSwapParameters = true;
+
+        private SerializedProperty snapPower;
         private SerializedProperty speed;
 
         private SerializedProperty swapContinueMaxMillis;
@@ -39,10 +40,8 @@ namespace Feature.Common.Parameter
         private SerializedProperty swapModeStaminaUsageIntervalMillis;
         private SerializedProperty swapReturnCurve;
         private SerializedProperty swapReturnTimeMillis;
-        
-        private SerializedProperty useDaggerUseStamina;
 
-        private SerializedProperty snapPower;
+        private SerializedProperty useDaggerUseStamina;
 
         private void OnEnable()
         {
@@ -51,7 +50,7 @@ namespace Feature.Common.Parameter
             speed = serializedObject.FindProperty("speed");
             jumpPower = serializedObject.FindProperty("jumpPower");
             attackPower = serializedObject.FindProperty("attackPower");
-            comboTimeWindow =serializedObject.FindProperty("comboTimeWindow");
+            comboTimeWindow = serializedObject.FindProperty("comboTimeWindow");
             comboAngleOffset = serializedObject.FindProperty("comboAngleOffset");
             maxComboCount = serializedObject.FindProperty("maxComboCount");
             attackCoolTime = serializedObject.FindProperty("attackCoolTime");
@@ -86,10 +85,10 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(jumpPower);
             EditorGUILayout.PropertyField(attackPower);
             //EditorGUILayout.PropertyField(snapPower, new GUIContent("攻撃方向への移動量"));
-            EditorGUILayout.PropertyField(comboTimeWindow,new GUIContent("〇秒以内で連続攻撃"));
-            EditorGUILayout.PropertyField(comboAngleOffset,new GUIContent("連続攻撃時の角度変化"));
-            EditorGUILayout.PropertyField(maxComboCount,new GUIContent("連続攻撃の最大回数"));
-            EditorGUILayout.PropertyField(attackCoolTime,new GUIContent("攻撃のクールタイム"));
+            EditorGUILayout.PropertyField(comboTimeWindow, new GUIContent("〇秒以内で連続攻撃"));
+            EditorGUILayout.PropertyField(comboAngleOffset, new GUIContent("連続攻撃時の角度変化"));
+            EditorGUILayout.PropertyField(maxComboCount, new GUIContent("連続攻撃の最大回数(*数の+1の回数、2なら3コンボまで)"));
+            EditorGUILayout.PropertyField(attackCoolTime, new GUIContent("攻撃のクールタイム"));
 
             EditorGUILayout.Space();
             showSwapParameters = EditorGUILayout.Foldout(showSwapParameters, "スワップパラメーター");
