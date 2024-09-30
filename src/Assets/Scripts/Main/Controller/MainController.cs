@@ -103,6 +103,8 @@ namespace Main.Controller
                     }
                     else
                     {
+                        swapPresenter.SelectorStop();
+
                         if (playerModel.CanAttack.Value)
                         {
                             playerPresenter.Move(v.x);
@@ -175,6 +177,8 @@ namespace Main.Controller
                     {
                         if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle)
                         {
+                            swapPresenter.SelectorStop();
+
                             swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                             return;
                         }
@@ -182,12 +186,14 @@ namespace Main.Controller
                         var item = swapPresenter.SelectItem();
                         swapPresenter.InRangeHilight(playerModel.Position.Value,false);
                         swapPresenter.ResetSelector();
+                        playerPresenter.AddVoltageSwap();
                         playerPresenter.EndSwap();
                         if (item == null)
                         {
                             return;
                         }
-
+                        
+                        item.OnDeselected();
                         var pos = playerModel.Position.Value;
                         var itemPos = item.GetPosition();
                         // TODO: 機能をswapPresenterにまとめる
@@ -195,6 +201,7 @@ namespace Main.Controller
                         item.OnSwap(pos);
 
                         playerPresenter.SetPosition(itemPos);
+                        swapPresenter.SelectorStop();
                         item.OnDeselected();
                         playerModel.Swapped();
                     }
