@@ -45,7 +45,6 @@ namespace Feature.View
         private VFXView vfxView;
         private float yDegree; //y座標の回転
         private bool isGravityDisabled;
-        private Coroutine snapCanceledToken;
 
         public float SwapRange { get; set; }
         
@@ -191,6 +190,7 @@ namespace Feature.View
             animator.OnDagger();
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public void Attack(float degree, uint damage)
         {
             var currentTime = Time.time;
@@ -215,40 +215,40 @@ namespace Feature.View
                     yDegree = 0;
                 }
 
-                animator.SetAttackComboCount(comboCount);
+            animator.SetAttackComboCount(comboCount);
+            
+            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
 
-                var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
+            if (degree == 0 && right == false) degree = -180f;
+            var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
+            Quaternion.Euler(yDegree, 0, degree));
 
-                if (degree == 0 && right == false) degree = -180f;
-                var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
-                    Quaternion.Euler(yDegree, 0, degree));
+            var slash = obj.GetComponent<Slash>();
+            slash.SetDamage(damage);
+            Destroy(obj, 0.5f);
+            animator.OnAttack(1);
+            
+            // 最後の攻撃情報を更新
+            lastAttackTime = currentTime;
+            lastDegree = degree;
+            
+            // 攻撃方向に少し飛ばす
+            // degreeをラジアンに変換
+            var radian = degree * Mathf.Deg2Rad;
 
-                var slash = obj.GetComponent<Slash>();
-                slash.SetDamage(damage);
-                Destroy(obj, 0.5f);
-                animator.OnAttack(1);
-
-                // 最後の攻撃情報を更新
-                lastAttackTime = currentTime;
-                lastDegree = degree;
-
-                // 攻撃方向に少し飛ばす
-                // degreeをラジアンに変換
-                var radian = degree * Mathf.Deg2Rad;
-
-                // 力の方向を計算
-                var forceDirection = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian));
-                const float force = 6f;
-                const float snapStopTime = 0.1f;
-                const float gravityDisableTime = 0.06f;
-                rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
-                if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
+            // 力の方向を計算
+            var forceDirection = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian));
+            const float force = 6f;
+            const float snapStopTime = 0.1f;
+            const float gravityDisableTime = 0.06f;
+            rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
+            this.UniqueStartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero), "AttackedSnap");
+            if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
                 snapCanceledToken = StartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero));
                 if (!isGravityDisabled)
                 {
                     StartCoroutine(DisableGravityTemporarily(gravityDisableTime));
                 }
-            }
         }
         
         private IEnumerator DisableGravityTemporarily(float duration)
