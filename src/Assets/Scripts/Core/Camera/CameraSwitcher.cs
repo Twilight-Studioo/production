@@ -12,13 +12,13 @@ namespace Core.Camera
         {
             if (isSwap)
             {
-                mainCamera.Priority = 1;
-                swapCamera.Priority = 0;
+                mainCamera.Priority = 0;
+                swapCamera.Priority = 1;
             }
             else
             {
-                mainCamera.Priority = 0;
-                swapCamera.Priority = 1;
+                mainCamera.Priority = 1;
+                swapCamera.Priority = 0;
             }
         }
     }
