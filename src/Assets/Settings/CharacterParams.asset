@@ -16,10 +16,10 @@ MonoBehaviour:
   speed: 5
   jumpPower: 7
   attackPower: 5
-  comboTimeWindow: 1.5
+  comboTimeWindow: 1
   comboAngleOffset: 50
   maxComboCount: 2
-  attackCoolTime: 0.2
+  attackCoolTime: 0.3
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10
