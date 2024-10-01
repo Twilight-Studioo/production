@@ -19,7 +19,7 @@ using Object = UnityEngine.Object;
 
 namespace Feature.Presenter
 {
-    public class SwapPresenter
+    public class SwapPresenter : IDisposable
     {
         private readonly CharacterParams characterParams;
         private readonly SwapEffectFactory swapEffectFactory;
@@ -49,6 +49,7 @@ namespace Feature.Presenter
         public void Dispose()
         {
             rememberItemPosition.Clear();
+            updateDisposable?.Dispose();
         }
 
         public void RemoveItem(ISwappable item)
@@ -161,29 +162,25 @@ namespace Feature.Presenter
             swapEffectFactory.PlayEffectAtPosition(pos2);
         }
 
-        public void InRangeHilight(Vector3 basePosition, bool isSwap)
+        public void InRangeHighlight(Vector3 basePosition, bool isSwap)
         {
+            updateDisposable?.Dispose();
+            UpdateItemSelection(basePosition,isSwap);
             if (isSwap)
             {
-                itemUpdate(basePosition,isSwap);
                 updateDisposable = Observable.Interval(TimeSpan.FromMilliseconds(250))
-                    .Subscribe(_ => itemUpdate(basePosition,isSwap));
-            }
-            else
-            {
-                updateDisposable?.Dispose();
-                itemUpdate(basePosition,isSwap);
+                    .Subscribe(_ => UpdateItemSelection(basePosition,isSwap));
             }
         }
 
-        private void itemUpdate(Vector3 basePosition,bool isSwap)
+        private void UpdateItemSelection(Vector3 basePosition,bool isSelected)
         {
             var items = swapItemsModel.ItemInRangeHilight(basePosition, characterParams.canSwapDistance);
             if (items != null)
             {
                 foreach (var i in items)
                 {
-                    if (isSwap)
+                    if (isSelected)
                     {
                         swapItemViews[i.Id].OnInSelectRange();
                     }
