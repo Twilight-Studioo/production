@@ -19,8 +19,7 @@ MonoBehaviour:
   comboTimeWindow: 1
   comboAngleOffset: 50
   maxComboCount: 2
-  vignetteChange: 0.5
-  monochrome: 80
+  attackCoolTime: 0.3
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10
