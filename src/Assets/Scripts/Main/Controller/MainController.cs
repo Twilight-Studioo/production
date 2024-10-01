@@ -175,7 +175,7 @@ namespace Main.Controller
                     if (x)
                     {
                         playerPresenter.StartSwap();
-                        swapPresenter.InRangeHilight(playerModel.Position.Value,true);
+                        swapPresenter.InRangeHighlight(playerModel.Position.Value,true);
                         cameraSwitcher.UseSwapCamera(true);
                     }
                     else
@@ -184,13 +184,13 @@ namespace Main.Controller
                         {
                             swapPresenter.SelectorStop();
 
-                            swapPresenter.InRangeHilight(playerModel.Position.Value,false);
+                            swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
                             cameraSwitcher.UseSwapCamera(false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
-                        swapPresenter.InRangeHilight(playerModel.Position.Value,false);
+                        swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
                         cameraSwitcher.UseSwapCamera(false);
                         swapPresenter.ResetSelector();
                         playerPresenter.AddVoltageSwap();
