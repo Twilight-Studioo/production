@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class SceneController : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class SceneController : MonoBehaviour
 
     void Start()
     {
+        RestartButton.Select();
         SetImageAlpha(WBG, 0);
 
         restartButtonText = RestartButton.GetComponentInChildren<Text>();
