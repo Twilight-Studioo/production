@@ -22,6 +22,8 @@ namespace Feature.Component.Enemy
     {
         public List<Vector3> points;
 
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
+
         private NavMeshAgent agent;
 
         private SimpleEnemy1Params enemyParams;
@@ -29,8 +31,6 @@ namespace Feature.Component.Enemy
         private OnHitRushAttack onHitRushAttack;
 
         private Transform playerTransform;
-        
-        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private void Awake()
         {
@@ -42,6 +42,9 @@ namespace Feature.Component.Enemy
         {
             position.Value = transform.position;
         }
+
+        public GetHealth OnGetHealth { get; set; }
+        public EnemyType EnemyType => EnemyType.SimpleEnemy1;
 
 
         public void FlowCancel()
@@ -84,7 +87,38 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnTakeDamageEvent;
+#pragma warning disable CS0067
         public event Action<ISwappable> OnAddSwappableItem;
+#pragma warning restore CS0067
+
+        public void OnSelected()
+        {
+        }
+
+        public void OnDeselected()
+        {
+        }
+
+        public void OnInSelectRange()
+        {
+        }
+
+        public void OnOutSelectRange()
+        {
+        }
+
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
+
+        public Vector2 GetPosition() => transform.position;
+
+        public void OnSwap(Vector2 p)
+        {
+            transform.position = p;
+        }
+
+#pragma warning disable CS0067
+        public event Action OnDestroyEvent;
+#pragma warning restore CS0067
 
         private TriggerRef MoveTrigger() =>
             Trigger("AnyDistance")
@@ -168,35 +202,5 @@ namespace Feature.Component.Enemy
             view.OnDamage(enemyParams.damage, transform.position, transform);
             OnTakeDamageEvent?.Invoke();
         }
-
-        public void OnSelected()
-        {
-            
-        }
-
-        public void OnDeselected()
-        {
-        }
-
-        public void OnInSelectRange()
-        {
-            
-        }
-        
-        public void OnOutSelectRange()
-        {
-            
-        }
-
-        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
-
-        public Vector2 GetPosition() => transform.position;
-
-        public void OnSwap(Vector2 p)
-        {
-            transform.position = p;
-        }
-
-        public event Action OnDestroyEvent;
     }
 }
