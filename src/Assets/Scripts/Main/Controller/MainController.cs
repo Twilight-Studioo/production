@@ -171,7 +171,7 @@ namespace Main.Controller
                     if (x)
                     {
                         playerPresenter.StartSwap();
-                        swapPresenter.InRangeHilight(playerModel.Position.Value,true);
+                        swapPresenter.InRangeHighlight(playerModel.Position.Value,true);
                     }
                     else
                     {
@@ -179,12 +179,12 @@ namespace Main.Controller
                         {
                             swapPresenter.SelectorStop();
 
-                            swapPresenter.InRangeHilight(playerModel.Position.Value,false);
+                            swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
-                        swapPresenter.InRangeHilight(playerModel.Position.Value,false);
+                        swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
                         swapPresenter.ResetSelector();
                         playerPresenter.AddVoltageSwap();
                         playerPresenter.EndSwap();
