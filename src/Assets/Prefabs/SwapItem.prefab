@@ -120,4 +120,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effect: {fileID: 0}
   onStopTime: 1
+  isSwap: 0
   hilightRimThreashold: 0

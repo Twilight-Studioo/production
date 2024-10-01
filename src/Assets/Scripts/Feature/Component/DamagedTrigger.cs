@@ -59,6 +59,11 @@ namespace Feature.Component
                 OnHitEvent?.Invoke();
                 TryDestroy();
             }
+
+            if (other.gameObject.CompareTag("Ground"))
+            {
+                Destroy(this.gameObject);
+            }
         }
         
         private void TryDestroy()
