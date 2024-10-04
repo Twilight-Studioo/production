@@ -1,6 +1,7 @@
 #region
 
 using System;
+using Feature.Common.Constants;
 using UnityEngine;
 
 #endregion
@@ -22,5 +23,7 @@ namespace Feature.Interface
         public void SetHealth(uint health);
         
         public GameObject GameObject();
+        
+        public EnemyType EnemyType { get; }
     }
 }

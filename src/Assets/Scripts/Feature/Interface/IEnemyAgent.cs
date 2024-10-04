@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Feature.Interface
 {
-    public delegate void OnTakeDamage();
+    public delegate uint GetHealth();
 
     public interface IEnemyAgent
     {
@@ -28,5 +28,9 @@ namespace Feature.Interface
         public event Action OnTakeDamageEvent;
 
         public event Action<ISwappable> OnAddSwappableItem;
+        
+        public GetHealth OnGetHealth { set; }
+        
+        public EnemyType EnemyType { get; }
     }
 }

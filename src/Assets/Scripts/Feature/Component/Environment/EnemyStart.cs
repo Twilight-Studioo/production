@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Feature.Common.Constants;
 using Feature.Interface;
+using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
 
@@ -23,16 +24,21 @@ namespace Feature.Component.Environment
         private Vector2 resumeDistance = new(20f, 10f);
 
         [SerializeField, Header("巡回地点"),] private List<Vector3> points;
-        
+
         [SerializeField] private float respawnTimeSec = 5f;
+
+        [SerializeField, Header("上書きする設定"), CanBeNull,]
+        private EnemyParams overrideParams;
+
+        private bool canSpawn = true;
 
         public GetTransform GetPlayerTransform;
 
         private bool isSpawned;
-        
-        private bool canSpawn = true;
 
         public OnRequestSpawnEvent OnRequestSpawn;
+
+        [CanBeNull] public EnemyParams GetParam => overrideParams;
 
         public List<Vector3> Points => points;
 
