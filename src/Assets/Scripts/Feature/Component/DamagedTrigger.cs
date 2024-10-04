@@ -12,10 +12,16 @@ namespace Feature.Component
         private Vector3 direction = Vector3.zero;
         
         private float speed = 1.0f;
-        
+
         private bool canHitEnemy;
         private bool canHitPlayer;
         private bool canHitField;
+
+        private Material material;
+        private Renderer targetRenderer;
+        [SerializeField] private float hilightRimThreashold = 0;
+        
+
         
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
         
@@ -25,6 +31,12 @@ namespace Feature.Component
         
         private Transform target;
 
+        void Awake()
+        {
+            targetRenderer = GetComponent<Renderer>();
+            material = targetRenderer.material;
+        }
+        
         private void Update()
         {
             position.Value = transform.position;
@@ -109,12 +121,12 @@ namespace Feature.Component
         
         public void OnInSelectRange()
         {
-            
+            material.SetFloat("_RimThreashould", hilightRimThreashold);
         }
         
         public void OnOutSelectRange()
         {
-            
+            material.SetFloat("_RimThreashould", 1);
         }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
