@@ -38,7 +38,8 @@ namespace Feature.View
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
-        private float speed;
+        private IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
+        public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
         private VFXView vfxView;
         private float vignetteChange; //赤くなるまでの時間
@@ -52,6 +53,7 @@ namespace Feature.View
             vfxView = GetComponent<VFXView>();
             isGrounded
                 .Subscribe(x => { animator.SetIsFalling(!x); });
+            Speed = speed.ToReadOnlyReactiveProperty();
         }
 
         private void Update()
@@ -61,9 +63,11 @@ namespace Feature.View
 
         private void FixedUpdate()
         {
-            speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
-            previousPosition = rb.position;
-            animator.SetSpeed(speed);
+            var pos = rb.position;
+            pos.y = 0;
+            speed.Value = (pos - previousPosition).magnitude / Time.deltaTime;
+            previousPosition = pos;
+            animator.SetSpeed(speed.Value);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -222,7 +226,6 @@ namespace Feature.View
 
             animator.SetAttackComboCount(comboCount);
 
-            Debug.Log(comboCount);
             var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
 
             if (degree == 0 && right == false) degree = -180f;
@@ -284,5 +287,7 @@ namespace Feature.View
         {
             volumeController.SwapFinishUrp();
         }
+
+        public Vector3 GetForward() => right ? Vector3.right : Vector3.left;
     }
 }

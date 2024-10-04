@@ -3,6 +3,7 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Feature.Common.Parameter;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
@@ -27,6 +28,8 @@ namespace Main.Controller
         private readonly SwapPresenter swapPresenter;
 
         private readonly TargetGroupManager targetGroupManager;
+
+        private readonly GameSettings gameSettings;
         private float horizontalInput;
 
         private float lastDaggerTime; 
@@ -38,7 +41,8 @@ namespace Main.Controller
             SwapPresenter swapPresenter,
             InputActionAccessor inputActionAccessor,
             TargetGroupManager targetGroupManager,
-            EnemyFactory enemyFactory
+            EnemyFactory enemyFactory,
+            GameSettings gameSettings
         )
         {
             // DIからの登録
@@ -48,6 +52,7 @@ namespace Main.Controller
             this.enemyFactory = enemyFactory;
             this.playerModel = playerModel;
             this.swapPresenter = swapPresenter;
+            this.gameSettings = gameSettings;
         }
 
         public void Start()
@@ -59,7 +64,20 @@ namespace Main.Controller
         public void OnPossess(IPlayerView view)
         {
             playerPresenter.OnPossess(view);
-            targetGroupManager.AddTarget(view.GetTransform(), CameraTargetGroupTag.Player());
+            targetGroupManager.SetPlayer(view.GetTransform());
+            view.Speed
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    if (x > 0.1)
+                    {
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(), gameSettings.cameraForwardOffsetFromPlayerMoved);
+                    }
+                    else
+                    {
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(), 0f);
+                    }
+                });
         }
 
         private void Setup()

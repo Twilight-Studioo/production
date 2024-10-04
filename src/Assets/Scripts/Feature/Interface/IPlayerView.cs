@@ -36,5 +36,9 @@ namespace Feature.Interface
 
         void SetParam(float comboTimeWindow, float comboAngleOffset, int maxComboCount,
            MonoBehaviour urp,float attackCoolTime);
+
+        Vector3 GetForward();
+
+        IReadOnlyReactiveProperty<float> Speed { get; }
     }
 }
