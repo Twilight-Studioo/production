@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CharacterParams
   m_EditorClassIdentifier: 
   health: 100
-  speed: 7
-  jumpPower: 7
+  speed: 10
+  jumpPower: 10
   attackPower: 5
   comboTimeWindow: 1
   comboAngleOffset: 50
