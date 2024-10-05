@@ -57,6 +57,7 @@ namespace Feature.Component.Enemy
 
         public void FlowExecute()
         {
+            Debug.Log(playerTransform);
             FlowStart();
         }
 
@@ -116,6 +117,11 @@ namespace Feature.Component.Enemy
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
+            }
+
+            while (playerTransform == null)
+            {
+                yield return Wait(0.5f);
             }
 
             while (true)
