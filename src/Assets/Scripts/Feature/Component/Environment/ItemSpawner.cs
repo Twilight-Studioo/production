@@ -39,15 +39,15 @@ namespace Feature.Component.Environment
 
         private void SpawnCheck()
         {
-            if(isCt || GetPlayerTransform() == null)
+            if(isCt)
             {
                 return;
             }
 
-            if(Vector3.Distance(transform.position, GetPlayerTransform().position)@> spawnDistance)
-            {
-                return;
-            }
+            //if(Vector3.Distance(transform.position, GetPlayerTransform().position)@> spawnDistance)
+            //{
+            //    return;
+            //}
 
             Spawn();
         }
