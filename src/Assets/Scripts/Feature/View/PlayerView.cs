@@ -24,16 +24,16 @@ namespace Feature.View
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
 
         private AnimationWrapper animator;
-        private int attackConboCount;
+        private float attackConboCount;
         private float attackCoolTime;
         private float comboAngleOffset; // 連続攻撃時の角度変化
-        private int comboCount=-1;
+        private float comboCount=-1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private bool isGravityDisabled;
 
         private float lastAttackTime;
         private float lastDegree;
-        private int maxComboCount; // 連続攻撃の最大回数
+        private float maxComboCount; // 連続攻撃の最大回数
         private float monochrome;
         private Vector3 previousPosition;
         private Rigidbody rb;
@@ -106,7 +106,7 @@ namespace Feature.View
             return gameObject;
         }
 
-        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount,
+        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, float MaxComboCount,
             MonoBehaviour _urp, float attackCoolTime)
         {
             comboTimeWindow = ComboTimeWindow;
@@ -217,13 +217,11 @@ namespace Feature.View
             }
             else
             {
+                comboCount = 0;
                 yDegree = 0;
             }
-
-            animator.SetAttackComboCount(comboCount);
-
             Debug.Log(comboCount);
-            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
+            var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
 
             if (degree == 0 && right == false) degree = -180f;
             var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
@@ -232,8 +230,8 @@ namespace Feature.View
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
-            animator.OnAttack(0);
-
+            animator.SetAttackComboCount(comboCount);
+            animator.OnAttack(attackConboCount);
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
             lastDegree = degree;
