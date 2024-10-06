@@ -31,7 +31,7 @@ namespace Feature.View
                 monoBehaviour.DelayMethod(delay, () => animator.SetBool(id, value))
             );
         }
-        public void SetHandLayer() => animator.Play("AttackBlendTree", 1);
+        public void SetHandLayer() => animator.CrossFadeInFixedTime("AttackBlendTree", 0.25f);
     }
 
     internal static class AnimationWrapperExtension

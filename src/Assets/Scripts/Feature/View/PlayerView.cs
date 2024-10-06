@@ -19,6 +19,7 @@ namespace Feature.View
         [SerializeField] private GameObject dagger;
         public float hx;
         public float vy;
+        public Transform daggerSpawn;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
@@ -61,7 +62,7 @@ namespace Feature.View
 
         private void FixedUpdate()
         {
-            speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
+            speed = (rb.position - previousPosition).magnitude / Time.fixedDeltaTime;
             previousPosition = rb.position;
             animator.SetSpeed(speed);
         }
@@ -168,16 +169,13 @@ namespace Feature.View
         {
             GameObject instantiateDagger;
             if (degree == 0 && right == false)
-                instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, -180));
+                instantiateDagger = Instantiate(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
             else
-                instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger = Instantiate(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {
-                if (right)
-                    h = 1;
-                else
-                    h = -1;
+                h = right ? 1 : -1;
             }
 
             var dagger = instantiateDagger.GetComponentInChildren<Dagger>();
