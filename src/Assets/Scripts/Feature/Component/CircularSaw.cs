@@ -15,7 +15,10 @@ namespace Feature.Component
         void Update()
         {
             transform.Rotate(new Vector3(0,rotationSpeed,0));
-            MoveWayPoints();
+            if (wayPoints.Length != 0)
+            {
+                MoveWayPoints();
+            }
         }
 
         private void MoveWayPoints()
