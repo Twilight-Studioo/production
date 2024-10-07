@@ -7,7 +7,7 @@ AvatarMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Hand
-  m_Mask: 00000000010000000000000000000000000000000100000001000000010000000100000000000000000000000100000001000000
+  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
   m_Elements:
   - m_Path: 
     m_Weight: 1
@@ -16,17 +16,17 @@ AvatarMask:
   - m_Path: Body
     m_Weight: 1
   - m_Path: Face
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Hair
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Shose
     m_Weight: 0
   - m_Path: SJK02:Armature
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root
     m_Weight: 0
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:LeftUpLeg
     m_Weight: 0
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:LeftUpLeg/SJK02:LeftLeg
@@ -48,31 +48,31 @@ AvatarMask:
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:RightUpLeg/SJK02:RightLeg/SJK02:RightFoot/SJK02:RightToe/SJK02:RightToe_end
     m_Weight: 0
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:Cloth.Middle
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:Cloth.Middle/SJK02:Cloth.Middle_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:ClothLeft.001
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:ClothLeft.001/SJK02:ClothLeft.001_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:ClothLeft.002
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:ClothLeft.002/SJK02:ClothLeft.002_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:ClothRight.001
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:ClothRight.001/SJK02:ClothRight.001_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:ClothRight.002
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Cloth.Root/SJK02:ClothRight.002/SJK02:ClothRight.002_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:LeftShoulder
     m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:LeftShoulder/SJK02:LeftArm
@@ -122,41 +122,41 @@ AvatarMask:
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:LeftShoulder/SJK02:LeftArm/SJK02:LeftForeArm/SJK02:LeftHand/SJK02:LeftHandThumb.001/SJK02:LeftHandThumb.002/SJK02:LeftHandThumb.003/SJK02:LeftHandThumb.003_end
     m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_black
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_black/SJK02:Hair_black.001
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_black/SJK02:Hair_black.001/SJK02:Hair_black.001_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_Front
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_Front/SJK02:Hair_Front.001
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_Front/SJK02:Hair_Front.001/SJK02:Hair_Front.001_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_left
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_left/SJK02:Hair_left.001
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_left/SJK02:Hair_left.001/SJK02:Hair_left.001_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_middle
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_middle/SJK02:Hair_middle.001
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_middle/SJK02:Hair_middle.001/SJK02:Hair_middle.001_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_right
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_right/SJK02:Hair_right.001
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:Neck/SJK02:Head/SJK02:Hair_Root/SJK02:Hair_right/SJK02:Hair_right.001/SJK02:Hair_right.001_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:RightShoulder
     m_Weight: 1
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:Spine/SJK02:Chest/SJK02:RightShoulder/SJK02:RightArm

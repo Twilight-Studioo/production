@@ -115,6 +115,7 @@ namespace Feature.View
             maxComboCount = MaxComboCount;
             volumeController = (VolumeController)_urp;
             this.attackCoolTime = attackCoolTime;
+            
         }
 
         public void SetPosition(Vector3 p)
@@ -229,26 +230,26 @@ namespace Feature.View
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
             animator.SetAttackComboCount(comboCount);
-            animator.OnAttack(attackConboCount);
+            animator.OnAttack(0);
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
             lastDegree = degree;
 
             // 攻撃方向に少し飛ばす
             // degreeをラジアンに変換
-            var radian = degree * Mathf.Deg2Rad;
-
-            // 力の方向を計算
-            var forceDirection = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian));
-            const float force = 6f;
-            const float snapStopTime = 0.1f;
-            const float gravityDisableTime = 0.06f;
-            rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
-            this.UniqueStartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero),
-                "AttackedSnap");
-            // if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
-            //snapCanceledToken = StartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero));
-            if (!isGravityDisabled) StartCoroutine(DisableGravityTemporarily(gravityDisableTime));
+            // var radian = degree * Mathf.Deg2Rad;
+            //
+            // // 力の方向を計算
+            // var forceDirection = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian));
+            // const float force = 6f;
+            // const float snapStopTime = 0.1f;
+            // const float gravityDisableTime = 0.06f;
+            // rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
+            // this.UniqueStartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero),
+            //     "AttackedSnap");
+            // // if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
+            // //snapCanceledToken = StartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero));
+            // if (!isGravityDisabled) StartCoroutine(DisableGravityTemporarily(gravityDisableTime));
         }
 
         private IEnumerator DisableGravityTemporarily(float duration)
