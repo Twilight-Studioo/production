@@ -198,21 +198,44 @@ namespace Feature.View
         {
             var currentTime = Time.time;
             if (currentTime - lastAttackTime < attackCoolTime) return;
-
+            Debug.Log(degree);
             if (currentTime - lastAttackTime <= comboTimeWindow)
             {
-                if (comboCount < maxComboCount)
+                if (comboCount >= maxComboCount)
                 {
-                    comboCount++;
-                    yDegree += lastDegree + comboAngleOffset;
-                }
-                else
-                {
-                    // 最大連続攻撃回数に達した場合、リセット
-                    comboCount = 0;
-                    // 角度をリセット
+                    comboCount = -1;
                     yDegree = 0; 
                 }
+
+                comboCount++;
+                switch (comboCount)
+                {
+                    case 0:
+                        yDegree += degree;
+                        break;
+                    case 1:
+                        yDegree += lastDegree + comboAngleOffset;
+                        break;
+                    case 2:
+                        yDegree += lastDegree - comboAngleOffset*3;
+                        break;
+                }
+                // if (comboCount < maxComboCount)
+                // {
+                //     comboCount++;
+                //     yDegree += lastDegree + comboAngleOffset;
+                //     // if (degree != 90)
+                //     // {
+                //     //     yDegree += lastDegree + comboAngleOffset;
+                //     // }
+                // }
+                // else
+                // {
+                //     // 最大連続攻撃回数に達した場合、リセット
+                //     comboCount = 0;
+                //     // 角度をリセット
+                //     yDegree = 0; 
+                // }
             }
             else
             {
@@ -233,23 +256,23 @@ namespace Feature.View
             animator.OnAttack(0);
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
-            lastDegree = degree;
+            lastDegree = yDegree;
 
             // 攻撃方向に少し飛ばす
             // degreeをラジアンに変換
-            // var radian = degree * Mathf.Deg2Rad;
-            //
-            // // 力の方向を計算
-            // var forceDirection = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian));
-            // const float force = 6f;
-            // const float snapStopTime = 0.1f;
-            // const float gravityDisableTime = 0.06f;
-            // rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
-            // this.UniqueStartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero),
-            //     "AttackedSnap");
-            // // if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
-            // //snapCanceledToken = StartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero));
-            // if (!isGravityDisabled) StartCoroutine(DisableGravityTemporarily(gravityDisableTime));
+            var radian = degree * Mathf.Deg2Rad;
+            
+            // 力の方向を計算
+            var forceDirection = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian));
+            const float force = 6f;
+            const float snapStopTime = 0.1f;
+            const float gravityDisableTime = 0.06f;
+            rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
+            this.UniqueStartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero),
+                "AttackedSnap");
+            // if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
+            //snapCanceledToken = StartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero));
+            if (!isGravityDisabled) StartCoroutine(DisableGravityTemporarily(gravityDisableTime));
         }
 
         private IEnumerator DisableGravityTemporarily(float duration)
