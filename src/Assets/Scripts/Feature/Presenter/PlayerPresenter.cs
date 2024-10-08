@@ -39,7 +39,7 @@ namespace Feature.Presenter
             CharacterParams characterParams,
             VoltageBar voltageBar,
             GameUIView ui,
-                VolumeController volumeController
+            VolumeController volumeController
         )
         {
             playerModel = model;
