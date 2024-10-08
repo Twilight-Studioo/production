@@ -6,14 +6,14 @@ namespace Feature.Component
     public class AccelerationPlate : MonoBehaviour
     {
         [SerializeField] private float acceleration = 0.5f;
-        private bool OnAccelerationPlate = false;
+        [SerializeField] private float escapeSpeed = 20f;
+        private Vector3 DirectionMovement = new Vector3(1, 0, 0);
 
         private void OnCollisionStay(Collision other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                OnAccelerationPlate = true;
-                other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(acceleration,0,0),ForceMode.VelocityChange);
+                other.gameObject.GetComponent<Rigidbody>().MovePosition(other.transform.position + DirectionMovement * acceleration * Time.deltaTime);
             }
         }
 
@@ -21,7 +21,7 @@ namespace Feature.Component
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                OnAccelerationPlate = false;
+                other.gameObject.GetComponent<Rigidbody>().AddForce(DirectionMovement * escapeSpeed);
             }
         }
     }
