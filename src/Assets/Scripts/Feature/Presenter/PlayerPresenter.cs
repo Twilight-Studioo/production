@@ -39,7 +39,7 @@ namespace Feature.Presenter
             CharacterParams characterParams,
             VoltageBar voltageBar,
             GameUIView ui,
-                VolumeController volumeController
+            VolumeController volumeController
         )
         {
             playerModel = model;
@@ -90,7 +90,7 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(playerHpBar);
-            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,playerModel.MaxComboCount,volumeController);
+            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,playerModel.MaxComboCount,volumeController,playerModel.AttackCoolTime);
         }
 
         public void Move(float direction)

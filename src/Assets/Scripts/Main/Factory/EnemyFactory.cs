@@ -49,7 +49,7 @@ namespace Main.Factory
             var enemy = ObjectFactory.CreateObject(enemyRef.reference, t.position, t.rotation);
             var enemyComponent = enemy.GetComponent<IEnemy>();
             var agent = enemy.GetComponent<IEnemyAgent>();
-            var presenter = new EnemyPresenter(enemyComponent, agent, enemyRef.parameters);
+            var presenter = new EnemyPresenter(enemyComponent, agent, start.GetParam ?? enemyRef.parameters);
             OnAddField?.Invoke(presenter);
             agent.OnAddSwappableItem += OnAddSwappableItem;
             enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);

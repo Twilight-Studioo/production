@@ -131,6 +131,7 @@ namespace Feature.Model
         public float ComboTimeWindow => characterParams.comboTimeWindow;
         public float ComboAngleOffset => characterParams.comboAngleOffset;
         public int MaxComboCount => characterParams.maxComboCount;
+        public float AttackCoolTime => characterParams.attackCoolTime;
 
         public readonly IReadOnlyReactiveProperty<PlayerState> State;
         public readonly IReadOnlyReactiveProperty<Vector3> Position;

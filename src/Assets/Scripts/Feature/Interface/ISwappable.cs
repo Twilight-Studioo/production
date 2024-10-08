@@ -21,5 +21,7 @@ namespace Feature.Interface
         void OnInSelectRange();
 
         void OnOutSelectRange();
+        
+        public void Delete();
     }
 }

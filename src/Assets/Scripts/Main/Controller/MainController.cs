@@ -3,6 +3,7 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Core.Utilities;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
@@ -68,6 +69,16 @@ namespace Main.Controller
 
         private void Setup()
         {
+            ObjectFactory.OnObjectCreated += obj =>
+            {
+                // swapItemがスポーンされたらpresenterに登録
+                var item = obj.GetComponent<ISwappable>();
+                if (item is not null)
+                {
+                    swapPresenter.AddItem(item);
+                }
+            };
+
             enemyFactory.OnAddField += obj =>
             {
                 targetGroupManager.AddTarget(obj.GameObject().transform, CameraTargetGroupTag.Enemy());
