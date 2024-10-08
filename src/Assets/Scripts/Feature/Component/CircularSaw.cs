@@ -9,18 +9,31 @@ namespace Feature.Component
         [SerializeField] private float rotationSpeed = 0.05f;
 
         [SerializeField] private Transform[] wayPoints;
-        [SerializeField] private float moveSpeed = 2f;
+        [SerializeField] private float moveLineSpeed = 2f;
+        [SerializeField] private float moveRunawySpeed = 2f;
         private int currentWaypointIndex = 0;
         private bool isReturning = false;
+
+        public bool onLine = true;
+        private Vector3 DirectionMovement = new Vector3(1, 0, 0);
         
         private uint damage = 10;
-        
+
+        private void Start()
+        {
+            
+        }
+
         void Update()
         {
             transform.Rotate(new Vector3(0,rotationSpeed,0));
-            if (wayPoints.Length != 0)
+            if (wayPoints.Length != 0 && onLine)
             {
                 MoveWayPoints();
+            }
+            else if (!onLine)
+            {
+                Runaway();
             }
         }
 
@@ -60,7 +73,7 @@ namespace Feature.Component
 
             // 現在のウェイポイントに向かって移動する
             Vector3 direction = (targetWayPoint.position - transform.position).normalized;
-            transform.position += direction * (moveSpeed * Time.deltaTime);
+            transform.position += direction * (moveLineSpeed * Time.deltaTime);
         }
         
         private void OnTriggerEnter(Collider other)
@@ -69,6 +82,11 @@ namespace Feature.Component
             {
                 other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
             }
+        }
+
+        private void Runaway()
+        {
+            this.gameObject.GetComponent<Rigidbody>().MovePosition(transform.position + (DirectionMovement * moveRunawySpeed * Time.deltaTime));
         }
     }
 }
