@@ -54,7 +54,7 @@ namespace Feature.View
 
         private event Action<Collider2D> OnTrigger;
 
-        private void Delete()
+        public void Delete()
         {
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
