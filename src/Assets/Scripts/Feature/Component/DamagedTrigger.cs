@@ -77,6 +77,12 @@ namespace Feature.Component
         }
         
         private float lastUpdateDirectionTime;
+        
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
 
         private void FixedUpdate()
         {
