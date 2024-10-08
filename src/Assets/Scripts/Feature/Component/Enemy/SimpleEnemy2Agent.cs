@@ -206,5 +206,11 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnDestroyEvent;
+        
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
     }
 }
