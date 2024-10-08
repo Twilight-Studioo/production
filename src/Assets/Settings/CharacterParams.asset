@@ -19,7 +19,7 @@ MonoBehaviour:
   comboTimeWindow: 1
   comboAngleOffset: 50
   maxComboCount: 2
-  attackCoolTime: 0.3
+  attackCoolTime: 0.5
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10

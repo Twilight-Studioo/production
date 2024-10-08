@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,37 +14,40 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
 
+#endregion
+
 namespace Feature.Component.Enemy
 {
     public class SimpleEnemy2Agent : FlowScope, IEnemyAgent, ISwappable
     {
-        private List<Vector3> points;
+        [SerializeField] private GameObject bulletPrefab;
+
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private NavMeshAgent agent;
+
+        private bool canBullet;
 
         private SimpleEnemy2Params enemyParams;
 
         private OnHitRushAttack onHitBullet;
 
         private Transform playerTransform;
-                
-        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
-        
-        [SerializeField]
-        private GameObject bulletPrefab;
-
-        private bool canBullet;
+        private List<Vector3> points;
 
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             position.Value = transform.position;
         }
-        
+
         private void Update()
         {
             position.Value = transform.position;
         }
+
+        public GetHealth OnGetHealth { get; set; }
+        public EnemyType EnemyType => EnemyType.SimpleEnemy2;
 
 
         public void FlowCancel()
@@ -83,8 +88,9 @@ namespace Feature.Component.Enemy
             imp.y += 10f;
             StartCoroutine(transform.Knockback(imp, 10f, 0.5f));
         }
-
+#pragma warning disable CS0067
         public event Action OnTakeDamageEvent;
+#pragma warning disable CS0067
         public event Action<ISwappable> OnAddSwappableItem;
 
         private TriggerRef FocusTrigger() =>
@@ -98,7 +104,7 @@ namespace Feature.Component.Enemy
                 .Param("Target", enemyParams.pursuitDistance)
                 .Param("IsClose", false)
                 .Param("Object", playerTransform);
-        
+
         private TriggerRef AttackTrigger() =>
             Trigger("Distance")
                 .Param("Target", enemyParams.shootDistance)
@@ -116,9 +122,9 @@ namespace Feature.Component.Enemy
             {
                 // パトロール状態
                 agent.ResetPath();
-                
+
                 var distance = Vector3.Distance(playerTransform.position, transform.position);
-                
+
                 if (Math.Abs(enemyParams.shootDistance - distance) < 1f || canBullet)
                 {
                     canBullet = false;
@@ -158,7 +164,7 @@ namespace Feature.Component.Enemy
             {
                 var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
-                bulletRb.SetHitObject(false, true);
+                bulletRb.SetHitObject(false, true, true);
                 bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
                 OnAddSwappableItem?.Invoke(bulletRb);
                 bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
@@ -166,26 +172,22 @@ namespace Feature.Component.Enemy
             }
 
             yield return Wait(enemyParams.shootAfterSec);
-
         }
 
         public void OnSelected()
         {
-            
         }
 
         public void OnDeselected()
         {
         }
-        
+
         public void OnInSelectRange()
         {
-            
         }
-        
+
         public void OnOutSelectRange()
         {
-            
         }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
@@ -198,5 +200,11 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnDestroyEvent;
+        
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
     }
 }

@@ -3,6 +3,7 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Core.Utilities;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
@@ -26,6 +27,8 @@ namespace Main.Controller
 
         private readonly SwapPresenter swapPresenter;
 
+        private readonly CameraSwitcher cameraSwitcher;
+
         private readonly TargetGroupManager targetGroupManager;
         private float horizontalInput;
 
@@ -38,7 +41,8 @@ namespace Main.Controller
             SwapPresenter swapPresenter,
             InputActionAccessor inputActionAccessor,
             TargetGroupManager targetGroupManager,
-            EnemyFactory enemyFactory
+            EnemyFactory enemyFactory,
+            CameraSwitcher cameraSwitcher
         )
         {
             // DIからの登録
@@ -48,6 +52,7 @@ namespace Main.Controller
             this.enemyFactory = enemyFactory;
             this.playerModel = playerModel;
             this.swapPresenter = swapPresenter;
+            this.cameraSwitcher = cameraSwitcher;
         }
 
         public void Start()
@@ -64,6 +69,16 @@ namespace Main.Controller
 
         private void Setup()
         {
+            ObjectFactory.OnObjectCreated += obj =>
+            {
+                // swapItemがスポーンされたらpresenterに登録
+                var item = obj.GetComponent<ISwappable>();
+                if (item is not null)
+                {
+                    swapPresenter.AddItem(item);
+                }
+            };
+
             enemyFactory.OnAddField += obj =>
             {
                 targetGroupManager.AddTarget(obj.GameObject().transform, CameraTargetGroupTag.Enemy());
@@ -172,6 +187,7 @@ namespace Main.Controller
                     {
                         playerPresenter.StartSwap();
                         swapPresenter.InRangeHighlight(playerModel.Position.Value,true);
+                        cameraSwitcher.UseSwapCamera(true);
                     }
                     else
                     {
@@ -180,11 +196,13 @@ namespace Main.Controller
                             swapPresenter.SelectorStop();
 
                             swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
+                            cameraSwitcher.UseSwapCamera(false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
                         swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
+                        cameraSwitcher.UseSwapCamera(false);
                         swapPresenter.ResetSelector();
                         playerPresenter.AddVoltageSwap();
                         playerPresenter.EndSwap();

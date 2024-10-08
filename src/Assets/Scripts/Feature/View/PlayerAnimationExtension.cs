@@ -93,9 +93,9 @@ namespace Feature.View
             animator.SetBoolDelay(IsAttackingHash, false, attackTime);
         }
 
-        public static void SetAttackComboCount(this IAnimator animator, int count)
+        public static void SetAttackComboCount(this IAnimator animator, float count)
         {
-            animator.SetInteger(AttackComboCountHash, count);
+            animator.SetFloat(AttackComboCountHash, count);
         }
     }
 }
