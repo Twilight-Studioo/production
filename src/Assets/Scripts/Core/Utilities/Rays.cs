@@ -14,5 +14,12 @@ namespace Core.Utilities
         {
             return Physics.Raycast(transform.position, direction, out var hit, maxDistance) ? hit.distance : maxDistance;
         }
+        
+        public static RaycastHit[] GetBoxCastAll(this Transform transform, Vector3 halfExtents, Vector3 direction, float maxDistance, int capacity = 5)
+        {
+            var results = new RaycastHit[capacity];
+            Physics.BoxCastNonAlloc(transform.position, halfExtents, direction, results, Quaternion.identity, maxDistance);
+            return results;
+        }
     }
 }

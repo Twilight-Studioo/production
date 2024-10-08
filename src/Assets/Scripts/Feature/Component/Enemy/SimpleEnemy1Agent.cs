@@ -202,5 +202,11 @@ namespace Feature.Component.Enemy
             view.OnDamage(enemyParams.damage, transform.position, transform);
             OnTakeDamageEvent?.Invoke();
         }
+
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
     }
 }
