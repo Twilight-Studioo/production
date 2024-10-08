@@ -7,7 +7,7 @@ AvatarMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Hand
-  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
+  m_Mask: 01000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
   m_Elements:
   - m_Path: 
     m_Weight: 1
@@ -26,7 +26,7 @@ AvatarMask:
   - m_Path: SJK02:Armature/SJK02:Root
     m_Weight: 0
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:LeftUpLeg
     m_Weight: 0
   - m_Path: SJK02:Armature/SJK02:Root/SJK02:Hips/SJK02:LeftUpLeg/SJK02:LeftLeg
