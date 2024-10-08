@@ -57,7 +57,6 @@ namespace Feature.Component.Enemy
 
         public void FlowExecute()
         {
-            Debug.Log(playerTransform);
             FlowStart();
         }
 

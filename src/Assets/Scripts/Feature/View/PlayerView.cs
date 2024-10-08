@@ -173,17 +173,17 @@ namespace Feature.View
         {
             GameObject instantiateDagger;
             if (degree == 0 && right == false)
-                instantiateDagger = Instantiate(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
+                instantiateDagger = ObjectFactory.CreateObject(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
             else
-                instantiateDagger = Instantiate(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger = ObjectFactory.CreateObject(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {
                 h = right ? 1 : -1;
             }
 
-            var dagger = instantiateDagger.GetComponentInChildren<Dagger>();
-            dagger.HorizontalVertical(h, v);
+            var component = instantiateDagger.GetComponentInChildren<Dagger>();
+            component.HorizontalVertical(h, v);
             animator.OnDagger();
         }
 
