@@ -84,6 +84,7 @@ namespace Core.Camera
             var index = objects.FindIndex(tuple => tuple.Item1 == target);
             if (index > -1 && index < objects.Count)
             {
+                RemoveMember(objects[index]);
                 objects.RemoveAt(index);
             }
         }

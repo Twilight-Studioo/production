@@ -5,6 +5,7 @@ using Core.Input;
 using Core.Input.Generated;
 using Core.Utilities;
 using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
@@ -33,6 +34,7 @@ namespace Main.Controller
         private readonly TargetGroupManager targetGroupManager;
 
         private readonly GameSettings gameSettings;
+        private readonly CharacterParams characterParams;
         private float horizontalInput;
 
         private float lastDaggerTime; 
@@ -46,7 +48,8 @@ namespace Main.Controller
             TargetGroupManager targetGroupManager,
             EnemyFactory enemyFactory,
             GameSettings gameSettings,
-            CameraSwitcher cameraSwitcher
+            CameraSwitcher cameraSwitcher,
+            CharacterParams characterParams
         )
         {
             // DIからの登録
@@ -58,6 +61,7 @@ namespace Main.Controller
             this.swapPresenter = swapPresenter;
             this.gameSettings = gameSettings;
             this.cameraSwitcher = cameraSwitcher;
+            this.characterParams = characterParams;
         }
 
         public void Start()
@@ -94,6 +98,25 @@ namespace Main.Controller
                 if (item is not null)
                 {
                     swapPresenter.AddItem(item);
+                }
+
+                if (obj.TryGetComponent<Dagger>(out var dagger))
+                {
+                    targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.SwapItem());
+                    Observable.EveryUpdate()
+                        .Select(_ => dagger.transform.position)
+                        .DistinctUntilChanged()
+                        .Select(_ => Vector3.Distance(playerPresenter.GetTransform().position, dagger.transform.position) > characterParams.canSwapDistance)
+                        .DistinctUntilChanged()
+                        .Subscribe(x =>
+                        {
+                            if (x)
+                            {
+                                targetGroupManager.RemoveTarget(obj.transform);
+                            }
+                        })
+                        .AddTo(dagger);
+                    dagger.OnDestroyEvent += () => targetGroupManager.RemoveTarget(obj.transform);
                 }
             };
 
