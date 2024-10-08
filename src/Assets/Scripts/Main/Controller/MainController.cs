@@ -28,6 +28,8 @@ namespace Main.Controller
 
         private readonly SwapPresenter swapPresenter;
 
+        private readonly CameraSwitcher cameraSwitcher;
+
         private readonly TargetGroupManager targetGroupManager;
 
         private readonly GameSettings gameSettings;
@@ -43,7 +45,8 @@ namespace Main.Controller
             InputActionAccessor inputActionAccessor,
             TargetGroupManager targetGroupManager,
             EnemyFactory enemyFactory,
-            GameSettings gameSettings
+            GameSettings gameSettings,
+            CameraSwitcher cameraSwitcher
         )
         {
             // DIからの登録
@@ -54,6 +57,7 @@ namespace Main.Controller
             this.playerModel = playerModel;
             this.swapPresenter = swapPresenter;
             this.gameSettings = gameSettings;
+            this.cameraSwitcher = cameraSwitcher;
         }
 
         public void Start()
@@ -201,6 +205,7 @@ namespace Main.Controller
                     {
                         playerPresenter.StartSwap();
                         swapPresenter.InRangeHighlight(playerModel.Position.Value,true);
+                        cameraSwitcher.UseSwapCamera(true);
                     }
                     else
                     {
@@ -209,11 +214,13 @@ namespace Main.Controller
                             swapPresenter.SelectorStop();
 
                             swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
+                            cameraSwitcher.UseSwapCamera(false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
                         swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
+                        cameraSwitcher.UseSwapCamera(false);
                         swapPresenter.ResetSelector();
                         playerPresenter.AddVoltageSwap();
                         playerPresenter.EndSwap();

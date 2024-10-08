@@ -34,7 +34,7 @@ namespace Feature.Interface
 
         void SwapTimeFinishUrp();
 
-        void SetParam(float comboTimeWindow, float comboAngleOffset, int maxComboCount,
+        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount,
            MonoBehaviour urp,float attackCoolTime);
 
         Vector3 GetForward();

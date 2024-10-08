@@ -38,6 +38,7 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<VoltageBar>();
             builder.RegisterComponentInHierarchy<SelectorEffect>();
             builder.RegisterComponentInHierarchy<VolumeController>();
+            builder.RegisterComponentInHierarchy<CameraSwitcher>();
             
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);

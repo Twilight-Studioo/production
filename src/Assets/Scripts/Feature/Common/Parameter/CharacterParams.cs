@@ -23,7 +23,7 @@ namespace Feature.Common.Parameter
         [Tooltip("連続攻撃時の角度変化")] public float comboAngleOffset = 60f;
 
         [Tooltip("連続攻撃の最大回数(*数の+1の回数、2なら3コンボ)")]
-        public int maxComboCount = 3;
+        public float maxComboCount = 3;
 
         [Tooltip("攻撃のクールタイム")] public float attackCoolTime = 0.2f;
         // スワップ関連
