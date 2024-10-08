@@ -1086,8 +1086,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64c6cc63fc0247ab89de71ca3b2d5156, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 0.5
-  OnAccelerationPlate: 0
 --- !u!1 &1236034625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1131,8 +1129,9 @@ GameObject:
   - component: {fileID: 1324844280}
   - component: {fileID: 1324844279}
   - component: {fileID: 1324844278}
-  - component: {fileID: 1324844277}
   - component: {fileID: 1324844282}
+  - component: {fileID: 1324844277}
+  - component: {fileID: 1324844283}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -1200,7 +1199,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 2586f88905e521442893e379cc9735bb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1273,6 +1272,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1324844283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1324844276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7161807c98d4a00881856f502b08ec1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hilightRimThreashold: 0
 --- !u!1 &1399090526
 GameObject:
   m_ObjectHideFlags: 0

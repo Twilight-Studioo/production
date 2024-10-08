@@ -57,7 +57,7 @@ namespace Feature.Component
 
             // 現在のウェイポイントに向かって移動する
             Vector3 direction = (targetWayPoint.position - transform.position).normalized;
-            transform.position += direction * moveSpeed * Time.deltaTime;
+            transform.position += direction * (moveSpeed * Time.deltaTime);
         }
     }
 }
