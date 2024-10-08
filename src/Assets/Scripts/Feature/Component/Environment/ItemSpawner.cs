@@ -1,10 +1,7 @@
-#region
+ï»¿#region
 
 using System;
-using System.Collections.Generic;
-using Feature.Common.Constants;
-using Feature.Interface;
-using JetBrains.Annotations;
+using Core.Utilities;
 using UniRx;
 using UnityEngine;
 
@@ -14,20 +11,20 @@ namespace Feature.Component.Environment
 {
     public class ItemSpawner : MonoBehaviour
     {
-        [SerializeField] private GameObject item;               // •¡”‚©‚çƒ‰ƒ“ƒ_ƒ€‚É‘I‚Ô‚æ‚¤‚É‚µ‚½‚¢iŒãXj
-        [SerializeField] private uint spawnQuantity = 1;        // 1“x‚É‰½ŒÂƒXƒ|[ƒ“‚·‚é‚©
-        [SerializeField] private float spawnDistance = 20.0f;   // ƒAƒCƒeƒ€‚ðƒXƒ|[ƒ“‚µŽn‚ß‚é‹——£
-        [SerializeField] private float RespawnTimeSec = 5.0f;   // ƒŠƒXƒ|[ƒ“‚·‚é‚Ü‚Å‚Ì•b”
+        [SerializeField] private GameObject item; // è¤‡æ•°ã‹ã‚‰ãƒ©ãƒ³ãƒ€ãƒ ã«é¸ã¶ã‚ˆã†ã«ã—ãŸã„ï¼ˆå¾Œã€…ï¼‰
+        [SerializeField] private uint spawnQuantity = 1; // 1åº¦ã«ä½•å€‹ã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹ã‹
+        [SerializeField] private float spawnDistance = 20.0f; // ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚¹ãƒãƒ¼ãƒ³ã—å§‹ã‚ã‚‹è·é›¢
+        [SerializeField] private float RespawnTimeSec = 5.0f; // ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹ã¾ã§ã®ç§’æ•°
 
         public GetTransform GetPlayerTransform;
-        
-        private bool isCt = false;
+
+        private bool isCt;
 
         private void Awake()
         {
-            if(this.item == null)
+            if (item == null)
             {
-                Debug.LogWarning("ItemSpawner ‚ÉƒAƒCƒeƒ€‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+                Debug.LogWarning("ItemSpawner ã«ã‚¢ã‚¤ãƒ†ãƒ ãŒã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
             }
         }
 
@@ -37,14 +34,20 @@ namespace Feature.Component.Environment
             SpawnCheck();
         }
 
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(transform.position, 0.2f);
+        }
+
         private void SpawnCheck()
         {
-            if(isCt)
+            if (isCt)
             {
                 return;
             }
 
-            //if(Vector3.Distance(transform.position, GetPlayerTransform().position)@> spawnDistance)
+            //if(Vector3.Distance(transform.position, GetPlayerTransform().position)ã€€> spawnDistance)
             //{
             //    return;
             //}
@@ -58,9 +61,9 @@ namespace Feature.Component.Environment
 
             var pos = transform.position;
 
-            for(int i = 0; i < spawnQuantity; i++)
+            for (var i = 0; i < spawnQuantity; i++)
             {
-                Instantiate(item, new Vector3(pos.x, pos.y, 0), Quaternion.identity);
+                ObjectFactory.CreateObject(item, new(pos.x, pos.y, 0), Quaternion.identity);
             }
 
             Observable
@@ -69,4 +72,3 @@ namespace Feature.Component.Environment
         }
     }
 }
-    
