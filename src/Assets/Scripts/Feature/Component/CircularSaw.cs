@@ -1,4 +1,5 @@
 ﻿using System;
+using Feature.Interface;
 using UnityEngine;
 
 namespace Feature.Component
@@ -11,6 +12,8 @@ namespace Feature.Component
         [SerializeField] private float moveSpeed = 2f;
         private int currentWaypointIndex = 0;
         private bool isReturning = false;
+        
+        private uint damage = 10;
         
         void Update()
         {
@@ -58,6 +61,14 @@ namespace Feature.Component
             // 現在のウェイポイントに向かって移動する
             Vector3 direction = (targetWayPoint.position - transform.position).normalized;
             transform.position += direction * (moveSpeed * Time.deltaTime);
+        }
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+            }
         }
     }
 }
