@@ -4,6 +4,8 @@ using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
 using Core.Utilities;
+using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
@@ -30,6 +32,9 @@ namespace Main.Controller
         private readonly CameraSwitcher cameraSwitcher;
 
         private readonly TargetGroupManager targetGroupManager;
+
+        private readonly GameSettings gameSettings;
+        private readonly CharacterParams characterParams;
         private float horizontalInput;
 
         private float lastDaggerTime; 
@@ -42,7 +47,9 @@ namespace Main.Controller
             InputActionAccessor inputActionAccessor,
             TargetGroupManager targetGroupManager,
             EnemyFactory enemyFactory,
-            CameraSwitcher cameraSwitcher
+            GameSettings gameSettings,
+            CameraSwitcher cameraSwitcher,
+            CharacterParams characterParams
         )
         {
             // DIからの登録
@@ -52,7 +59,9 @@ namespace Main.Controller
             this.enemyFactory = enemyFactory;
             this.playerModel = playerModel;
             this.swapPresenter = swapPresenter;
+            this.gameSettings = gameSettings;
             this.cameraSwitcher = cameraSwitcher;
+            this.characterParams = characterParams;
         }
 
         public void Start()
@@ -64,7 +73,20 @@ namespace Main.Controller
         public void OnPossess(IPlayerView view)
         {
             playerPresenter.OnPossess(view);
-            targetGroupManager.AddTarget(view.GetTransform(), CameraTargetGroupTag.Player());
+            targetGroupManager.SetPlayer(view.GetTransform());
+            view.Speed
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    if (x > 0.1)
+                    {
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(), gameSettings.cameraForwardOffsetFromPlayerMoved);
+                    }
+                    else
+                    {
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(), 0f);
+                    }
+                });
         }
 
         private void Setup()
@@ -76,6 +98,25 @@ namespace Main.Controller
                 if (item is not null)
                 {
                     swapPresenter.AddItem(item);
+                }
+
+                if (obj.TryGetComponent<Dagger>(out var dagger))
+                {
+                    targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.SwapItem());
+                    Observable.EveryUpdate()
+                        .Select(_ => dagger.transform.position)
+                        .DistinctUntilChanged()
+                        .Select(_ => Vector3.Distance(playerPresenter.GetTransform().position, dagger.transform.position) > characterParams.canSwapDistance)
+                        .DistinctUntilChanged()
+                        .Subscribe(x =>
+                        {
+                            if (x)
+                            {
+                                targetGroupManager.RemoveTarget(obj.transform);
+                            }
+                        })
+                        .AddTo(dagger);
+                    dagger.OnDestroyEvent += () => targetGroupManager.RemoveTarget(obj.transform);
                 }
             };
 

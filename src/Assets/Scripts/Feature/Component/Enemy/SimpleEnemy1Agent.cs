@@ -142,6 +142,11 @@ namespace Feature.Component.Enemy
             {
                 throw new("EnemyParams is not set");
             }
+            
+            while (playerTransform == null)
+            {
+                yield return Wait(0.5f);
+            }
 
             while (true)
             {

@@ -39,7 +39,8 @@ namespace Feature.View
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
-        private float speed;
+        private IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
+        public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
         private VFXView vfxView;
         private float vignetteChange; //赤くなるまでの時間
@@ -53,6 +54,7 @@ namespace Feature.View
             vfxView = GetComponent<VFXView>();
             isGrounded
                 .Subscribe(x => { animator.SetIsFalling(!x); });
+            Speed = speed.ToReadOnlyReactiveProperty();
         }
 
         private void Update()
@@ -62,9 +64,11 @@ namespace Feature.View
 
         private void FixedUpdate()
         {
-            speed = (rb.position - previousPosition).magnitude / Time.fixedDeltaTime;
-            previousPosition = rb.position;
-            animator.SetSpeed(speed);
+            var pos = rb.position;
+            pos.y = 0;
+            speed.Value = (pos - previousPosition).magnitude / Time.fixedDeltaTime;
+            previousPosition = pos;
+            animator.SetSpeed(speed.Value);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -115,7 +119,6 @@ namespace Feature.View
             maxComboCount = MaxComboCount;
             volumeController = (VolumeController)_urp;
             this.attackCoolTime = attackCoolTime;
-            
         }
 
         public void SetPosition(Vector3 p)
@@ -170,17 +173,17 @@ namespace Feature.View
         {
             GameObject instantiateDagger;
             if (degree == 0 && right == false)
-                instantiateDagger = Instantiate(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
+                instantiateDagger = ObjectFactory.CreateObject(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
             else
-                instantiateDagger = Instantiate(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger = ObjectFactory.CreateObject(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {
                 h = right ? 1 : -1;
             }
 
-            var dagger = instantiateDagger.GetComponentInChildren<Dagger>();
-            dagger.HorizontalVertical(h, v);
+            var component = instantiateDagger.GetComponentInChildren<Dagger>();
+            component.HorizontalVertical(h, v);
             animator.OnDagger();
         }
 
@@ -198,7 +201,7 @@ namespace Feature.View
         {
             var currentTime = Time.time;
             if (currentTime - lastAttackTime < attackCoolTime) return;
-            Debug.Log(degree);
+
             if (currentTime - lastAttackTime <= comboTimeWindow)
             {
                 if (comboCount >= maxComboCount)
@@ -242,7 +245,6 @@ namespace Feature.View
                 comboCount = 0;
                 yDegree = 0;
             }
-            Debug.Log(comboCount);
             var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
 
             if (degree == 0 && right == false) degree = -180f;
@@ -254,6 +256,7 @@ namespace Feature.View
             Destroy(obj, 0.5f);
             animator.SetAttackComboCount(comboCount);
             animator.OnAttack(0);
+
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
             lastDegree = yDegree;
@@ -261,7 +264,7 @@ namespace Feature.View
             // 攻撃方向に少し飛ばす
             // degreeをラジアンに変換
             var radian = degree * Mathf.Deg2Rad;
-            
+
             // 力の方向を計算
             var forceDirection = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian));
             const float force = 6f;
@@ -304,5 +307,7 @@ namespace Feature.View
         {
             volumeController.SwapFinishUrp();
         }
+
+        public Vector3 GetForward() => right ? Vector3.right : Vector3.left;
     }
 }
