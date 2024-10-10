@@ -32,5 +32,7 @@ namespace Feature.Interface
         public GetHealth OnGetHealth { set; }
         
         public EnemyType EnemyType { get; }
+
+        public Action RequireDestroy { set; }
     }
 }

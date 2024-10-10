@@ -3,6 +3,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
 using Feature.Common.ActFlow;
@@ -24,7 +26,17 @@ namespace Feature.Component.Enemy
         private SelfCheck thresholdCheck;
 
         private DroneAttackType AttackType => enemyParams.attackType;
+
+        private void OnDrawGizmos()
+        {
+            // 自爆範囲
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, enemyParams.explosionRadius);
+        }
+
         public EnemyType EnemyType => EnemyType.Drone;
+
+        public Action RequireDestroy { set; get; }
 
         public void FlowExecute()
         {
@@ -88,8 +100,42 @@ namespace Feature.Component.Enemy
                 }
                 else if (CheckThresholdHealth())
                 {
+                    var startTimer = Time.time;
                     // TODO
                     // 自爆
+                    yield return Action("FlyMoveToFollow")
+                        .Param("FollowTransform", playerTransform)
+                        .Param("FinishDistance", 2f)
+                        .Param("MoveSpeed", enemyParams.selfDestructionMoveSpeed)
+                        .IfEnd(
+                            Trigger("WaitTrigger")
+                                .Param("Seconds", enemyParams.selfDestructionCountDownSec)
+                                .Build()
+                        )
+                        .Build();
+
+                    while (Time.time - startTimer < enemyParams.selfDestructionCountDownSec)
+                    {
+                        yield return new WaitForFixedUpdate();
+                    }
+
+                    transform.GetCircleCastAll(enemyParams.explosionRadius, transform.forward, 0)
+                        .ToList()
+                        .ForEach(hit =>
+                        {
+                            if (hit.distance < enemyParams.explosionRadius)
+                            {
+                                if (hit.collider is null || !hit.collider.CompareTag("Player"))
+                                {
+                                    return;
+                                }
+
+                                hit.collider.GetComponent<IDamaged>()?
+                                    .OnDamage(enemyParams.explosionDamage, transform.position, transform);
+                            }
+                        });
+                    RequireDestroy?.Invoke();
+                    yield break;
                 }
                 else
                 {
@@ -115,7 +161,8 @@ namespace Feature.Component.Enemy
                         var bullet = Instantiate(enemyParams.bulletPrefab, transform.position, Quaternion.identity);
                         var bulletRb = bullet.GetComponent<DamagedTrigger>();
                         bulletRb.SetHitObject(false, true, true);
-                        bulletRb.ExecuteWithFollow(playerTransform, enemyParams.bulletSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
+                        bulletRb.ExecuteWithFollow(playerTransform, enemyParams.bulletSpeed, enemyParams.damage,
+                            enemyParams.bulletLifeTime);
                         OnAddSwappableItem?.Invoke(bulletRb);
                         yield return Wait(enemyParams.shootIntervalSec);
                     }

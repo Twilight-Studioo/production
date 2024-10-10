@@ -10,7 +10,7 @@ namespace Feature.Common.Parameter
         [Tooltip("水平距離でのプレイヤーとの距離の目標")]
         public float playerKeepDistance = 8f;
 
-        [Tooltip("自爆を開始するまでのHPのしきい値")]
+        [Header("自爆"), Tooltip("自爆を開始するまでのHPのしきい値")]
         public float thresholdHealth = 4f;
         
         [Tooltip("自爆までのカウントダウン時間")]
@@ -23,9 +23,9 @@ namespace Feature.Common.Parameter
         public float explosionRadius = 5f;
         
         [Tooltip("自爆のダメージ")]
-        public float explosionDamage = 20f;
+        public uint explosionDamage = 20;
         
-        [Tooltip("攻撃の種類")]
+        [Header("攻撃の種類"), Tooltip("攻撃の種類")]
         public DroneAttackType attackType = DroneAttackType.Bullet;
         
         [Header("Bullet"), Tooltip("弾のプレハブ")]

@@ -21,5 +21,12 @@ namespace Core.Utilities
             Physics.BoxCastNonAlloc(transform.position, halfExtents, direction, results, Quaternion.identity, maxDistance);
             return results;
         }
+        
+        public static RaycastHit[] GetCircleCastAll(this Transform transform, float radius, Vector3 direction, float maxDistance, int capacity = 5)
+        {
+            var results = new RaycastHit[capacity];
+            Physics.SphereCastNonAlloc(transform.position, radius, direction, results, maxDistance);
+            return results;
+        }
     }
 }

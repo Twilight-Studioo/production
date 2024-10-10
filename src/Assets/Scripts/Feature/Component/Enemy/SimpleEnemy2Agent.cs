@@ -46,6 +46,8 @@ namespace Feature.Component.Enemy
             position.Value = transform.position;
         }
 
+        public Action RequireDestroy { set; get; }
+
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy2;
 
@@ -205,7 +207,7 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnDestroyEvent;
-        
+
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
