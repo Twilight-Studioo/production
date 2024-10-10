@@ -1,8 +1,11 @@
 #region
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #endregion
 
@@ -33,9 +36,11 @@ namespace Core.Utilities.Effect
                 effectObject.enabled = false;
                 effectPool.Enqueue(new(effectObject));
             }
-
-            context.InvokeRepeating(nameof(CheckAndRemoveInactiveEffects), inactiveCheckInterval,
-                inactiveCheckInterval);
+            
+            Observable
+                .Interval(TimeSpan.FromSeconds(inactiveCheckInterval))
+                .Subscribe(_ => CheckAndRemoveInactiveEffects())
+                .AddTo(context);
         }
 
         public T PlayEffect(Vector3 position, T prefab, float lifetime)
