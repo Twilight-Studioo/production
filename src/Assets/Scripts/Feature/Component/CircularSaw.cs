@@ -10,28 +10,24 @@ namespace Feature.Component
 
         [SerializeField] private Transform[] wayPoints;
         [SerializeField] private float moveLineSpeed = 2f;
-        [SerializeField] private float moveRunawySpeed = 2f;
+        [SerializeField] private float moveRunawaySpeed = 20f;
         private int currentWaypointIndex = 0;
         private bool isReturning = false;
 
-        public bool onLine = true;
-        private Vector3 DirectionMovement = new Vector3(1, 0, 0);
+        public bool outLine = false;
+        private Vector3 directionMovement = new Vector3(1, 0, 0);
         
         private uint damage = 10;
 
-        private void Start()
-        {
-            
-        }
-
         void Update()
         {
-            transform.Rotate(new Vector3(0,rotationSpeed,0));
-            if (wayPoints.Length != 0 && onLine)
+            transform.Rotate(0,-rotationSpeed,0);
+            if (wayPoints.Length != 0 && !outLine)
             {
                 MoveWayPoints();
+                outLine = this.gameObject.GetComponent<DamagedTrigger>().IsSwapped();
             }
-            else if (!onLine)
+            else if (outLine)
             {
                 Runaway();
             }
@@ -70,13 +66,12 @@ namespace Feature.Component
                     }
                 }
             }
-
             // 現在のウェイポイントに向かって移動する
             Vector3 direction = (targetWayPoint.position - transform.position).normalized;
             transform.position += direction * (moveLineSpeed * Time.deltaTime);
         }
-        
-        private void OnTriggerEnter(Collider other)
+
+        private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
@@ -86,7 +81,9 @@ namespace Feature.Component
 
         private void Runaway()
         {
-            this.gameObject.GetComponent<Rigidbody>().MovePosition(transform.position + (DirectionMovement * moveRunawySpeed * Time.deltaTime));
+            var circularsaw = this.gameObject.GetComponent<Rigidbody>();
+            circularsaw.useGravity = true;
+            circularsaw.MovePosition(transform.position + (directionMovement * moveRunawaySpeed * Time.deltaTime));
         }
     }
 }

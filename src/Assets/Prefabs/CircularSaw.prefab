@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5399254227276794306}
   - component: {fileID: 595432084090986054}
   - component: {fileID: 6827761841445246267}
+  - component: {fileID: 3006371887587472849}
   m_Layer: 0
   m_Name: CircularSaw
   m_TagString: Untagged
@@ -102,7 +103,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -126,7 +127,9 @@ MonoBehaviour:
   wayPoints:
   - {fileID: 0}
   - {fileID: 0}
-  moveSpeed: 2
+  moveLineSpeed: 2
+  moveRunawySpeed: 2
+  onLine: 1
 --- !u!114 &6827761841445246267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +143,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hilightRimThreashold: 0
+--- !u!54 &3006371887587472849
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2558161752414604748}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5885381038603946370
 GameObject:
   m_ObjectHideFlags: 0

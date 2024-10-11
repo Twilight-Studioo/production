@@ -59,8 +59,7 @@ namespace Feature.View
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
         }
-
-        //セレクト註のエフェクト作成で利用
+        
         public void OnSelected()
         {
             

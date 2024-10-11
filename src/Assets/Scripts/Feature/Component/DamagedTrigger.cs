@@ -16,6 +16,8 @@ namespace Feature.Component
         private bool canHitEnemy;
         private bool canHitPlayer;
         private bool canHitField;
+        
+        public bool Swapped = false;
 
         private Material material;
         private Renderer targetRenderer;
@@ -144,6 +146,12 @@ namespace Feature.Component
         public void OnSwap(Vector2 p)
         {
             transform.position = p;
+            Swapped = true;
+        }
+
+        public bool IsSwapped()
+        {
+            return Swapped;
         }
     }
 }
