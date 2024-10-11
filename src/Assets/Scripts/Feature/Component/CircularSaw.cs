@@ -85,6 +85,10 @@ namespace Feature.Component
             {
                 other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
             }
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.GetComponent<IEnemy>().OnDamage(damage,transform.position,transform);
+            }
         }
 
         private void Runaway()
