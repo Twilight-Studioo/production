@@ -46,6 +46,8 @@ namespace Feature.Component.Enemy
             position.Value = transform.position;
         }
 
+        public Action RequireDestroy { set; get; }
+
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy2;
 
@@ -116,6 +118,11 @@ namespace Feature.Component.Enemy
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
+            }
+
+            while (playerTransform == null)
+            {
+                yield return Wait(0.5f);
             }
 
             while (true)
@@ -200,7 +207,7 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnDestroyEvent;
-        
+
         public void Delete()
         {
             OnDestroyEvent?.Invoke();

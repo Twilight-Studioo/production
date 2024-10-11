@@ -102,7 +102,7 @@ MonoBehaviour:
   - {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851, type: 3}
   - {fileID: 6881300163551790712, guid: 689bc082f6f5ad24593956527beb1ab3, type: 3}
   - {fileID: 6881300163551790712, guid: 314c3d2979d6b7c4982aefe765acfd1a, type: 3}
-  dagger: {fileID: 1714581555819581919, guid: 9c1be308684fde246ba5cab8b034a1e9, type: 3}
+  dagger: {fileID: 3452286736134199389, guid: eeeb33f97828b4fa2a32a3bc8d284a3d, type: 3}
   hx: 0
   vy: 0
   daggerSpawn: {fileID: 6971175292935995355}

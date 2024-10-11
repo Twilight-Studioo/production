@@ -43,6 +43,8 @@ namespace Feature.Component.Enemy
             position.Value = transform.position;
         }
 
+        public Action RequireDestroy { set; get; }
+
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy1;
 
@@ -120,6 +122,12 @@ namespace Feature.Component.Enemy
         public event Action OnDestroyEvent;
 #pragma warning restore CS0067
 
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
+
         private TriggerRef MoveTrigger() =>
             Trigger("AnyDistance")
                 .Param("Distances", new List<float> { enemyParams.rushStartDistance, enemyParams.foundDistance, })
@@ -141,6 +149,11 @@ namespace Feature.Component.Enemy
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
+            }
+
+            while (playerTransform == null)
+            {
+                yield return Wait(0.5f);
             }
 
             while (true)
@@ -201,12 +214,6 @@ namespace Feature.Component.Enemy
             var view = player.GetComponent<IDamaged>();
             view.OnDamage(enemyParams.damage, transform.position, transform);
             OnTakeDamageEvent?.Invoke();
-        }
-
-        public void Delete()
-        {
-            OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
     }
 }
