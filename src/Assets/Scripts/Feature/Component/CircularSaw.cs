@@ -1,5 +1,4 @@
-﻿using System;
-using Feature.Interface;
+﻿using Feature.Interface;
 using UnityEngine;
 
 namespace Feature.Component
@@ -14,14 +13,23 @@ namespace Feature.Component
         private int currentWaypointIndex = 0;
         private bool isReturning = false;
 
-        public bool outLine = false;
+        private bool outLine = false;
         private Vector3 directionMovement = new Vector3(1, 0, 0);
+        [SerializeField] private bool MoveRight = true;
         
         private uint damage = 10;
 
         void Update()
         {
-            transform.Rotate(0,-rotationSpeed,0);
+            if (MoveRight)
+            {
+                transform.Rotate(0,-rotationSpeed,0);
+            }
+            else
+            {
+                transform.Rotate(0,rotationSpeed,0);
+            }
+            
             if (wayPoints.Length != 0 && !outLine)
             {
                 MoveWayPoints();
@@ -83,7 +91,14 @@ namespace Feature.Component
         {
             var circularsaw = this.gameObject.GetComponent<Rigidbody>();
             circularsaw.useGravity = true;
-            circularsaw.MovePosition(transform.position + (directionMovement * moveRunawaySpeed * Time.deltaTime));
+            if (MoveRight)
+            {
+                circularsaw.MovePosition(transform.position + (directionMovement * moveRunawaySpeed * Time.deltaTime));
+            }
+            else
+            {
+                circularsaw.MovePosition(transform.position + (directionMovement * -moveRunawaySpeed * Time.deltaTime));
+            }
         }
     }
 }

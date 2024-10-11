@@ -17,7 +17,7 @@ namespace Feature.Component
         private bool canHitPlayer;
         private bool canHitField;
         
-        public bool Swapped = false;
+        private bool Swapped = false;
 
         private Material material;
         private Renderer targetRenderer;
