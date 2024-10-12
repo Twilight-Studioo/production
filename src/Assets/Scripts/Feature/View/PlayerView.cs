@@ -8,6 +8,7 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 #endregion
 
@@ -20,15 +21,20 @@ namespace Feature.View
         public float hx;
         public float vy;
         public Transform daggerSpawn;
+
+        [SerializeField] private List<AudioClip> slashingSound;
+        [SerializeField] private List<AudioClip> hitSound;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
+        private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
 
         private AnimationWrapper animator;
         private float attackConboCount;
         private float attackCoolTime;
+        private AudioSource audioSource;
         private float comboAngleOffset; // 連続攻撃時の角度変化
-        private float comboCount=-1;
+        private float comboCount = -1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private bool isGravityDisabled;
 
@@ -39,8 +45,6 @@ namespace Feature.View
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
-        private IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
-        public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
         private VFXView vfxView;
         private float vignetteChange; //赤くなるまでの時間
@@ -55,6 +59,7 @@ namespace Feature.View
             isGrounded
                 .Subscribe(x => { animator.SetIsFalling(!x); });
             Speed = speed.ToReadOnlyReactiveProperty();
+            audioSource = GetComponent<AudioSource>();
         }
 
         private void Update()
@@ -96,6 +101,8 @@ namespace Feature.View
             OnDamageEvent?.Invoke(damage);
             animator.OnTakeDamage();
         }
+
+        public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
         public float SwapRange { get; set; }
 
@@ -173,14 +180,13 @@ namespace Feature.View
         {
             GameObject instantiateDagger;
             if (degree == 0 && right == false)
-                instantiateDagger = ObjectFactory.CreateObject(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
+                instantiateDagger =
+                    ObjectFactory.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
             else
-                instantiateDagger = ObjectFactory.CreateObject(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger =
+                    ObjectFactory.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
 
-            if (h == 0 && v == 0)
-            {
-                h = right ? 1 : -1;
-            }
+            if (h == 0 && v == 0) h = right ? 1 : -1;
 
             var component = instantiateDagger.GetComponentInChildren<Dagger>();
             component.HorizontalVertical(h, v);
@@ -207,7 +213,7 @@ namespace Feature.View
                 if (comboCount >= maxComboCount)
                 {
                     comboCount = -1;
-                    yDegree = 0; 
+                    yDegree = 0;
                 }
 
                 comboCount++;
@@ -220,7 +226,7 @@ namespace Feature.View
                         yDegree += lastDegree + comboAngleOffset;
                         break;
                     case 2:
-                        yDegree += lastDegree - comboAngleOffset*3;
+                        yDegree += lastDegree - comboAngleOffset * 3;
                         break;
                 }
                 // if (comboCount < maxComboCount)
@@ -245,14 +251,21 @@ namespace Feature.View
                 comboCount = 0;
                 yDegree = 0;
             }
+
             var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
 
             if (degree == 0 && right == false) degree = -180f;
             var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
                 Quaternion.Euler(yDegree, 0, degree));
 
+            var slashingSoundRandom = Random.Range(0, slashingSound.Count);
+            var selectedSlashingClip = slashingSound[slashingSoundRandom];
+            audioSource.PlayOneShot(selectedSlashingClip);
+
+            var hitSoundRandom = Random.Range(0, hitSound.Count);
+            var selectedHitClip = hitSound[hitSoundRandom];
             var slash = obj.GetComponent<Slash>();
-            slash.SetDamage(damage);
+            slash.SetDamage(damage, selectedHitClip, audioSource);
             Destroy(obj, 0.5f);
             animator.SetAttackComboCount(comboCount);
             animator.OnAttack(0);
@@ -308,6 +321,9 @@ namespace Feature.View
             volumeController.SwapFinishUrp();
         }
 
-        public Vector3 GetForward() => right ? Vector3.right : Vector3.left;
+        public Vector3 GetForward()
+        {
+            return right ? Vector3.right : Vector3.left;
+        }
     }
 }
