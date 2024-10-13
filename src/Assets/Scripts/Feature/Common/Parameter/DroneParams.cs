@@ -41,13 +41,20 @@ namespace Feature.Common.Parameter
         public float shootIntervalSec = 1f;
 
         [Header("Ray"), Tooltip("ビームのダメージ")]
-        public float rayDamage = 10f;
+        public uint rayDamage = 10;
         
         [Tooltip("ビームの射程")]
-        public float rayRange = 10f;
+        public float rayRange = 7f;
         
-        [Tooltip("ビームの幅")]
-        public float rayWidth = 1f;
+        [Tooltip("ビーム前の待機時間")]
+        public float rayWaitSec = 1f;
+        
+        [Tooltip("ビーム後の待機時間")]
+        public float rayIntervalSec = 1f;
+
+        // MARK: unused
+        // [Tooltip("ビームの幅")]
+        // public float rayWidth = 1f;
         
     }
 

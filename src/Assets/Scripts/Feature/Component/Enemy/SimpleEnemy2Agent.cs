@@ -93,7 +93,6 @@ namespace Feature.Component.Enemy
 #pragma warning disable CS0067
         public event Action OnTakeDamageEvent;
 #pragma warning disable CS0067
-        public event Action<ISwappable> OnAddSwappableItem;
 
         private TriggerRef FocusTrigger() =>
             Trigger("Distance")
@@ -169,11 +168,10 @@ namespace Feature.Component.Enemy
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
-                var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+                var bullet = ObjectFactory.CreateObject(bulletPrefab, transform.position, Quaternion.identity);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
                 bulletRb.SetHitObject(false, true, true);
                 bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
-                OnAddSwappableItem?.Invoke(bulletRb);
                 bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                 yield return Wait(enemyParams.shootIntervalSec);
             }

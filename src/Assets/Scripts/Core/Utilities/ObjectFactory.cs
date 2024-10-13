@@ -24,6 +24,14 @@ namespace Core.Utilities
             objects.Add(newObj);
             return newObj;
         }
+        
+        public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
+        {
+            var newObj = Object.Instantiate(prefab, position, rotation, parent);
+            OnObjectCreated?.Invoke(newObj);
+            objects.Add(newObj);
+            return newObj;
+        }
 
 
         public static GameObject FindObject(string name)

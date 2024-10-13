@@ -2050,6 +2050,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7437453453869855136, guid: a1bb7634d6aec412b97028e350fb9469,
         type: 3}
+      propertyPath: overrideParams
+      value: 
+      objectReference: {fileID: 11400000, guid: e01849b2a31fc487780e08c9bf4fc666,
+        type: 2}
+    - target: {fileID: 7437453453869855136, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
       propertyPath: spawnEnemyType
       value: 2
       objectReference: {fileID: 0}
@@ -2393,12 +2399,12 @@ PrefabInstance:
     - target: {fileID: 1961276430645119237, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000002146853
+      value: 0.0000000021468534
       objectReference: {fileID: 0}
     - target: {fileID: 1961276430645119237, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 1.3020338e-10
+      value: -1.302034e-10
       objectReference: {fileID: 0}
     - target: {fileID: 3606400983697465113, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}

@@ -51,15 +51,12 @@ namespace Main.Factory
             var agent = enemy.GetComponent<IEnemyAgent>();
             var presenter = new EnemyPresenter(enemyComponent, agent, start.GetParam ?? enemyRef.parameters);
             OnAddField?.Invoke(presenter);
-            agent.OnAddSwappableItem += OnAddSwappableItem;
             enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);
             presenter.Execute(GetPlayerTransform(), start.Points);
             return enemyComponent;
         }
 
         public event Action<IEnemyPresenter> OnAddField;
-        
-        public event Action<ISwappable> OnAddSwappableItem; 
         
         public event Action<IEnemyPresenter> OnRemoveField; 
     }

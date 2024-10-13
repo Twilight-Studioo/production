@@ -111,6 +111,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoPlay: 0
+  beamPrefab: {fileID: 9208822837553901436, guid: e6cce1a3b90704c7eac6d85653ef93cd,
+    type: 3}
 --- !u!1001 &2846586541049340618
 PrefabInstance:
   m_ObjectHideFlags: 0
