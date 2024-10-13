@@ -19,8 +19,6 @@ namespace Feature.View
         public event Action OnDamageEvent;
 
         public event Action OnTakeDamageEvent;
-        
-        public event Action<ISwappable> OnAddSwappableItem;
 
         public void Execute()
         {
@@ -31,7 +29,6 @@ namespace Feature.View
                 OnDamage(CurrentHealth, Vector3.zero, null);
             };
             agent.OnTakeDamageEvent += () => OnTakeDamageEvent?.Invoke();
-            agent.OnAddSwappableItem += OnAddSwappableItem;
             agent.FlowExecute();
         }
 

@@ -129,7 +129,6 @@ namespace Main.Controller
                     swapPresenter.AddItem(swappable);
                 }
             };
-            enemyFactory.OnAddSwappableItem += swapPresenter.AddItem;
             enemyFactory.OnRemoveField += obj =>
             {
                 targetGroupManager.RemoveTarget(obj.GameObject().transform);

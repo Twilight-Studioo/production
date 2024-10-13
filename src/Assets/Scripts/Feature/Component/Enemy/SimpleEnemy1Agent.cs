@@ -89,9 +89,6 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnTakeDamageEvent;
-#pragma warning disable CS0067
-        public event Action<ISwappable> OnAddSwappableItem;
-#pragma warning restore CS0067
 
         public void OnSelected()
         {

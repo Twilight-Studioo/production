@@ -12,6 +12,7 @@ using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
 using UnityEngine;
+using UnityEngine.VFX;
 
 #endregion
 
@@ -19,6 +20,9 @@ namespace Feature.Component.Enemy
 {
     public class DroneAgent : FlowScope, IEnemyAgent
     {
+        [SerializeField] private GameObject beamPrefab;
+        private VisualEffect beamEffect;
+
         private DroneParams enemyParams;
         private Transform playerTransform;
 
@@ -73,6 +77,10 @@ namespace Feature.Component.Enemy
 
 
         public GetHealth OnGetHealth { set; get; }
+
+#pragma warning disable CS0067
+        public event Action OnTakeDamageEvent;
+#pragma warning restore CS0067
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
@@ -158,28 +166,58 @@ namespace Feature.Component.Enemy
                 case DroneAttackType.Bullet:
                     for (var _ = 0; _ < enemyParams.shotCount; _++)
                     {
-                        var bullet = Instantiate(enemyParams.bulletPrefab, transform.position, Quaternion.identity);
+                        var bullet = ObjectFactory.CreateObject(enemyParams.bulletPrefab, transform.position,
+                            Quaternion.identity);
                         var bulletRb = bullet.GetComponent<DamagedTrigger>();
                         bulletRb.SetHitObject(false, true, true);
                         bulletRb.ExecuteWithFollow(playerTransform, enemyParams.bulletSpeed, enemyParams.damage,
                             enemyParams.bulletLifeTime);
-                        OnAddSwappableItem?.Invoke(bulletRb);
                         yield return Wait(enemyParams.shootIntervalSec);
                     }
 
                     break;
                 case DroneAttackType.Ray:
-                    // TODO ビームの仕様で実装
                     Debug.Log("Ray");
+                    var dir = (playerTransform.position - transform.position).normalized;
+                    if (beamEffect is null)
+                    {
+                        var effect = ObjectFactory.CreateObject(beamPrefab, transform.position,
+                            Quaternion.LookRotation(dir), transform);
+                        if (effect.TryGetComponentInChild<VisualEffect>(out var component))
+                        {
+                            beamEffect = component;
+                        }
+                    }
+                    
+                    if (beamEffect is null)
+                    {
+                        Debug.LogError("BeamEffect is null");
+                        yield break;
+                    }
+
+                    yield return new WaitForSeconds(enemyParams.rayWaitSec);
+
+                    beamEffect.transform.LookAt(playerTransform);
+                    beamEffect.SetFloat("Duration", enemyParams.rayIntervalSec);
+                    beamEffect.SetFloat("Length", enemyParams.rayRange);
+                    beamEffect.Play();
+                    transform.GetBoxCastAll(Vector3.one, dir, enemyParams.rayRange)
+                        .ToList()
+                        .ForEach(hit =>
+                        {
+                            if (hit.collider is not null && hit.collider.CompareTag("Player"))
+                            {
+                                hit.collider.GetComponent<IDamaged>()?
+                                    .OnDamage(enemyParams.rayDamage, transform.position, transform);
+                            }
+                        });
+                    yield return new WaitForSeconds(enemyParams.rayIntervalSec);
+                    beamEffect.Stop();
+
                     break;
                 case DroneAttackType.None:
                     break;
             }
         }
-
-#pragma warning disable CS0067
-        public event Action OnTakeDamageEvent;
-        public event Action<ISwappable> OnAddSwappableItem;
-#pragma warning restore CS0067
     }
 }
