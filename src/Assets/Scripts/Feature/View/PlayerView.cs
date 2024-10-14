@@ -19,26 +19,28 @@ namespace Feature.View
         [SerializeField] private GameObject dagger;
         public float hx;
         public float vy;
+        public Transform daggerSpawn;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
 
         private AnimationWrapper animator;
-        private int attackConboCount;
+        private float attackConboCount;
         private float attackCoolTime;
         private float comboAngleOffset; // 連続攻撃時の角度変化
-        private int comboCount=-1;
+        private float comboCount=-1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private bool isGravityDisabled;
 
         private float lastAttackTime;
         private float lastDegree;
-        private int maxComboCount; // 連続攻撃の最大回数
+        private float maxComboCount; // 連続攻撃の最大回数
         private float monochrome;
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
-        private float speed;
+        private IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
+        public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
         private VFXView vfxView;
         private float vignetteChange; //赤くなるまでの時間
@@ -52,6 +54,7 @@ namespace Feature.View
             vfxView = GetComponent<VFXView>();
             isGrounded
                 .Subscribe(x => { animator.SetIsFalling(!x); });
+            Speed = speed.ToReadOnlyReactiveProperty();
         }
 
         private void Update()
@@ -61,9 +64,11 @@ namespace Feature.View
 
         private void FixedUpdate()
         {
-            speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
-            previousPosition = rb.position;
-            animator.SetSpeed(speed);
+            var pos = rb.position;
+            pos.y = 0;
+            speed.Value = (pos - previousPosition).magnitude / Time.fixedDeltaTime;
+            previousPosition = pos;
+            animator.SetSpeed(speed.Value);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -106,7 +111,7 @@ namespace Feature.View
             return gameObject;
         }
 
-        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount,
+        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, float MaxComboCount,
             MonoBehaviour _urp, float attackCoolTime)
         {
             comboTimeWindow = ComboTimeWindow;
@@ -168,20 +173,17 @@ namespace Feature.View
         {
             GameObject instantiateDagger;
             if (degree == 0 && right == false)
-                instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, -180));
+                instantiateDagger = ObjectFactory.Instance.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
             else
-                instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger = ObjectFactory.Instance.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {
-                if (right)
-                    h = 1;
-                else
-                    h = -1;
+                h = right ? 1 : -1;
             }
 
-            var dagger = instantiateDagger.GetComponentInChildren<Dagger>();
-            dagger.HorizontalVertical(h, v);
+            var component = instantiateDagger.GetComponentInChildren<Dagger>();
+            component.HorizontalVertical(h, v);
             animator.OnDagger();
         }
 
@@ -202,28 +204,48 @@ namespace Feature.View
 
             if (currentTime - lastAttackTime <= comboTimeWindow)
             {
-                if (comboCount < maxComboCount)
+                if (comboCount >= maxComboCount)
                 {
-                    comboCount++;
-                    yDegree += lastDegree + comboAngleOffset;
-                }
-                else
-                {
-                    // 最大連続攻撃回数に達した場合、リセット
-                    comboCount = 0;
-                    // 角度をリセット
+                    comboCount = -1;
                     yDegree = 0; 
                 }
+
+                comboCount++;
+                switch (comboCount)
+                {
+                    case 0:
+                        yDegree += degree;
+                        break;
+                    case 1:
+                        yDegree += lastDegree + comboAngleOffset;
+                        break;
+                    case 2:
+                        yDegree += lastDegree - comboAngleOffset*3;
+                        break;
+                }
+                // if (comboCount < maxComboCount)
+                // {
+                //     comboCount++;
+                //     yDegree += lastDegree + comboAngleOffset;
+                //     // if (degree != 90)
+                //     // {
+                //     //     yDegree += lastDegree + comboAngleOffset;
+                //     // }
+                // }
+                // else
+                // {
+                //     // 最大連続攻撃回数に達した場合、リセット
+                //     comboCount = 0;
+                //     // 角度をリセット
+                //     yDegree = 0; 
+                // }
             }
             else
             {
+                comboCount = 0;
                 yDegree = 0;
             }
-
-            animator.SetAttackComboCount(comboCount);
-
-            Debug.Log(comboCount);
-            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
+            var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
 
             if (degree == 0 && right == false) degree = -180f;
             var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
@@ -232,11 +254,12 @@ namespace Feature.View
             var slash = obj.GetComponent<Slash>();
             slash.SetDamage(damage);
             Destroy(obj, 0.5f);
+            animator.SetAttackComboCount(comboCount);
             animator.OnAttack(0);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
-            lastDegree = degree;
+            lastDegree = yDegree;
 
             // 攻撃方向に少し飛ばす
             // degreeをラジアンに変換
@@ -284,5 +307,7 @@ namespace Feature.View
         {
             volumeController.SwapFinishUrp();
         }
+
+        public Vector3 GetForward() => right ? Vector3.right : Vector3.left;
     }
 }

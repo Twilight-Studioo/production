@@ -3,6 +3,9 @@
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Core.Utilities;
+using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
@@ -26,7 +29,12 @@ namespace Main.Controller
 
         private readonly SwapPresenter swapPresenter;
 
+        private readonly CameraSwitcher cameraSwitcher;
+
         private readonly TargetGroupManager targetGroupManager;
+
+        private readonly GameSettings gameSettings;
+        private readonly CharacterParams characterParams;
         private float horizontalInput;
 
         private float lastDaggerTime; 
@@ -38,7 +46,10 @@ namespace Main.Controller
             SwapPresenter swapPresenter,
             InputActionAccessor inputActionAccessor,
             TargetGroupManager targetGroupManager,
-            EnemyFactory enemyFactory
+            EnemyFactory enemyFactory,
+            GameSettings gameSettings,
+            CameraSwitcher cameraSwitcher,
+            CharacterParams characterParams
         )
         {
             // DIからの登録
@@ -48,6 +59,9 @@ namespace Main.Controller
             this.enemyFactory = enemyFactory;
             this.playerModel = playerModel;
             this.swapPresenter = swapPresenter;
+            this.gameSettings = gameSettings;
+            this.cameraSwitcher = cameraSwitcher;
+            this.characterParams = characterParams;
         }
 
         public void Start()
@@ -59,11 +73,53 @@ namespace Main.Controller
         public void OnPossess(IPlayerView view)
         {
             playerPresenter.OnPossess(view);
-            targetGroupManager.AddTarget(view.GetTransform(), CameraTargetGroupTag.Player());
+            targetGroupManager.SetPlayer(view.GetTransform());
+            view.Speed
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    if (x > 0.1)
+                    {
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(), gameSettings.cameraForwardOffsetFromPlayerMoved);
+                    }
+                    else
+                    {
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(), 0f);
+                    }
+                });
         }
 
         private void Setup()
         {
+            ObjectFactory.Instance.OnObjectCreated += obj =>
+            {
+                // swapItemがスポーンされたらpresenterに登録
+                var item = obj.GetComponent<ISwappable>();
+                if (item is not null)
+                {
+                    swapPresenter.AddItem(item);
+                }
+
+                if (obj.TryGetComponent<Dagger>(out var dagger))
+                {
+                    targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.SwapItem());
+                    Observable.EveryUpdate()
+                        .Select(_ => dagger.transform.position)
+                        .DistinctUntilChanged()
+                        .Select(_ => Vector3.Distance(playerPresenter.GetTransform().position, dagger.transform.position) > characterParams.canSwapDistance)
+                        .DistinctUntilChanged()
+                        .Subscribe(x =>
+                        {
+                            if (x)
+                            {
+                                targetGroupManager.RemoveTarget(obj.transform);
+                            }
+                        })
+                        .AddTo(dagger);
+                    dagger.OnDestroyEvent += () => targetGroupManager.RemoveTarget(obj.transform);
+                }
+            };
+
             enemyFactory.OnAddField += obj =>
             {
                 targetGroupManager.AddTarget(obj.GameObject().transform, CameraTargetGroupTag.Enemy());
@@ -73,7 +129,6 @@ namespace Main.Controller
                     swapPresenter.AddItem(swappable);
                 }
             };
-            enemyFactory.OnAddSwappableItem += swapPresenter.AddItem;
             enemyFactory.OnRemoveField += obj =>
             {
                 targetGroupManager.RemoveTarget(obj.GameObject().transform);
@@ -172,6 +227,7 @@ namespace Main.Controller
                     {
                         playerPresenter.StartSwap();
                         swapPresenter.InRangeHighlight(playerModel.Position.Value,true);
+                        cameraSwitcher.UseSwapCamera(true);
                     }
                     else
                     {
@@ -180,11 +236,13 @@ namespace Main.Controller
                             swapPresenter.SelectorStop();
 
                             swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
+                            cameraSwitcher.UseSwapCamera(false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
                         swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
+                        cameraSwitcher.UseSwapCamera(false);
                         swapPresenter.ResetSelector();
                         playerPresenter.AddVoltageSwap();
                         playerPresenter.EndSwap();

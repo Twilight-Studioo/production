@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using Feature.Common.Constants;
-using Feature.Common.Parameter;
 using Feature.Interface;
 using UnityEngine;
 
@@ -14,7 +13,6 @@ namespace Feature.Presenter
     {
         private readonly IEnemy enemyView;
         private readonly IEnemyAgent agent;
-        private readonly EnemyParams @params;
 
         public EnemyPresenter(
             IEnemy enemyView,
@@ -24,7 +22,6 @@ namespace Feature.Presenter
         {
             this.enemyView = enemyView;
             this.agent = agent;
-            this.@params = @params;
             this.agent.SetParams(@params);
    
             this.enemyView.SetHealth(@params.maxHp);
@@ -37,7 +34,6 @@ namespace Feature.Presenter
         )
         {
             agent.SetPatrolPoints(patrolPoints);
-            agent.SetPlayerTransform(playerTransform);
             agent.FlowExecute();
         }
 

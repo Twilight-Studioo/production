@@ -19,15 +19,16 @@ namespace Feature.View
         public event Action OnDamageEvent;
 
         public event Action OnTakeDamageEvent;
-        
-        public event Action<ISwappable> OnAddSwappableItem;
 
         public void Execute()
         {
             agent = GetComponent<IEnemyAgent>();
             agent.OnGetHealth = () => CurrentHealth;
+            agent.RequireDestroy = () =>
+            {
+                OnDamage(CurrentHealth, Vector3.zero, null);
+            };
             agent.OnTakeDamageEvent += () => OnTakeDamageEvent?.Invoke();
-            agent.OnAddSwappableItem += OnAddSwappableItem;
             agent.FlowExecute();
         }
 

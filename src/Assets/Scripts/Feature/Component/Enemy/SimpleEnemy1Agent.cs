@@ -43,6 +43,8 @@ namespace Feature.Component.Enemy
             position.Value = transform.position;
         }
 
+        public Action RequireDestroy { set; get; }
+
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy1;
 
@@ -54,6 +56,7 @@ namespace Feature.Component.Enemy
 
         public void FlowExecute()
         {
+            playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             FlowStart();
         }
 
@@ -74,11 +77,6 @@ namespace Feature.Component.Enemy
             points = pts;
         }
 
-        public void SetPlayerTransform(Transform player)
-        {
-            playerTransform = player;
-        }
-
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             var imp = (transform.position - attacker.position).normalized;
@@ -87,9 +85,6 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnTakeDamageEvent;
-#pragma warning disable CS0067
-        public event Action<ISwappable> OnAddSwappableItem;
-#pragma warning restore CS0067
 
         public void OnSelected()
         {
@@ -120,6 +115,12 @@ namespace Feature.Component.Enemy
         public event Action OnDestroyEvent;
 #pragma warning restore CS0067
 
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
+
         private TriggerRef MoveTrigger() =>
             Trigger("AnyDistance")
                 .Param("Distances", new List<float> { enemyParams.rushStartDistance, enemyParams.foundDistance, })
@@ -141,6 +142,11 @@ namespace Feature.Component.Enemy
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
+            }
+
+            while (playerTransform == null)
+            {
+                yield return Wait(0.5f);
             }
 
             while (true)
@@ -192,7 +198,7 @@ namespace Feature.Component.Enemy
 
         private void TakeDamage()
         {
-            var player = ObjectFactory.FindPlayer();
+            var player = ObjectFactory.Instance.FindPlayer();
             if (player == null)
             {
                 return;

@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using Core.Utilities;
 using Feature.Common.Parameter;
 using Feature.Interface;
 using UniRx;
@@ -10,10 +11,10 @@ using UnityEngine;
 
 namespace Feature.Component
 {
-    public class Dagger : MonoBehaviour
+    public class Dagger : MonoBehaviour, ISwappable
     {
         public DaggerPrams daggerPrams;
-        private CapsuleCollider capsuleCollider;
+        private Collider capsuleCollider;
         private uint damage;
 
         private float h;
@@ -22,16 +23,21 @@ namespace Feature.Component
         private Rigidbody rb;
         private float speed;
         private float v;
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private void Start()
         {
             PramSet();
 
             rb = GetComponent<Rigidbody>();
-            Destroy(gameObject, lifeTime);
-            Destroy(transform.parent.gameObject, lifeTime);
+            this.UniqueStartCoroutine(this.DelayMethod(lifeTime, Delete), "onLifetime delete dagger");
             //transform.parent.parent = null;
-            capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
+            capsuleCollider = gameObject.GetComponent<Collider>();
+        }
+
+        private void Update()
+        {
+            position.Value = transform.position;
         }
 
         private void FixedUpdate()
@@ -64,7 +70,7 @@ namespace Feature.Component
                     rb.isKinematic = false;
                 }
 
-                Destroy(gameObject, 0.5f); // ナイフを破壊
+                this.UniqueStartCoroutine(this.DelayMethod(0.5f, Delete), "onAttacked delete dagger");
             }
             else if (collision.gameObject.CompareTag("Wall"))
             {
@@ -112,6 +118,38 @@ namespace Feature.Component
                     var currentAngle = Mathf.LerpAngle(startAngle, angle, progress);
                     transform.eulerAngles = new Vector3(0, 0, currentAngle);
                 });
+        }
+
+        public void OnSelected()
+        {
+        }
+
+        public void OnDeselected()
+        {
+        }
+
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position.ToReadOnlyReactiveProperty();
+
+        public Vector2 GetPosition() => position.Value;
+
+        public void OnSwap(Vector2 p)
+        {
+            transform.position = p;
+        }
+
+        public event Action OnDestroyEvent;
+        public void OnInSelectRange()
+        {
+        }
+
+        public void OnOutSelectRange()
+        {
+        }
+
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
         }
     }
 }

@@ -46,6 +46,8 @@ namespace Feature.Component.Enemy
             position.Value = transform.position;
         }
 
+        public Action RequireDestroy { set; get; }
+
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy2;
 
@@ -57,6 +59,7 @@ namespace Feature.Component.Enemy
 
         public void FlowExecute()
         {
+            playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             FlowStart();
         }
 
@@ -77,11 +80,6 @@ namespace Feature.Component.Enemy
             points = pts;
         }
 
-        public void SetPlayerTransform(Transform player)
-        {
-            playerTransform = player;
-        }
-
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             var imp = (transform.position - attacker.position).normalized;
@@ -91,7 +89,6 @@ namespace Feature.Component.Enemy
 #pragma warning disable CS0067
         public event Action OnTakeDamageEvent;
 #pragma warning disable CS0067
-        public event Action<ISwappable> OnAddSwappableItem;
 
         private TriggerRef FocusTrigger() =>
             Trigger("Distance")
@@ -116,6 +113,11 @@ namespace Feature.Component.Enemy
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
+            }
+
+            while (playerTransform == null)
+            {
+                yield return Wait(0.5f);
             }
 
             while (true)
@@ -162,11 +164,10 @@ namespace Feature.Component.Enemy
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
-                var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+                var bullet = ObjectFactory.Instance.CreateObject(bulletPrefab, transform.position, Quaternion.identity);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
                 bulletRb.SetHitObject(false, true, true);
                 bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
-                OnAddSwappableItem?.Invoke(bulletRb);
                 bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                 yield return Wait(enemyParams.shootIntervalSec);
             }
@@ -200,5 +201,11 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnDestroyEvent;
+
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
     }
 }
