@@ -46,7 +46,7 @@ namespace Main.Factory
         private IEnemy SpawnEnemy(EnemyStart start, Transform t)
         {
             var enemyRef = settings.reference.Find(x => x.type == start.SpawnEnemyType);
-            var enemy = ObjectFactory.CreateObject(enemyRef.reference, t.position, t.rotation);
+            var enemy = ObjectFactory.Instance.CreateObject(enemyRef.reference, t.position, t.rotation);
             var enemyComponent = enemy.GetComponent<IEnemy>();
             var agent = enemy.GetComponent<IEnemyAgent>();
             var presenter = new EnemyPresenter(enemyComponent, agent, start.GetParam ?? enemyRef.parameters);

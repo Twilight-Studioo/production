@@ -59,6 +59,7 @@ namespace Feature.Component.Enemy
 
         public void FlowExecute()
         {
+            playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             FlowStart();
         }
 
@@ -77,11 +78,6 @@ namespace Feature.Component.Enemy
         public void SetPatrolPoints(List<Vector3> pts)
         {
             points = pts;
-        }
-
-        public void SetPlayerTransform(Transform player)
-        {
-            playerTransform = player;
         }
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
@@ -168,7 +164,7 @@ namespace Feature.Component.Enemy
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
-                var bullet = ObjectFactory.CreateObject(bulletPrefab, transform.position, Quaternion.identity);
+                var bullet = ObjectFactory.Instance.CreateObject(bulletPrefab, transform.position, Quaternion.identity);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
                 bulletRb.SetHitObject(false, true, true);
                 bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);

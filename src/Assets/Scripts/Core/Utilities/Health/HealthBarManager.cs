@@ -34,7 +34,7 @@ namespace Core.Utilities.Health
         private void SubscribeToNewObjectEvents()
         {
             // イベントサブスクライブの例
-            ObjectFactory.OnObjectCreated += HandleNewObject;
+            ObjectFactory.Instance.OnObjectCreated += HandleNewObject;
         }
 
         private void HandleNewObject(GameObject newObj)

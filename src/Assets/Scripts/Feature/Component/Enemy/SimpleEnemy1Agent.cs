@@ -56,6 +56,7 @@ namespace Feature.Component.Enemy
 
         public void FlowExecute()
         {
+            playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             FlowStart();
         }
 
@@ -74,11 +75,6 @@ namespace Feature.Component.Enemy
         public void SetPatrolPoints(List<Vector3> pts)
         {
             points = pts;
-        }
-
-        public void SetPlayerTransform(Transform player)
-        {
-            playerTransform = player;
         }
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
@@ -202,7 +198,7 @@ namespace Feature.Component.Enemy
 
         private void TakeDamage()
         {
-            var player = ObjectFactory.FindPlayer();
+            var player = ObjectFactory.Instance.FindPlayer();
             if (player == null)
             {
                 return;

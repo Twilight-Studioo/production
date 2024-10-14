@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -12,12 +13,31 @@ namespace Core.Utilities
     /// <summary>
     ///     キャラクターやエネミーは必ずこのファクトリを使って生成する
     /// </summary>
-    public static class ObjectFactory
+    public class ObjectFactory
     {
-        private static readonly List<GameObject> objects = new();
-        public static event Action<GameObject> OnObjectCreated;
+        private static GameObject superObject = null;
+        public static GameObject SuperObject { get; } = superObject ??= new ("ObjectFactory");
 
-        public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation)
+        private static ObjectFactory instance;
+        public static ObjectFactory Instance => instance ??= new();
+        private readonly List<GameObject> objects;
+        public event Action<GameObject> OnObjectCreated;
+
+        private ObjectFactory()
+        {
+            objects = new();
+            Observable
+                .Interval(TimeSpan.FromSeconds(1))
+                .Subscribe(Update)
+                .AddTo(SuperObject);
+        }
+
+        private void Update(long x)
+        {
+            objects.RemoveAll(obj => obj is null);
+        }
+
+        public GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation)
         {
             var newObj = Object.Instantiate(prefab, position, rotation);
             OnObjectCreated?.Invoke(newObj);
@@ -25,7 +45,7 @@ namespace Core.Utilities
             return newObj;
         }
         
-        public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
+        public GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
         {
             var newObj = Object.Instantiate(prefab, position, rotation, parent);
             OnObjectCreated?.Invoke(newObj);
@@ -34,12 +54,12 @@ namespace Core.Utilities
         }
 
 
-        public static GameObject FindObject(string name)
+        public GameObject FindObject(string name)
         {
             return objects.Find(obj => obj.name == name);
         }
 
-        public static GameObject FindPlayer()
+        public GameObject FindPlayer()
         {
             return objects.Find(obj => obj.CompareTag("Player"));
         }

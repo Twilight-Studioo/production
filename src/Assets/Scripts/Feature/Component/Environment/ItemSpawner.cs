@@ -63,7 +63,7 @@ namespace Feature.Component.Environment
 
             for (var i = 0; i < spawnQuantity; i++)
             {
-                ObjectFactory.CreateObject(item, new(pos.x, pos.y, 0), Quaternion.identity);
+                ObjectFactory.Instance.CreateObject(item, new(pos.x, pos.y, 0), Quaternion.identity);
             }
 
             Observable

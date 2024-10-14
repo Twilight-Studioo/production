@@ -19,8 +19,6 @@ namespace Feature.Interface
 
         public void SetParams(EnemyParams @params);
 
-        public void SetPlayerTransform(Transform playerTransform);
-
         public void SetPatrolPoints(List<Vector3> pts);
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
