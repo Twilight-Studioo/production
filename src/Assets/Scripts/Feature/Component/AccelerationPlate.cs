@@ -11,7 +11,7 @@ namespace Feature.Component
 
         private void OnCollisionStay(Collision other)
         {
-            if (other.gameObject.CompareTag("Player"))
+            //if (other.gameObject.CompareTag("Player"))
             {
                 other.gameObject.GetComponent<Rigidbody>().MovePosition(other.transform.position + DirectionMovement * acceleration * Time.deltaTime);
             }
@@ -19,7 +19,7 @@ namespace Feature.Component
 
         private void OnCollisionExit(Collision other)
         {
-            if (other.gameObject.CompareTag("Player"))
+            //if (other.gameObject.CompareTag("Player"))
             {
                 other.gameObject.GetComponent<Rigidbody>().AddForce(DirectionMovement * escapeSpeed);
             }
