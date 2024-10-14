@@ -33,13 +33,15 @@ namespace Feature.Presenter
         private readonly CompositeDisposable presenterDisposable = new();
 
         private VolumeController volumeController;
+        private AudioSource audioSource;
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
             CharacterParams characterParams,
             VoltageBar voltageBar,
             GameUIView ui,
-            VolumeController volumeController
+            VolumeController volumeController,
+            AudioSource audioSource
         )
         {
             playerModel = model;
@@ -48,6 +50,7 @@ namespace Feature.Presenter
             swapTimer = new();
             this.voltageBar = voltageBar;
             this.volumeController = volumeController;
+            this.audioSource = audioSource;
         }
 
         public void OnPossess(IPlayerView view)
@@ -91,7 +94,7 @@ namespace Feature.Presenter
                 })
                 .AddTo(playerHpBar);
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
-                playerModel.MaxComboCount,volumeController,playerModel.AttackCoolTime
+                playerModel.MaxComboCount,volumeController,playerModel.AttackCoolTime,audioSource
                 );
         }
 

@@ -35,7 +35,7 @@ namespace Feature.Interface
         void SwapTimeFinishUrp();
 
         void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount,
-           MonoBehaviour urp,float attackCoolTime);
+           MonoBehaviour urp,float attackCoolTime,AudioSource audioSource);
 
         Vector3 GetForward();
 

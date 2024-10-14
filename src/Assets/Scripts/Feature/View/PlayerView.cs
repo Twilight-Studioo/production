@@ -59,7 +59,6 @@ namespace Feature.View
             isGrounded
                 .Subscribe(x => { animator.SetIsFalling(!x); });
             Speed = speed.ToReadOnlyReactiveProperty();
-            audioSource = GetComponent<AudioSource>();
         }
 
         private void Update()
@@ -119,13 +118,14 @@ namespace Feature.View
         }
 
         public void SetParam(float ComboTimeWindow, float ComboAngleOffset, float MaxComboCount,
-            MonoBehaviour _urp, float attackCoolTime)
+            MonoBehaviour _urp, float attackCoolTime,AudioSource audioSource)
         {
             comboTimeWindow = ComboTimeWindow;
             comboAngleOffset = ComboAngleOffset;
             maxComboCount = MaxComboCount;
             volumeController = (VolumeController)_urp;
             this.attackCoolTime = attackCoolTime;
+            this.audioSource = audioSource;
         }
 
         public void SetPosition(Vector3 p)
