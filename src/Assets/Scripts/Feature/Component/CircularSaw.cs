@@ -1,5 +1,4 @@
-﻿using System;
-using Feature.Interface;
+﻿using Feature.Interface;
 using UnityEngine;
 
 namespace Feature.Component
@@ -9,18 +8,36 @@ namespace Feature.Component
         [SerializeField] private float rotationSpeed = 0.05f;
 
         [SerializeField] private Transform[] wayPoints;
-        [SerializeField] private float moveSpeed = 2f;
+        [SerializeField] private float moveLineSpeed = 2f;
+        [SerializeField] private float moveRunawaySpeed = 20f;
         private int currentWaypointIndex = 0;
         private bool isReturning = false;
+
+        private bool outLine = false;
+        private Vector3 directionMovement = new Vector3(1, 0, 0);
+        [SerializeField] private bool MoveRight = true;
         
         private uint damage = 10;
-        
+
         void Update()
         {
-            transform.Rotate(new Vector3(0,rotationSpeed,0));
-            if (wayPoints.Length != 0)
+            if (MoveRight)
+            {
+                transform.Rotate(0,-rotationSpeed,0);
+            }
+            else
+            {
+                transform.Rotate(0,rotationSpeed,0);
+            }
+            
+            if (wayPoints.Length != 0 && !outLine)
             {
                 MoveWayPoints();
+                outLine = this.gameObject.GetComponent<DamagedTrigger>().IsSwapped();
+            }
+            else if (outLine)
+            {
+                Runaway();
             }
         }
 
@@ -57,17 +74,34 @@ namespace Feature.Component
                     }
                 }
             }
-
             // 現在のウェイポイントに向かって移動する
             Vector3 direction = (targetWayPoint.position - transform.position).normalized;
-            transform.position += direction * (moveSpeed * Time.deltaTime);
+            transform.position += direction * (moveLineSpeed * Time.deltaTime);
         }
-        
-        private void OnTriggerEnter(Collider other)
+
+        private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
                 other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+            }
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.GetComponent<IEnemy>().OnDamage(damage,transform.position,transform);
+            }
+        }
+
+        private void Runaway()
+        {
+            var circularsaw = this.gameObject.GetComponent<Rigidbody>();
+            circularsaw.useGravity = true;
+            if (MoveRight)
+            {
+                circularsaw.MovePosition(transform.position + (directionMovement * moveRunawaySpeed * Time.deltaTime));
+            }
+            else
+            {
+                circularsaw.MovePosition(transform.position + (directionMovement * -moveRunawaySpeed * Time.deltaTime));
             }
         }
     }

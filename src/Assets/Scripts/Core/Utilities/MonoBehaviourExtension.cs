@@ -40,5 +40,11 @@ namespace Core.Utilities
             yield return new WaitForSeconds(waitTime);
             action();
         }
+
+        public static bool TryGetComponentInChild<T>(this GameObject mono, out T component) where T : Component
+        {
+            component = mono.GetComponentInChildren<T>();
+            return component != null;
+        }
     }
 }

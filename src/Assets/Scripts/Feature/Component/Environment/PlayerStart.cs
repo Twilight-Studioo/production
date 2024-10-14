@@ -29,7 +29,7 @@ namespace Feature.Component.Environment
             }
 
             isPlayerSpawned = true;
-            var player = ObjectFactory.CreateObject(playerRef, transform.position, Quaternion.identity);
+            var player = ObjectFactory.Instance.CreateObject(playerRef, transform.position, Quaternion.identity);
             return player.GetComponent<IPlayerView>();
         }
     }
