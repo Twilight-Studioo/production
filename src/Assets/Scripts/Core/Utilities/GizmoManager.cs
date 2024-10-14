@@ -22,7 +22,7 @@ namespace Core.Utilities
             {
                 if (instance == null)
                 {
-                    var go = new GameObject("GizmoManager");
+                    var go = ObjectFactory.SuperObject;
                     instance = go.AddComponent<GizmoManager>();
                     DontDestroyOnLoad(go);
                 }

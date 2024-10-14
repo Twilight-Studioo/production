@@ -173,9 +173,9 @@ namespace Feature.View
         {
             GameObject instantiateDagger;
             if (degree == 0 && right == false)
-                instantiateDagger = ObjectFactory.CreateObject(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
+                instantiateDagger = ObjectFactory.Instance.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
             else
-                instantiateDagger = ObjectFactory.CreateObject(this.dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger = ObjectFactory.Instance.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {

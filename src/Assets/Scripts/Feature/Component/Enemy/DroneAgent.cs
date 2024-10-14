@@ -46,6 +46,7 @@ namespace Feature.Component.Enemy
         {
             thresholdCheck = CheckThresholdHealth;
             rb = GetComponent<Rigidbody>();
+            playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             FlowStart();
         }
 
@@ -60,11 +61,6 @@ namespace Feature.Component.Enemy
             {
                 enemyParams = droneParams;
             }
-        }
-
-        public void SetPlayerTransform(Transform playerTransform)
-        {
-            this.playerTransform = playerTransform;
         }
 
         public void SetPatrolPoints(List<Vector3> pts)
@@ -166,7 +162,7 @@ namespace Feature.Component.Enemy
                 case DroneAttackType.Bullet:
                     for (var _ = 0; _ < enemyParams.shotCount; _++)
                     {
-                        var bullet = ObjectFactory.CreateObject(enemyParams.bulletPrefab, transform.position,
+                        var bullet = ObjectFactory.Instance.CreateObject(enemyParams.bulletPrefab, transform.position,
                             Quaternion.identity);
                         var bulletRb = bullet.GetComponent<DamagedTrigger>();
                         bulletRb.SetHitObject(false, true, true);
@@ -177,11 +173,10 @@ namespace Feature.Component.Enemy
 
                     break;
                 case DroneAttackType.Ray:
-                    Debug.Log("Ray");
                     var dir = (playerTransform.position - transform.position).normalized;
                     if (beamEffect is null)
                     {
-                        var effect = ObjectFactory.CreateObject(beamPrefab, transform.position,
+                        var effect = ObjectFactory.Instance.CreateObject(beamPrefab, transform.position,
                             Quaternion.LookRotation(dir), transform);
                         if (effect.TryGetComponentInChild<VisualEffect>(out var component))
                         {
