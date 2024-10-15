@@ -1896,8 +1896,12 @@ MonoBehaviour:
   DetectionRange: 20
   MaxAmmo: 6
   ReloadTime: 2
-  JumpHeight: 5
-  DesiredDistanceFromPlayer: 3
+  MoveSpeed: 50
+  JumpHeight: 80
+  SpecialMoveSpeed: 8
+  MovesBeforeSpecialMove: 3
+  KnockbackDistance: 3
+  AttackCooldown: 3
   fsm: {fileID: 0}
 --- !u!54 &30568338100415816
 Rigidbody:

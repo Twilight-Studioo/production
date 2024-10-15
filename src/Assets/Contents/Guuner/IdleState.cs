@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Xml;
+﻿using System.Xml;
 using UnityEngine;
+using System.Collections;
 
 public class IdleState : IState
 {
@@ -30,14 +29,18 @@ public class IdleState : IState
         Debug.Log("Exiting Idle State");
     }
 }
-
 public class MoveState : IState
 {
     private GunnerController _gunnerController;
+    private int currentMoveCount = 0;
+    private int specialMoveThreshold;
 
     public MoveState(GunnerController gunnerController)
     {
         _gunnerController = gunnerController;
+        specialMoveThreshold = (_gunnerController.MovesBeforeSpecialMove > 0)
+            ? _gunnerController.MovesBeforeSpecialMove
+            : Random.Range(1, 10);
     }
 
     public void Enter()
@@ -47,13 +50,16 @@ public class MoveState : IState
 
     public void Execute()
     {
-        if (_gunnerController.IsPlayerInAir())
+        _gunnerController.MoveTowardsPlayer();
+        currentMoveCount++;
+
+        if (currentMoveCount >= specialMoveThreshold)
         {
-            _gunnerController.JumpAndMoveTowardsPlayer();  
-        }
-        else
-        {
-            _gunnerController.MoveTowardsPlayer();  
+            _gunnerController.SpecialMove();
+            currentMoveCount = 0;
+            specialMoveThreshold = (_gunnerController.MovesBeforeSpecialMove > 0)
+                ? _gunnerController.MovesBeforeSpecialMove
+                : Random.Range(1, 10);
         }
 
         if (_gunnerController.IsCloseEnoughToAttack())
@@ -67,7 +73,6 @@ public class MoveState : IState
         Debug.Log("Exiting Move State");
     }
 }
-
 public class AttackState : IState
 {
     private GunnerController _gunnerController;
@@ -95,12 +100,12 @@ public class AttackState : IState
             else
             {
                 _gunnerController.SpecialAttack();
-                attackCounter = 0;  
+                attackCounter = 0;
             }
         }
         else
         {
-            _gunnerController.ChangeState(new ReloadState(_gunnerController)); 
+            _gunnerController.ChangeState(new ReloadState(_gunnerController));
         }
     }
 
@@ -109,7 +114,6 @@ public class AttackState : IState
         Debug.Log("Exiting Attack State");
     }
 }
-
 public class ReloadState : IState
 {
     private GunnerController _gunnerController;
@@ -125,10 +129,7 @@ public class ReloadState : IState
         _gunnerController.StartCoroutine(ReloadCoroutine());
     }
 
-    public void Execute()
-    {
-
-    }
+    public void Execute() { }
 
     public void Exit()
     {
@@ -142,5 +143,3 @@ public class ReloadState : IState
         _gunnerController.ChangeState(new IdleState(_gunnerController));
     }
 }
-
-
