@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9b1a1752ac4a7e86c08c08e97ebe37, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  cameraForwardOffsetFromPlayerMoved: 1.3
+  cameraForwardOffsetFromPlayerMoved: 4.46

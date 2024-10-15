@@ -56,6 +56,7 @@ namespace Feature.Component.Enemy
 
         public void FlowExecute()
         {
+            playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             FlowStart();
         }
 
@@ -76,11 +77,6 @@ namespace Feature.Component.Enemy
             points = pts;
         }
 
-        public void SetPlayerTransform(Transform player)
-        {
-            playerTransform = player;
-        }
-
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             var imp = (transform.position - attacker.position).normalized;
@@ -89,9 +85,6 @@ namespace Feature.Component.Enemy
         }
 
         public event Action OnTakeDamageEvent;
-#pragma warning disable CS0067
-        public event Action<ISwappable> OnAddSwappableItem;
-#pragma warning restore CS0067
 
         public void OnSelected()
         {
@@ -205,7 +198,7 @@ namespace Feature.Component.Enemy
 
         private void TakeDamage()
         {
-            var player = ObjectFactory.FindPlayer();
+            var player = ObjectFactory.Instance.FindPlayer();
             if (player == null)
             {
                 return;

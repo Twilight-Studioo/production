@@ -16,6 +16,8 @@ namespace Feature.Component
         private bool canHitEnemy;
         private bool canHitPlayer;
         private bool canHitField;
+        
+        private bool Swapped = false;
 
         private Material material;
         private Renderer targetRenderer;
@@ -89,7 +91,7 @@ namespace Feature.Component
             if (target != null && Time.time - lastUpdateDirectionTime > 0.2f)
             {
                 var newDir = (target.position - transform.position).normalized;
-                direction = Vector3.Lerp(direction, newDir, 0.2f);
+                direction = Vector3.Lerp(direction, newDir, 0.1f);
                 lastUpdateDirectionTime = Time.time;
             }
             transform.position += direction * (speed * Time.deltaTime);
@@ -144,6 +146,12 @@ namespace Feature.Component
         public void OnSwap(Vector2 p)
         {
             transform.position = p;
+            Swapped = true;
+        }
+
+        public bool IsSwapped()
+        {
+            return Swapped;
         }
     }
 }

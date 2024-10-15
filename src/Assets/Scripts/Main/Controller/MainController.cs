@@ -91,7 +91,7 @@ namespace Main.Controller
 
         private void Setup()
         {
-            ObjectFactory.OnObjectCreated += obj =>
+            ObjectFactory.Instance.OnObjectCreated += obj =>
             {
                 // swapItemがスポーンされたらpresenterに登録
                 var item = obj.GetComponent<ISwappable>();
@@ -129,7 +129,6 @@ namespace Main.Controller
                     swapPresenter.AddItem(swappable);
                 }
             };
-            enemyFactory.OnAddSwappableItem += swapPresenter.AddItem;
             enemyFactory.OnRemoveField += obj =>
             {
                 targetGroupManager.RemoveTarget(obj.GameObject().transform);
