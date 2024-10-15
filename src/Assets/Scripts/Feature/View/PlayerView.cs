@@ -243,7 +243,6 @@ namespace Feature.View
                 comboCount = 0;
                 yDegree = 0;
             }
-            Debug.Log(comboCount);
             var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
            
             // 最後の攻撃情報を更新
