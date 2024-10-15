@@ -8,34 +8,39 @@ public class GunnerController : MonoBehaviour
     public int MaxAmmo = 6;
     public float ReloadTime = 2f;
     public float MoveSpeed = 3.5f;
-    public float JumpHeight = 5f;
+    public float JumpHeight = 8f;
     public float SpecialMoveSpeed = 6f;
-    public int MovesBeforeSpecialMove = 3;
     public float KnockbackDistance = 3f;
-    public float AttackCooldown = 2f;
+    public float AttackCooldown = 5f;
+    public int AttacksBeforeSpecialMove = 3;
+    public float ForwardTeleportDistance = 5f;
 
-    [HideInInspector]
-    public FSM fsm;
-
-    private int ammoCount;
     private Transform targetPlayer;
     private Rigidbody rb;
-    private int moveCount = 0;
+    private int attackCount = 0;
+    private bool isAttacking = false;
+    private bool isAttackCooldown = false;
+    private bool isSpecialAttack = false;
+
+    private FSM fsm;
 
     private void Start()
     {
-        fsm = GetComponent<FSM>();
         rb = GetComponent<Rigidbody>();
-        ammoCount = MaxAmmo;
-        fsm.SetState(new IdleState(this));
+        fsm = new FSM();
         FindPlayer();
+        fsm.SetState(new IdleState(this));
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (targetPlayer == null)
         {
             FindPlayer();
+        }
+        else
+        {
+            fsm.Update();
         }
     }
 
@@ -60,25 +65,31 @@ public class GunnerController : MonoBehaviour
 
     public void MoveTowardsPlayer()
     {
-        if (targetPlayer == null) return;
+        if (targetPlayer == null || isAttackCooldown) return;
 
         Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
         directionToPlayer.y = 0;
-        rb.MovePosition(transform.position + directionToPlayer * MoveSpeed * Time.deltaTime);
+
+        rb.MovePosition(transform.position + directionToPlayer * ForwardTeleportDistance);
+
         FacePlayer(directionToPlayer);
-        moveCount++;
-        if (moveCount >= MovesBeforeSpecialMove || MovesBeforeSpecialMove == 0)
-        {
-            SpecialMove();
-            moveCount = 0;
-        }
     }
 
-    public void SpecialMove()
+    public void PerformAttack()
     {
-        if (ammoCount > 0)
+        if (isAttackCooldown || isSpecialAttack) return;
+
+        if (attackCount >= AttacksBeforeSpecialMove)
         {
             StartCoroutine(SpecialMoveCoroutine());
+            attackCount = 0;
+        }
+        else
+        {
+            Attack();
+            StartCoroutine(KnockbackCoroutine());
+            StartCoroutine(AttackCooldownCoroutine());
+            attackCount++;
         }
     }
 
@@ -86,56 +97,49 @@ public class GunnerController : MonoBehaviour
     {
         if (targetPlayer == null) yield break;
 
-        ammoCount--;
-        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
-        Vector3 targetPosition = targetPlayer.position + Vector3.up * JumpHeight;
-        targetPosition.z = transform.position.z;
+        isSpecialAttack = true;
 
-        float startTime = Time.time;
-        float duration = 1.0f;
-        while (Time.time < startTime + duration)
-        {
-            rb.MovePosition(Vector3.MoveTowards(transform.position, targetPosition, SpecialMoveSpeed * Time.deltaTime));
-            yield return null;
-        }
-        PerformAttack();
-    }
+        rb.velocity = new Vector3(rb.velocity.x, JumpHeight, rb.velocity.z);
 
-    public void PerformAttack()
-    {
-        if (IsCloseEnoughToAttack())
-        {
-            Attack();
-            StartCoroutine(KnockbackCoroutine()); 
-            StartCoroutine(AttackCooldownCoroutine());
-        }
+        yield return new WaitForSeconds(0.5f);
+
+        Vector3 targetPosition = new Vector3(targetPlayer.position.x, transform.position.y, transform.position.z);
+
+        rb.MovePosition(new Vector3(targetPosition.x, transform.position.y, transform.position.z));
+
+        yield return new WaitForSeconds(0.5f);
+
+        SpecialAttack();
+
+        StartCoroutine(KnockbackCoroutine());
+
+        yield return new WaitForSeconds(0.5f);
+
+        rb.velocity = new Vector3(rb.velocity.x, -JumpHeight, rb.velocity.z);
+
+        yield return new WaitForSeconds(0.5f);
+
+        isSpecialAttack = false;
+
+        StartCoroutine(AttackCooldownCoroutine());
     }
 
     private IEnumerator KnockbackCoroutine()
     {
         if (targetPlayer == null) yield break;
 
-        // 计算后退方向：从玩家位置到BOSS位置的反方向
         Vector3 directionAwayFromPlayer = (transform.position - targetPlayer.position).normalized;
 
-        // 目标位置是当前BOSS位置加上反方向的距离
-        Vector3 knockbackPosition = transform.position + directionAwayFromPlayer * KnockbackDistance;
+        rb.AddForce(directionAwayFromPlayer * KnockbackDistance, ForceMode.Impulse);
 
-        float startTime = Time.time;
-        float duration = 0.5f;  // 后退的持续时间
-
-        while (Time.time < startTime + duration)
-        {
-            // 平滑移动BOSS到目标位置
-            rb.MovePosition(Vector3.MoveTowards(transform.position, knockbackPosition, MoveSpeed * Time.deltaTime));
-            yield return null;
-        }
+        yield return new WaitForSeconds(0.5f);
     }
 
     private IEnumerator AttackCooldownCoroutine()
     {
+        isAttackCooldown = true;
         yield return new WaitForSeconds(AttackCooldown);
-        MoveTowardsPlayer();
+        isAttackCooldown = false;
     }
 
     private void FacePlayer(Vector3 directionToPlayer)
@@ -143,7 +147,7 @@ public class GunnerController : MonoBehaviour
         if (targetPlayer == null) return;
 
         Vector3 direction = (targetPlayer.position - transform.position).normalized;
-        direction.y = 0; 
+        direction.y = 0;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         transform.rotation = targetRotation;
@@ -152,7 +156,6 @@ public class GunnerController : MonoBehaviour
     public void Attack()
     {
         Debug.Log("Performing Attack");
-        ammoCount--;
     }
 
     public void SpecialAttack()
@@ -162,12 +165,12 @@ public class GunnerController : MonoBehaviour
 
     public bool IsOutOfAmmo()
     {
-        return ammoCount <= 0;
+        return false;
     }
 
     public void ReloadAmmo()
     {
-        ammoCount = MaxAmmo;
+        Debug.Log("Reloading Ammo");
     }
 
     public void ChangeState(IState newState)

@@ -1897,10 +1897,10 @@ MonoBehaviour:
   MaxAmmo: 6
   ReloadTime: 2
   MoveSpeed: 50
-  JumpHeight: 80
+  JumpHeight: 15
   SpecialMoveSpeed: 8
   MovesBeforeSpecialMove: 3
-  KnockbackDistance: 3
+  KnockbackDistance: 5
   AttackCooldown: 3
   fsm: {fileID: 0}
 --- !u!54 &30568338100415816
