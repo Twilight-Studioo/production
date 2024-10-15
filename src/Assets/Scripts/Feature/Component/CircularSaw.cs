@@ -1,4 +1,5 @@
-﻿using Feature.Interface;
+﻿using System;
+using Feature.Interface;
 using UnityEngine;
 
 namespace Feature.Component
@@ -18,6 +19,15 @@ namespace Feature.Component
         [SerializeField] private bool MoveRight = true;
         
         private uint damage = 10;
+
+        private Rigidbody circularsaw;
+        private CapsuleCollider circularsawIsTrigger;
+
+        private void Start()
+        {
+            circularsaw = this.gameObject.GetComponent<Rigidbody>();
+            circularsawIsTrigger = this.gameObject.GetComponent<CapsuleCollider>();
+        }
 
         void Update()
         {
@@ -79,6 +89,18 @@ namespace Feature.Component
             transform.position += direction * (moveLineSpeed * Time.deltaTime);
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+            }
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.GetComponent<IEnemy>().OnDamage(damage,transform.position,transform);
+            }
+        }
+
         private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.CompareTag("Player"))
@@ -93,7 +115,7 @@ namespace Feature.Component
 
         private void Runaway()
         {
-            var circularsaw = this.gameObject.GetComponent<Rigidbody>();
+            circularsawIsTrigger.isTrigger = false;
             circularsaw.useGravity = true;
             if (MoveRight)
             {
