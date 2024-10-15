@@ -1,4 +1,5 @@
 ﻿using System;
+using Codice.Client.BaseCommands.Replication;
 using Feature.Interface;
 using UnityEngine;
 
@@ -23,10 +24,16 @@ namespace Feature.Component
         private Rigidbody circularsaw;
         private CapsuleCollider circularsawIsTrigger;
 
+        private Vector3 RepopPosition;
+        private bool isSpawn = false;
+        [SerializeField] private GameObject original;
+        [SerializeField] private float repopTime = 5f;
+
         private void Start()
         {
-            circularsaw = this.gameObject.GetComponent<Rigidbody>();
-            circularsawIsTrigger = this.gameObject.GetComponent<CapsuleCollider>();
+            circularsaw = GetComponent<Rigidbody>();
+            circularsawIsTrigger = GetComponent<CapsuleCollider>();
+            RepopPosition = this.transform.position;
         }
 
         void Update()
@@ -48,6 +55,10 @@ namespace Feature.Component
             else if (outLine)
             {
                 Runaway();
+                if (repopTime <= 0&& !isSpawn)
+                {
+                    Repop();
+                }
             }
         }
 
@@ -115,6 +126,7 @@ namespace Feature.Component
 
         private void Runaway()
         {
+            repopTime -= Time.deltaTime;
             circularsawIsTrigger.isTrigger = false;
             circularsaw.useGravity = true;
             if (MoveRight)
@@ -125,6 +137,15 @@ namespace Feature.Component
             {
                 circularsaw.MovePosition(transform.position + (directionMovement * -moveRunawaySpeed * Time.deltaTime));
             }
+        }
+
+        private void Repop()
+        {
+            isSpawn = true;
+            /*outLine = false;
+            circularsawIsTrigger.isTrigger = true;
+            circularsaw.useGravity = false;*/
+            Instantiate(original, original.transform.position, Quaternion.identity);
         }
     }
 }

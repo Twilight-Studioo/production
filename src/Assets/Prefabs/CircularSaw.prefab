@@ -445,6 +445,8 @@ MonoBehaviour:
   moveLineSpeed: 2
   moveRunawaySpeed: 20
   MoveRight: 1
+  original: {fileID: 8565530668538837028}
+  repopTime: 2
 --- !u!114 &498572322452466589
 MonoBehaviour:
   m_ObjectHideFlags: 0
