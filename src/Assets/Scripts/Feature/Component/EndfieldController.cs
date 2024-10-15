@@ -24,6 +24,7 @@ public class EndFieldController
             {
                 if (health <= 0)
                 {
+                    endFieldImage.enabled = true;
                     Debug.Log("Player has died. Starting fade out process.");
                     FadeToBlackAndChangeScene();
                 }
