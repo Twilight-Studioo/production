@@ -13,10 +13,10 @@ namespace Feature.Component.Environment
     {
         [SerializeField] private GameObject item; // 複数からランダムに選ぶようにしたい（後々）
         [SerializeField] private uint spawnQuantity = 1; // 1度に何個スポーンするか
-        // [SerializeField] private float spawnDistance = 20.0f; // アイテムをスポーンし始める距離
+        [SerializeField] private float spawnDistance = 20.0f; // アイテムをスポーンし始める距離
         [SerializeField] private float RespawnTimeSec = 5.0f; // リスポーンするまでの秒数
-
-        public GetTransform GetPlayerTransform;
+        
+        private Transform playerTransform;
 
         private bool isCt;
 
@@ -46,11 +46,16 @@ namespace Feature.Component.Environment
             {
                 return;
             }
+            
+            if (playerTransform is null)
+            {
+                playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+            }
 
-            //if(Vector3.Distance(transform.position, GetPlayerTransform().position)　> spawnDistance)
-            //{
-            //    return;
-            //}
+            if(playerTransform is null || Vector3.Distance(transform.position, playerTransform.position)　> spawnDistance)
+            {
+                return;
+            }
 
             Spawn();
         }
