@@ -209,15 +209,13 @@ namespace Feature.View
                     comboCount = -1;
                     yDegree = 0; 
                 }
-
                 comboCount++;
                 switch (comboCount)
                 {
                     case 0:
-                        yDegree += degree;
                         break;
                     case 1:
-                        yDegree += lastDegree + comboAngleOffset;
+                        yDegree +=comboAngleOffset;
                         break;
                     case 2:
                         yDegree += lastDegree - comboAngleOffset*3;
@@ -245,8 +243,13 @@ namespace Feature.View
                 comboCount = 0;
                 yDegree = 0;
             }
+            Debug.Log(comboCount);
             var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
-
+           
+            // 最後の攻撃情報を更新
+            lastAttackTime = currentTime;
+            lastDegree = yDegree;
+           
             if (degree == 0 && right == false) degree = -180f;
             var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
                 Quaternion.Euler(yDegree, 0, degree));
@@ -257,9 +260,7 @@ namespace Feature.View
             animator.SetAttackComboCount(comboCount);
             animator.OnAttack(0);
 
-            // 最後の攻撃情報を更新
-            lastAttackTime = currentTime;
-            lastDegree = yDegree;
+
 
             // 攻撃方向に少し飛ばす
             // degreeをラジアンに変換
