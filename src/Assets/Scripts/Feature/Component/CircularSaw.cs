@@ -1,7 +1,9 @@
 ﻿using System;
 using Codice.Client.BaseCommands.Replication;
+using Core.Utilities;
 using Feature.Interface;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Feature.Component
 {
@@ -22,29 +24,32 @@ namespace Feature.Component
         private uint damage = 10;
 
         private Rigidbody circularsaw;
-        private CapsuleCollider circularsawIsTrigger;
-
-        private Vector3 RepopPosition;
+        private SphereCollider circularsawIsTrigger;
+        
         private bool isSpawn = false;
         [SerializeField] private GameObject original;
-        [SerializeField] private float repopTime = 5f;
+        [SerializeField] private float repopTimeValue = 5f;
+        private float repopTime;
+        private Vector3 element0;
 
         private void Start()
         {
             circularsaw = GetComponent<Rigidbody>();
-            circularsawIsTrigger = GetComponent<CapsuleCollider>();
-            RepopPosition = this.transform.position;
+            circularsawIsTrigger = GetComponent<SphereCollider>();
+            element0 = wayPoints[0].position;
+            transform.position = element0;
+            repopTime = repopTimeValue;
         }
 
         void Update()
         {
             if (MoveRight)
             {
-                transform.Rotate(0,-rotationSpeed,0);
+                transform.Rotate(0,0,-rotationSpeed);
             }
             else
             {
-                transform.Rotate(0,rotationSpeed,0);
+                transform.Rotate(0,0,rotationSpeed);
             }
             
             if (wayPoints.Length != 0 && !outLine)
@@ -139,13 +144,16 @@ namespace Feature.Component
             }
         }
 
+        private GameObject saw;
         private void Repop()
         {
             isSpawn = true;
-            /*outLine = false;
+            outLine = false;
             circularsawIsTrigger.isTrigger = true;
-            circularsaw.useGravity = false;*/
-            Instantiate(original, original.transform.position, Quaternion.identity);
+            circularsaw.useGravity = false;
+            transform.position = element0;
+            saw = ObjectFactory.Instance.CreateObject(original, original.transform.position, Quaternion.identity);
+            this.gameObject.GetComponent<DamagedTrigger>().Delete();
         }
     }
 }
