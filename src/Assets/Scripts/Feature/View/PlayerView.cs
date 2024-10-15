@@ -180,13 +180,14 @@ namespace Feature.View
         {
             GameObject instantiateDagger;
             if (degree == 0 && right == false)
-                instantiateDagger =
-                    ObjectFactory.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
+                instantiateDagger = ObjectFactory.Instance.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
             else
-                instantiateDagger =
-                    ObjectFactory.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger = ObjectFactory.Instance.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
 
-            if (h == 0 && v == 0) h = right ? 1 : -1;
+            if (h == 0 && v == 0)
+            {
+                h = right ? 1 : -1;
+            }
 
             var component = instantiateDagger.GetComponentInChildren<Dagger>();
             component.HorizontalVertical(h, v);
