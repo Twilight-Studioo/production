@@ -61,11 +61,13 @@ namespace Core.Utilities.Effect
                 effectInstance = new(effectObject);
             }
 
-            effectInstance.Effect.transform.position = position;
+            if (effectInstance.Effect is null)
+            {
+                effectInstance = new(Object.Instantiate(prefab));
+            }
             effectInstance.Effect.enabled = true;
+            effectInstance.Effect.transform.position = position;
             effectInstance.UpdateUsage();
-
-            activeEffects.Enqueue(effectInstance);
             context.StartCoroutine(ReturnEffectToPool(effectInstance, lifetime));
 
             return effectInstance.Effect;

@@ -1,5 +1,9 @@
-﻿using Feature.Interface;
+﻿using System;
+using Codice.Client.BaseCommands.Replication;
+using Core.Utilities;
+using Feature.Interface;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Feature.Component
 {
@@ -19,15 +23,33 @@ namespace Feature.Component
         
         private uint damage = 10;
 
+        private Rigidbody circularsaw;
+        private SphereCollider circularsawIsTrigger;
+        
+        private bool isSpawn = false;
+        [SerializeField] private GameObject original;
+        [SerializeField] private float repopTimeValue = 5f;
+        private float repopTime;
+        private Vector3 element0;
+
+        private void Start()
+        {
+            circularsaw = GetComponent<Rigidbody>();
+            circularsawIsTrigger = GetComponent<SphereCollider>();
+            element0 = wayPoints[0].position;
+            transform.position = element0;
+            repopTime = repopTimeValue;
+        }
+
         void Update()
         {
             if (MoveRight)
             {
-                transform.Rotate(0,-rotationSpeed,0);
+                transform.Rotate(0,0,-rotationSpeed);
             }
             else
             {
-                transform.Rotate(0,rotationSpeed,0);
+                transform.Rotate(0,0,rotationSpeed);
             }
             
             if (wayPoints.Length != 0 && !outLine)
@@ -38,6 +60,10 @@ namespace Feature.Component
             else if (outLine)
             {
                 Runaway();
+                if (repopTime <= 0&& !isSpawn)
+                {
+                    Repop();
+                }
             }
         }
 
@@ -79,6 +105,18 @@ namespace Feature.Component
             transform.position += direction * (moveLineSpeed * Time.deltaTime);
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+            }
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.GetComponent<IEnemy>().OnDamage(damage,transform.position,transform);
+            }
+        }
+
         private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.CompareTag("Player"))
@@ -93,7 +131,8 @@ namespace Feature.Component
 
         private void Runaway()
         {
-            var circularsaw = this.gameObject.GetComponent<Rigidbody>();
+            repopTime -= Time.deltaTime;
+            circularsawIsTrigger.isTrigger = false;
             circularsaw.useGravity = true;
             if (MoveRight)
             {
@@ -103,6 +142,18 @@ namespace Feature.Component
             {
                 circularsaw.MovePosition(transform.position + (directionMovement * -moveRunawaySpeed * Time.deltaTime));
             }
+        }
+
+        private GameObject saw;
+        private void Repop()
+        {
+            isSpawn = true;
+            outLine = false;
+            circularsawIsTrigger.isTrigger = true;
+            circularsaw.useGravity = false;
+            transform.position = element0;
+            saw = ObjectFactory.Instance.CreateObject(original, original.transform.position, Quaternion.identity);
+            this.gameObject.GetComponent<DamagedTrigger>().Delete();
         }
     }
 }
