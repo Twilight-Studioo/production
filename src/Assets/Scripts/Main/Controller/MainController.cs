@@ -185,9 +185,8 @@ namespace Main.Controller
                 {
                     if (x)
                     {
-                        var h = Input.GetAxis("Horizontal");
-                        var v = Input.GetAxis("Vertical");
-                        var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                        var direction = moveEvent.ReadValue<Vector2>();
+                        var degree = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                         if (degree < 0)
                         {
                             degree += 360;
