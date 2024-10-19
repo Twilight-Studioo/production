@@ -6,7 +6,6 @@ using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
-
 #endregion
 
 namespace Feature.Model

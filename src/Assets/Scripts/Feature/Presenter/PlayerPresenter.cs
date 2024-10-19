@@ -34,6 +34,11 @@ namespace Feature.Presenter
 
         private VolumeController volumeController;
         private AudioSource audioSource;
+
+        private EndFieldController endFieldController;
+
+        private bool isGameOver = false;
+
         [Inject]
         public PlayerPresenter(
             PlayerModel model,
@@ -50,6 +55,7 @@ namespace Feature.Presenter
             swapTimer = new();
             this.voltageBar = voltageBar;
             this.volumeController = volumeController;
+            endFieldController = new EndFieldController();
             this.audioSource = audioSource;
         }
 
@@ -62,8 +68,11 @@ namespace Feature.Presenter
             playerView.GetPositionRef()
                 .Subscribe(position =>
                 {
-                    playerModel.UpdatePosition(position);
-                    //スワップ中ならば一覧を取得してhighlightの処理を呼び出す
+                    if (!isGameOver)
+                    {
+                        playerModel.UpdatePosition(position);
+                        //スワップ中ならば一覧を取得してhighlightの処理を呼び出す
+                    }
                 })
                 .AddTo(playerView.GetGameObject());
 
@@ -77,8 +86,11 @@ namespace Feature.Presenter
             playerModel.SwapStamina
                 .Subscribe(x =>
                 {
-                    var volume = (float)x / characterParams.maxHasStamina;
-                    gameUIView.SetVolume(volume);
+                    if (!isGameOver)
+                    {
+                        var volume = (float)x / characterParams.maxHasStamina;
+                        gameUIView.SetVolume(volume);
+                    }
                 })
                 .AddTo(presenterDisposable);
 
@@ -89,7 +101,8 @@ namespace Feature.Presenter
                     playerHpBar.UpdateHealthBar(x, characterParams.health);
                     if (x <= 0)
                     {
-                        //OnPlayerDeath();
+                        isGameOver = true;
+                        endFieldController.SubscribeToPlayerHealth(playerModel.Health); 
                     }
                 })
                 .AddTo(playerHpBar);
@@ -100,20 +113,26 @@ namespace Feature.Presenter
 
         public void Move(float direction)
         {
-            if (direction > 0)
+            if (!isGameOver)
             {
-                playerView.Move(Vector3.right, playerModel.MoveSpeed);
-            }
-            else if (direction < 0)
-            {
-                playerView.Move(Vector3.left, playerModel.MoveSpeed);
+                if (direction > 0)
+                {
+                    playerView.Move(Vector3.right, playerModel.MoveSpeed);
+                }
+                else if (direction < 0)
+                {
+                    playerView.Move(Vector3.left, playerModel.MoveSpeed);
+                }
             }
             
         }
 
         public void Jump()
         {
-            playerView.Jump(playerModel.JumpForce);
+            if (!isGameOver)
+            {
+                playerView.Jump(playerModel.JumpForce);
+            }
         }
 
         public void StartSwap()
@@ -206,9 +225,12 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            playerModel.Attack();
-            playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
-            voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
+            if (!isGameOver)
+            {
+                playerModel.Attack();
+                playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
+                voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
+            }
         }
 
         public void AddVoltageSwap()
@@ -224,24 +246,17 @@ namespace Feature.Presenter
         //}
         public Transform GetTransform() => playerView.GetTransform();
 
-        private void OnPlayerDeath()
-        {
-            Debug.Log("Player has died. Stopping game.");
-#if UNITY_EDITOR
-            EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-        }
-
         public void Dagger(float degree,float h,float v)
         {
-            playerModel.OnDagger();
-            if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
+            if (!isGameOver)
             {
-                return;
+                playerModel.OnDagger();
+                if (playerModel.State.Value != PlayerModel.PlayerState.Idle || !playerModel.CanStartSwap.Value)
+                {
+                    return;
+                }
+                playerView.Dagger(degree, h, v);
             }
-            playerView.Dagger(degree,h,v);
         }
 
         public void Dispose()
