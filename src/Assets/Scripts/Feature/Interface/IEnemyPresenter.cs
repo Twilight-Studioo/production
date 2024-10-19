@@ -12,7 +12,6 @@ namespace Feature.Interface
         public GameObject GameObject();
 
         public void Execute(
-            Transform playerTransform,
             List<Vector3> patrolPoints
         );
     }

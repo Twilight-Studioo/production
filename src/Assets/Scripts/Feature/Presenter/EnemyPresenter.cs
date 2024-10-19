@@ -25,16 +25,14 @@ namespace Feature.Presenter
             this.agent.SetParams(@params);
 
             this.enemyView.SetHealth(@params.maxHp);
-            this.enemyView.Execute();
         }
 
         public void Execute(
-            Transform playerTransform,
             List<Vector3> patrolPoints
         )
         {
             agent.SetPatrolPoints(patrolPoints);
-            agent.FlowExecute();
+            enemyView.Execute();
         }
 
         public GameObject GameObject() => enemyView.GameObject();

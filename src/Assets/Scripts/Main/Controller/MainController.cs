@@ -142,7 +142,6 @@ namespace Main.Controller
                     swapPresenter.RemoveItem(swappable);
                 }
             };
-            enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
             enemyFactory.Subscribe();
         }
 
