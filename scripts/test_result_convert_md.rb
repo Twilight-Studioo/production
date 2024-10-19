@@ -80,7 +80,7 @@ markdown_report = "### #{all_tests_passed ? '✅' : '❌'} Ready to Merge\n\n ##
 markdown_report << "<details>\n<summary><strong>Pull Request Details</strong></summary>\n\n"
 markdown_report << "#### ##{pr_number} origin/#{pr_base_ref} <- origin/#{pr_head_ref}\n"
 markdown_report << "**Title:** #{pr_title}\n\n"
-markdown_report << "**Description:**\n\n#{pr_body}\n\n"
+# markdown_report << "**Description:**\n\n#{pr_body}\n\n"
 markdown_report << "**Created At:** #{pr_created_at}\n"
 markdown_report << "</details>\n\n---\n"
 
