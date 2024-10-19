@@ -18,8 +18,6 @@ namespace Feature.View
     {
         [SerializeField] private List<GameObject> slashingEffect;
         [SerializeField] private GameObject dagger;
-        public float hx;
-        public float vy;
         public Transform daggerSpawn;
 
         [SerializeField] private List<AudioClip> slashingSound;
@@ -30,7 +28,7 @@ namespace Feature.View
         private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
 
         private AnimationWrapper animator;
-        private float attackConboCount;
+        private float attackComboCount;
         private float attackCoolTime;
         private AudioSource audioSource;
         private float comboAngleOffset; // 連続攻撃時の角度変化
@@ -46,7 +44,6 @@ namespace Feature.View
         private Rigidbody rb;
         private bool right = true;
 
-        private VFXView vfxView;
         private float vignetteChange; //赤くなるまでの時間
         private float yDegree; //y座標の回転
 
@@ -54,7 +51,7 @@ namespace Feature.View
         {
             rb = GetComponentInChildren<Rigidbody>();
             animator = this.Create(GetComponentInChildren<Animator>());
-            vfxView = GetComponent<VFXView>();
+            GetComponent<VFXView>();
             isGrounded
                 .Subscribe(x => { animator.SetIsFalling(!x); });
             Speed = speed.ToReadOnlyReactiveProperty();
@@ -116,11 +113,12 @@ namespace Feature.View
 
         public GameObject GetGameObject() => gameObject;
 
-        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, float MaxComboCount, float attackCoolTime, AudioSource audioSource)
+        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
+            AudioSource audioSource)
         {
-            comboTimeWindow = ComboTimeWindow;
-            comboAngleOffset = ComboAngleOffset;
-            maxComboCount = MaxComboCount;
+            this.comboTimeWindow = comboTimeWindow;
+            this.comboAngleOffset = comboAngleOffset;
+            this.maxComboCount = maxComboCount;
             this.attackCoolTime = attackCoolTime;
             this.audioSource = audioSource;
         }

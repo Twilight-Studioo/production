@@ -14,7 +14,7 @@ namespace Feature.Component.Environment
         [SerializeField] private GameObject item; // 複数からランダムに選ぶようにしたい（後々）
         [SerializeField] private uint spawnQuantity = 1; // 1度に何個スポーンするか
         [SerializeField] private float spawnDistance = 20.0f; // アイテムをスポーンし始める距離
-        [SerializeField] private float RespawnTimeSec = 5.0f; // リスポーンするまでの秒数
+        [SerializeField] private float respawnTimeSec = 5.0f; // リスポーンするまでの秒数
 
         private bool isCt;
 
@@ -73,7 +73,7 @@ namespace Feature.Component.Environment
             }
 
             Observable
-                .Timer(TimeSpan.FromSeconds(RespawnTimeSec))
+                .Timer(TimeSpan.FromSeconds(respawnTimeSec))
                 .Subscribe(_ => { isCt = false; });
         }
     }

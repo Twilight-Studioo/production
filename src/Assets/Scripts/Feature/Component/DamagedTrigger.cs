@@ -11,7 +11,8 @@ namespace Feature.Component
 {
     public class DamagedTrigger : MonoBehaviour, ISwappable
     {
-        [SerializeField] private float hilightRimThreashold;
+        private static readonly int RimThreshold = Shader.PropertyToID("_RimThreashould");
+        [SerializeField] private float highlightThreshold;
 
 
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
@@ -89,12 +90,12 @@ namespace Feature.Component
 
         public void OnInSelectRange()
         {
-            material.SetFloat("_RimThreashould", hilightRimThreashold);
+            material.SetFloat(RimThreshold, highlightThreshold);
         }
 
         public void OnOutSelectRange()
         {
-            material.SetFloat("_RimThreashould", 1);
+            material.SetFloat(RimThreshold, 1);
         }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;

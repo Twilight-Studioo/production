@@ -20,8 +20,8 @@ namespace Feature.Model
         }
 
         private const float AttackAfterMovableMillis = 250;
-        private const int MAXVOLTAGEVALUE = 100;
-        private const int MINVOLTAGEVALUE = 0;
+        private const int MaxVoltageValue = 100;
+        private const int MinVoltageValue = 0;
 
         private readonly CompositeDisposable attackAfterCompositeDisposable = new();
 
@@ -247,7 +247,7 @@ namespace Feature.Model
         public void AddVoltageSwap()
         {
             VoltageValue += characterParams.addVoltageSwapValue;
-            VoltageValue = Mathf.Clamp(VoltageValue, MINVOLTAGEVALUE, MAXVOLTAGEVALUE);
+            VoltageValue = Mathf.Clamp(VoltageValue, MinVoltageValue, MaxVoltageValue);
         }
 
         public int GetVoltageAttackPower()

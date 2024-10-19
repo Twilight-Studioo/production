@@ -19,12 +19,12 @@ namespace Feature.Component
         [SerializeField] private GameObject original;
         [SerializeField] private float repopTimeValue = 5f;
 
+        private readonly uint damage = 10;
+        private readonly Vector3 directionMovement = new(1, 0, 0);
+
         private Rigidbody circularsaw;
         private SphereCollider circularsawIsTrigger;
         private int currentWaypointIndex;
-
-        private readonly uint damage = 10;
-        private readonly Vector3 directionMovement = new(1, 0, 0);
         private Vector3 element0;
         private bool isReturning;
 

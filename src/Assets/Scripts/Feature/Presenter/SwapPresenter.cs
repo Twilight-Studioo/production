@@ -165,25 +165,22 @@ namespace Feature.Presenter
             if (isSwap)
             {
                 updateDisposable = Observable.Interval(TimeSpan.FromMilliseconds(250))
-                    .Subscribe(_ => UpdateItemSelection(basePosition, isSwap));
+                    .Subscribe(_ => UpdateItemSelection(basePosition, true));
             }
         }
 
         private void UpdateItemSelection(Vector3 basePosition, bool isSelected)
         {
             var items = swapItemsModel.ItemInRangeHilight(basePosition, characterParams.canSwapDistance);
-            if (items != null)
+            foreach (var i in items)
             {
-                foreach (var i in items)
+                if (isSelected)
                 {
-                    if (isSelected)
-                    {
-                        swapItemViews[i.Id].OnInSelectRange();
-                    }
-                    else
-                    {
-                        swapItemViews[i.Id].OnOutSelectRange();
-                    }
+                    swapItemViews[i.Id].OnInSelectRange();
+                }
+                else
+                {
+                    swapItemViews[i.Id].OnOutSelectRange();
                 }
             }
         }

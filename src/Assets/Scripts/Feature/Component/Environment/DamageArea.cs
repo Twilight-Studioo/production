@@ -10,7 +10,7 @@ namespace Feature.Component.Environment
 {
     public class DamageArea : MonoBehaviour
     {
-        [SerializeField] private uint damege = 5;
+        [SerializeField] private uint damage = 5;
         private BoxCollider boxCollider;
 
 
@@ -66,7 +66,7 @@ namespace Feature.Component.Environment
             {
                 var obj = other.gameObject.GetComponent<IDamaged>();
 
-                obj?.OnDamage(damege, transform.position, transform);
+                obj?.OnDamage(damage, transform.position, transform);
             }
         }
     }

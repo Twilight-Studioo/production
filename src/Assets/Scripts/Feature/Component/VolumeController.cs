@@ -15,24 +15,19 @@ namespace Feature.Component
         [SerializeField] private Volume volume;
 
         [Header("intensityを最大どこまで高くするか"), Range(0.3f, 1.0f), SerializeField,]
-        
         private float endIntensity = 5.0f;
 
-        [Header("赤になるまでの時間"), SerializeField,]
-        
-        private float vignetteChange = 0.5f;
+        [Header("赤になるまでの時間"), SerializeField,] private float vignetteChange = 0.5f;
 
         [Header("intensityが戻るまでの時間"), SerializeField,]
-        
-        private float endvignetteChange = 0.5f;
+        private float vignetteChangeDuration = 0.5f;
 
-        [Header("白黒の濃さ"), SerializeField,]
-        
-        private float monochrome = 50;
+        [Header("白黒の濃さ"), SerializeField,] private float monochrome = 50;
+
+        private readonly float startIntensity = 0.3f;
 
         private ColorAdjustments colorAdjustments; // 追加: ColorAdjustments の参照
         private ColorCurves colorCurves;
-        private readonly float startIntensity = 0.3f;
         private Vignette vignette;
 
         private void Awake()
@@ -56,8 +51,7 @@ namespace Feature.Component
             DisableGrayscale();
             VignetteBlackColor();
             GraduallyChangeVignetteColorAndIntensity(Color.red, Color.black, endIntensity, startIntensity,
-                endvignetteChange);
-            CancelInvoke("VignetteRedColor");
+                vignetteChangeDuration);
         }
 
         private void GraduallyChangeVignetteColorAndIntensity(Color startColor, Color endColor, float startIntensity,
@@ -86,12 +80,13 @@ namespace Feature.Component
                     {
                         ChangeVignetteColorTo(endColor);
                         ChangeVignetteIntensityTo(endIntensity);
-                    });
+                    })
+                .AddTo(this);
         }
 
         private void ChangeVignetteIntensityTo(float newIntensity)
         {
-            if (vignette != null)
+            if (vignette)
             {
                 vignette.intensity.Override(newIntensity);
             }
@@ -99,7 +94,7 @@ namespace Feature.Component
 
         private void VignetteBlackColor()
         {
-            if (vignette != null)
+            if (vignette)
             {
                 ChangeVignetteColorTo(Color.black);
             }
@@ -108,7 +103,7 @@ namespace Feature.Component
         // Vignetteの色を変更する
         private void ChangeVignetteColorTo(Color newColor)
         {
-            if (vignette != null)
+            if (vignette)
             {
                 vignette.color.Override(newColor);
             }
@@ -117,7 +112,7 @@ namespace Feature.Component
         // 画面を白黒にする
         private void EnableGrayscale(float monochrome)
         {
-            if (colorAdjustments != null)
+            if (colorAdjustments)
             {
                 colorAdjustments.saturation.Override(-monochrome);
             }
@@ -126,7 +121,7 @@ namespace Feature.Component
         // 白黒を解除する
         private void DisableGrayscale()
         {
-            if (colorAdjustments != null)
+            if (colorAdjustments)
             {
                 colorAdjustments.saturation.Override(0f);
             }

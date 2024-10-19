@@ -19,7 +19,10 @@ namespace Feature.Presenter
 {
     public class PlayerPresenter : IDisposable
     {
+        private readonly AudioSource audioSource;
         private readonly CharacterParams characterParams;
+
+        private readonly EndFieldController endFieldController;
         private readonly EnemyParams enemyParams;
 
         private readonly GameUIView gameUIView;
@@ -29,14 +32,11 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
         private readonly VoltageBar voltageBar;
-        private readonly AudioSource audioSource;
 
-        private readonly EndFieldController endFieldController;
+        private readonly VolumeController volumeController;
 
         private bool isGameOver;
         private IPlayerView playerView;
-
-        private readonly VolumeController volumeController;
 
         [Inject]
         public PlayerPresenter(
@@ -91,15 +91,17 @@ namespace Feature.Presenter
             playerModel.SwapStamina
                 .Subscribe(x =>
                 {
-                    if (!isGameOver)
+                    if (isGameOver)
                     {
-                        var volume = (float)x / characterParams.maxHasStamina;
-                        gameUIView.SetVolume(volume);
+                        return;
                     }
+
+                    var playerModelSwapStaminaPer = (float)x / characterParams.maxHasStamina;
+                    gameUIView.SetVolume(playerModelSwapStaminaPer);
                 })
                 .AddTo(presenterDisposable);
 
-            var playerHpBar = Object.FindObjectOfType<PlayerHPBar>();
+            var playerHpBar = Object.FindObjectOfType<PlayerHpBar>();
             playerModel.Health
                 .Subscribe(x =>
                 {
@@ -211,13 +213,15 @@ namespace Feature.Presenter
                     var t = Mathf.Clamp01(elapsedTime / duration);
                     Time.timeScale =
                         Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t));
-                    if (t >= 1.0f) // If the transition is complete
+                    if (t < 1.0f) // If the transition is complete
                     {
-                        playerView.IsDrawSwapRange = false;
-                        playerModel.ChangeState(PlayerModel.PlayerState.Idle);
-                        Time.timeScale = targetTimeScale;
-                        swapTimer.Clear();
+                        return;
                     }
+
+                    playerView.IsDrawSwapRange = false;
+                    playerModel.ChangeState(PlayerModel.PlayerState.Idle);
+                    Time.timeScale = targetTimeScale;
+                    swapTimer.Clear();
                 })
                 .AddTo(swapTimer);
         }
@@ -243,12 +247,6 @@ namespace Feature.Presenter
             voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
         }
 
-        //public void PlayVFX()
-        //{
-        //    playerModel.AddVoltageSwap();
-        //    voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
-        //    playerView.PlayVFX();
-        //}
         public Transform GetTransform() => playerView.GetTransform();
 
         public void Dagger(float degree, float h, float v)

@@ -24,15 +24,12 @@ namespace Feature.Component
 
         private void PlayVFX()
         {
-            if (effect != null)
-            {
-                effect.SendEvent("OnPlay");
-            }
+            effect?.SendEvent("OnPlay");
         }
 
         private void StopVFX()
         {
-            if (effect != null)
+            if (effect)
             {
                 effect.SendEvent("OnStop");
             }

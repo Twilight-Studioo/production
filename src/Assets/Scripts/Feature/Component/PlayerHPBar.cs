@@ -9,14 +9,13 @@ using UnityEngine.UI;
 
 namespace Feature.Component
 {
-    public class PlayerHPBar : MonoBehaviour
+    public class PlayerHpBar : MonoBehaviour
     {
+        private const float DelaySpeed = 1.0f;
         public Image hpBackground;
         public Image hpDelay;
         public Image hpCurrent;
         public TextMeshProUGUI hpText;
-
-        private readonly float delaySpeed = 1.0f;
         private Coroutine delayCoroutine;
 
         public void UpdateHealthBar(int currentHealth, int maxHealth)
@@ -44,7 +43,7 @@ namespace Feature.Component
             while (hpDelay.rectTransform.sizeDelta.x > targetWidth)
             {
                 hpDelay.rectTransform.sizeDelta =
-                    new(Mathf.Lerp(hpDelay.rectTransform.sizeDelta.x, targetWidth, delaySpeed * Time.deltaTime),
+                    new(Mathf.Lerp(hpDelay.rectTransform.sizeDelta.x, targetWidth, DelaySpeed * Time.deltaTime),
                         hpDelay.rectTransform.sizeDelta.y);
                 yield return null;
             }

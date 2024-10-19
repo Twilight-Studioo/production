@@ -13,12 +13,13 @@ namespace Feature.View
     [RequireComponent(typeof(Material))]
     public sealed class SwapView : MonoBehaviour, ISwappable
     {
+        private static readonly int RimThreshold = Shader.PropertyToID("_RimThreashould");
         [SerializeField] private VisualEffect effect;
         [SerializeField] private bool isSwap;
-        [SerializeField] private float hilightRimThreashold;
+        [SerializeField] private float highlightRimThreshold;
 
         // ReSharper disable once MemberCanBePrivate.Local
-        public readonly IReactiveProperty<Vector2> Position = new ReactiveProperty<Vector2>();
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private Material material;
         private Renderer targetRenderer;
@@ -31,7 +32,7 @@ namespace Feature.View
 
         private void Update()
         {
-            Position.Value = transform.position;
+            position.Value = transform.position;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -39,9 +40,9 @@ namespace Feature.View
             OnTrigger?.Invoke(other);
         }
 
-        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => Position;
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
 
-        public Vector2 GetPosition() => Position.Value;
+        public Vector2 GetPosition() => position.Value;
 
         public void Delete()
         {
@@ -64,12 +65,12 @@ namespace Feature.View
 
         public void OnInSelectRange()
         {
-            material.SetFloat("_RimThreashould", hilightRimThreashold);
+            material.SetFloat(RimThreshold, highlightRimThreshold);
         }
 
         public void OnOutSelectRange()
         {
-            material.SetFloat("_RimThreashould", 1);
+            material.SetFloat(RimThreshold, 1);
         }
 
         public event Action OnDestroyEvent;

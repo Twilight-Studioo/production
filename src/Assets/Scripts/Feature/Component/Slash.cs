@@ -3,6 +3,8 @@
 using Feature.Interface;
 using UnityEngine;
 
+// ReSharper disable All
+
 #endregion
 
 namespace Feature.Component

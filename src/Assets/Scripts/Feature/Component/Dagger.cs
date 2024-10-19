@@ -61,7 +61,7 @@ namespace Feature.Component
                 if (rb != null)
                 {
                     rb.isKinematic = true; // ナイフが動かないようにする
-                    h = h * -0.5f;
+                    h *= -0.5f;
                     v = 0.5f;
                     if (h <= 0)
                     {
@@ -81,20 +81,20 @@ namespace Feature.Component
             {
                 // 壁に当たった場合の処理
                 // ナイフが壁に刺さる
-                var rb = GetComponent<Rigidbody>();
-                if (rb != null)
+                var component = GetComponent<Rigidbody>();
+                if (component != null)
                 {
-                    rb.isKinematic = true; // ナイフが動かないようにする
+                    component.isKinematic = true; // ナイフが動かないようにする
                 }
             }
             else if (collision.gameObject.CompareTag("Ground"))
             {
                 // 壁に当たった場合の処理
                 // ナイフが壁に刺さる
-                var rb = GetComponent<Rigidbody>();
-                if (rb != null)
+                var component = GetComponent<Rigidbody>();
+                if (component != null)
                 {
-                    rb.isKinematic = true; // ナイフが動かないようにする
+                    component.isKinematic = true; // ナイフが動かないようにする
                 }
             }
         }
