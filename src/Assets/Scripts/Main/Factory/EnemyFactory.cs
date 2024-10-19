@@ -19,8 +19,6 @@ namespace Main.Factory
 
         private readonly IObjectUtil objectUtil = new ObjectUtil();
 
-        public GetTransform GetPlayerTransform;
-
         public void Subscribe()
         {
             if (settings == null)
@@ -38,7 +36,6 @@ namespace Main.Factory
                     throw new($"EnemyType {enemyStart.SpawnEnemyType} is not found in settings");
                 }
 
-                enemyStart.GetPlayerTransform = () => GetPlayerTransform();
                 enemyStart.OnRequestSpawn = t => SpawnEnemy(enemyStart, t);
             }
         }
@@ -52,7 +49,7 @@ namespace Main.Factory
             var presenter = new EnemyPresenter(enemyComponent, agent, start.GetParam ?? enemyRef.parameters);
             OnAddField?.Invoke(presenter);
             enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);
-            presenter.Execute(GetPlayerTransform(), start.Points);
+            presenter.Execute(start.Points);
             return enemyComponent;
         }
 
