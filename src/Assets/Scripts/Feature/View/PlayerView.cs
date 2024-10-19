@@ -48,7 +48,6 @@ namespace Feature.View
 
         private VFXView vfxView;
         private float vignetteChange; //赤くなるまでの時間
-        private VolumeController volumeController;
         private float yDegree; //y座標の回転
 
         private void Awake()
@@ -117,13 +116,11 @@ namespace Feature.View
 
         public GameObject GetGameObject() => gameObject;
 
-        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, float MaxComboCount,
-            MonoBehaviour _urp, float attackCoolTime, AudioSource audioSource)
+        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, float MaxComboCount, float attackCoolTime, AudioSource audioSource)
         {
             comboTimeWindow = ComboTimeWindow;
             comboAngleOffset = ComboAngleOffset;
             maxComboCount = MaxComboCount;
-            volumeController = (VolumeController)_urp;
             this.attackCoolTime = attackCoolTime;
             this.audioSource = audioSource;
         }
@@ -321,16 +318,6 @@ namespace Feature.View
         }
 
         public bool IsGrounded() => isGrounded.Value;
-
-        public void SwapTimeStartUrp()
-        {
-            volumeController.SwapStartUrp();
-        }
-
-        public void SwapTimeFinishUrp()
-        {
-            volumeController.SwapFinishUrp();
-        }
 
         public Vector3 GetForward() => right ? Vector3.right : Vector3.left;
     }

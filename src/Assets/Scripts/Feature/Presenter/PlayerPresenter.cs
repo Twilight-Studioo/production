@@ -112,7 +112,7 @@ namespace Feature.Presenter
                 })
                 .AddTo(playerHpBar);
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
-                playerModel.MaxComboCount, volumeController, playerModel.AttackCoolTime, audioSource
+                playerModel.MaxComboCount, playerModel.AttackCoolTime, audioSource
             );
         }
 
@@ -147,7 +147,7 @@ namespace Feature.Presenter
             }
 
             playerView.IsDrawSwapRange = true;
-            playerView.SwapTimeStartUrp();
+            volumeController.SwapStartUrp();
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
@@ -179,7 +179,7 @@ namespace Feature.Presenter
 
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            playerView.SwapTimeFinishUrp();
+            volumeController.SwapFinishUrp();
             Func<float, float> easingFunction;
 
             switch (characterParams.swapReturnCurve)

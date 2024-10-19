@@ -35,12 +35,7 @@ namespace Feature.Interface
 
         void Dagger(float degree, float h, float v);
 
-        void SwapTimeStartUrp();
-
-        void SwapTimeFinishUrp();
-
-        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount,
-            MonoBehaviour urp, float attackCoolTime, AudioSource audioSource);
+        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, AudioSource audioSource);
 
         Vector3 GetForward();
     }
