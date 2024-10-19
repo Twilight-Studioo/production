@@ -1,21 +1,24 @@
+#region
+
 using System;
 using DynamicActFlow.Runtime.Core;
 using DynamicActFlow.Runtime.Core.Action;
 using UnityEngine;
 using UnityEngine.AI;
 
+#endregion
+
 namespace Feature.Common.ActFlow
 {
     [ActionTag("AIMoveToTargetDistance")]
-    public class AIMoveToTargetDistance: FixedUpdatedAction
+    public class AIMoveToTargetDistance : FixedUpdatedAction
     {
-        [ActionParameter("Target")] private Transform Target { get; set; }
-        [ActionParameter("Distance")] private float TargetDistance { get; set; }
-        
         private NavMeshAgent agent;
 
         private Vector3 targetPoint;
-        
+        [ActionParameter("Target")] private Transform Target { get; set; }
+        [ActionParameter("Distance")] private float TargetDistance { get; set; }
+
         public override void OnCreated()
         {
             base.OnCreated();
@@ -35,6 +38,7 @@ namespace Feature.Common.ActFlow
             {
                 return;
             }
+
             // プレイヤーとの距離を計算
             var distanceToPlayer = Vector3.Distance(targetPoint, Owner.transform.position);
 

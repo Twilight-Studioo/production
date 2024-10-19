@@ -1,24 +1,24 @@
 {
-    "name": "Feature.Presenter",
-    "rootNamespace": "",
-    "references": [
-        "GUID:058b96cf72d1b46bb8a5e894741cbe18",
-        "GUID:9d839b1c3688742d8baea8fcc0ec5d76",
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
-        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
-        "GUID:37c78d5c87a084f1b83b0346eddbbaa6",
-        "GUID:5376cc86215314665b6f6367d25b8342",
-        "GUID:db9310a783d9f406199eff722e946dc5",
-        "GUID:0c411c4b7e8b8408ca177d8ef88e67ba",
-        "GUID:f2d12220e8ba244b0a3bbac6b49b3cbd"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Feature.Presenter",
+  "rootNamespace": "",
+  "references": [
+    "GUID:058b96cf72d1b46bb8a5e894741cbe18",
+    "GUID:9d839b1c3688742d8baea8fcc0ec5d76",
+    "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+    "GUID:560b04d1a97f54a4e82edc0cbbb69285",
+    "GUID:37c78d5c87a084f1b83b0346eddbbaa6",
+    "GUID:5376cc86215314665b6f6367d25b8342",
+    "GUID:db9310a783d9f406199eff722e946dc5",
+    "GUID:0c411c4b7e8b8408ca177d8ef88e67ba",
+    "GUID:f2d12220e8ba244b0a3bbac6b49b3cbd"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

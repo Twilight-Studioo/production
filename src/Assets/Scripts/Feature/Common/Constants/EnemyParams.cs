@@ -13,7 +13,7 @@ namespace Feature.Common.Constants
         [Tooltip("追跡(認識)距離")] public float pursuitDistance = 14f;
 
         [Tooltip("与ダメージ")] public uint damage = 10;
-        
+
         [Tooltip("bulletの寿命")] public float bulletLifeTime = 5.0f;
 
         [Tooltip("HP")] public uint maxHp = 100;

@@ -9,7 +9,6 @@ using Feature.Interface;
 using Feature.Model;
 using Feature.View;
 using UniRx;
-using UnityEditor;
 using UnityEngine;
 using VContainer;
 using Object = UnityEngine.Object;
@@ -18,26 +17,26 @@ using Object = UnityEngine.Object;
 
 namespace Feature.Presenter
 {
-    public class PlayerPresenter: IDisposable
+    public class PlayerPresenter : IDisposable
     {
+        private readonly AudioSource audioSource;
         private readonly CharacterParams characterParams;
-        private readonly EnemyParams enemyParams;
-        private readonly PlayerModel playerModel;
 
-        private readonly CompositeDisposable swapTimer;
-        private readonly VoltageBar voltageBar;
-        private IPlayerView playerView;
+        private readonly EndFieldController endFieldController;
+        private readonly EnemyParams enemyParams;
 
         private readonly GameUIView gameUIView;
+        private readonly PlayerModel playerModel;
 
         private readonly CompositeDisposable presenterDisposable = new();
 
-        private VolumeController volumeController;
-        private AudioSource audioSource;
+        private readonly CompositeDisposable swapTimer;
+        private readonly VoltageBar voltageBar;
 
-        private EndFieldController endFieldController;
+        private readonly VolumeController volumeController;
 
-        private bool isGameOver = false;
+        private bool isGameOver;
+        private IPlayerView playerView;
 
         [Inject]
         public PlayerPresenter(
@@ -55,8 +54,14 @@ namespace Feature.Presenter
             swapTimer = new();
             this.voltageBar = voltageBar;
             this.volumeController = volumeController;
-            endFieldController = new EndFieldController();
+            endFieldController = new();
             this.audioSource = audioSource;
+        }
+
+        public void Dispose()
+        {
+            presenterDisposable.Dispose();
+            swapTimer.Dispose();
         }
 
         public void OnPossess(IPlayerView view)
@@ -81,20 +86,22 @@ namespace Feature.Presenter
             gameUIView.SetVolume(volume * 100);
             gameUIView.SetExecSwapLine(playerModel.IfCanEndSwapRate);
             gameUIView.SetStartSwapLine(playerModel.IfCanStartSwapRate);
-            
+
             // update ui
             playerModel.SwapStamina
                 .Subscribe(x =>
                 {
-                    if (!isGameOver)
+                    if (isGameOver)
                     {
-                        var volume = (float)x / characterParams.maxHasStamina;
-                        gameUIView.SetVolume(volume);
+                        return;
                     }
+
+                    var playerModelSwapStaminaPer = (float)x / characterParams.maxHasStamina;
+                    gameUIView.SetVolume(playerModelSwapStaminaPer);
                 })
                 .AddTo(presenterDisposable);
 
-            var playerHpBar = Object.FindObjectOfType<PlayerHPBar>();
+            var playerHpBar = Object.FindObjectOfType<PlayerHpBar>();
             playerModel.Health
                 .Subscribe(x =>
                 {
@@ -102,13 +109,13 @@ namespace Feature.Presenter
                     if (x <= 0)
                     {
                         isGameOver = true;
-                        endFieldController.SubscribeToPlayerHealth(playerModel.Health); 
+                        endFieldController.SubscribeToPlayerHealth(playerModel.Health);
                     }
                 })
                 .AddTo(playerHpBar);
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
-                playerModel.MaxComboCount,volumeController,playerModel.AttackCoolTime,audioSource
-                );
+                playerModel.MaxComboCount, playerModel.AttackCoolTime, audioSource
+            );
         }
 
         public void Move(float direction)
@@ -124,7 +131,6 @@ namespace Feature.Presenter
                     playerView.Move(Vector3.left, playerModel.MoveSpeed);
                 }
             }
-            
         }
 
         public void Jump()
@@ -143,7 +149,7 @@ namespace Feature.Presenter
             }
 
             playerView.IsDrawSwapRange = true;
-            playerView.SwapTimeStartUrp();
+            volumeController.SwapStartUrp();
             swapTimer.Clear();
             Time.timeScale = characterParams.swapContinueTimeScale;
             playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
@@ -175,9 +181,9 @@ namespace Feature.Presenter
 
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            playerView.SwapTimeFinishUrp();
+            volumeController.SwapFinishUrp();
             Func<float, float> easingFunction;
-            
+
             switch (characterParams.swapReturnCurve)
             {
                 case SwapReturnCurve.EaseIn:
@@ -194,7 +200,7 @@ namespace Feature.Presenter
                     easingFunction = Easing.Linear;
                     break;
             }
-            
+
             var initialTimeScale = characterParams.swapContinueTimeScale;
             const float targetTimeScale = 1.0f;
             var duration = characterParams.swapReturnTimeMillis / 1000f;
@@ -207,13 +213,15 @@ namespace Feature.Presenter
                     var t = Mathf.Clamp01(elapsedTime / duration);
                     Time.timeScale =
                         Mathf.Lerp(initialTimeScale, targetTimeScale, easingFunction(t));
-                    if (t >= 1.0f) // If the transition is complete
+                    if (t < 1.0f) // If the transition is complete
                     {
-                        playerView.IsDrawSwapRange = false;
-                        playerModel.ChangeState(PlayerModel.PlayerState.Idle);
-                        Time.timeScale = targetTimeScale;
-                        swapTimer.Clear();
+                        return;
                     }
+
+                    playerView.IsDrawSwapRange = false;
+                    playerModel.ChangeState(PlayerModel.PlayerState.Idle);
+                    Time.timeScale = targetTimeScale;
+                    swapTimer.Clear();
                 })
                 .AddTo(swapTimer);
         }
@@ -236,17 +244,12 @@ namespace Feature.Presenter
         public void AddVoltageSwap()
         {
             playerModel.AddVoltageSwap();
-            voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
+            voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
         }
-        //public void PlayVFX()
-        //{
-        //    playerModel.AddVoltageSwap();
-        //    voltageBar.UpdateVoltageBar(playerModel.VoltageValue,characterParams.useVoltageAttackValue);
-        //    playerView.PlayVFX();
-        //}
+
         public Transform GetTransform() => playerView.GetTransform();
 
-        public void Dagger(float degree,float h,float v)
+        public void Dagger(float degree, float h, float v)
         {
             if (!isGameOver)
             {
@@ -255,16 +258,9 @@ namespace Feature.Presenter
                 {
                     return;
                 }
+
                 playerView.Dagger(degree, h, v);
             }
         }
-
-        public void Dispose()
-        {
-            presenterDisposable.Dispose();
-            swapTimer.Dispose();
-        }
-
-        
     }
 }

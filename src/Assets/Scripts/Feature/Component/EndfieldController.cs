@@ -1,57 +1,64 @@
+#region
+
 using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class EndFieldController
+#endregion
+
+namespace Feature.Component
 {
-    private readonly Image endFieldImage;
-    private readonly float fadeDuration = 2f;
-
-    private CompositeDisposable disposable = new CompositeDisposable();
-
-    public EndFieldController()
-    { 
-        endFieldImage = GameObject.Find("EndField").GetComponent<Image>();
-        endFieldImage.color = new Color(0, 0, 0, 0);
-    }
-
-    public void SubscribeToPlayerHealth(IObservable<int> playerHealthObservable)
+    public class EndFieldController
     {
-        playerHealthObservable
-            .Subscribe(health =>
-            {
-                if (health <= 0)
+        private readonly CompositeDisposable disposable = new();
+        private readonly Image endFieldImage;
+        private readonly float fadeDuration = 2f;
+
+        public EndFieldController()
+        {
+            endFieldImage = GameObject.Find("EndField").GetComponent<Image>();
+            endFieldImage.color = new(0, 0, 0, 0);
+        }
+
+        public void SubscribeToPlayerHealth(IObservable<int> playerHealthObservable)
+        {
+            playerHealthObservable
+                .Subscribe(health =>
                 {
-                    endFieldImage.enabled = true;
-                    Debug.Log("Player has died. Starting fade out process.");
-                    FadeToBlackAndChangeScene();
-                }
-            })
-            .AddTo(disposable);
-    }
-    private void FadeToBlackAndChangeScene()
-    {
-        float fadeTimer = 0f;
+                    if (health <= 0)
+                    {
+                        endFieldImage.enabled = true;
+                        Debug.Log("Player has died. Starting fade out process.");
+                        FadeToBlackAndChangeScene();
+                    }
+                })
+                .AddTo(disposable);
+        }
 
-        Observable.EveryUpdate()
-            .Subscribe(_ =>
-            {
-                fadeTimer += Time.deltaTime;
-                float alpha = Mathf.Clamp01(fadeTimer / fadeDuration);
-                endFieldImage.color = new Color(0, 0, 0, alpha);
+        private void FadeToBlackAndChangeScene()
+        {
+            var fadeTimer = 0f;
 
-                if (alpha >= 1)
+            Observable.EveryUpdate()
+                .Subscribe(_ =>
                 {
-                    SceneManager.LoadScene("EndScene");
-                }
-            })
-            .AddTo(disposable);
-    }
+                    fadeTimer += Time.deltaTime;
+                    var alpha = Mathf.Clamp01(fadeTimer / fadeDuration);
+                    endFieldImage.color = new(0, 0, 0, alpha);
 
-    public void Dispose()
-    {
-        disposable.Dispose();
+                    if (alpha >= 1)
+                    {
+                        SceneManager.LoadScene("EndScene");
+                    }
+                })
+                .AddTo(disposable);
+        }
+
+        public void Dispose()
+        {
+            disposable.Dispose();
+        }
     }
 }

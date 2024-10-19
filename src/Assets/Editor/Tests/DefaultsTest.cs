@@ -1,5 +1,9 @@
+#region
+
 using NUnit.Framework;
 using Assert = UnityEngine.Assertions.Assert;
+
+#endregion
 
 namespace Editor.Tests
 {
@@ -10,11 +14,10 @@ namespace Editor.Tests
         {
             //このクラスが作られるときに一度だけ実行される。
         }
-        
+
         [Test]
         public void ResolveTest()
         {
-            
             Assert.AreEqual("hoge", "hoge");
         }
 
@@ -23,7 +26,7 @@ namespace Editor.Tests
         {
             Assert.AreEqual("hoge", "hoge");
         }
-        
+
         [OneTimeTearDown]
         public void TearDown()
         {

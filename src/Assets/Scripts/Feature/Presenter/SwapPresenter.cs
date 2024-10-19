@@ -2,14 +2,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using Feature.Common.Parameter;
 using Feature.Component;
 using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Model;
-using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -22,10 +20,10 @@ namespace Feature.Presenter
     public class SwapPresenter : IDisposable
     {
         private readonly CharacterParams characterParams;
-        private readonly SwapEffectFactory swapEffectFactory;
         private readonly CompositeDisposable rememberItemPosition;
-        private readonly SwapModel swapItemsModel;
         private readonly SelectorEffect selectorEffect;
+        private readonly SwapEffectFactory swapEffectFactory;
+        private readonly SwapModel swapItemsModel;
         private Dictionary<Guid, ISwappable> swapItemViews;
         private IDisposable updateDisposable;
 
@@ -68,10 +66,10 @@ namespace Feature.Presenter
             swapItemViews.Remove(itemKey);
             swapItemsModel.RemoveItem(itemKey);
         }
-        
+
         public void AddItem(ISwappable item)
         {
-            AddItems(new() {item});
+            AddItems(new() { item, });
         }
 
         private void AddItems(List<ISwappable> items)
@@ -80,15 +78,12 @@ namespace Feature.Presenter
             {
                 swapItemViews = new();
             }
-            
+
             var dats = items.Select(item =>
             {
                 var id = Guid.NewGuid();
                 item.OnDeselected();
-                item.OnDestroyEvent += () =>
-                {
-                    RemoveItem(item);
-                };
+                item.OnDestroyEvent += () => { RemoveItem(item); };
                 item.GetPositionRef()
                     .Subscribe(_ => { swapItemsModel.UpdateItemPosition(id, item.GetPosition()); })
                     .AddTo(rememberItemPosition);
@@ -123,6 +118,7 @@ namespace Feature.Presenter
                 SelectorStop();
                 swapItemViews[item.Value.Id].OnDeselected();
             }
+
             swapItemsModel.ResetSelector();
         }
 
@@ -134,7 +130,7 @@ namespace Feature.Presenter
             {
                 return;
             }
-            
+
             if (item.HasValue)
             {
                 swapItemViews[item.Value.Id].OnDeselected();
@@ -155,7 +151,7 @@ namespace Feature.Presenter
 
             return swapItemViews[item.Value.Id];
         }
-        
+
         public void Swap(Vector3 pos1, Vector3 pos2)
         {
             swapEffectFactory.PlayEffectAtPosition(pos1);
@@ -165,33 +161,30 @@ namespace Feature.Presenter
         public void InRangeHighlight(Vector3 basePosition, bool isSwap)
         {
             updateDisposable?.Dispose();
-            UpdateItemSelection(basePosition,isSwap);
+            UpdateItemSelection(basePosition, isSwap);
             if (isSwap)
             {
                 updateDisposable = Observable.Interval(TimeSpan.FromMilliseconds(250))
-                    .Subscribe(_ => UpdateItemSelection(basePosition,isSwap));
+                    .Subscribe(_ => UpdateItemSelection(basePosition, true));
             }
         }
 
-        private void UpdateItemSelection(Vector3 basePosition,bool isSelected)
+        private void UpdateItemSelection(Vector3 basePosition, bool isSelected)
         {
             var items = swapItemsModel.ItemInRangeHilight(basePosition, characterParams.canSwapDistance);
-            if (items != null)
+            foreach (var i in items)
             {
-                foreach (var i in items)
+                if (isSelected)
                 {
-                    if (isSelected)
-                    {
-                        swapItemViews[i.Id].OnInSelectRange();
-                    }
-                    else
-                    {
-                        swapItemViews[i.Id].OnOutSelectRange();
-                    }
+                    swapItemViews[i.Id].OnInSelectRange();
+                }
+                else
+                {
+                    swapItemViews[i.Id].OnOutSelectRange();
                 }
             }
         }
-        
+
         public void SelectorStop()
         {
             selectorEffect.SelectorStop();

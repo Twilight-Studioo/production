@@ -24,10 +24,7 @@ namespace Feature.View
         {
             agent = GetComponent<IEnemyAgent>();
             agent.OnGetHealth = () => CurrentHealth;
-            agent.RequireDestroy = () =>
-            {
-                OnDamage(CurrentHealth, Vector3.zero, null);
-            };
+            agent.RequireDestroy = () => { OnDamage(CurrentHealth, Vector3.zero, null); };
             agent.OnTakeDamageEvent += () => OnTakeDamageEvent?.Invoke();
             agent.FlowExecute();
         }
@@ -53,13 +50,13 @@ namespace Feature.View
 
         public event Action OnHealth0Event;
 
+        public GameObject GameObject() => gameObject;
+
         public event Action OnRemoveEvent;
         public uint MaxHealth { get; private set; }
 
         public uint CurrentHealth { get; private set; }
 
         public bool IsVisible => true;
-        
-        public GameObject GameObject() => gameObject;
     }
 }

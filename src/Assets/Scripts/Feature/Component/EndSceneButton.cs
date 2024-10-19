@@ -1,25 +1,35 @@
-﻿using UnityEngine;
+﻿#region
+
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+
+#endregion
 
 namespace Feature.Component
 {
     public class EndSceneController : MonoBehaviour
     {
-        [FormerlySerializedAs("WBG")] public Image wbg; 
-        [FormerlySerializedAs("RestartButton")] public Button restartButton; 
-        [FormerlySerializedAs("GameEndButton")] public Button gameEndButton; 
-        public float fadeDuration = 2f; 
-        private bool isFading = false;
-        private float fadeTimer = 0f;
+        [FormerlySerializedAs("WBG")] public Image wbg;
+
+        [FormerlySerializedAs("RestartButton")]
+        public Button restartButton;
+
+        [FormerlySerializedAs("GameEndButton")]
+        public Button gameEndButton;
+
+        public float fadeDuration = 2f;
+        private float fadeTimer;
+        private Image gameEndButtonImage;
+        private Text gameEndButtonText;
+        private bool isFading;
+        private Image restartButtonImage;
 
         private Text restartButtonText;
-        private Text gameEndButtonText;
-        private Image restartButtonImage;
-        private Image gameEndButtonImage;
 
-        void Start()
+        private void Start()
         {
             restartButton.Select();
             SetImageAlpha(wbg, 0);
@@ -38,27 +48,12 @@ namespace Feature.Component
             gameEndButton.onClick.AddListener(OnGameEndButtonClicked);
         }
 
-        void OnRestartButtonClicked()
-        {
-            isFading = true;
-        }
-
-        void OnGameEndButtonClicked()
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-        
-            Application.Quit();
-#endif
-        }
-
-        void Update()
+        private void Update()
         {
             if (isFading)
             {
                 fadeTimer += Time.deltaTime;
-                float alpha = Mathf.Clamp01(fadeTimer / fadeDuration); 
+                var alpha = Mathf.Clamp01(fadeTimer / fadeDuration);
 
                 SetImageAlpha(wbg, alpha);
 
@@ -75,21 +70,35 @@ namespace Feature.Component
             }
         }
 
-        void SetImageAlpha(Image image, float alpha)
+        private void OnRestartButtonClicked()
+        {
+            isFading = true;
+        }
+
+        private void OnGameEndButtonClicked()
+        {
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+
+        private void SetImageAlpha(Image image, float alpha)
         {
             if (image != null)
             {
-                Color color = image.color;
+                var color = image.color;
                 color.a = alpha;
                 image.color = color;
             }
         }
 
-        void SetTextAlpha(Text text, float alpha)
+        private void SetTextAlpha(Text text, float alpha)
         {
             if (text != null)
             {
-                Color color = text.color;
+                var color = text.color;
                 color.a = alpha;
                 text.color = color;
             }

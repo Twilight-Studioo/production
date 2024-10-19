@@ -1,5 +1,8 @@
-﻿using System;
+﻿#region
+
 using UnityEngine;
+
+#endregion
 
 namespace Feature.Component
 {
@@ -7,21 +10,22 @@ namespace Feature.Component
     {
         [SerializeField] private float acceleration = 0.5f;
         [SerializeField] private float escapeSpeed = 20f;
-        private Vector3 DirectionMovement = new Vector3(1, 0, 0);
-
-        private void OnCollisionStay(Collision other)
-        {
-            //if (other.gameObject.CompareTag("Player"))
-            {
-                other.gameObject.GetComponent<Rigidbody>().MovePosition(other.transform.position + DirectionMovement * acceleration * Time.deltaTime);
-            }
-        }
+        private readonly Vector3 directionMovement = new(1, 0, 0);
 
         private void OnCollisionExit(Collision other)
         {
             //if (other.gameObject.CompareTag("Player"))
             {
-                other.gameObject.GetComponent<Rigidbody>().AddForce(DirectionMovement * escapeSpeed);
+                other.gameObject.GetComponent<Rigidbody>()?.AddForce(directionMovement * escapeSpeed);
+            }
+        }
+
+        private void OnCollisionStay(Collision other)
+        {
+            //if (other.gameObject.CompareTag("Player"))
+            {
+                other.gameObject.GetComponent<Rigidbody>()?
+                    .MovePosition(other.transform.position + directionMovement * acceleration * Time.deltaTime);
             }
         }
     }
