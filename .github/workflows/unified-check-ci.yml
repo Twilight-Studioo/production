@@ -192,15 +192,6 @@ jobs:
             - **Base Branch:** `${{ github.event.pull_request.base.ref }}`
             - **Head Branch:** `${{ github.event.pull_request.head.ref }}`
             
-            <details>
-            <summary>Click to expand PR details</summary>
-            
-            - **PR Number:** #${{ github.event.pull_request.number }}
-            - **Body:**
-                ${{ github.event.pull_request.body }}
-            
-            </details>
-            
             ---
             
             ### Next Steps
