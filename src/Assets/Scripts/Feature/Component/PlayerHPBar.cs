@@ -15,9 +15,9 @@ namespace Feature.Component
         public Image hpDelay;
         public Image hpCurrent;
         public TextMeshProUGUI hpText;
-        private Coroutine delayCoroutine;
 
         private readonly float delaySpeed = 1.0f;
+        private Coroutine delayCoroutine;
 
         public void UpdateHealthBar(int currentHealth, int maxHealth)
         {

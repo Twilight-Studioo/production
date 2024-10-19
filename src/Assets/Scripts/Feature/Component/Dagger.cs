@@ -14,16 +14,16 @@ namespace Feature.Component
     public class Dagger : MonoBehaviour, ISwappable
     {
         public DaggerPrams daggerPrams;
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
         private Collider capsuleCollider;
         private uint damage;
 
         private float h;
-        
+
         private float lifeTime;
         private Rigidbody rb;
         private float speed;
         private float v;
-        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private void Start()
         {
@@ -64,9 +64,14 @@ namespace Feature.Component
                     h = h * -0.5f;
                     v = 0.5f;
                     if (h <= 0)
+                    {
                         RotateToTarget(200, 0.2f);
+                    }
                     else
+                    {
                         RotateToTarget(-200, 0.2f);
+                    }
+
                     rb.isKinematic = false;
                 }
 
@@ -77,15 +82,54 @@ namespace Feature.Component
                 // 壁に当たった場合の処理
                 // ナイフが壁に刺さる
                 var rb = GetComponent<Rigidbody>();
-                if (rb != null) rb.isKinematic = true; // ナイフが動かないようにする
+                if (rb != null)
+                {
+                    rb.isKinematic = true; // ナイフが動かないようにする
+                }
             }
             else if (collision.gameObject.CompareTag("Ground"))
             {
                 // 壁に当たった場合の処理
                 // ナイフが壁に刺さる
                 var rb = GetComponent<Rigidbody>();
-                if (rb != null) rb.isKinematic = true; // ナイフが動かないようにする
+                if (rb != null)
+                {
+                    rb.isKinematic = true; // ナイフが動かないようにする
+                }
             }
+        }
+
+        public void OnSelected()
+        {
+        }
+
+        public void OnDeselected()
+        {
+        }
+
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position.ToReadOnlyReactiveProperty();
+
+        public Vector2 GetPosition() => position.Value;
+
+        public void OnSwap(Vector2 p)
+        {
+            transform.position = p;
+        }
+
+        public event Action OnDestroyEvent;
+
+        public void OnInSelectRange()
+        {
+        }
+
+        public void OnOutSelectRange()
+        {
+        }
+
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
         }
 
         private void PramSet()
@@ -116,40 +160,8 @@ namespace Feature.Component
                 {
                     // 進行に基づいて新しい角度を計算
                     var currentAngle = Mathf.LerpAngle(startAngle, angle, progress);
-                    transform.eulerAngles = new Vector3(0, 0, currentAngle);
+                    transform.eulerAngles = new(0, 0, currentAngle);
                 });
-        }
-
-        public void OnSelected()
-        {
-        }
-
-        public void OnDeselected()
-        {
-        }
-
-        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position.ToReadOnlyReactiveProperty();
-
-        public Vector2 GetPosition() => position.Value;
-
-        public void OnSwap(Vector2 p)
-        {
-            transform.position = p;
-        }
-
-        public event Action OnDestroyEvent;
-        public void OnInSelectRange()
-        {
-        }
-
-        public void OnOutSelectRange()
-        {
-        }
-
-        public void Delete()
-        {
-            OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
     }
 }

@@ -40,8 +40,39 @@ namespace Feature.View
         }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => Position;
-        
+
         public Vector2 GetPosition() => Position.Value;
+
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
+
+        public void OnSelected()
+        {
+        }
+
+        public void OnDeselected()
+        {
+        }
+
+        public void OnSwap(Vector2 position)
+        {
+            transform.position = position;
+        }
+
+        public void OnInSelectRange()
+        {
+            material.SetFloat("_RimThreashould", hilightRimThreashold);
+        }
+
+        public void OnOutSelectRange()
+        {
+            material.SetFloat("_RimThreashould", 1);
+        }
+
+        public event Action OnDestroyEvent;
 
         public void Dispose()
         {
@@ -49,37 +80,6 @@ namespace Feature.View
         }
 
         private event Action<Collider2D> OnTrigger;
-
-        public void Delete()
-        {
-            OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
-        }
-        
-        public void OnSelected()
-        {
-            
-        }
-
-        public void OnDeselected()
-        {
-        }
-        
-        public void OnSwap(Vector2 position)
-        {
-            transform.position = position;
-        }
         public bool IsSwap() => isSwap;
-        public void OnInSelectRange()
-        {
-            material.SetFloat("_RimThreashould", hilightRimThreashold);
-        }
-        
-        public void OnOutSelectRange()
-        {
-            material.SetFloat("_RimThreashould", 1);
-        }
-
-        public event Action OnDestroyEvent;
     }
 }

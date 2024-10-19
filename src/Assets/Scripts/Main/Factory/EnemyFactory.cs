@@ -17,9 +17,9 @@ namespace Main.Factory
     {
         [SerializeField] private EnemiesSetting settings;
 
-        public GetTransform GetPlayerTransform;
-        
         private readonly IObjectUtil objectUtil = new ObjectUtil();
+
+        public GetTransform GetPlayerTransform;
 
         public void Subscribe()
         {
@@ -57,7 +57,7 @@ namespace Main.Factory
         }
 
         public event Action<IEnemyPresenter> OnAddField;
-        
-        public event Action<IEnemyPresenter> OnRemoveField; 
+
+        public event Action<IEnemyPresenter> OnRemoveField;
     }
 }

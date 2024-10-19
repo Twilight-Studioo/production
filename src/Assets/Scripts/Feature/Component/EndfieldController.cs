@@ -1,20 +1,24 @@
+#region
+
 using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+#endregion
+
 public class EndFieldController
 {
     private readonly Image endFieldImage;
     private readonly float fadeDuration = 2f;
 
-    private CompositeDisposable disposable = new CompositeDisposable();
+    private readonly CompositeDisposable disposable = new();
 
     public EndFieldController()
-    { 
+    {
         endFieldImage = GameObject.Find("EndField").GetComponent<Image>();
-        endFieldImage.color = new Color(0, 0, 0, 0);
+        endFieldImage.color = new(0, 0, 0, 0);
     }
 
     public void SubscribeToPlayerHealth(IObservable<int> playerHealthObservable)
@@ -31,16 +35,17 @@ public class EndFieldController
             })
             .AddTo(disposable);
     }
+
     private void FadeToBlackAndChangeScene()
     {
-        float fadeTimer = 0f;
+        var fadeTimer = 0f;
 
         Observable.EveryUpdate()
             .Subscribe(_ =>
             {
                 fadeTimer += Time.deltaTime;
-                float alpha = Mathf.Clamp01(fadeTimer / fadeDuration);
-                endFieldImage.color = new Color(0, 0, 0, alpha);
+                var alpha = Mathf.Clamp01(fadeTimer / fadeDuration);
+                endFieldImage.color = new(0, 0, 0, alpha);
 
                 if (alpha >= 1)
                 {

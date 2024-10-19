@@ -1,20 +1,20 @@
-using System;
-using Feature.Interface;
-using System.Collections;
-using System.Collections.Generic;
+#region
+
 using Core.Utilities;
+using Feature.Interface;
 using UnityEngine;
 
+#endregion
 
 namespace Feature.Component.Environment
 {
     public class DamageArea : MonoBehaviour
     {
         [SerializeField] private uint damege = 5;
-
-
-        private float lastUpdatedAt = 0f;
         private BoxCollider boxCollider;
+
+
+        private float lastUpdatedAt;
 
         private void Awake()
         {
@@ -31,6 +31,7 @@ namespace Feature.Component.Environment
             {
                 return;
             }
+
             lastUpdatedAt = Time.time;
 
             // オブジェクトのスケールとコライダーサイズからワールドサイズを計算
@@ -49,13 +50,13 @@ namespace Feature.Component.Environment
                 {
                     continue;
                 }
+
                 if (hit.collider.CompareTag("SwapItem"))
                 {
                     var obj = hit.collider.gameObject.GetComponent<ISwappable>();
                     obj?.Delete();
                 }
             }
-            
         }
 
         private void OnTriggerEnter(Collider other)

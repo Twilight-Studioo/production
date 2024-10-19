@@ -1,31 +1,31 @@
 {
-    "name": "Tests",
-    "rootNamespace": "",
-    "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "VContainer",
-        "Feature.Model",
-        "UniRx",
-        "Editor.Tests.Common",
-        "Feature.Common.Parameter",
-        "Core.Utilities"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": true,
-    "precompiledReferences": [
-        "nunit.framework.dll",
-        "Moq.dll",
-        "Castle.Core.dll",
-        "System.Diagnostics.EventLog.dll",
-        "System.Runtime.CompilerServices.Unsafe.dll"
-    ],
-    "autoReferenced": false,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
-    ],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Tests",
+  "rootNamespace": "",
+  "references": [
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner",
+    "VContainer",
+    "Feature.Model",
+    "UniRx",
+    "Editor.Tests.Common",
+    "Feature.Common.Parameter",
+    "Core.Utilities"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll",
+    "Moq.dll",
+    "Castle.Core.dll",
+    "System.Diagnostics.EventLog.dll",
+    "System.Runtime.CompilerServices.Unsafe.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

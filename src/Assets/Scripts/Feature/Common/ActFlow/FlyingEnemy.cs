@@ -43,13 +43,13 @@ namespace Feature.Common.ActFlow
 
         private const float MaxHeight = 25f; // 地面からドローンが到達できる最大高さ
 
+        private const float AscentAvoidanceAngle = 45f; // 回避角度（左右どちらに回避するかを決定）
+
+        private const float AscentAvoidanceForce = 10f; // 上昇時の回避力
+
         // 高度維持のための調整
         private bool limitAscentAboveMaxHeight = true; // 最大高度以上では上昇しないようにする
         private LayerMask obstacleMask;
-        
-        private const float AscentAvoidanceAngle = 45f; // 回避角度（左右どちらに回避するかを決定）
-    
-        private const float AscentAvoidanceForce = 10f; // 上昇時の回避力
 
         // Rigidbodyコンポーネント
         private Rigidbody rb;
@@ -93,14 +93,14 @@ namespace Feature.Common.ActFlow
 
             // 距離維持範囲
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(new Vector3(Owner.transform.position.x, 0, Owner.transform.position.z), MinDistance);
+            Gizmos.DrawWireSphere(new(Owner.transform.position.x, 0, Owner.transform.position.z), MinDistance);
 
             // 最大高度の表示
             Gizmos.color = Color.magenta;
-            Gizmos.DrawLine(new Vector3(Owner.transform.position.x, MaxHeight, Owner.transform.position.z),
-                new Vector3(Owner.transform.position.x + 5, MaxHeight, Owner.transform.position.z)); // 短いラインで高さを示す
-            Gizmos.DrawLine(new Vector3(Owner.transform.position.x, MaxHeight, Owner.transform.position.z),
-                new Vector3(Owner.transform.position.x, MaxHeight, Owner.transform.position.z + 5));
+            Gizmos.DrawLine(new(Owner.transform.position.x, MaxHeight, Owner.transform.position.z),
+                new(Owner.transform.position.x + 5, MaxHeight, Owner.transform.position.z)); // 短いラインで高さを示す
+            Gizmos.DrawLine(new(Owner.transform.position.x, MaxHeight, Owner.transform.position.z),
+                new(Owner.transform.position.x, MaxHeight, Owner.transform.position.z + 5));
 
             // 回避方向の可視化（シアン色の円弧）
             Gizmos.color = Color.cyan;
@@ -109,7 +109,7 @@ namespace Feature.Common.ActFlow
 
             // 地面との距離を可視化（緑色の線）
             Gizmos.color = Color.green;
-            Vector3 rayOrigin = Owner.transform.position + Vector3.down;
+            var rayOrigin = Owner.transform.position + Vector3.down;
             Gizmos.DrawLine(rayOrigin, rayOrigin + Vector3.down * DetectionRange);
         }
 
@@ -171,11 +171,12 @@ namespace Feature.Common.ActFlow
             {
                 rb.velocity = rb.velocity.normalized * MaxSpeed;
             }
-            
+
             // TODO
             // playerの方に回転
             var targetRotation = Quaternion.LookRotation(Player.position - Owner.transform.position);
-            Owner.transform.rotation = Quaternion.Slerp(Owner.transform.rotation, targetRotation, Time.deltaTime * 2.0f);
+            Owner.transform.rotation =
+                Quaternion.Slerp(Owner.transform.rotation, targetRotation, Time.deltaTime * 2.0f);
         }
 
         protected override bool CheckIfEnd() => false;
@@ -332,7 +333,7 @@ namespace Feature.Common.ActFlow
 
             // 現在の高さを計算（地面からの高さ）
             var currentHeight = Owner.transform.GetGroundDistance(MaxHeight);
-            
+
             // 天井までの距離
             var distanceToCeiling = Owner.transform.GetDirectionDistance(Vector3.up, MaxHeight);
 
@@ -356,7 +357,7 @@ namespace Feature.Common.ActFlow
 
             return ascent;
         }
-        
+
         private Vector3 AvoidAscentObstacle(RaycastHit hit)
         {
             // 障害物の法線を取得
@@ -367,7 +368,8 @@ namespace Feature.Common.ActFlow
             var reflection = Vector3.Reflect(Vector3.up, hitNormal);
 
             // 回避角度を適用
-            var avoidanceDirection = Vector3.RotateTowards(Vector3.up, reflection, Mathf.Deg2Rad * AscentAvoidanceAngle, 0f).normalized;
+            var avoidanceDirection = Vector3
+                .RotateTowards(Vector3.up, reflection, Mathf.Deg2Rad * AscentAvoidanceAngle, 0f).normalized;
 
             // 回避力を適用
             var avoidanceForceVector = avoidanceDirection * AscentAvoidanceForce;

@@ -1,5 +1,9 @@
-﻿using Cinemachine;
+﻿#region
+
+using Cinemachine;
 using UnityEngine;
+
+#endregion
 
 namespace Core.Camera
 {

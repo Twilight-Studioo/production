@@ -1,3 +1,5 @@
+#region
+
 using System.Collections;
 using Editor.Tests.Common;
 using Feature.Common.Parameter;
@@ -7,12 +9,14 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Assert = UnityEngine.Assertions.Assert;
 
+#endregion
+
 namespace Tests.Model
 {
     public class PlayerModelPlayModeTest
     {
-        private PlayerModel playerModel;
         private CharacterParams characterParams;
+        private PlayerModel playerModel;
 
         [SetUp]
         public void SetUp()
@@ -25,7 +29,7 @@ namespace Tests.Model
             characterParams.health = 100;
 
             // PlayerModel の初期化
-            playerModel = new PlayerModel(characterParams);
+            playerModel = new(characterParams);
         }
 
         [UnityTest]
@@ -44,8 +48,8 @@ namespace Tests.Model
             playerModel.OnStartSwap();
 
             Assert.AreEqual(
-                playerModel.SwapStamina.Value, 
-                characterParams.maxHasStamina - characterParams.enterSwapUseStamina, 
+                playerModel.SwapStamina.Value,
+                characterParams.maxHasStamina - characterParams.enterSwapUseStamina,
                 "SwapStamina should be 20 after entering swap."
             );
             playerModel.Swapped();
@@ -54,8 +58,9 @@ namespace Tests.Model
 
             // Param分のスタミナが減少
             Assert.AreEqual(
-                playerModel.SwapStamina.Value, 
-                characterParams.maxHasStamina - characterParams.enterSwapUseStamina - characterParams.swapExecUseStamina,
+                playerModel.SwapStamina.Value,
+                characterParams.maxHasStamina - characterParams.enterSwapUseStamina -
+                characterParams.swapExecUseStamina,
                 "SwapStamina should be 10 after swapping."
             );
 

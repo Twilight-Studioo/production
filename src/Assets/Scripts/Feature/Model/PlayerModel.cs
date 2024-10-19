@@ -6,6 +6,7 @@ using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
+
 #endregion
 
 namespace Feature.Model
@@ -18,24 +19,31 @@ namespace Feature.Model
             DoSwap,
         }
 
+        private const float AttackAfterMovableMillis = 250;
+        private const int MAXVOLTAGEVALUE = 100;
+        private const int MINVOLTAGEVALUE = 0;
+
+        private readonly CompositeDisposable attackAfterCompositeDisposable = new();
+
+        private readonly IReactiveProperty<bool> canAttack = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> CanAttack;
+
+        private readonly IReactiveProperty<bool> canDagger = new ReactiveProperty<bool>(false);
+        public readonly IReadOnlyReactiveProperty<bool> CanDagger;
+
         private readonly IReactiveProperty<bool> canEndSwap = new ReactiveProperty<bool>(false);
         public readonly IReadOnlyReactiveProperty<bool> CanEndSwap;
 
         private readonly IReactiveProperty<bool> canStartSwap = new ReactiveProperty<bool>(false);
         public readonly IReadOnlyReactiveProperty<bool> CanStartSwap;
-        
-        private readonly IReactiveProperty<bool> canDagger = new ReactiveProperty<bool>(false);
-        public readonly IReadOnlyReactiveProperty<bool> CanDagger;
-
-        private readonly IReactiveProperty<bool> canAttack = new ReactiveProperty<bool>(false);
-        public readonly IReadOnlyReactiveProperty<bool> CanAttack;
 
         private readonly CharacterParams characterParams;
+        private readonly IReactiveProperty<int> daggerStamina;
+        public readonly IReadOnlyReactiveProperty<int> DaggerStamina;
 
         private readonly GameUIView gameUIView;
 
         private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
-        public IReadOnlyReactiveProperty<int> Health;
 
         private readonly CompositeDisposable playerModelTimer = new();
 
@@ -43,21 +51,20 @@ namespace Feature.Model
 
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
+        public readonly IReadOnlyReactiveProperty<Vector3> Position;
+
+        public readonly IReadOnlyReactiveProperty<PlayerState> State;
 
         private readonly IReactiveProperty<int> swapStamina;
-        private readonly IReactiveProperty<int> daggerStamina;
 
         public readonly IReadOnlyReactiveProperty<int> SwapStamina;
-        public readonly IReadOnlyReactiveProperty<int> DaggerStamina;
-        
-        private const float AttackAfterMovableMillis = 250;
+        public IReadOnlyReactiveProperty<int> Health;
 
         private IDisposable recoverStaminaSubscription;
-        
-        private readonly CompositeDisposable attackAfterCompositeDisposable = new();
 
         private IDisposable swapUseStaminaSubscription;
         private IDisposable useDaggerUseStamina;
+        public int VoltageValue;
 
         [Inject]
         public PlayerModel(
@@ -97,7 +104,7 @@ namespace Feature.Model
                     canEndSwap.Value = IfCanEndSwapRate <= (float)swapStamina.Value / characterParams.maxHasStamina;
                 })
                 .AddTo(playerModelTimer);
-            
+
             Observable
                 .EveryUpdate()
                 .Subscribe(_ =>
@@ -119,9 +126,6 @@ namespace Feature.Model
         public float IfCanEndSwapRate => (float)characterParams.swapExecUseStamina / characterParams.maxHasStamina;
 
         private float IfCanDaggerRate => (float)characterParams.useDaggerUseStamina / characterParams.maxHasStamina;
-        private const int MAXVOLTAGEVALUE = 100;
-        private const int MINVOLTAGEVALUE = 0;
-        public int VoltageValue = 0;
         public float MoveSpeed => characterParams.speed;
         public float JumpForce => characterParams.jumpPower;
 
@@ -131,9 +135,6 @@ namespace Feature.Model
         public float ComboAngleOffset => characterParams.comboAngleOffset;
         public float MaxComboCount => characterParams.maxComboCount;
         public float AttackCoolTime => characterParams.attackCoolTime;
-
-        public readonly IReadOnlyReactiveProperty<PlayerState> State;
-        public readonly IReadOnlyReactiveProperty<Vector3> Position;
 
         public Vector3 Forward { get; private set; }
 
@@ -196,13 +197,15 @@ namespace Feature.Model
 
         public void OnDagger()
         {
-            int daggerUseStamina = (int)characterParams.useDaggerUseStamina;
+            var daggerUseStamina = (int)characterParams.useDaggerUseStamina;
             if (swapStamina.Value < daggerUseStamina)
             {
                 return;
             }
+
             swapStamina.Value = Math.Max(swapStamina.Value - daggerUseStamina, 0);
         }
+
         public void ChangeState(PlayerState state)
         {
             playerState.Value = state;
@@ -217,6 +220,7 @@ namespace Feature.Model
         {
             swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapModeStaminaUsage, 0);
         }
+
         public void Attack()
         {
             attackAfterCompositeDisposable.Clear();
@@ -239,13 +243,13 @@ namespace Feature.Model
         {
             health.Value = Mathf.Max((int)(health.Value - damage), 0);
         }
-        
+
         public void AddVoltageSwap()
         {
             VoltageValue += characterParams.addVoltageSwapValue;
             VoltageValue = Mathf.Clamp(VoltageValue, MINVOLTAGEVALUE, MAXVOLTAGEVALUE);
         }
-        
+
         public int GetVoltageAttackPower()
         {
             if (VoltageValue >= characterParams.useVoltageAttackValue)
@@ -253,6 +257,7 @@ namespace Feature.Model
                 VoltageValue -= characterParams.useVoltageAttackValue;
                 return characterParams.attackPower * characterParams.voltageAttackPowerValue;
             }
+
             return characterParams.attackPower;
         }
     }

@@ -183,7 +183,7 @@ namespace Feature.Component.Enemy
                             beamEffect = component;
                         }
                     }
-                    
+
                     if (beamEffect is null)
                     {
                         Debug.LogError("BeamEffect is null");

@@ -15,13 +15,10 @@ namespace Core.Utilities
     /// </summary>
     public class ObjectFactory
     {
-        private static GameObject superObject = null;
-        public static GameObject SuperObject { get; } = superObject ??= new ("ObjectFactory");
+        private static GameObject superObject;
 
         private static ObjectFactory instance;
-        public static ObjectFactory Instance => instance ??= new();
         private readonly List<GameObject> objects;
-        public event Action<GameObject> OnObjectCreated;
 
         private ObjectFactory()
         {
@@ -31,6 +28,10 @@ namespace Core.Utilities
                 .Subscribe(Update)
                 .AddTo(SuperObject);
         }
+
+        public static GameObject SuperObject { get; } = superObject ??= new("ObjectFactory");
+        public static ObjectFactory Instance => instance ??= new();
+        public event Action<GameObject> OnObjectCreated;
 
         private void Update(long x)
         {
@@ -44,7 +45,7 @@ namespace Core.Utilities
             objects.Add(newObj);
             return newObj;
         }
-        
+
         public GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
         {
             var newObj = Object.Instantiate(prefab, position, rotation, parent);

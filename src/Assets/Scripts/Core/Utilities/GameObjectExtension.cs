@@ -1,11 +1,15 @@
+#region
+
 using UnityEngine;
+
+#endregion
 
 namespace Core.Utilities
 {
     public static class GameObjectExtension
     {
         /// <summary>
-        /// Tries to get a component of type T from the specified GameObject.
+        ///     Tries to get a component of type T from the specified GameObject.
         /// </summary>
         /// <typeparam name="T">The type of the component to retrieve.</typeparam>
         /// <param name="gameObject">The GameObject from which to retrieve the component.</param>
@@ -18,7 +22,7 @@ namespace Core.Utilities
         }
 
         /// <summary>
-        /// Tries to get a component of type T from the specified GameObject.
+        ///     Tries to get a component of type T from the specified GameObject.
         /// </summary>
         /// <typeparam name="T">The type of the component to retrieve.</typeparam>
         /// <param name="gameObject">The GameObject from which to retrieve the component.</param>

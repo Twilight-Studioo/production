@@ -1,6 +1,9 @@
-﻿using System;
+﻿#region
+
 using UnityEngine;
 using UnityEngine.VFX;
+
+#endregion
 
 namespace Feature.Component
 {
@@ -9,7 +12,7 @@ namespace Feature.Component
         [SerializeField] private VisualEffect effect;
 
         public void Selector(Vector3 position)
-        { 
+        {
             transform.position = position;
             PlayVFX();
         }

@@ -18,7 +18,10 @@ namespace Feature.Component
             var enemy = other.gameObject.GetComponent<IEnemy>()
                         ?? other.gameObject.GetComponentInParent<IEnemy>();
             enemy?.OnDamage(damage, other.transform.position, transform);
-            if (enemy != null) audioSource.PlayOneShot(hitSound);
+            if (enemy != null)
+            {
+                audioSource.PlayOneShot(hitSound);
+            }
         }
 
         public void SetDamage(uint dmg, AudioClip selectedClip, AudioSource audioSource)

@@ -36,7 +36,7 @@ namespace Core.Utilities.Effect
                 effectObject.enabled = false;
                 effectPool.Enqueue(new(effectObject));
             }
-            
+
             Observable
                 .Interval(TimeSpan.FromSeconds(inactiveCheckInterval))
                 .Subscribe(_ => CheckAndRemoveInactiveEffects())
@@ -65,6 +65,7 @@ namespace Core.Utilities.Effect
             {
                 effectInstance = new(Object.Instantiate(prefab));
             }
+
             effectInstance.Effect.enabled = true;
             effectInstance.Effect.transform.position = position;
             effectInstance.UpdateUsage();

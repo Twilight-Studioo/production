@@ -1,89 +1,48 @@
+#region
+
 using System;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
 
+#endregion
+
 namespace Feature.Component
 {
-    public class DamagedTrigger: MonoBehaviour, ISwappable
+    public class DamagedTrigger : MonoBehaviour, ISwappable
     {
-        private uint damage;
-        
-        private Vector3 direction = Vector3.zero;
-        
-        private float speed = 1.0f;
+        [SerializeField] private float hilightRimThreashold;
+
+
+        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private bool canHitEnemy;
-        private bool canHitPlayer;
         private bool canHitField;
-        
-        private bool Swapped = false;
+        private bool canHitPlayer;
+        private uint damage;
+
+        private Vector3 direction = Vector3.zero;
+
+        private float lastUpdateDirectionTime;
 
         private Material material;
-        private Renderer targetRenderer;
-        [SerializeField] private float hilightRimThreashold = 0;
-        
 
-        
-        private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
-        
-        public event Action OnHitEvent;
-        
-        public event Action OnDestroyEvent;
-        
+        private float speed = 1.0f;
+
+        private bool Swapped;
+
         private Transform target;
+        private Renderer targetRenderer;
 
-        void Awake()
+        private void Awake()
         {
             targetRenderer = GetComponent<Renderer>();
             material = targetRenderer.material;
         }
-        
+
         private void Update()
         {
             position.Value = transform.position;
-        }
-
-        public void SetHitObject(bool hitEnemy, bool hitPlayer, bool field)
-        {
-            canHitEnemy = hitEnemy;
-            canHitPlayer = hitPlayer;
-            canHitField = field;
-        }
-        
-        public void ExecuteWithFollow(
-            Transform follow,
-            float s,
-            uint d,
-            float lifeTime
-        )
-        {
-            target = follow;
-            speed = s;
-            damage = d;
-            Invoke(nameof(TryDestroy), lifeTime);
-        }
-        
-        public void Execute(
-            Vector3 dir,
-            float s,
-            uint d,
-            float lifeTime
-        )
-        {
-            target = null;
-            direction = dir;
-            speed = s;
-            damage = d;
-            Invoke(nameof(TryDestroy), lifeTime);
-        }
-        
-        private float lastUpdateDirectionTime;
-        
-        public void Delete()
-        {
-            OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         private void FixedUpdate()
@@ -94,6 +53,7 @@ namespace Feature.Component
                 direction = Vector3.Lerp(direction, newDir, 0.1f);
                 lastUpdateDirectionTime = Time.time;
             }
+
             transform.position += direction * (speed * Time.deltaTime);
         }
 
@@ -110,8 +70,10 @@ namespace Feature.Component
                 TryDestroy();
             }
         }
-        
-        private void TryDestroy()
+
+        public event Action OnDestroyEvent;
+
+        public void Delete()
         {
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
@@ -119,27 +81,24 @@ namespace Feature.Component
 
         public void OnSelected()
         {
-            
         }
 
         public void OnDeselected()
         {
-            
         }
-        
+
         public void OnInSelectRange()
         {
             material.SetFloat("_RimThreashould", hilightRimThreashold);
         }
-        
+
         public void OnOutSelectRange()
         {
             material.SetFloat("_RimThreashould", 1);
         }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
-        
-        
+
 
         public Vector2 GetPosition() => transform.position;
 
@@ -149,9 +108,48 @@ namespace Feature.Component
             Swapped = true;
         }
 
-        public bool IsSwapped()
+        public event Action OnHitEvent;
+
+        public void SetHitObject(bool hitEnemy, bool hitPlayer, bool field)
         {
-            return Swapped;
+            canHitEnemy = hitEnemy;
+            canHitPlayer = hitPlayer;
+            canHitField = field;
         }
+
+        public void ExecuteWithFollow(
+            Transform follow,
+            float s,
+            uint d,
+            float lifeTime
+        )
+        {
+            target = follow;
+            speed = s;
+            damage = d;
+            Invoke(nameof(TryDestroy), lifeTime);
+        }
+
+        public void Execute(
+            Vector3 dir,
+            float s,
+            uint d,
+            float lifeTime
+        )
+        {
+            target = null;
+            direction = dir;
+            speed = s;
+            damage = d;
+            Invoke(nameof(TryDestroy), lifeTime);
+        }
+
+        private void TryDestroy()
+        {
+            OnDestroyEvent?.Invoke();
+            Destroy(gameObject);
+        }
+
+        public bool IsSwapped() => Swapped;
     }
 }
