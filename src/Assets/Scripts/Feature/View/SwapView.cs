@@ -14,21 +14,17 @@ namespace Feature.View
     public sealed class SwapView : MonoBehaviour, ISwappable
     {
         [SerializeField] private VisualEffect effect;
-        [SerializeField] private float onStopTime = 1f;
         [SerializeField] private bool isSwap;
         [SerializeField] private float hilightRimThreashold;
 
         // ReSharper disable once MemberCanBePrivate.Local
         public readonly IReactiveProperty<Vector2> Position = new ReactiveProperty<Vector2>();
 
-        [NonSerialized] private bool IsActive;
-
         private Material material;
         private Renderer targetRenderer;
 
         private void Start()
         {
-            IsActive = true;
             targetRenderer = GetComponent<Renderer>();
             material = targetRenderer.material;
         }
@@ -54,13 +50,12 @@ namespace Feature.View
 
         private event Action<Collider2D> OnTrigger;
 
-        private void Delete()
+        public void Delete()
         {
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
         }
-
-        //セレクト註のエフェクト作成で利用
+        
         public void OnSelected()
         {
             

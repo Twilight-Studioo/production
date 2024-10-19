@@ -13,14 +13,13 @@ MonoBehaviour:
   m_Name: CharacterParams
   m_EditorClassIdentifier: 
   health: 100
-  speed: 5
-  jumpPower: 7
+  speed: 10
+  jumpPower: 10
   attackPower: 5
   comboTimeWindow: 1
   comboAngleOffset: 50
   maxComboCount: 2
-  vignetteChange: 0.5
-  monochrome: 80
+  attackCoolTime: 0.5
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10

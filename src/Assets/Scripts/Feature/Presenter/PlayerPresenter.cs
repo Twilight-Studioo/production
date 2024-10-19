@@ -13,8 +13,6 @@ using UnityEditor;
 using UnityEngine;
 using VContainer;
 using Object = UnityEngine.Object;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 #endregion
 
@@ -35,6 +33,7 @@ namespace Feature.Presenter
         private readonly CompositeDisposable presenterDisposable = new();
 
         private VolumeController volumeController;
+        private AudioSource audioSource;
 
         private EndFieldController endFieldController;
 
@@ -46,7 +45,8 @@ namespace Feature.Presenter
             CharacterParams characterParams,
             VoltageBar voltageBar,
             GameUIView ui,
-                VolumeController volumeController
+            VolumeController volumeController,
+            AudioSource audioSource
         )
         {
             playerModel = model;
@@ -56,6 +56,7 @@ namespace Feature.Presenter
             this.voltageBar = voltageBar;
             this.volumeController = volumeController;
             endFieldController = new EndFieldController();
+            this.audioSource = audioSource;
         }
 
         public void OnPossess(IPlayerView view)
@@ -105,7 +106,9 @@ namespace Feature.Presenter
                     }
                 })
                 .AddTo(playerHpBar);
-            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset, playerModel.MaxComboCount, volumeController);
+            playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
+                playerModel.MaxComboCount,volumeController,playerModel.AttackCoolTime,audioSource
+                );
         }
 
         public void Move(float direction)
@@ -121,6 +124,7 @@ namespace Feature.Presenter
                     playerView.Move(Vector3.left, playerModel.MoveSpeed);
                 }
             }
+            
         }
 
         public void Jump()
@@ -254,7 +258,6 @@ namespace Feature.Presenter
                 playerView.Dagger(degree, h, v);
             }
         }
-       
 
         public void Dispose()
         {
@@ -262,6 +265,6 @@ namespace Feature.Presenter
             swapTimer.Dispose();
         }
 
-     
+        
     }
 }

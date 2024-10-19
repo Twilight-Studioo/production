@@ -75,10 +75,10 @@ namespace Editor.Tests.View
         public void SetAttackComboCountTest()
         {
             animatorMock.Object.SetAttackComboCount(1);
-            animatorMock.Verify(x => x.SetInteger(PlayerAnimationExtension.AttackComboCountHash, 1), Times.Once);
+            animatorMock.Verify(x => x.SetFloat(PlayerAnimationExtension.AttackComboCountHash, 1), Times.Once);
 
             animatorMock.Object.SetAttackComboCount(0);
-            animatorMock.Verify(x => x.SetInteger(PlayerAnimationExtension.AttackComboCountHash, 0), Times.Once);
+            animatorMock.Verify(x => x.SetFloat(PlayerAnimationExtension.AttackComboCountHash, 0), Times.Once);
         }
 
         [TearDown]

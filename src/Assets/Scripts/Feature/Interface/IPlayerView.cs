@@ -34,7 +34,11 @@ namespace Feature.Interface
 
         void SwapTimeFinishUrp();
 
-        void SetParam(float comboTimeWindow, float comboAngleOffset, int maxComboCount,
-           MonoBehaviour urp);
+        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount,
+           MonoBehaviour urp,float attackCoolTime,AudioSource audioSource);
+
+        Vector3 GetForward();
+
+        IReadOnlyReactiveProperty<float> Speed { get; }
     }
 }

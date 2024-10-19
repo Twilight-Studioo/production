@@ -8,6 +8,7 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 #endregion
 
@@ -15,38 +16,40 @@ namespace Feature.View
 {
     public class PlayerView : MonoBehaviour, IDamaged, IPlayerView
     {
-
         [SerializeField] private List<GameObject> slashingEffect;
         [SerializeField] private GameObject dagger;
-        private bool right = true;
         public float hx;
         public float vy;
-        private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
-        private float comboAngleOffset; // 連続攻撃時の角度変化
-        private int maxComboCount; // 連続攻撃の最大回数
+        public Transform daggerSpawn;
+
+        [SerializeField] private List<AudioClip> slashingSound;
+        [SerializeField] private List<AudioClip> hitSound;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
+        private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
 
         private AnimationWrapper animator;
-        private int comboCount;
+        private float attackConboCount;
+        private float attackCoolTime;
+        private AudioSource audioSource;
+        private float comboAngleOffset; // 連続攻撃時の角度変化
+        private float comboCount = -1;
+        private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
+        private bool isGravityDisabled;
 
         private float lastAttackTime;
         private float lastDegree;
+        private float maxComboCount; // 連続攻撃の最大回数
+        private float monochrome;
         private Vector3 previousPosition;
         private Rigidbody rb;
-        private float speed;
-        private VolumeController volumeController;
-        private float vignetteChange; //赤くなるまでの時間
-        private float monochrome;
+        private bool right = true;
 
         private VFXView vfxView;
+        private float vignetteChange; //赤くなるまでの時間
+        private VolumeController volumeController;
         private float yDegree; //y座標の回転
-        private bool isGravityDisabled;
-
-        public float SwapRange { get; set; }
-        
-        public bool IsDrawSwapRange { get; set; }
 
         private void Awake()
         {
@@ -54,25 +57,22 @@ namespace Feature.View
             animator = this.Create(GetComponentInChildren<Animator>());
             vfxView = GetComponent<VFXView>();
             isGrounded
-                .Subscribe(x => {
-                    animator.SetIsFalling(!x);        
-                });
+                .Subscribe(x => { animator.SetIsFalling(!x); });
+            Speed = speed.ToReadOnlyReactiveProperty();
         }
 
         private void Update()
         {
             position.Value = transform.position;
         }
-        
-        public IReadOnlyReactiveProperty<Vector3> GetPositionRef() => position;
-        
-        public GameObject GetGameObject() => gameObject;
 
         private void FixedUpdate()
         {
-            speed = (rb.position - previousPosition).magnitude / Time.deltaTime;
-            previousPosition = rb.position;
-            animator.SetSpeed(speed);
+            var pos = rb.position;
+            pos.y = 0;
+            speed.Value = (pos - previousPosition).magnitude / Time.fixedDeltaTime;
+            previousPosition = pos;
+            animator.SetSpeed(speed.Value);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -87,26 +87,10 @@ namespace Feature.View
             }
         }
 
-        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, int MaxComboCount, 
-            MonoBehaviour _urp)
-        {
-            comboTimeWindow = ComboTimeWindow;
-            comboAngleOffset = ComboAngleOffset;
-            maxComboCount = MaxComboCount;
-            volumeController = (VolumeController)_urp;
-        }
-        
         private void OnDrawGizmos()
         {
             if (SwapRange != 0 && IsDrawSwapRange) DrawWireDisk(transform.position, SwapRange, Color.magenta);
         }
-        
-        public void SetPosition(Vector3 p)
-        {
-            transform.position = p;
-        }
-        
-        public Transform GetTransform() => transform;
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
@@ -117,18 +101,44 @@ namespace Feature.View
             animator.OnTakeDamage();
         }
 
-        public event Action<uint> OnDamageEvent;
+        public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
-        private static void DrawWireDisk(Vector3 position, float radius, Color color)
+        public float SwapRange { get; set; }
+
+        public bool IsDrawSwapRange { get; set; }
+
+        public IReadOnlyReactiveProperty<Vector3> GetPositionRef()
         {
-            var oldColor = Gizmos.color;
-            Gizmos.color = color;
-            var oldMatrix = Gizmos.matrix;
-            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new Vector3(1, 1, 1));
-            Gizmos.DrawWireSphere(Vector3.zero, radius);
-            Gizmos.matrix = oldMatrix;
-            Gizmos.color = oldColor;
+            return position;
         }
+
+        public GameObject GetGameObject()
+        {
+            return gameObject;
+        }
+
+        public void SetParam(float ComboTimeWindow, float ComboAngleOffset, float MaxComboCount,
+            MonoBehaviour _urp, float attackCoolTime,AudioSource audioSource)
+        {
+            comboTimeWindow = ComboTimeWindow;
+            comboAngleOffset = ComboAngleOffset;
+            maxComboCount = MaxComboCount;
+            volumeController = (VolumeController)_urp;
+            this.attackCoolTime = attackCoolTime;
+            this.audioSource = audioSource;
+        }
+
+        public void SetPosition(Vector3 p)
+        {
+            transform.position = p;
+        }
+
+        public Transform GetTransform()
+        {
+            return transform;
+        }
+
+        public event Action<uint> OnDamageEvent;
 
         public void Move(Vector3 direction, float power)
         {
@@ -170,63 +180,101 @@ namespace Feature.View
         {
             GameObject instantiateDagger;
             if (degree == 0 && right == false)
-                instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, -180));
+                instantiateDagger = ObjectFactory.Instance.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, -180));
             else
-                instantiateDagger = Instantiate(this.dagger, transform.position, Quaternion.Euler(0, 0, degree));
+                instantiateDagger = ObjectFactory.Instance.CreateObject(dagger, daggerSpawn.position, Quaternion.Euler(0, 0, degree));
 
             if (h == 0 && v == 0)
             {
-                if (right)
-                    h = 1;
-                else
-                    h = -1;
+                h = right ? 1 : -1;
             }
 
-            var dagger = instantiateDagger.GetComponentInChildren<Dagger>();
-            dagger.HorizontalVertical(h, v);
+            var component = instantiateDagger.GetComponentInChildren<Dagger>();
+            component.HorizontalVertical(h, v);
             animator.OnDagger();
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
+        private static void DrawWireDisk(Vector3 position, float radius, Color color)
+        {
+            var oldColor = Gizmos.color;
+            Gizmos.color = color;
+            var oldMatrix = Gizmos.matrix;
+            Gizmos.matrix = Matrix4x4.TRS(position, Quaternion.identity, new Vector3(1, 1, 1));
+            Gizmos.DrawWireSphere(Vector3.zero, radius);
+            Gizmos.matrix = oldMatrix;
+            Gizmos.color = oldColor;
+        } // ReSharper disable Unity.PerformanceAnalysis
         public void Attack(float degree, uint damage)
         {
             var currentTime = Time.time;
+            if (currentTime - lastAttackTime < attackCoolTime) return;
+
             if (currentTime - lastAttackTime <= comboTimeWindow)
             {
-                if (comboCount < maxComboCount)
+                if (comboCount >= maxComboCount)
                 {
-                    comboCount++;
-                    yDegree += lastDegree + comboAngleOffset;
+                    comboCount = -1;
+                    yDegree = 0;
                 }
-                else
+                comboCount++;
+                switch (comboCount)
                 {
-                    // 最大連続攻撃回数に達した場合、リセット
-                    comboCount = 0;
-                    yDegree = 0; // 角度をリセット（必要に応じて初期角度に変更）
+                    case 0:
+                        break;
+                    case 1:
+                        yDegree +=comboAngleOffset;
+                        break;
+                    case 2:
+                        yDegree += lastDegree - comboAngleOffset * 3;
+                        break;
                 }
+                // if (comboCount < maxComboCount)
+                // {
+                //     comboCount++;
+                //     yDegree += lastDegree + comboAngleOffset;
+                //     // if (degree != 90)
+                //     // {
+                //     //     yDegree += lastDegree + comboAngleOffset;
+                //     // }
+                // }
+                // else
+                // {
+                //     // 最大連続攻撃回数に達した場合、リセット
+                //     comboCount = 0;
+                //     // 角度をリセット
+                //     yDegree = 0; 
+                // }
             }
             else
             {
+                comboCount = 0;
                 yDegree = 0;
             }
 
-            animator.SetAttackComboCount(comboCount);
-            
-            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
-
-            if (degree == 0 && right == false) degree = -180f;
-            var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
-            Quaternion.Euler(yDegree, 0, degree));
-
-            var slash = obj.GetComponent<Slash>();
-            slash.SetDamage(damage);
-            Destroy(obj, 0.5f);
-            //animator.OnAttack();
-
+            var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
+           
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
-            lastDegree = degree;
-            
+            lastDegree = yDegree;
+           
+            if (degree == 0 && right == false) degree = -180f;
+            var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
+                Quaternion.Euler(yDegree, 0, degree));
+
+            var slashingSoundRandom = Random.Range(0, slashingSound.Count);
+            var selectedSlashingClip = slashingSound[slashingSoundRandom];
+            audioSource.PlayOneShot(selectedSlashingClip);
+
+            var hitSoundRandom = Random.Range(0, hitSound.Count);
+            var selectedHitClip = hitSound[hitSoundRandom];
+            var slash = obj.GetComponent<Slash>();
+            slash.SetDamage(damage, selectedHitClip, audioSource);
+            Destroy(obj, 0.5f);
+            animator.SetAttackComboCount(comboCount);
+            animator.OnAttack(0);
+
+
+
             // 攻撃方向に少し飛ばす
             // degreeをラジアンに変換
             var radian = degree * Mathf.Deg2Rad;
@@ -237,13 +285,13 @@ namespace Feature.View
             const float snapStopTime = 0.1f;
             const float gravityDisableTime = 0.06f;
             rb.AddForce(forceDirection.normalized * force, ForceMode.Impulse);
-            this.UniqueStartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero), "AttackedSnap");
-            if (!isGravityDisabled)
-            {
-                this.UniqueStartCoroutine(DisableGravityTemporarily(gravityDisableTime), "AttackedDisable");
-            }
+            this.UniqueStartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero),
+                "AttackedSnap");
+            // if (snapCanceledToken != null) StopCoroutine(snapCanceledToken);
+            //snapCanceledToken = StartCoroutine(this.DelayMethod(snapStopTime, () => rb.velocity = Vector3.zero));
+            if (!isGravityDisabled) StartCoroutine(DisableGravityTemporarily(gravityDisableTime));
         }
-        
+
         private IEnumerator DisableGravityTemporarily(float duration)
         {
             isGravityDisabled = true;
@@ -263,7 +311,7 @@ namespace Feature.View
         {
             return isGrounded.Value;
         }
-        
+
         public void SwapTimeStartUrp()
         {
             volumeController.SwapStartUrp();
@@ -272,6 +320,11 @@ namespace Feature.View
         public void SwapTimeFinishUrp()
         {
             volumeController.SwapFinishUrp();
+        }
+
+        public Vector3 GetForward()
+        {
+            return right ? Vector3.right : Vector3.left;
         }
     }
 }
