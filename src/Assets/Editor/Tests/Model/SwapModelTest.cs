@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using Editor.Tests.Common;
@@ -5,11 +7,12 @@ using Feature.Model;
 using NUnit.Framework;
 using Assert = UnityEngine.Assertions.Assert;
 
+#endregion
+
 namespace Editor.Tests.Model
 {
-    public class SwapModelTest: SingleInjectionClassTest<SwapModel>
+    public class SwapModelTest : SingleInjectionClassTest<SwapModel>
     {
-
         [Test]
         public void SwapItem_違う値ならハッシュコードが一致しない()
         {
@@ -44,7 +47,7 @@ namespace Editor.Tests.Model
             TestInstance.AddItems(items);
             Assert.IsTrue(TestInstance.GetCurrentItem() == null);
         }
-        
+
         [Test]
         public void アイテムを追加して選択中のアイテムを取得できる()
         {
@@ -60,7 +63,7 @@ namespace Editor.Tests.Model
             Assert.IsTrue(item.HasValue);
             Assert.AreEqual(item.Value, items[1]);
         }
-        
+
         [Test]
         public void ItemのPositionを更新できる()
         {
@@ -77,7 +80,7 @@ namespace Editor.Tests.Model
             Assert.IsTrue(currentItem.HasValue);
             // 初期値の確認
             Assert.AreEqual(currentItem.Value.Position, new(4, 5, 6));
-    
+
             // 更新
             TestInstance.UpdateItemPosition(items[1].Id, new(10, 11, 12));
             currentItem = TestInstance.GetCurrentItem();

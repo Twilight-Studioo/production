@@ -104,7 +104,6 @@ namespace Editor.Tests.Common
             }
 
             property.SetValue(obj, value);
-
         }
     }
 }
