@@ -1,9 +1,9 @@
 #region
 
+using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
-using System.Collections;
 
 #endregion
 
@@ -16,8 +16,8 @@ namespace Core.Camera
         [SerializeField] private CinemachineVirtualCamera virtualCamera;
         [SerializeField] private float minFOV = 67.3f;
         [SerializeField] private float maxFOV = 100f;
-        [SerializeField][Range(0,25)] private float minDistance = 5f;
-        [SerializeField][Range(0,25)] private float maxDistance = 20f;
+        [SerializeField] [Range(0, 25)] private float minDistance = 5f;
+        [SerializeField] [Range(0, 25)] private float maxDistance = 20f;
 
         private float lastCheckAt;
 
@@ -40,8 +40,8 @@ namespace Core.Camera
 
             lastCheckAt = Time.time;
 
-            float closestDistance = float.MaxValue;
-            bool hasValidTarget = false;
+            var closestDistance = float.MaxValue;
+            var hasValidTarget = false;
             foreach (var objectTuple in objects)
                 if (Vector3.Distance(playerTransform.position, objectTuple.Item1.position) < objectDistanceThreshold)
                 {
@@ -49,46 +49,44 @@ namespace Core.Camera
                     hasValidTarget = true;
                 }
                 else
+                {
                     RemoveMember(objectTuple);
+                }
+
             foreach (var objectTuple in objects)
             {
-                float distance = Vector3.Distance(playerTransform.position, objectTuple.Item1.position);
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                }
+                var distance = Vector3.Distance(playerTransform.position, objectTuple.Item1.position);
+                if (distance < closestDistance) closestDistance = distance;
             }
+
             if (!hasValidTarget)
             {
-                if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - minFOV) > 0.1f)
-                {
-                    StartCoroutine(ChangeFOV(minFOV));
-                }
+                if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - minFOV) > 0.1f) StartCoroutine(ChangeFOV(minFOV));
                 return;
             }
-            float t = Mathf.InverseLerp(minDistance, maxDistance, closestDistance);
-            float targetFOV = Mathf.Lerp(minFOV, maxFOV, t);
-            if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - targetFOV) > 0.1f)
-            {
-                StartCoroutine(ChangeFOV(targetFOV));
-            }
+
+            var t = Mathf.InverseLerp(minDistance, maxDistance, closestDistance);
+            var targetFOV = Mathf.Lerp(minFOV, maxFOV, t);
+            if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - targetFOV) > 0.1f) StartCoroutine(ChangeFOV(targetFOV));
         }
+
         private IEnumerator ChangeFOV(float targetFOV)
         {
-            float startFOV = virtualCamera.m_Lens.FieldOfView;
-            float duration = 0.5f;
-            float elapsed = 0f;
+            var startFOV = virtualCamera.m_Lens.FieldOfView;
+            var duration = 0.5f;
+            var elapsed = 0f;
 
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
-                float newFOV = Mathf.Lerp(startFOV, targetFOV, elapsed / duration);
+                var newFOV = Mathf.Lerp(startFOV, targetFOV, elapsed / duration);
                 virtualCamera.m_Lens.FieldOfView = newFOV;
                 yield return null;
             }
 
             virtualCamera.m_Lens.FieldOfView = targetFOV;
         }
+
         public void SetPlayer(Transform player)
         {
             var playerForward = new GameObject("PlayerForward");
@@ -130,7 +128,6 @@ namespace Core.Camera
 
             var tags = item.Item2;
             targetGroup.AddMember(item.Item1, tags.Weight, tags.Radius);
-            
         }
 
         private void RemoveMember((Transform, CameraTargetGroupTag) item)
