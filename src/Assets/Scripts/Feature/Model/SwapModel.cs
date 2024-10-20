@@ -13,20 +13,20 @@ namespace Feature.Model
     {
         public Guid Id;
         public Vector3 Position;
-        public Renderer Renderer;
+        private readonly Renderer renderer;
 
         public SwapItem(Guid id, Vector3 position, Renderer renderer)
         {
             Id = id;
             Position = position;
-            Renderer = renderer;
+            this.renderer = renderer;
         }
 
         public bool Equals(SwapItem other) => Id.Equals(other.Id);
 
         public override bool Equals(object obj) => obj is SwapItem other && Equals(other);
 
-        public override int GetHashCode() => HashCode.Combine(Id, Position, Renderer);
+        public override int GetHashCode() => HashCode.Combine(Id, Position, renderer);
     }
 
     public class SwapModel

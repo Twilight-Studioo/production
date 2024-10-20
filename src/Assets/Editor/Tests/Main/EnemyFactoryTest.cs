@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using Editor.Tests.Common;
@@ -7,6 +9,8 @@ using Feature.Component.Environment;
 using Main.Factory;
 using NUnit.Framework;
 using UnityEngine;
+
+#endregion
 
 namespace Editor.Tests.Main
 {
@@ -51,12 +55,11 @@ namespace Editor.Tests.Main
         [Test]
         public void Subscribe_ValidatesSettings()
         {
-            
             // Act & Assert
             var exception = Assert.Throws<Exception>(() => enemyFactory.Subscribe());
             Assert.AreEqual("EnemyType SimpleEnemy1 is not found in settings", exception.Message);
         }
-        
+
         [Test]
         public void 設定に重複したpairをチェックする()
         {
@@ -65,8 +68,8 @@ namespace Editor.Tests.Main
             ReflectionHelper.SetPrivateField(enemyStartMock, "spawnEnemyType", EnemyType.SimpleEnemy1);
 
             // EnemiesSettingの設定を調整
-            enemiesSetting.reference.Add(new() { type = EnemyType.SimpleEnemy1, reference = new() });
-            enemiesSetting.reference.Add(new() { type = EnemyType.SimpleEnemy1, reference = new() });
+            enemiesSetting.reference.Add(new() { type = EnemyType.SimpleEnemy1, reference = new(), });
+            enemiesSetting.reference.Add(new() { type = EnemyType.SimpleEnemy1, reference = new(), });
 
             // Act & Assert
             var exception = Assert.Throws<Exception>(() => enemyFactory.Subscribe());
@@ -81,7 +84,7 @@ namespace Editor.Tests.Main
             ReflectionHelper.SetPrivateField(enemyStartMock, "spawnEnemyType", EnemyType.SimpleEnemy1);
 
             // EnemiesSettingの設定を調整
-            enemiesSetting.reference.Add(new() { type = EnemyType.None, reference = new() });
+            enemiesSetting.reference.Add(new() { type = EnemyType.None, reference = new(), });
 
             // Act & Assert
             var exception = Assert.Throws<Exception>(() => enemyFactory.Subscribe());

@@ -16,7 +16,6 @@ namespace Feature.View
         [SerializeField] private RectTransform swapStartLine;
 
         private float swapExecValue;
-        private float swapStartValue;
 
         private void Start()
         {
@@ -47,7 +46,6 @@ namespace Feature.View
 
         public void SetStartSwapLine(float value)
         {
-            swapStartValue = value;
             var pos = swapStartLine.anchoredPosition;
             pos.x = fillArea.rect.x + value * fillArea.rect.width;
             swapStartLine.anchoredPosition = pos;

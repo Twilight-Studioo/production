@@ -13,6 +13,11 @@ namespace Feature.Interface
 
     public interface IEnemyAgent
     {
+        public GetHealth OnGetHealth { set; }
+
+        public EnemyType EnemyType { get; }
+
+        public Action RequireDestroy { set; }
         public void FlowExecute();
 
         public void FlowCancel();
@@ -24,11 +29,5 @@ namespace Feature.Interface
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
 
         public event Action OnTakeDamageEvent;
-        
-        public GetHealth OnGetHealth { set; }
-        
-        public EnemyType EnemyType { get; }
-
-        public Action RequireDestroy { set; }
     }
 }

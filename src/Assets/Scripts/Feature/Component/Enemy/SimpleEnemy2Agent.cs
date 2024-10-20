@@ -117,6 +117,7 @@ namespace Feature.Component.Enemy
 
             while (playerTransform == null)
             {
+                playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
                 yield return Wait(0.5f);
             }
 

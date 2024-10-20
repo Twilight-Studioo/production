@@ -27,11 +27,10 @@ namespace Core.Utilities.Health
 
             var worldPosition = target.position + offset; // ターゲットの位置にオフセットを加える
             var screenPosition = Camera.main.WorldToScreenPoint(worldPosition); // ワールド座標をスクリーン座標に変換
-            Vector3 canvasPosition;
 
             // スクリーン座標をCanvasの座標に変換
             RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.GetComponent<RectTransform>(),
-                screenPosition, canvas.worldCamera, out canvasPosition);
+                screenPosition, canvas.worldCamera, out var canvasPosition);
 
             rectTransform.position = canvasPosition; // Sliderの位置を更新
         }

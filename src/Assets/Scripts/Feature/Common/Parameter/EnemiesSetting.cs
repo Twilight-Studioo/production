@@ -45,7 +45,7 @@ namespace Feature.Common.Parameter
                     throw new($"EnemyType {x.type} is not implement IEnemy");
                 }
             });
-            Debug.Log("EnemiesSetting Success Validate");
+            // Debug.Log("EnemiesSetting Success Validate");
         }
     }
 

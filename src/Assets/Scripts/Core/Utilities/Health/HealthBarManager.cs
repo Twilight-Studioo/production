@@ -65,6 +65,7 @@ namespace Core.Utilities.Health
             {
                 bar = AttachHealthBarToTransform(@object.transform);
             }
+
             healthObject.OnRemoveEvent += () =>
             {
                 trackedHealthBars.Remove(healthObject);
@@ -91,7 +92,7 @@ namespace Core.Utilities.Health
             follow.canvas = canvas.GetComponent<Canvas>();
             follow.target = tf;
             follow.offset = Vector3.up * 2f;
-            
+
             return healthBar;
         }
     }

@@ -14,11 +14,11 @@ namespace Feature.Component.Environment
         [SerializeField] private GameObject item; // 複数からランダムに選ぶようにしたい（後々）
         [SerializeField] private uint spawnQuantity = 1; // 1度に何個スポーンするか
         [SerializeField] private float spawnDistance = 20.0f; // アイテムをスポーンし始める距離
-        [SerializeField] private float RespawnTimeSec = 5.0f; // リスポーンするまでの秒数
-        
-        private Transform playerTransform;
+        [SerializeField] private float respawnTimeSec = 5.0f; // リスポーンするまでの秒数
 
         private bool isCt;
+
+        private Transform playerTransform;
 
         private void Awake()
         {
@@ -46,13 +46,14 @@ namespace Feature.Component.Environment
             {
                 return;
             }
-            
+
             if (playerTransform is null)
             {
                 playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             }
 
-            if(playerTransform is null || Vector3.Distance(transform.position, playerTransform.position)　> spawnDistance)
+            if (playerTransform is null ||
+                Vector3.Distance(transform.position, playerTransform.position)　> spawnDistance)
             {
                 return;
             }
@@ -72,7 +73,7 @@ namespace Feature.Component.Environment
             }
 
             Observable
-                .Timer(TimeSpan.FromSeconds(RespawnTimeSec))
+                .Timer(TimeSpan.FromSeconds(respawnTimeSec))
                 .Subscribe(_ => { isCt = false; });
         }
     }

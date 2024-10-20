@@ -40,7 +40,7 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<VolumeController>();
             builder.RegisterComponentInHierarchy<CameraSwitcher>();
             builder.RegisterComponentInHierarchy<AudioSource>();
-            
+
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);
             builder.Register<SwapModel>(Lifetime.Scoped);

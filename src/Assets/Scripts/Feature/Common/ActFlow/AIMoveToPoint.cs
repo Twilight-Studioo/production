@@ -1,19 +1,22 @@
+#region
+
 using DynamicActFlow.Runtime.Core;
 using DynamicActFlow.Runtime.Core.Action;
 using UnityEngine;
 using UnityEngine.AI;
 
+#endregion
+
 namespace Feature.Common.ActFlow
 {
     [ActionTag("AIMoveToPoint")]
-    public class AIMoveToPoint: FixedUpdatedAction
+    public class AIMoveToPoint : FixedUpdatedAction
     {
-        [ActionParameter("Point")] private Vector3 Point { get; set; }
-        
-        [ActionParameter("MoveSpeed")] private float Speed { get; set; }
-        
         private NavMeshAgent agent;
-        
+        [ActionParameter("Point")] private Vector3 Point { get; set; }
+
+        [ActionParameter("MoveSpeed")] private float Speed { get; set; }
+
         public override void OnCreated()
         {
             base.OnCreated();
@@ -30,7 +33,6 @@ namespace Feature.Common.ActFlow
 
         protected override void FixedUpdate()
         {
-            
         }
 
         protected override bool CheckIfEnd() =>

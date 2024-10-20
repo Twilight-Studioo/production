@@ -9,10 +9,10 @@ using UnityEngine;
 
 namespace Feature.Presenter
 {
-    public class EnemyPresenter: IEnemyPresenter
+    public class EnemyPresenter : IEnemyPresenter
     {
-        private readonly IEnemy enemyView;
         private readonly IEnemyAgent agent;
+        private readonly IEnemy enemyView;
 
         public EnemyPresenter(
             IEnemy enemyView,
@@ -23,18 +23,16 @@ namespace Feature.Presenter
             this.enemyView = enemyView;
             this.agent = agent;
             this.agent.SetParams(@params);
-   
+
             this.enemyView.SetHealth(@params.maxHp);
-            this.enemyView.Execute();
         }
 
-        public void  Execute(
-            Transform playerTransform,
+        public void Execute(
             List<Vector3> patrolPoints
         )
         {
             agent.SetPatrolPoints(patrolPoints);
-            agent.FlowExecute();
+            enemyView.Execute();
         }
 
         public GameObject GameObject() => enemyView.GameObject();

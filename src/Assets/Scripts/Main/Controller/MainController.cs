@@ -20,7 +20,13 @@ namespace Main.Controller
 {
     public class MainController : IGameController
     {
+        private const float DaggerCooldown = 0.5f;
+
+        private readonly CameraSwitcher cameraSwitcher;
+        private readonly CharacterParams characterParams;
         private readonly EnemyFactory enemyFactory;
+
+        private readonly GameSettings gameSettings;
 
         private readonly InputActionAccessor inputActionAccessor;
 
@@ -29,16 +35,11 @@ namespace Main.Controller
 
         private readonly SwapPresenter swapPresenter;
 
-        private readonly CameraSwitcher cameraSwitcher;
-
         private readonly TargetGroupManager targetGroupManager;
-
-        private readonly GameSettings gameSettings;
-        private readonly CharacterParams characterParams;
         private float horizontalInput;
 
-        private float lastDaggerTime; 
-        private const float DaggerCooldown = 0.5f; 
+        private float lastDaggerTime;
+
         [Inject]
         public MainController(
             PlayerModel playerModel,
@@ -80,7 +81,8 @@ namespace Main.Controller
                 {
                     if (x > 0.1)
                     {
-                        targetGroupManager.UpdatePlayerForward(view.GetForward(), gameSettings.cameraForwardOffsetFromPlayerMoved);
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(),
+                            gameSettings.cameraForwardOffsetFromPlayerMoved);
                     }
                     else
                     {
@@ -106,7 +108,9 @@ namespace Main.Controller
                     Observable.EveryUpdate()
                         .Select(_ => dagger.transform.position)
                         .DistinctUntilChanged()
-                        .Select(_ => Vector3.Distance(playerPresenter.GetTransform().position, dagger.transform.position) > characterParams.canSwapDistance)
+                        .Select(_ =>
+                            Vector3.Distance(playerPresenter.GetTransform().position, dagger.transform.position) >
+                            characterParams.canSwapDistance)
                         .DistinctUntilChanged()
                         .Subscribe(x =>
                         {
@@ -138,7 +142,6 @@ namespace Main.Controller
                     swapPresenter.RemoveItem(swappable);
                 }
             };
-            enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
             enemyFactory.Subscribe();
         }
 
@@ -181,9 +184,8 @@ namespace Main.Controller
                 {
                     if (x)
                     {
-                        var h = Input.GetAxis("Horizontal");
-                        var v = Input.GetAxis("Vertical");
-                        var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                        var direction = moveEvent.ReadValue<Vector2>();
+                        var degree = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                         if (degree < 0)
                         {
                             degree += 360;
@@ -203,8 +205,8 @@ namespace Main.Controller
                     {
                         if (Time.time >= lastDaggerTime + DaggerCooldown)
                         {
-                            lastDaggerTime = Time.time; 
-                            
+                            lastDaggerTime = Time.time;
+
                             var h = Input.GetAxis("Horizontal");
                             var v = Input.GetAxis("Vertical");
                             var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
@@ -226,7 +228,7 @@ namespace Main.Controller
                     if (x)
                     {
                         playerPresenter.StartSwap();
-                        swapPresenter.InRangeHighlight(playerModel.Position.Value,true);
+                        swapPresenter.InRangeHighlight(playerModel.Position.Value, true);
                         cameraSwitcher.UseSwapCamera(true);
                     }
                     else
@@ -235,13 +237,13 @@ namespace Main.Controller
                         {
                             swapPresenter.SelectorStop();
 
-                            swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
+                            swapPresenter.InRangeHighlight(playerModel.Position.Value, false);
                             cameraSwitcher.UseSwapCamera(false);
                             return;
                         }
 
                         var item = swapPresenter.SelectItem();
-                        swapPresenter.InRangeHighlight(playerModel.Position.Value,false);
+                        swapPresenter.InRangeHighlight(playerModel.Position.Value, false);
                         cameraSwitcher.UseSwapCamera(false);
                         swapPresenter.ResetSelector();
                         playerPresenter.AddVoltageSwap();
@@ -250,7 +252,7 @@ namespace Main.Controller
                         {
                             return;
                         }
-                        
+
                         item.OnDeselected();
                         var pos = playerModel.Position.Value;
                         var itemPos = item.GetPosition();
