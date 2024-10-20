@@ -446,7 +446,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1961276430645119237}
   - component: {fileID: 2704179820965875830}
-  - component: {fileID: 6968557015671184989}
   m_Layer: 0
   m_Name: Swap Camera
   m_TagString: Untagged
@@ -509,20 +508,6 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 4993602351148952035}
---- !u!114 &6968557015671184989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3829548396830025091}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3fa8a0145334c81bb532e29ad1fe492, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 7271379122264895468}
-  swapCamera: {fileID: 2704179820965875830}
 --- !u!1 &5787429038179884688
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,6 +614,7 @@ GameObject:
   - component: {fileID: 7880068736608460418}
   - component: {fileID: 2255001629719979608}
   - component: {fileID: 6021065651016145650}
+  - component: {fileID: 1515531122657981881}
   m_Layer: 0
   m_Name: Target Group
   m_TagString: Untagged
@@ -680,6 +666,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectDistanceThreshold: 20
+  virtualCamera: {fileID: 7271379122264895468}
+  minFOV: 67.2
+  maxFOV: 100
+  minDistance: 2
+  maxDistance: 20
+--- !u!114 &1515531122657981881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7241791874821921001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3fa8a0145334c81bb532e29ad1fe492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 7271379122264895468}
+  swapCamera: {fileID: 2704179820965875830}
 --- !u!1 &7729599276646446907
 GameObject:
   m_ObjectHideFlags: 0
