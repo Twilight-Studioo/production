@@ -174,13 +174,18 @@ namespace Feature.Presenter
             var items = swapItemsModel.ItemInRangeHilight(basePosition, characterParams.canSwapDistance);
             foreach (var i in items)
             {
+                var item = swapItemViews[i.Id];
+                if (item == null)
+                {
+                    continue;
+                }
                 if (isSelected)
                 {
-                    swapItemViews[i.Id].OnInSelectRange();
+                    item.OnInSelectRange();
                 }
                 else
                 {
-                    swapItemViews[i.Id].OnOutSelectRange();
+                    item.OnOutSelectRange();
                 }
             }
         }
