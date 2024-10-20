@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -8527431610984463850}
   m_Layer: 0
   m_Name: SwapItem_Gravity
-  m_TagString: Untagged
+  m_TagString: SwapItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,7 +120,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effect: {fileID: 0}
-  onStopTime: 1
   isSwap: 0
   hilightRimThreashold: 0
 --- !u!54 &-8527431610984463850
