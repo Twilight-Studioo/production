@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using System.Collections;
 
 #endregion
 
@@ -12,7 +13,11 @@ namespace Core.Camera
     public class TargetGroupManager : MonoBehaviour
     {
         [SerializeField] private float objectDistanceThreshold = 20f;
-
+        [SerializeField] private CinemachineVirtualCamera battleCamera;
+        [SerializeField] private float minFOV = 67.3f;
+        [SerializeField] private float maxFOV = 100f;
+        [SerializeField] private float minDistance = 5f;
+        [SerializeField] private float maxDistance = 20f;
         private CameraSwitcher cameraSwitcher;
 
         private float lastCheckAt;
@@ -37,13 +42,44 @@ namespace Core.Camera
 
             lastCheckAt = Time.time;
 
+            float closestDistance = float.MaxValue;
             foreach (var objectTuple in objects)
                 if (Vector3.Distance(playerTransform.position, objectTuple.Item1.position) < objectDistanceThreshold)
                     AddMember(objectTuple);
                 else
                     RemoveMember(objectTuple);
+            foreach (var objectTuple in objects)
+            {
+                float distance = Vector3.Distance(playerTransform.position, objectTuple.Item1.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                }
+            }
+            
+            float t = Mathf.InverseLerp(minDistance, maxDistance, closestDistance);
+            float targetFOV = Mathf.Lerp(minFOV, maxFOV, t);
+            if (Mathf.Abs(battleCamera.m_Lens.FieldOfView - targetFOV) > 0.1f)
+            {
+                StartCoroutine(ChangeFOV(targetFOV));
+            }
         }
+        private IEnumerator ChangeFOV(float targetFOV)
+        {
+            float startFOV = battleCamera.m_Lens.FieldOfView;
+            float duration = 0.5f;
+            float elapsed = 0f;
 
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float newFOV = Mathf.Lerp(startFOV, targetFOV, elapsed / duration);
+                battleCamera.m_Lens.FieldOfView = newFOV;
+                yield return null;
+            }
+
+            battleCamera.m_Lens.FieldOfView = targetFOV;
+        }
         public void SetPlayer(Transform player)
         {
             var playerForward = new GameObject("PlayerForward");
