@@ -37,9 +37,9 @@ namespace Main.Controller
         private readonly SwapPresenter swapPresenter;
 
         private readonly TargetGroupManager targetGroupManager;
-        
+
         private readonly VolumeController volumeController;
-        
+
         private float horizontalInput;
 
         private float lastDaggerTime;
@@ -241,7 +241,6 @@ namespace Main.Controller
                     if (x)
                     {
                         playerPresenter.StartSwap();
-                   
                     }
                     else
                     {
@@ -250,8 +249,8 @@ namespace Main.Controller
                             playerPresenter.CancelSwap();
                             return;
                         }
+
                         playerPresenter.ExecuteSwap();
-     
                     }
                 });
         }
@@ -264,7 +263,7 @@ namespace Main.Controller
                 swapPresenter.InRangeHighlight(playerModel.Position.Value, true);
                 updateDisposable = Observable
                     .Interval(TimeSpan.FromMilliseconds(250))
-                    .Subscribe(_ => 
+                    .Subscribe(_ =>
                         swapPresenter.InRangeHighlight(playerModel.Position.Value, true)
                     )
                     .AddTo(ObjectFactory.SuperObject);
@@ -303,6 +302,5 @@ namespace Main.Controller
                 item.OnDeselected();
             }
         }
-        
     }
 }

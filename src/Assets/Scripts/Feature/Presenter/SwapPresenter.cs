@@ -171,6 +171,7 @@ namespace Feature.Presenter
                 {
                     continue;
                 }
+
                 if (isSelected)
                 {
                     item.OnInSelectRange();

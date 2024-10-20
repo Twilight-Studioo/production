@@ -66,7 +66,6 @@ namespace Feature.Model
         private IDisposable swapUseStaminaSubscription;
         private IDisposable useDaggerUseStamina;
         public int VoltageValue;
-        public event PlayerStateChangeHandler PlayerStateChange;
 
         [Inject]
         public PlayerModel(
@@ -148,6 +147,8 @@ namespace Feature.Model
             useDaggerUseStamina?.Dispose();
         }
 
+        public event PlayerStateChangeHandler PlayerStateChange;
+
         public void Start()
         {
             swapStamina.Value = (int)characterParams.maxHasStamina;
@@ -212,7 +213,7 @@ namespace Feature.Model
         {
             playerState.Value = state;
         }
-        
+
         public void StartSwap()
         {
             if (playerState.Value != PlayerState.Idle || !canStartSwap.Value)
@@ -231,7 +232,7 @@ namespace Feature.Model
                 swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapExecUseStamina, 0);
             }
         }
-        
+
         public void CancelSwap()
         {
             if (playerState.Value == PlayerState.DoSwap)

@@ -29,9 +29,9 @@ namespace Feature.Component
 
         private ColorAdjustments colorAdjustments; // 追加: ColorAdjustments の参照
         private ColorCurves colorCurves;
-        private Vignette vignette;
 
         private IDisposable graduallyDisposable;
+        private Vignette vignette;
 
         private void Awake()
         {

@@ -115,7 +115,7 @@ namespace Feature.Presenter
             );
             playerModel.PlayerStateChange += StateHandler;
         }
-        
+
         private void StateHandler(PlayerStateEvent stateEvent)
         {
             if (stateEvent == PlayerStateEvent.SwapStart)
@@ -142,12 +142,13 @@ namespace Feature.Presenter
                     })
                     .AddTo(swapTimer);
             }
+
             if (stateEvent == PlayerStateEvent.SwapExec)
             {
                 EndSwap();
                 AddVoltageSwap();
             }
-            
+
             if (stateEvent == PlayerStateEvent.SwapCancel)
             {
                 EndSwap();
@@ -176,12 +177,12 @@ namespace Feature.Presenter
                 playerView.Jump(playerModel.JumpForce);
             }
         }
-        
+
         public void CancelSwap()
         {
             playerModel.CancelSwap();
         }
-        
+
         public void ExecuteSwap()
         {
             playerModel.ExecuteSwap();
