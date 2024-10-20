@@ -94,6 +94,7 @@ namespace Feature.Component
             {
                 return;
             }
+
             material.SetFloat(RimThreshold, highlightThreshold);
         }
 
@@ -103,6 +104,7 @@ namespace Feature.Component
             {
                 return;
             }
+
             material.SetFloat(RimThreshold, 1);
         }
 
