@@ -25,7 +25,6 @@ namespace Feature.Presenter
         private readonly SwapEffectFactory swapEffectFactory;
         private readonly SwapModel swapItemsModel;
         private Dictionary<Guid, ISwappable> swapItemViews;
-        private IDisposable updateDisposable;
 
         [Inject]
         public SwapPresenter(
@@ -47,7 +46,6 @@ namespace Feature.Presenter
         public void Dispose()
         {
             rememberItemPosition.Clear();
-            updateDisposable?.Dispose();
         }
 
         public void RemoveItem(ISwappable item)
@@ -160,18 +158,12 @@ namespace Feature.Presenter
 
         public void InRangeHighlight(Vector3 basePosition, bool isSwap)
         {
-            updateDisposable?.Dispose();
             UpdateItemSelection(basePosition, isSwap);
-            if (isSwap)
-            {
-                updateDisposable = Observable.Interval(TimeSpan.FromMilliseconds(250))
-                    .Subscribe(_ => UpdateItemSelection(basePosition, true));
-            }
         }
 
         private void UpdateItemSelection(Vector3 basePosition, bool isSelected)
         {
-            var items = swapItemsModel.ItemInRangeHilight(basePosition, characterParams.canSwapDistance);
+            var items = swapItemsModel.GetItemsInRange(basePosition, characterParams.canSwapDistance);
             foreach (var i in items)
             {
                 var item = swapItemViews[i.Id];
@@ -193,6 +185,17 @@ namespace Feature.Presenter
         public void SelectorStop()
         {
             selectorEffect.SelectorStop();
+            var allItems = swapItemsModel.Items;
+            foreach (var item in allItems)
+            {
+                var itemObj = swapItemViews[item.Id];
+                if (itemObj == null)
+                {
+                    continue;
+                }
+
+                itemObj.OnOutSelectRange();
+            }
         }
     }
 }

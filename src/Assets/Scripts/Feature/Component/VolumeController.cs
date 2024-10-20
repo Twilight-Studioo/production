@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -29,6 +30,8 @@ namespace Feature.Component
         private ColorAdjustments colorAdjustments; // 追加: ColorAdjustments の参照
         private ColorCurves colorCurves;
         private Vignette vignette;
+
+        private IDisposable graduallyDisposable;
 
         private void Awake()
         {
@@ -63,8 +66,10 @@ namespace Feature.Component
             }
 
             var time = 0f;
-
-            Observable.EveryUpdate()
+            graduallyDisposable?.Dispose();
+            ChangeVignetteIntensityTo(startIntensity);
+            ChangeVignetteColorTo(startColor);
+            graduallyDisposable = Observable.EveryUpdate()
                 .TakeWhile(_ => time < duration)
                 .Subscribe(_ =>
                     {
@@ -94,10 +99,7 @@ namespace Feature.Component
 
         private void VignetteBlackColor()
         {
-            if (vignette)
-            {
-                ChangeVignetteColorTo(Color.black);
-            }
+            ChangeVignetteColorTo(Color.black);
         }
 
         // Vignetteの色を変更する

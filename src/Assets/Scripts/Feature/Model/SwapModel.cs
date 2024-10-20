@@ -32,6 +32,7 @@ namespace Feature.Model
     public class SwapModel
     {
         private readonly List<SwapItem> swapItems = new();
+        public List<SwapItem> Items => swapItems;
         private Guid currentId = Guid.Empty;
 
         public void AddItems(List<SwapItem> items)
@@ -163,7 +164,7 @@ namespace Feature.Model
             return nearestItem;
         }
 
-        public List<SwapItem> ItemInRangeHilight(Vector3 position, float maxDistance)
+        public List<SwapItem> GetItemsInRange(Vector3 position, float maxDistance)
         {
             var itemsInRange = swapItems
                 .Where(item => Vector3.Distance(item.Position, position) < maxDistance)

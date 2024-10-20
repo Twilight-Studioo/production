@@ -33,8 +33,6 @@ namespace Feature.Presenter
         private readonly CompositeDisposable swapTimer;
         private readonly VoltageBar voltageBar;
 
-        private readonly VolumeController volumeController;
-
         private bool isGameOver;
         private IPlayerView playerView;
 
@@ -53,7 +51,6 @@ namespace Feature.Presenter
             gameUIView = ui;
             swapTimer = new();
             this.voltageBar = voltageBar;
-            this.volumeController = volumeController;
             endFieldController = new();
             this.audioSource = audioSource;
         }
@@ -116,6 +113,45 @@ namespace Feature.Presenter
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
                 playerModel.MaxComboCount, playerModel.AttackCoolTime, audioSource
             );
+            playerModel.PlayerStateChange += StateHandler;
+        }
+        
+        private void StateHandler(PlayerStateEvent stateEvent)
+        {
+            if (stateEvent == PlayerStateEvent.SwapStart)
+            {
+                playerView.IsDrawSwapRange = true;
+                swapTimer.Clear();
+                Time.timeScale = characterParams.swapContinueTimeScale;
+                playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
+                playerModel.OnStartSwap();
+                Observable
+                    .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis *
+                                                     characterParams.swapContinueTimeScale))
+                    .Subscribe(_ => { playerModel.CancelSwap(); })
+                    .AddTo(swapTimer);
+                playerModel.CanEndSwap
+                    .Subscribe(x =>
+                    {
+                        if (x)
+                        {
+                            return;
+                        }
+
+                        playerModel.CancelSwap();
+                    })
+                    .AddTo(swapTimer);
+            }
+            if (stateEvent == PlayerStateEvent.SwapExec)
+            {
+                EndSwap();
+                AddVoltageSwap();
+            }
+            
+            if (stateEvent == PlayerStateEvent.SwapCancel)
+            {
+                EndSwap();
+            }
         }
 
         public void Move(float direction)
@@ -140,6 +176,16 @@ namespace Feature.Presenter
                 playerView.Jump(playerModel.JumpForce);
             }
         }
+        
+        public void CancelSwap()
+        {
+            playerModel.CancelSwap();
+        }
+        
+        public void ExecuteSwap()
+        {
+            playerModel.ExecuteSwap();
+        }
 
         public void StartSwap()
         {
@@ -148,31 +194,10 @@ namespace Feature.Presenter
                 return;
             }
 
-            playerView.IsDrawSwapRange = true;
-            volumeController.SwapStartUrp();
-            swapTimer.Clear();
-            Time.timeScale = characterParams.swapContinueTimeScale;
-            playerModel.ChangeState(PlayerModel.PlayerState.DoSwap);
-            playerModel.OnStartSwap();
-            Observable
-                .Timer(TimeSpan.FromMilliseconds(characterParams.swapContinueMaxMillis *
-                                                 characterParams.swapContinueTimeScale))
-                .Subscribe(_ => { EndSwap(); })
-                .AddTo(swapTimer);
-            playerModel.CanEndSwap
-                .DistinctUntilChanged()
-                .Subscribe(x =>
-                {
-                    if (x)
-                    {
-                        return;
-                    }
-
-                    EndSwap();
-                });
+            playerModel.StartSwap();
         }
 
-        public void EndSwap()
+        private void EndSwap()
         {
             if (playerModel.State.Value != PlayerModel.PlayerState.DoSwap)
             {
@@ -181,7 +206,6 @@ namespace Feature.Presenter
 
             swapTimer.Clear();
             playerModel.OnEndSwap();
-            volumeController.SwapFinishUrp();
             Func<float, float> easingFunction;
 
             switch (characterParams.swapReturnCurve)
@@ -241,7 +265,7 @@ namespace Feature.Presenter
             }
         }
 
-        public void AddVoltageSwap()
+        private void AddVoltageSwap()
         {
             playerModel.AddVoltageSwap();
             voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
