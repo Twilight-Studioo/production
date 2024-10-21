@@ -18,7 +18,7 @@ namespace Core.Camera
         [SerializeField] private float maxFOV = 100f;
         [SerializeField] [Range(0, 25)] private float minDistance = 5f;
         [SerializeField] [Range(0, 25)] private float maxDistance = 20f;
-
+        [SerializeField] private float fovMargin = 5f;
         private float lastCheckAt;
 
         private List<(Transform, CameraTargetGroupTag)> objects;
@@ -34,7 +34,7 @@ namespace Core.Camera
             targetGroup = GetComponent<CinemachineTargetGroup>();
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (Time.time - lastCheckAt < 1f || playerTransform is null) return;
 
@@ -55,7 +55,7 @@ namespace Core.Camera
 
             foreach (var objectTuple in objects)
             {
-                var distance = Vector3.Distance(playerTransform.position, objectTuple.Item1.position);
+                var distance = Vector3.Distance(playerTransform.position, objectTuple.Item1.position) + fovMargin;
                 if (distance < closestDistance) closestDistance = distance;
             }
 
@@ -67,6 +67,7 @@ namespace Core.Camera
 
             var t = Mathf.InverseLerp(minDistance, maxDistance, closestDistance);
             var targetFOV = Mathf.Lerp(minFOV, maxFOV, t);
+
             if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - targetFOV) > 0.1f) StartCoroutine(ChangeFOV(targetFOV));
         }
 
@@ -127,7 +128,7 @@ namespace Core.Camera
             if (find) return;
 
             var tags = item.Item2;
-            targetGroup.AddMember(item.Item1, tags.Weight, tags.Radius);
+            targetGroup.AddMember(item.Item1, tags.Weight, tags.Radius + fovMargin);
         }
 
         private void RemoveMember((Transform, CameraTargetGroupTag) item)
