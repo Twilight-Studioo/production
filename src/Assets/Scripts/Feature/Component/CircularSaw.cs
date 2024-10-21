@@ -157,7 +157,7 @@ namespace Feature.Component
             circularsawIsTrigger.isTrigger = true;
             circularsaw.useGravity = false;
             transform.position = element0;
-            saw = ObjectFactory.Instance.CreateObject(original, original.transform.position, Quaternion.identity);
+            saw = ObjectFactory.Instance.CreateObject(this.gameObject, original.transform.position, Quaternion.identity);
             gameObject.GetComponent<DamagedTrigger>().Delete();
         }
     }
