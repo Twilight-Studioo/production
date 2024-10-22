@@ -3,17 +3,7 @@ using System.Collections;
 
 public class GunnerController : MonoBehaviour
 {
-    public float AttackRange = 10f;
-    public float DetectionRange = 20f;
-    public int MaxAmmo = 6;
-    public float ReloadTime = 2f;
-    public float MoveSpeed = 3.5f;
-    public float JumpHeight = 8f;
-    public float SpecialMoveSpeed = 6f;
-    public float KnockbackDistance = 3f;
-    public float AttackCooldown = 5f;
-    public int AttacksBeforeSpecialMove = 3;
-    public float ForwardTeleportDistance = 5f;
+    public EnemyParams enemyParams; 
 
     private Transform targetPlayer;
     private Rigidbody rb;
@@ -21,6 +11,7 @@ public class GunnerController : MonoBehaviour
     private bool isAttacking = false;
     private bool isAttackCooldown = false;
     private bool isSpecialAttack = false;
+    private float moveTimer = 0f;
 
     private FSM fsm;
 
@@ -55,12 +46,12 @@ public class GunnerController : MonoBehaviour
 
     public bool IsPlayerInRange()
     {
-        return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= DetectionRange;
+        return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.DetectionRange;
     }
 
     public bool IsCloseEnoughToAttack()
     {
-        return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= AttackRange;
+        return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.AttackRange;
     }
 
     public void MoveTowardsPlayer()
@@ -70,16 +61,30 @@ public class GunnerController : MonoBehaviour
         Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
         directionToPlayer.y = 0;
 
-        rb.MovePosition(transform.position + directionToPlayer * ForwardTeleportDistance);
+        rb.MovePosition(transform.position + directionToPlayer * enemyParams.ForwardTeleportDistance * Time.fixedDeltaTime);
 
         FacePlayer(directionToPlayer);
+    }
+
+    private IEnumerator MoveThenAttack()
+    {
+        moveTimer = 0f;
+
+        while (moveTimer < enemyParams.MoveDurationBeforeAttack)
+        {
+            MoveTowardsPlayer();
+            moveTimer += Time.fixedDeltaTime;
+            yield return null;
+        }
+
+        PerformAttack();
     }
 
     public void PerformAttack()
     {
         if (isAttackCooldown || isSpecialAttack) return;
 
-        if (attackCount >= AttacksBeforeSpecialMove)
+        if (attackCount >= enemyParams.AttacksBeforeSpecialMove)
         {
             StartCoroutine(SpecialMoveCoroutine());
             attackCount = 0;
@@ -99,7 +104,7 @@ public class GunnerController : MonoBehaviour
 
         isSpecialAttack = true;
 
-        rb.velocity = new Vector3(rb.velocity.x, JumpHeight, rb.velocity.z);
+        rb.AddForce(new Vector3(0, enemyParams.JumpHeight, 0), ForceMode.Impulse);
 
         yield return new WaitForSeconds(0.5f);
 
@@ -115,7 +120,7 @@ public class GunnerController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        rb.velocity = new Vector3(rb.velocity.x, -JumpHeight, rb.velocity.z);
+        rb.AddForce(new Vector3(0, -enemyParams.JumpHeight, 0), ForceMode.Impulse);
 
         yield return new WaitForSeconds(0.5f);
 
@@ -130,7 +135,7 @@ public class GunnerController : MonoBehaviour
 
         Vector3 directionAwayFromPlayer = (transform.position - targetPlayer.position).normalized;
 
-        rb.AddForce(directionAwayFromPlayer * KnockbackDistance, ForceMode.Impulse);
+        rb.AddForce(directionAwayFromPlayer * enemyParams.KnockbackDistance, ForceMode.Impulse);
 
         yield return new WaitForSeconds(0.5f);
     }
@@ -138,8 +143,10 @@ public class GunnerController : MonoBehaviour
     private IEnumerator AttackCooldownCoroutine()
     {
         isAttackCooldown = true;
-        yield return new WaitForSeconds(AttackCooldown);
+        yield return new WaitForSeconds(enemyParams.AttackCooldown);
         isAttackCooldown = false;
+
+        StartCoroutine(MoveThenAttack());
     }
 
     private void FacePlayer(Vector3 directionToPlayer)

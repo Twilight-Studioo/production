@@ -1892,17 +1892,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f8a6e048d3f3c04eab29d5f31e4a10e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttackRange: 30
-  DetectionRange: 20
+  AttackRange: 5
+  DetectionRange: 5
   MaxAmmo: 6
   ReloadTime: 2
-  MoveSpeed: 50
-  JumpHeight: 15
+  MoveSpeed: 5
+  JumpHeight: 8
   SpecialMoveSpeed: 8
-  MovesBeforeSpecialMove: 3
   KnockbackDistance: 5
   AttackCooldown: 3
-  fsm: {fileID: 0}
+  AttacksBeforeSpecialMove: 3
+  ForwardTeleportDistance: 5
+  MoveDurationBeforeAttack: 5
 --- !u!54 &30568338100415816
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1928,7 +1929,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 88
   m_CollisionDetection: 0
 --- !u!136 &30568338100415817
 CapsuleCollider:

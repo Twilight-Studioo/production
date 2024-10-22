@@ -62,7 +62,6 @@ public class MoveState : IState
 public class AttackState : IState
 {
     private GunnerController _gunnerController;
-    private int attackCounter = 0;
 
     public AttackState(GunnerController gunnerController)
     {
@@ -115,7 +114,7 @@ public class ReloadState : IState
 
     private IEnumerator ReloadCoroutine()
     {
-        yield return new WaitForSeconds(_gunnerController.ReloadTime);
+        yield return new WaitForSeconds(_gunnerController.enemyParams.ReloadTime);
         _gunnerController.ReloadAmmo();
         _gunnerController.ChangeState(new IdleState(_gunnerController));
     }

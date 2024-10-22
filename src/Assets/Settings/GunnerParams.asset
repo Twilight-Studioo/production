@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29178800038c5304d9f4202730ce47ec, type: 3}
+  m_Name: GunnerParams
+  m_EditorClassIdentifier: 
+  AttackRange: 10
+  DetectionRange: 20
+  MaxAmmo: 6
+  ReloadTime: 2
+  MoveSpeed: 3.5
+  JumpHeight: 8
+  SpecialMoveSpeed: 6
+  KnockbackDistance: 3
+  AttackCooldown: 5
+  AttacksBeforeSpecialMove: 3
+  ForwardTeleportDistance: 5
+  MoveDurationBeforeAttack: 5
