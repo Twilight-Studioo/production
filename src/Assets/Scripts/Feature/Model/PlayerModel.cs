@@ -2,6 +2,7 @@
 
 using System;
 using Feature.Common.Parameter;
+using Feature.Interface;
 using Feature.View;
 using UniRx;
 using UnityEngine;
@@ -146,6 +147,8 @@ namespace Feature.Model
             useDaggerUseStamina?.Dispose();
         }
 
+        public event PlayerStateChangeHandler PlayerStateChange;
+
         public void Start()
         {
             swapStamina.Value = (int)characterParams.maxHasStamina;
@@ -211,9 +214,31 @@ namespace Feature.Model
             playerState.Value = state;
         }
 
-        public void Swapped()
+        public void StartSwap()
         {
-            swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapExecUseStamina, 0);
+            if (playerState.Value != PlayerState.Idle || !canStartSwap.Value)
+            {
+                return;
+            }
+
+            PlayerStateChange?.Invoke(PlayerStateEvent.SwapStart);
+        }
+
+        public void ExecuteSwap()
+        {
+            if (canEndSwap.Value && playerState.Value == PlayerState.DoSwap)
+            {
+                PlayerStateChange?.Invoke(PlayerStateEvent.SwapExec);
+                swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapExecUseStamina, 0);
+            }
+        }
+
+        public void CancelSwap()
+        {
+            if (playerState.Value == PlayerState.DoSwap)
+            {
+                PlayerStateChange?.Invoke(PlayerStateEvent.SwapCancel);
+            }
         }
 
         private void SwapUsingUpdate()

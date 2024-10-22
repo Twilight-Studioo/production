@@ -90,11 +90,21 @@ namespace Feature.Component
 
         public void OnInSelectRange()
         {
+            if (material == null)
+            {
+                return;
+            }
+
             material.SetFloat(RimThreshold, highlightThreshold);
         }
 
         public void OnOutSelectRange()
         {
+            if (material == null)
+            {
+                return;
+            }
+
             material.SetFloat(RimThreshold, 1);
         }
 
