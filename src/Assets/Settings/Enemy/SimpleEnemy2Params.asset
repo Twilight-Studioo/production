@@ -15,9 +15,12 @@ MonoBehaviour:
   foundDistance: 10
   pursuitDistance: 14
   damage: 10
-  maxHp: 20
+  bulletLifeTime: 5
+  maxHp: 10
   patrolSpeed: 1
   pursuitSpeed: 1.4
-  shootDistance: 15
+  shootDistance: 10
+  shootSpeed: 7
   shootIntervalSec: 0.2
-  shootCount: 3
+  shootCount: 1
+  shootAfterSec: 2
