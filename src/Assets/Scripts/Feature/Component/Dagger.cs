@@ -39,6 +39,7 @@ namespace Feature.Component
 
         private void FixedUpdate()
         {
+            position.Value = transform.position;
             var currentVelocity = rb.velocity;
             var constantVelocity = currentVelocity.normalized * speed;
             rb.velocity = constantVelocity;

@@ -34,7 +34,7 @@ namespace Core.Camera
             targetGroup = GetComponent<CinemachineTargetGroup>();
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             if (Time.time - lastCheckAt < 1f || playerTransform is null) return;
 
@@ -42,6 +42,8 @@ namespace Core.Camera
 
             var closestDistance = float.MaxValue;
             var hasValidTarget = false;
+
+            // 各ターゲットとの距離をチェック
             foreach (var objectTuple in objects)
                 if (Vector3.Distance(playerTransform.position, objectTuple.Item1.position) < objectDistanceThreshold)
                 {
@@ -59,6 +61,7 @@ namespace Core.Camera
                 if (distance < closestDistance) closestDistance = distance;
             }
 
+            // ターゲットが存在しない場合、FOVを最小値に設定
             if (!hasValidTarget)
             {
                 if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - minFOV) > 0.1f) StartCoroutine(ChangeFOV(minFOV));
