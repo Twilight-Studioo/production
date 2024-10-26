@@ -30,12 +30,12 @@ namespace Feature.Component.Environment
         private EnemyParams overrideParams;
 
         private bool canSpawn = true;
-        
-        private Transform playerTransform;
 
         private bool isSpawned;
 
         public OnRequestSpawnEvent OnRequestSpawn;
+
+        private Transform playerTransform;
 
         [CanBeNull] public EnemyParams GetParam => overrideParams;
 
@@ -67,6 +67,7 @@ namespace Feature.Component.Environment
             {
                 playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             }
+
             if (!canSpawn || isSpawned || OnRequestSpawn == null || !playerTransform)
             {
                 return;

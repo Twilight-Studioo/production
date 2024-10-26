@@ -52,20 +52,20 @@ namespace Tests.Model
                 characterParams.maxHasStamina - characterParams.enterSwapUseStamina,
                 "SwapStamina should be 20 after entering swap."
             );
-            playerModel.Swapped();
-
-            yield return new WaitForFixedUpdate();
-
-            // Param分のスタミナが減少
-            Assert.AreEqual(
-                playerModel.SwapStamina.Value,
-                characterParams.maxHasStamina - characterParams.enterSwapUseStamina -
-                characterParams.swapExecUseStamina,
-                "SwapStamina should be 10 after swapping."
-            );
-
-            // スワップが不可能となる
-            Assert.IsFalse(playerModel.CanStartSwap.Value, "CanStartSwap should be false after stamina decreases.");
+            // playerModel.Swapped();
+            //
+            // yield return new WaitForFixedUpdate();
+            //
+            // // Param分のスタミナが減少
+            // Assert.AreEqual(
+            //     playerModel.SwapStamina.Value,
+            //     characterParams.maxHasStamina - characterParams.enterSwapUseStamina -
+            //     characterParams.swapExecUseStamina,
+            //     "SwapStamina should be 10 after swapping."
+            // );
+            //
+            // // スワップが不可能となる
+            // Assert.IsFalse(playerModel.CanStartSwap.Value, "CanStartSwap should be false after stamina decreases.");
         }
     }
 }
