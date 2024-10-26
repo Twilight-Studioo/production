@@ -61,7 +61,6 @@ namespace Feature.View
         {
             position.Value = transform.position;
         }
-
         private void FixedUpdate()
         {
             var pos = rb.position;

@@ -37,9 +37,13 @@ namespace Feature.Component
             rb.velocity = initialVelocity;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             position.Value = transform.position;
+        }
+
+        private void FixedUpdate()
+        {
             var currentVelocity = rb.velocity;
             var constantVelocity = currentVelocity.normalized * speed;
             rb.velocity = constantVelocity;
@@ -72,11 +76,13 @@ namespace Feature.Component
             {
                 var component = GetComponent<Rigidbody>();
                 if (component != null) component.isKinematic = true;
+                position.Value = transform.position;
             }
             else if (collision.gameObject.CompareTag("Ground"))
             {
                 var component = GetComponent<Rigidbody>();
                 if (component != null) component.isKinematic = true;
+                position.Value = transform.position;
             }
         }
 
@@ -144,7 +150,9 @@ namespace Feature.Component
                 {
                     // 進行に基づいて新しい角度を計算
                     var currentAngle = Mathf.LerpAngle(startAngle, angle, progress);
-                    transform.eulerAngles = new Vector3(0, 0, currentAngle);
+                    var angles = transform.eulerAngles;
+                    angles.z = currentAngle;
+                    transform.eulerAngles = angles;
                 });
         }
     }

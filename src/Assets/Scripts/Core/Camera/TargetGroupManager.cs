@@ -19,6 +19,8 @@ namespace Core.Camera
         [SerializeField] [Range(0, 25)] private float minDistance = 5f;
         [SerializeField] [Range(0, 25)] private float maxDistance = 20f;
         [SerializeField] private float fovMargin = 5f;
+
+        private Coroutine changeFOVCoroutine;
         private float lastCheckAt;
 
         private List<(Transform, CameraTargetGroupTag)> objects;
@@ -45,7 +47,10 @@ namespace Core.Camera
 
             // 各ターゲットとの距離をチェック
             foreach (var objectTuple in objects)
-                if (Vector3.Distance(playerTransform.position, objectTuple.Item1.position) < objectDistanceThreshold)
+            {
+                var distance = Vector3.Distance(playerTransform.position, objectTuple.Item1.position);
+
+                if (distance < objectDistanceThreshold)
                 {
                     AddMember(objectTuple);
                     hasValidTarget = true;
@@ -55,23 +60,30 @@ namespace Core.Camera
                     RemoveMember(objectTuple);
                 }
 
-            foreach (var objectTuple in objects)
-            {
-                var distance = Vector3.Distance(playerTransform.position, objectTuple.Item1.position) + fovMargin;
-                if (distance < closestDistance) closestDistance = distance;
+                if (hasValidTarget && distance + fovMargin < closestDistance) closestDistance = distance + fovMargin;
             }
 
             // ターゲットが存在しない場合、FOVを最小値に設定
             if (!hasValidTarget)
             {
-                if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - minFOV) > 0.1f) StartCoroutine(ChangeFOV(minFOV));
+                var currentFOV = virtualCamera.m_Lens.FieldOfView;
+                if (Mathf.Abs(currentFOV - minFOV) > 0.1f)
+                {
+                    if (changeFOVCoroutine != null) StopCoroutine(changeFOVCoroutine);
+                    changeFOVCoroutine = StartCoroutine(ChangeFOV(minFOV));
+                }
+
                 return;
             }
 
             var t = Mathf.InverseLerp(minDistance, maxDistance, closestDistance);
             var targetFOV = Mathf.Lerp(minFOV, maxFOV, t);
 
-            if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - targetFOV) > 0.1f) StartCoroutine(ChangeFOV(targetFOV));
+            if (Mathf.Abs(virtualCamera.m_Lens.FieldOfView - targetFOV) > 0.1f)
+            {
+                if (changeFOVCoroutine != null) StopCoroutine(changeFOVCoroutine);
+                changeFOVCoroutine = StartCoroutine(ChangeFOV(targetFOV));
+            }
         }
 
         private IEnumerator ChangeFOV(float targetFOV)
@@ -127,8 +139,8 @@ namespace Core.Camera
 
         private void AddMember((Transform, CameraTargetGroupTag) item)
         {
-            var find = targetGroup.FindMember(item.Item1) != -1;
-            if (find) return;
+            var isMemberFound = targetGroup.FindMember(item.Item1) != -1;
+            if (isMemberFound) return;
 
             var tags = item.Item2;
             targetGroup.AddMember(item.Item1, tags.Weight, tags.Radius + fovMargin);
