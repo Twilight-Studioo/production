@@ -1,0 +1,203 @@
+name: unified-check-ci.yml
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - 'release/*'
+      - dependabot/** # Dependabot PRs
+  push:
+    paths:
+      - 'src/Assets/Scripts/**'
+      - '**/*.cs'
+    branches:
+      - main
+      - develop
+      - 'release/*'
+    tags:
+      - 'v*'
+
+jobs:
+  determine-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      script_changed: ${{ steps.check_scripts.outputs.script_changed }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: get_changed_files
+        uses: tj-actions/changed-files@v45
+
+      - name: Check for script or .cs file changes
+        id: check_scripts
+        run: |
+          script_changed=false
+          for file in ${{ steps.get_changed_files.outputs.all_changed_files }}; do
+            if [[ "$file" =~ (src/Assets/Scripts/|.*\.cs$) ]]; then
+              script_changed=true
+              break
+            fi
+          done
+          echo "script_changed=$script_changed" >> $GITHUB_OUTPUT
+
+  code-check:
+    runs-on: ubuntu-latest
+    needs: determine-changes
+    if: needs.determine-changes.outputs.script_changed == 'true'
+    env:
+      UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: src/Library
+          key: Library-lint-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-lint-
+
+      - uses: game-ci/unity-builder@v4
+        with:
+          projectPath: src
+          unityVersion: auto
+          buildMethod: Packages.Rider.Editor.RiderScriptEditor.SyncSolution
+          targetPlatform: StandaloneWindows64
+
+  test:
+    runs-on: ubuntu-latest
+    needs: determine-changes
+    if: needs.determine-changes.outputs.script_changed == 'true'
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_V2022X_LICENSE }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Restore Cache
+        uses: actions/cache@v4
+        with:
+          path: src/Library
+          key: Library-lint-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-lint-
+      - uses: game-ci/unity-test-runner@v4
+        id: tests
+        with:
+          projectPath: src
+          unityVersion: auto
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          testMode: All
+      - uses: actions/upload-artifact@v4
+        name: Upload Test artifacts
+        if: always()
+        with:
+          name: test-artifacts
+          path: ${{ steps.tests.outputs.artifactsPath }}
+
+  convert-to-markdown:
+    runs-on: ubuntu-latest
+    needs: test
+    if: needs.determine-changes.outputs.script_changed == 'true'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_URL: ${{ github.event.pull_request.html_url }}
+      PR_TITLE: ${{ github.event.pull_request.title }}
+      PR_BODY: ${{ github.event.pull_request.body }}
+      PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+      PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+      PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Download Test Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: test-artifacts
+          path: artifacts
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Install Ruby Dependencies
+        run: |
+          gem install bundler
+          bundle install
+        working-directory: scripts
+      - name: Convert XML to Markdown
+        run: |
+          ruby scripts/test_result_convert_md.rb artifacts output.md
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request' && hashFiles('output.md') != ''
+        with:
+          hide_and_recreate: true
+          header: "Ready to Merge"
+          path: ./output.md
+
+  comment-on-pr:
+    runs-on: ubuntu-latest
+    needs: determine-changes
+    if: needs.determine-changes.outputs.script_changed == 'false'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - name: Add Merge Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          hide_and_recreate: true
+          header: "Ready to Merge"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            ### ✅ Ready to Merge
+            
+            This pull request does not include any changes in `src/Assets/Scripts/**` or `*.cs` files.
+            It is safe to merge without further code review.
+            
+            #### Pull Request Summary
+            
+            - **Title:** [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            - **Author:** @${{ github.actor }}
+            - **Created at:** ${{ github.event.pull_request.created_at }}
+            - **Base Branch:** `${{ github.event.pull_request.base.ref }}`
+            - **Head Branch:** `${{ github.event.pull_request.head.ref }}`
+            
+            ---
+            
+            ### Next Steps
+            
+            1. Ensure all checks have passed.
+            2. Verify that no additional changes are needed.
+            3. [Merge this pull request](${{ github.event.pull_request.html_url }}) when ready.
+            
+            If you have any questions or need further clarification, please reach out to the author or reviewers.

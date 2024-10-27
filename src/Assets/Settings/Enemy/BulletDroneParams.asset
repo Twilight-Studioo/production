@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a190e444b3f4a6d88f13fe05d03c476, type: 3}
+  m_Name: BulletDroneParams
+  m_EditorClassIdentifier: 
+  foundDistance: 10
+  pursuitDistance: 14
+  damage: 10
+  bulletLifeTime: 5
+  maxHp: 20
+  patrolSpeed: 1
+  pursuitSpeed: 1.4
+  playerKeepDistance: 8
+  thresholdHealth: 7
+  selfDestructionCountDownSec: 3
+  selfDestructionMoveSpeed: 5
+  explosionRadius: 5
+  explosionDamage: 20
+  attackType: 0
+  bulletPrefab: {fileID: 7359196021201563163, guid: d0e23bcee8f76406db28e20292aa6f84,
+    type: 3}
+  bulletSpeed: 10
+  shotCount: 1
+  shootIntervalSec: 1
+  rayDamage: 10
+  rayRange: 10
+  rayWaitSec: 1
+  rayIntervalSec: 1

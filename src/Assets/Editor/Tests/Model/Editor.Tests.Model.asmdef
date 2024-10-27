@@ -1,0 +1,32 @@
+{
+  "name": "Editor.Tests.Model",
+  "rootNamespace": "",
+  "references": [
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner",
+    "VContainer",
+    "Feature.Model",
+    "Feature.Common.Parameter",
+    "Editor.Tests.Common",
+    "UniRx"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll",
+    "Moq.dll",
+    "Castle.Core.dll",
+    "System.Runtime.CompilerServices.Unsafe.dll",
+    "System.Diagnostics.EventLog.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

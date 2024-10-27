@@ -1,0 +1,4 @@
+*.cs @matuyuhi
+/src/Assets/Scripts/ @matuyuhi
+/.github/ @matuyuhi
+/scripts/ @matuyuhi

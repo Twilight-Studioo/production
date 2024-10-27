@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab235e7024649ab9b337fe47e2a1bba, type: 3}
+  m_Name: SimpleEnemy2Params
+  m_EditorClassIdentifier: 
+  foundDistance: 10
+  pursuitDistance: 14
+  damage: 10
+  bulletLifeTime: 5
+  maxHp: 10
+  patrolSpeed: 1
+  pursuitSpeed: 1.4
+  shootDistance: 10
+  shootSpeed: 7
+  shootIntervalSec: 0.2
+  shootCount: 1
+  shootAfterSec: 2

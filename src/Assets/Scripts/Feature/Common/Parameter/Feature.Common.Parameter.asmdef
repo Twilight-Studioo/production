@@ -1,0 +1,17 @@
+{
+  "name": "Feature.Common.Parameter",
+  "rootNamespace": "",
+  "references": [
+    "GUID:db9310a783d9f406199eff722e946dc5",
+    "GUID:37c78d5c87a084f1b83b0346eddbbaa6"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

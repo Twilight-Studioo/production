@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8589ddc99af04180a128a537e285a9e2, type: 3}
+  m_Name: CharacterParams
+  m_EditorClassIdentifier: 
+  health: 100
+  speed: 10
+  jumpPower: 10
+  attackPower: 5
+  comboTimeWindow: 0.7
+  comboAngleOffset: 0
+  maxComboCount: 2
+  attackCoolTime: 0.33
+  swapContinueMaxMillis: 4000
+  swapContinueTimeScale: 0.2
+  canSwapDistance: 10
+  swapReturnTimeMillis: 1000
+  swapReturnCurve: 0
+  maxHasStamina: 12
+  enterSwapUseStamina: 3
+  swapModeStaminaUsageIntervalMillis: 1000
+  swapModeStaminaUsage: 1
+  swapExecUseStamina: 3
+  recoveryTimeMillis: 800
+  resourceRecoveryQuantity: 1
+  recoveryStaminaTimeMillis: 10
+  useVoltageAttackValue: 50
+  addVoltageSwapValue: 10
+  voltageAttackPowerValue: 2
+  useDaggerUseStamina: 20
