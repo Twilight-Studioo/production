@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "324039005781",
+    "project_id": "swap-ace",
+    "storage_bucket": "swap-ace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324039005781:android:dce8a3589ca8cc553566dc",
+        "android_client_info": {
+          "package_name": "twilightstudio.swapace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd6OzqoLwtmupL3ZNNXRmJZMBHjuwkiY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
