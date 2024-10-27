@@ -16,7 +16,7 @@ MonoBehaviour:
   pursuitDistance: 14
   damage: 10
   bulletLifeTime: 5
-  maxHp: 20
+  maxHp: 10
   patrolSpeed: 1
   pursuitSpeed: 1.4
   playerKeepDistance: 8
@@ -33,5 +33,5 @@ MonoBehaviour:
   shootIntervalSec: 1
   rayDamage: 10
   rayRange: 7
-  rayWaitSec: 1
-  rayIntervalSec: 1
+  rayWaitSec: 0.7
+  rayIntervalSec: 3
