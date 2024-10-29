@@ -19,6 +19,7 @@ namespace Core.Camera
         [SerializeField] [Range(0, 25)] private float minDistance = 5f;
         [SerializeField] [Range(0, 25)] private float maxDistance = 20f;
         [SerializeField] private float fovMargin = 5f;
+        [SerializeField] private float changeFOVTime = 0.8f;
 
         private Coroutine changeFOVCoroutine;
         private float lastCheckAt;
@@ -89,13 +90,12 @@ namespace Core.Camera
         private IEnumerator ChangeFOV(float targetFOV)
         {
             var startFOV = virtualCamera.m_Lens.FieldOfView;
-            var duration = 0.5f;
             var elapsed = 0f;
 
-            while (elapsed < duration)
+            while (elapsed < changeFOVTime)
             {
                 elapsed += Time.deltaTime;
-                var newFOV = Mathf.Lerp(startFOV, targetFOV, elapsed / duration);
+                var newFOV = Mathf.Lerp(startFOV, targetFOV, elapsed / changeFOVTime);
                 virtualCamera.m_Lens.FieldOfView = newFOV;
                 yield return null;
             }
