@@ -17,8 +17,6 @@ namespace Main.Factory
     {
         [SerializeField] private EnemiesSetting settings;
 
-        public GetTransform GetPlayerTransform;
-        
         private readonly IObjectUtil objectUtil = new ObjectUtil();
 
         public void Subscribe()
@@ -38,7 +36,6 @@ namespace Main.Factory
                     throw new($"EnemyType {enemyStart.SpawnEnemyType} is not found in settings");
                 }
 
-                enemyStart.GetPlayerTransform = () => GetPlayerTransform();
                 enemyStart.OnRequestSpawn = t => SpawnEnemy(enemyStart, t);
             }
         }
@@ -46,21 +43,18 @@ namespace Main.Factory
         private IEnemy SpawnEnemy(EnemyStart start, Transform t)
         {
             var enemyRef = settings.reference.Find(x => x.type == start.SpawnEnemyType);
-            var enemy = ObjectFactory.CreateObject(enemyRef.reference, t.position, t.rotation);
+            var enemy = ObjectFactory.Instance.CreateObject(enemyRef.reference, t.position, t.rotation);
             var enemyComponent = enemy.GetComponent<IEnemy>();
             var agent = enemy.GetComponent<IEnemyAgent>();
-            var presenter = new EnemyPresenter(enemyComponent, agent, enemyRef.parameters);
+            var presenter = new EnemyPresenter(enemyComponent, agent, start.GetParam ?? enemyRef.parameters);
             OnAddField?.Invoke(presenter);
-            agent.OnAddSwappableItem += OnAddSwappableItem;
             enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);
-            presenter.Execute(GetPlayerTransform(), start.Points);
+            presenter.Execute(start.Points);
             return enemyComponent;
         }
 
         public event Action<IEnemyPresenter> OnAddField;
-        
-        public event Action<ISwappable> OnAddSwappableItem; 
-        
-        public event Action<IEnemyPresenter> OnRemoveField; 
+
+        public event Action<IEnemyPresenter> OnRemoveField;
     }
 }

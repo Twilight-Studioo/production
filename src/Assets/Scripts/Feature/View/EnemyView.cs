@@ -2,6 +2,7 @@
 
 using System;
 using Core.Utilities.Health;
+using Feature.Common.Constants;
 using Feature.Interface;
 using UnityEngine;
 
@@ -13,18 +14,19 @@ namespace Feature.View
     {
         private IEnemyAgent agent;
 
+        public EnemyType EnemyType => agent.EnemyType;
+
         public event Action OnDamageEvent;
 
         public event Action OnTakeDamageEvent;
-        
-        public event Action<ISwappable> OnAddSwappableItem;
 
         public void Execute()
         {
             agent = GetComponent<IEnemyAgent>();
-            agent.FlowExecute();
+            agent.OnGetHealth = () => CurrentHealth;
+            agent.RequireDestroy = () => { OnDamage(CurrentHealth, Vector3.zero, null); };
             agent.OnTakeDamageEvent += () => OnTakeDamageEvent?.Invoke();
-            agent.OnAddSwappableItem += OnAddSwappableItem;
+            agent.FlowExecute();
         }
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
@@ -48,13 +50,13 @@ namespace Feature.View
 
         public event Action OnHealth0Event;
 
+        public GameObject GameObject() => gameObject;
+
         public event Action OnRemoveEvent;
         public uint MaxHealth { get; private set; }
 
         public uint CurrentHealth { get; private set; }
 
         public bool IsVisible => true;
-        
-        public GameObject GameObject() => gameObject;
     }
 }

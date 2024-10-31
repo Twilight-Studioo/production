@@ -17,10 +17,15 @@ namespace Feature.Common.Parameter
         public float jumpPower = 7f;
 
         public int attackPower = 2;
-        public float comboTimeWindow = 1f; // 〇秒以内の連続攻撃を許可
-        public float comboAngleOffset = 60f; // 連続攻撃時の角度変化
-        public int maxComboCount = 3; // 連続攻撃の最大回数
-        
+
+        [Tooltip("〇秒以内で連続攻撃")] public float comboTimeWindow = 1f;
+
+        [Tooltip("連続攻撃時の角度変化")] public float comboAngleOffset = 60f;
+
+        [Tooltip("連続攻撃の最大回数(*数の+1の回数、2なら3コンボ)")]
+        public float maxComboCount = 3;
+
+        [Tooltip("攻撃のクールタイム")] public float attackCoolTime = 0.2f;
         // スワップ関連
 
         [Tooltip("スワップの最大継続時間(Milli)"), Space(10),]
@@ -57,16 +62,13 @@ namespace Feature.Common.Parameter
         [Tooltip("1回の回復で増えるスタミナの量")] public uint resourceRecoveryQuantity = 1;
 
         [Tooltip("何ミリ秒ごとにリソースが回復するか")] public uint recoveryStaminaTimeMillis = 800;
-        
+
         //ボルテージ関連
-        [Tooltip("攻撃時に使うボルテージの量")] 
-        public int useVoltageAttackValue = 50;
-            
-        [Tooltip("1回のスワップで増えるボルテージの量")] 
-        public int addVoltageSwapValue = 10;
-                
-        [Tooltip("ボルテージ使用時の攻撃上昇倍率")] 
-        public int voltageAttackPowerValue = 2;
+        [Tooltip("攻撃時に使うボルテージの量")] public int useVoltageAttackValue = 50;
+
+        [Tooltip("1回のスワップで増えるボルテージの量")] public int addVoltageSwapValue = 10;
+
+        [Tooltip("ボルテージ使用時の攻撃上昇倍率")] public int voltageAttackPowerValue = 2;
 
         [Tooltip("クナイを飛ばしたときのスタミナ消費")] public uint useDaggerUseStamina = 2;
     }

@@ -1,8 +1,12 @@
 ﻿#region
 
+using System;
 using Core.Camera;
 using Core.Input;
 using Core.Input.Generated;
+using Core.Utilities;
+using Feature.Common.Parameter;
+using Feature.Component;
 using Feature.Interface;
 using Feature.Model;
 using Feature.Presenter;
@@ -17,7 +21,13 @@ namespace Main.Controller
 {
     public class MainController : IGameController
     {
+        private const float DaggerCooldown = 0.5f;
+
+        private readonly CameraSwitcher cameraSwitcher;
+        private readonly CharacterParams characterParams;
         private readonly EnemyFactory enemyFactory;
+
+        private readonly GameSettings gameSettings;
 
         private readonly InputActionAccessor inputActionAccessor;
 
@@ -27,10 +37,14 @@ namespace Main.Controller
         private readonly SwapPresenter swapPresenter;
 
         private readonly TargetGroupManager targetGroupManager;
+
+        private readonly VolumeController volumeController;
+
         private float horizontalInput;
 
-        private float lastDaggerTime; 
-        private const float DaggerCooldown = 0.5f; 
+        private float lastDaggerTime;
+        private IDisposable updateDisposable;
+
         [Inject]
         public MainController(
             PlayerModel playerModel,
@@ -38,7 +52,11 @@ namespace Main.Controller
             SwapPresenter swapPresenter,
             InputActionAccessor inputActionAccessor,
             TargetGroupManager targetGroupManager,
-            EnemyFactory enemyFactory
+            EnemyFactory enemyFactory,
+            GameSettings gameSettings,
+            CameraSwitcher cameraSwitcher,
+            CharacterParams characterParams,
+            VolumeController volumeController
         )
         {
             // DIからの登録
@@ -48,6 +66,10 @@ namespace Main.Controller
             this.enemyFactory = enemyFactory;
             this.playerModel = playerModel;
             this.swapPresenter = swapPresenter;
+            this.gameSettings = gameSettings;
+            this.cameraSwitcher = cameraSwitcher;
+            this.characterParams = characterParams;
+            this.volumeController = volumeController;
         }
 
         public void Start()
@@ -56,14 +78,64 @@ namespace Main.Controller
             Setup();
         }
 
+        public void Dispose()
+        {
+            playerModel.PlayerStateChange -= StateHandler;
+        }
+
         public void OnPossess(IPlayerView view)
         {
             playerPresenter.OnPossess(view);
-            targetGroupManager.AddTarget(view.GetTransform(), CameraTargetGroupTag.Player());
+            targetGroupManager.SetPlayer(view.GetTransform());
+            view.Speed
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    if (x > 0.1)
+                    {
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(),
+                            gameSettings.cameraForwardOffsetFromPlayerMoved);
+                    }
+                    else
+                    {
+                        targetGroupManager.UpdatePlayerForward(view.GetForward(), 0f);
+                    }
+                });
         }
 
         private void Setup()
         {
+            ObjectFactory.Instance.OnObjectCreated += obj =>
+            {
+                // swapItemがスポーンされたらpresenterに登録
+                var item = obj.GetComponent<ISwappable>();
+                if (item is not null)
+                {
+                    swapPresenter.AddItem(item);
+                }
+
+                if (obj.TryGetComponent<Dagger>(out var dagger))
+                {
+                    targetGroupManager.AddTarget(obj.transform, CameraTargetGroupTag.SwapItem());
+                    Observable.EveryUpdate()
+                        .Select(_ => dagger.transform.position)
+                        .DistinctUntilChanged()
+                        .Select(_ =>
+                            Vector3.Distance(playerPresenter.GetTransform().position, dagger.transform.position) >
+                            characterParams.canSwapDistance)
+                        .DistinctUntilChanged()
+                        .Subscribe(x =>
+                        {
+                            if (x)
+                            {
+                                targetGroupManager.RemoveTarget(obj.transform);
+                            }
+                        })
+                        .AddTo(dagger);
+                    dagger.OnDestroyEvent += () => targetGroupManager.RemoveTarget(obj.transform);
+                }
+            };
+
             enemyFactory.OnAddField += obj =>
             {
                 targetGroupManager.AddTarget(obj.GameObject().transform, CameraTargetGroupTag.Enemy());
@@ -73,7 +145,6 @@ namespace Main.Controller
                     swapPresenter.AddItem(swappable);
                 }
             };
-            enemyFactory.OnAddSwappableItem += swapPresenter.AddItem;
             enemyFactory.OnRemoveField += obj =>
             {
                 targetGroupManager.RemoveTarget(obj.GameObject().transform);
@@ -83,13 +154,13 @@ namespace Main.Controller
                     swapPresenter.RemoveItem(swappable);
                 }
             };
-            enemyFactory.GetPlayerTransform = () => playerPresenter.GetTransform();
             enemyFactory.Subscribe();
         }
 
         // TODO: この辺りのinput制御を別クラスに切り分ける
         private void InputEventSetup()
         {
+            playerModel.PlayerStateChange += StateHandler;
             // Move Setup
             var moveEvent = inputActionAccessor.CreateAction(Player.Move);
             Observable.EveryFixedUpdate()
@@ -103,7 +174,7 @@ namespace Main.Controller
                     }
                     else
                     {
-                        swapPresenter.SelectorStop();
+                        // swapPresenter.SelectorStop();
 
                         if (playerModel.CanAttack.Value)
                         {
@@ -126,9 +197,8 @@ namespace Main.Controller
                 {
                     if (x)
                     {
-                        var h = Input.GetAxis("Horizontal");
-                        var v = Input.GetAxis("Vertical");
-                        var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
+                        var direction = moveEvent.ReadValue<Vector2>();
+                        var degree = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                         if (degree < 0)
                         {
                             degree += 360;
@@ -148,8 +218,8 @@ namespace Main.Controller
                     {
                         if (Time.time >= lastDaggerTime + DaggerCooldown)
                         {
-                            lastDaggerTime = Time.time; 
-                            
+                            lastDaggerTime = Time.time;
+
                             var h = Input.GetAxis("Horizontal");
                             var v = Input.GetAxis("Vertical");
                             var degree = Mathf.Atan2(v, h) * Mathf.Rad2Deg;
@@ -171,41 +241,66 @@ namespace Main.Controller
                     if (x)
                     {
                         playerPresenter.StartSwap();
-                        swapPresenter.InRangeHilight(playerModel.Position.Value,true);
                     }
                     else
                     {
                         if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle)
                         {
-                            swapPresenter.SelectorStop();
-
-                            swapPresenter.InRangeHilight(playerModel.Position.Value,false);
+                            playerPresenter.CancelSwap();
                             return;
                         }
 
-                        var item = swapPresenter.SelectItem();
-                        swapPresenter.InRangeHilight(playerModel.Position.Value,false);
-                        swapPresenter.ResetSelector();
-                        playerPresenter.AddVoltageSwap();
-                        playerPresenter.EndSwap();
-                        if (item == null)
-                        {
-                            return;
-                        }
-                        
-                        item.OnDeselected();
-                        var pos = playerModel.Position.Value;
-                        var itemPos = item.GetPosition();
-                        // TODO: 機能をswapPresenterにまとめる
-                        swapPresenter.Swap(itemPos, pos);
-                        item.OnSwap(pos);
-
-                        playerPresenter.SetPosition(itemPos);
-                        swapPresenter.SelectorStop();
-                        item.OnDeselected();
-                        playerModel.Swapped();
+                        playerPresenter.ExecuteSwap();
                     }
                 });
+        }
+
+        private void StateHandler(PlayerStateEvent stateEvent)
+        {
+            updateDisposable?.Dispose();
+            if (stateEvent == PlayerStateEvent.SwapStart)
+            {
+                swapPresenter.InRangeHighlight(playerModel.Position.Value, true);
+                updateDisposable = Observable
+                    .Interval(TimeSpan.FromMilliseconds(250))
+                    .Subscribe(_ =>
+                        swapPresenter.InRangeHighlight(playerModel.Position.Value, true)
+                    )
+                    .AddTo(ObjectFactory.SuperObject);
+                cameraSwitcher.UseSwapCamera(true);
+                volumeController.SwapStartUrp();
+            }
+
+            if (stateEvent == PlayerStateEvent.SwapCancel)
+            {
+                swapPresenter.SelectorStop();
+                swapPresenter.InRangeHighlight(playerModel.Position.Value, false);
+                cameraSwitcher.UseSwapCamera(false);
+                volumeController.SwapFinishUrp();
+            }
+
+            if (stateEvent == PlayerStateEvent.SwapExec)
+            {
+                var item = swapPresenter.SelectItem();
+                swapPresenter.InRangeHighlight(playerModel.Position.Value, false);
+                cameraSwitcher.UseSwapCamera(false);
+                volumeController.SwapFinishUrp();
+                swapPresenter.ResetSelector();
+                if (item == null)
+                {
+                    return;
+                }
+
+                item.OnDeselected();
+                var pos = playerModel.Position.Value;
+                var itemPos = item.GetPosition();
+                swapPresenter.Swap(itemPos, pos);
+                item.OnSwap(pos);
+
+                playerPresenter.SetPosition(itemPos);
+                swapPresenter.SelectorStop();
+                item.OnDeselected();
+            }
         }
     }
 }

@@ -1,4 +1,7 @@
+#region
+
 using System;
+using System.Reflection;
 using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.View;
@@ -8,40 +11,42 @@ using NUnit.Framework;
 using UnityEngine;
 using VContainer;
 
+#endregion
+
 namespace Editor.Tests.Main
 {
     public class InjectionEditModeTests
     {
         private GameManager gameManager;
         private Mock<IGameController> mockGameController;
-        private PlayerStart playerStart;
-        private GameObject playerPrefab;
         private GameObject playerGameObject;
+        private GameObject playerPrefab;
+        private PlayerStart playerStart;
         private PlayerView playerView;
 
         [SetUp]
         public void SetUp()
         {
             // 依存関係のモックを作成
-            mockGameController = new Mock<IGameController>();
+            mockGameController = new();
 
             // テスト用のGameObjectとPlayerStartコンポーネントを作成
             var playerStartGameObject = new GameObject();
             playerStart = playerStartGameObject.AddComponent<PlayerStart>();
 
             // テスト用のプレイヤーのPrefabとそのPlayerViewコンポーネントを作成
-            playerGameObject = new GameObject("Player");
+            playerGameObject = new("Player");
             playerView = playerGameObject.AddComponent<PlayerView>();
             playerPrefab = playerGameObject;
 
             // PlayerStartにプレイヤープレハブを設定
             playerStart
                 .GetType()
-                .GetField("playerRef", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .GetField("playerRef", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(playerStart, playerPrefab);
 
             // GameManagerのインスタンスを作成
-            gameManager = new GameManager(playerStart, mockGameController.Object);
+            gameManager = new(playerStart, mockGameController.Object);
         }
 
         [Test]
@@ -66,7 +71,7 @@ namespace Editor.Tests.Main
             // Arrange
             playerStart
                 .GetType()
-                .GetField("isPlayerSpawned", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .GetField("isPlayerSpawned", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(playerStart, true);
 
             // Act & Assert
@@ -80,7 +85,7 @@ namespace Editor.Tests.Main
             // Arrange
             playerStart
                 .GetType()
-                .GetField("isPlayerSpawned", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .GetField("isPlayerSpawned", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(playerStart, false);
 
             // Act
@@ -103,7 +108,7 @@ namespace Editor.Tests.Main
             // Assert
             // Disposeを呼び出した後にStartを再実行できるかどうか確認することでisStartedがfalseになることを確認
             // PlayerStartの状態をリセットしてから再度Startを呼び出す
-            typeof(PlayerStart).GetField("isPlayerSpawned", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            typeof(PlayerStart).GetField("isPlayerSpawned", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(playerStart, false);
 
             gameManager.Start();
@@ -115,14 +120,14 @@ namespace Editor.Tests.Main
         {
             // Arrange
             var builder = new ContainerBuilder();
-    
+
             // テスト用のGameObjectを作成し、PlayerStartコンポーネントを追加
             var playerStartGameObject = new GameObject("PlayerStartTestObject");
             var start = playerStartGameObject.AddComponent<PlayerStart>();
-    
+
             // PlayerStart コンポーネントを直接登録する
             builder.RegisterInstance(start).As<PlayerStart>();
-    
+
             // Act
             var resolver = builder.Build();
 

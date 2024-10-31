@@ -1,6 +1,9 @@
-﻿using System;
+﻿#region
+
 using UnityEngine;
 using UnityEngine.VFX;
+
+#endregion
 
 namespace Feature.Component
 {
@@ -9,7 +12,7 @@ namespace Feature.Component
         [SerializeField] private VisualEffect effect;
 
         public void Selector(Vector3 position)
-        { 
+        {
             transform.position = position;
             PlayVFX();
         }
@@ -21,15 +24,12 @@ namespace Feature.Component
 
         private void PlayVFX()
         {
-            if (effect != null)
-            {
-                effect.SendEvent("OnPlay");
-            }
+            effect?.SendEvent("OnPlay");
         }
 
         private void StopVFX()
         {
-            if (effect != null)
+            if (effect)
             {
                 effect.SendEvent("OnStop");
             }

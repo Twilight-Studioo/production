@@ -63,6 +63,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+          lfs: true
       - name: Cache Library
         uses: actions/cache@v4
         with:
@@ -94,6 +95,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+          lfs: true
       - name: Restore Cache
         uses: actions/cache@v4
         with:
@@ -191,15 +193,6 @@ jobs:
             - **Created at:** ${{ github.event.pull_request.created_at }}
             - **Base Branch:** `${{ github.event.pull_request.base.ref }}`
             - **Head Branch:** `${{ github.event.pull_request.head.ref }}`
-            
-            <details>
-            <summary>Click to expand PR details</summary>
-            
-            - **PR Number:** #${{ github.event.pull_request.number }}
-            - **Body:**
-                ${{ github.event.pull_request.body }}
-            
-            </details>
             
             ---
             

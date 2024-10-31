@@ -13,35 +13,35 @@ namespace Feature.Model
     {
         public Guid Id;
         public Vector3 Position;
-        public Renderer Renderer;
+        private readonly Renderer renderer;
 
         public SwapItem(Guid id, Vector3 position, Renderer renderer)
         {
             Id = id;
             Position = position;
-            Renderer = renderer;
+            this.renderer = renderer;
         }
 
         public bool Equals(SwapItem other) => Id.Equals(other.Id);
 
         public override bool Equals(object obj) => obj is SwapItem other && Equals(other);
 
-        public override int GetHashCode() => HashCode.Combine(Id, Position, Renderer);
+        public override int GetHashCode() => HashCode.Combine(Id, Position, renderer);
     }
 
     public class SwapModel
     {
-        private readonly List<SwapItem> swapItems = new();
         private Guid currentId = Guid.Empty;
+        public List<SwapItem> Items { get; } = new();
 
         public void AddItems(List<SwapItem> items)
         {
-            swapItems.AddRange(items);
+            Items.AddRange(items);
         }
 
         public void RemoveItems(Predicate<Guid> match)
         {
-            swapItems.RemoveAll(item =>
+            Items.RemoveAll(item =>
             {
                 var found = match(item.Id);
                 if (found && item.Id == currentId)
@@ -55,7 +55,7 @@ namespace Feature.Model
 
         public void RemoveItem(Guid id)
         {
-            swapItems.RemoveAll(item => item.Id == id);
+            Items.RemoveAll(item => item.Id == id);
         }
 
         public void ResetSelector()
@@ -70,15 +70,15 @@ namespace Feature.Model
                 return;
             }
 
-            var index = swapItems.FindIndex(x => x.Id == id);
-            if (index < 0 || index >= swapItems.Count)
+            var index = Items.FindIndex(x => x.Id == id);
+            if (index < 0 || index >= Items.Count)
             {
                 return;
             }
 
-            var swapItem = swapItems[index];
+            var swapItem = Items[index];
             swapItem.Position = position;
-            swapItems[index] = swapItem;
+            Items[index] = swapItem;
         }
 
         public void SetItem(Guid id)
@@ -100,7 +100,7 @@ namespace Feature.Model
 
             try
             {
-                return swapItems.First(x => x.Id == currentId);
+                return Items.First(x => x.Id == currentId);
             }
             catch
             {
@@ -127,7 +127,7 @@ namespace Feature.Model
             }
 
             // Filter and process items in range
-            var itemsInRange = swapItems
+            var itemsInRange = Items
                 .Where(item => Vector3.Distance(item.Position, position) < maxDistance)
                 .ToList();
 
@@ -163,9 +163,9 @@ namespace Feature.Model
             return nearestItem;
         }
 
-        public List<SwapItem> ItemInRangeHilight(Vector3 position, float maxDistance)
+        public List<SwapItem> GetItemsInRange(Vector3 position, float maxDistance)
         {
-            var itemsInRange = swapItems
+            var itemsInRange = Items
                 .Where(item => Vector3.Distance(item.Position, position) < maxDistance)
                 .ToList();
             return itemsInRange;

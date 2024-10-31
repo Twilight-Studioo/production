@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using Core.Utilities;
 using Feature.Common.Constants;
 using Feature.Interface;
+using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
 
@@ -13,8 +15,6 @@ namespace Feature.Component.Environment
 {
     public delegate IEnemy OnRequestSpawnEvent(Transform transform);
 
-    public delegate Transform GetTransform();
-
     public class EnemyStart : MonoBehaviour
     {
         [SerializeField] private EnemyType spawnEnemyType = EnemyType.SimpleEnemy1;
@@ -23,16 +23,21 @@ namespace Feature.Component.Environment
         private Vector2 resumeDistance = new(20f, 10f);
 
         [SerializeField, Header("巡回地点"),] private List<Vector3> points;
-        
+
         [SerializeField] private float respawnTimeSec = 5f;
 
-        public GetTransform GetPlayerTransform;
+        [SerializeField, Header("上書きする設定"), CanBeNull,]
+        private EnemyParams overrideParams;
 
-        private bool isSpawned;
-        
         private bool canSpawn = true;
 
+        private bool isSpawned;
+
         public OnRequestSpawnEvent OnRequestSpawn;
+
+        private Transform playerTransform;
+
+        [CanBeNull] public EnemyParams GetParam => overrideParams;
 
         public List<Vector3> Points => points;
 
@@ -58,12 +63,17 @@ namespace Feature.Component.Environment
 
         private void SpawnCheck()
         {
-            if (!canSpawn || isSpawned || OnRequestSpawn == null || GetPlayerTransform == null)
+            if (!playerTransform)
+            {
+                playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+            }
+
+            if (!canSpawn || isSpawned || OnRequestSpawn == null || !playerTransform)
             {
                 return;
             }
 
-            if (Vector3.Distance(transform.position, GetPlayerTransform().position) > resumeDistance.x)
+            if (Vector3.Distance(transform.position, playerTransform.position) > resumeDistance.x)
             {
                 return;
             }

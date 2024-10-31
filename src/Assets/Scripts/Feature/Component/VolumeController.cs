@@ -1,7 +1,12 @@
-﻿using UniRx;
+﻿#region
+
+using System;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+
+#endregion
 
 namespace Feature.Component
 {
@@ -10,20 +15,24 @@ namespace Feature.Component
         //URP関連
         [SerializeField] private Volume volume;
 
+        [Header("intensityを最大どこまで高くするか"), Range(0.3f, 1.0f), SerializeField,]
+        private float endIntensity = 5.0f;
+
+        [Header("赤になるまでの時間"), SerializeField,] private float vignetteChange = 0.5f;
+
+        [Header("intensityが戻るまでの時間"), SerializeField,]
+        private float vignetteChangeDuration = 0.5f;
+
+        [Header("白黒の濃さ"), SerializeField,] private float monochrome = 50;
+
+        private readonly float startIntensity = 0.3f;
+
         private ColorAdjustments colorAdjustments; // 追加: ColorAdjustments の参照
         private ColorCurves colorCurves;
+
+        private IDisposable graduallyDisposable;
         private Vignette vignette;
-        private float startIntensity =0.3f;
-        [Header("intensityを最大どこまで高くするか")]
-        [Range(0.3f,1.0f)]
-        [SerializeField]private float endIntensity=5.0f;
-        [Header("赤になるまでの時間")]
-        [SerializeField]private float vignetteChange = 0.5f;
-        [Header("intensityが戻るまでの時間")]
-        [SerializeField]private float endvignetteChange = 0.5f;
-        [Header("白黒の濃さ")]
-        [SerializeField]private float monochrome = 50;
-        
+
         private void Awake()
         {
             if (volume != null)
@@ -36,68 +45,88 @@ namespace Feature.Component
         public void SwapStartUrp()
         {
             EnableGrayscale(monochrome);
-            GraduallyChangeVignetteColorAndIntensity(Color.black, Color.red, startIntensity, endIntensity,vignetteChange);
+            GraduallyChangeVignetteColorAndIntensity(Color.black, Color.red, startIntensity, endIntensity,
+                vignetteChange);
         }
 
         public void SwapFinishUrp()
         {
             DisableGrayscale();
             VignetteBlackColor();
-            GraduallyChangeVignetteColorAndIntensity(Color.red, Color.black, endIntensity, startIntensity, endvignetteChange);
-            CancelInvoke("VignetteRedColor");
+            GraduallyChangeVignetteColorAndIntensity(Color.red, Color.black, endIntensity, startIntensity,
+                vignetteChangeDuration);
         }
 
-        private void GraduallyChangeVignetteColorAndIntensity(Color startColor, Color endColor, float startIntensity, float endIntensity, float duration)
+        private void GraduallyChangeVignetteColorAndIntensity(Color startColor, Color endColor, float startIntensity,
+            float endIntensity, float duration)
         {
-            if (vignette == null) return;
+            if (vignette == null)
+            {
+                return;
+            }
 
-            float time = 0f;
-
-            Observable.EveryUpdate()
+            var time = 0f;
+            graduallyDisposable?.Dispose();
+            ChangeVignetteIntensityTo(startIntensity);
+            ChangeVignetteColorTo(startColor);
+            graduallyDisposable = Observable.EveryUpdate()
                 .TakeWhile(_ => time < duration)
                 .Subscribe(_ =>
                     {
                         time += Time.deltaTime;
-                        
-                        Color newColor = Color.Lerp(startColor, endColor, time / duration);
+
+                        var newColor = Color.Lerp(startColor, endColor, time / duration);
                         ChangeVignetteColorTo(newColor);
-                        
-                        float newIntensity = Mathf.Lerp(startIntensity, endIntensity, time / duration);
+
+                        var newIntensity = Mathf.Lerp(startIntensity, endIntensity, time / duration);
                         ChangeVignetteIntensityTo(newIntensity);
                     },
                     () =>
                     {
                         ChangeVignetteColorTo(endColor);
                         ChangeVignetteIntensityTo(endIntensity);
-                    });
+                    })
+                .AddTo(this);
         }
+
         private void ChangeVignetteIntensityTo(float newIntensity)
         {
-            if (vignette != null) vignette.intensity.Override(newIntensity);
+            if (vignette)
+            {
+                vignette.intensity.Override(newIntensity);
+            }
         }
 
         private void VignetteBlackColor()
         {
-            if (vignette != null)
-                ChangeVignetteColorTo(Color.black);
+            ChangeVignetteColorTo(Color.black);
         }
 
         // Vignetteの色を変更する
         private void ChangeVignetteColorTo(Color newColor)
         {
-            if (vignette != null) vignette.color.Override(newColor);
+            if (vignette)
+            {
+                vignette.color.Override(newColor);
+            }
         }
 
         // 画面を白黒にする
         private void EnableGrayscale(float monochrome)
         {
-            if (colorAdjustments != null) colorAdjustments.saturation.Override(-monochrome);
+            if (colorAdjustments)
+            {
+                colorAdjustments.saturation.Override(-monochrome);
+            }
         }
 
         // 白黒を解除する
         private void DisableGrayscale()
         {
-            if (colorAdjustments != null) colorAdjustments.saturation.Override(0f);
+            if (colorAdjustments)
+            {
+                colorAdjustments.saturation.Override(0f);
+            }
         }
     }
 }

@@ -9,24 +9,25 @@ using UnityEngine;
 
 namespace Feature.Interface
 {
-    public delegate void OnTakeDamage();
+    public delegate uint GetHealth();
 
     public interface IEnemyAgent
     {
+        public GetHealth OnGetHealth { set; }
+
+        public EnemyType EnemyType { get; }
+
+        public Action RequireDestroy { set; }
         public void FlowExecute();
 
         public void FlowCancel();
 
         public void SetParams(EnemyParams @params);
 
-        public void SetPlayerTransform(Transform playerTransform);
-
         public void SetPatrolPoints(List<Vector3> pts);
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
 
         public event Action OnTakeDamageEvent;
-
-        public event Action<ISwappable> OnAddSwappableItem;
     }
 }

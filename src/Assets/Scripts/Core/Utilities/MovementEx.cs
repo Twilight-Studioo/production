@@ -14,7 +14,7 @@ namespace Core.Utilities
             var startTime = Time.time;
             while (Time.time < startTime + duration)
             {
-                transform.position += direction.normalized * strength * Time.deltaTime;
+                transform.position += direction.normalized * (strength * Time.deltaTime);
                 yield return null;
             }
         }

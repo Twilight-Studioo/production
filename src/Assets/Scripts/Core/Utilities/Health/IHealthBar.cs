@@ -1,4 +1,8 @@
+#region
+
 using System;
+
+#endregion
 
 namespace Core.Utilities.Health
 {
@@ -9,7 +13,7 @@ namespace Core.Utilities.Health
         public uint CurrentHealth { get; }
 
         public bool IsVisible { get; }
-        
+
         public event Action OnRemoveEvent;
     }
 }

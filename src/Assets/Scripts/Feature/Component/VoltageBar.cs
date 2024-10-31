@@ -1,15 +1,19 @@
-﻿using UnityEngine;
+﻿#region
+
+using UnityEngine;
 using UnityEngine.UI;
+
+#endregion
 
 namespace Feature.Component
 {
-    public class VoltageBar :MonoBehaviour
+    public class VoltageBar : MonoBehaviour
     {
         [SerializeField] private Slider voltageBar;
         [SerializeField] private Image fill;
-        
-        
-        public void UpdateVoltageBar(int voltageValue,int useVoltageAttackValue)
+
+
+        public void UpdateVoltageBar(int voltageValue, int useVoltageAttackValue)
         {
             if (voltageValue >= useVoltageAttackValue)
             {
@@ -19,7 +23,8 @@ namespace Feature.Component
             {
                 fill.color = Color.blue;
             }
-            voltageBar.value = (float)voltageValue;
+
+            voltageBar.value = voltageValue;
         }
     }
 }
