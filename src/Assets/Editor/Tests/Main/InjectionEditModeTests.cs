@@ -19,6 +19,7 @@ namespace Editor.Tests.Main
     {
         private GameManager gameManager;
         private Mock<IGameController> mockGameController;
+        private Mock<IInputController> mockInputController;
         private GameObject playerGameObject;
         private GameObject playerPrefab;
         private PlayerStart playerStart;
@@ -29,6 +30,7 @@ namespace Editor.Tests.Main
         {
             // 依存関係のモックを作成
             mockGameController = new();
+            mockInputController = new();
 
             // テスト用のGameObjectとPlayerStartコンポーネントを作成
             var playerStartGameObject = new GameObject();
@@ -46,7 +48,7 @@ namespace Editor.Tests.Main
                 ?.SetValue(playerStart, playerPrefab);
 
             // GameManagerのインスタンスを作成
-            gameManager = new(playerStart, mockGameController.Object);
+            gameManager = new(playerStart, mockGameController.Object, mockInputController.Object);
         }
 
         [Test]

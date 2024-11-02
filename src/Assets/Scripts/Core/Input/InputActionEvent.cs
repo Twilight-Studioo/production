@@ -53,6 +53,16 @@ namespace Core.Input
             Canceled = null;
             action.Disable();
         }
+        
+        public void Pause()
+        {
+            action.Disable();
+        }
+        
+        public void Resume()
+        {
+            action.Enable();
+        }
 
         public InputAction GetInputAction() => action;
     }
