@@ -1,6 +1,5 @@
 #region
 
-using Core.Navigation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

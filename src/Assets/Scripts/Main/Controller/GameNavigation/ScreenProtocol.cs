@@ -26,10 +26,6 @@ namespace Main.Controller.GameNavigation
             Destroy(gameObject);
         }
 
-        private partial void OnCancel_Internal(InputAction.CallbackContext ctx);
-        private partial void OnNavigation_Internal(InputAction.CallbackContext ctx);
-        private partial void OnClick_Internal(InputAction.CallbackContext ctx);
-
         public void OnCreate()
         {
             cancelAction = ActionAccessor.CreateAction(UI.Cancel);
@@ -41,9 +37,9 @@ namespace Main.Controller.GameNavigation
         {
             gameObject.SetActive(true);
             cancelAction.Performed += OnCancel_Internal;
-           
+
             navigateAction.Performed += OnNavigation_Internal;
-        
+
             clickAction.Performed += OnClick_Internal;
         }
 
@@ -54,5 +50,9 @@ namespace Main.Controller.GameNavigation
             clickAction.Performed -= OnClick_Internal;
             gameObject.SetActive(false);
         }
+
+        private partial void OnCancel_Internal(InputAction.CallbackContext ctx);
+        private partial void OnNavigation_Internal(InputAction.CallbackContext ctx);
+        private partial void OnClick_Internal(InputAction.CallbackContext ctx);
     }
 }
