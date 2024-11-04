@@ -3,6 +3,7 @@
 using Core.Input;
 using Core.Input.Generated;
 using Core.Navigation;
+using Core.Utilities;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -28,26 +29,25 @@ namespace Main.Controller.GameNavigation
 
         public void OnCreate()
         {
-            cancelAction = ActionAccessor.CreateAction(UI.Cancel);
-            navigateAction = ActionAccessor.CreateAction(UI.Navigate);
-            clickAction = ActionAccessor.CreateAction(UI.Submit);
+            cancelAction = ActionAccessor.CreateAction(UI.Cancel).CheckNull();
+            navigateAction = ActionAccessor.CreateAction(UI.Navigate).CheckNull();
+            clickAction = ActionAccessor.CreateAction(UI.Submit).CheckNull();
         }
 
         public void OnShow()
         {
-            gameObject.SetActive(true);
             cancelAction.Performed += OnCancel_Internal;
-
             navigateAction.Performed += OnNavigation_Internal;
-
             clickAction.Performed += OnClick_Internal;
+
+            gameObject.SetActive(true);
         }
 
         public void OnHide()
         {
-            cancelAction.Performed -= OnCancel_Internal;
-            navigateAction.Performed -= OnNavigation_Internal;
-            clickAction.Performed -= OnClick_Internal;
+            cancelAction.CheckNull().Performed -= OnCancel_Internal;
+            navigateAction.CheckNull().Performed -= OnNavigation_Internal;
+            clickAction.CheckNull().Performed -= OnClick_Internal;
             gameObject.SetActive(false);
         }
 

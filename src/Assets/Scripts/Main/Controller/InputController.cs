@@ -1,12 +1,12 @@
 #region
 
-using System;
 using Core.Input;
 using Core.Input.Generated;
 using Core.Navigation;
 using Core.Utilities;
 using Feature.Interface;
 using Main.Controller.GameNavigation;
+using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -45,9 +45,15 @@ namespace Main.Controller
         public void Start()
         {
             controller.Hide();
-            var pauseActionEvent = accessor.CreateAction(Player.Pause) ??
-                                   throw new ArgumentNullException(nameof(Player.Pause));
+            var pauseActionEvent = accessor.CreateAction(Player.Pause).CheckNull();
             pauseActionEvent.Performed += OnPauseReserved;
+
+            Observable.EveryUpdate()
+                .Select(_ => controller.IsShowing)
+                .DistinctUntilChanged()
+                .Subscribe(NavigationShowing)
+                .AddTo(ObjectFactory.SuperObject);
+            NavigationShowing(controller.IsShowing);
         }
 
         private void OnPauseReserved(InputAction.CallbackContext ctx)
@@ -56,25 +62,29 @@ namespace Main.Controller
             {
                 controller.Reset();
                 controller.Navigate(Navigation.Pause);
+            }
+            else if (controller.CurrentDestination.Route == Navigation.Pause)
+            {
+                if (controller.IsShowing)
+                {
+                    controller.Hide();
+                }
+                else
+                {
+                    controller.Show();
+                }
+            }
+        }
+        private void NavigationShowing(bool isShowing)
+        {
+            if (isShowing)
+            {
                 lastTimeScale = Time.timeScale;
                 Time.timeScale = 0;
             }
             else
             {
-                if (controller.CurrentDestination.Route == Navigation.Pause)
-                {
-                    if (controller.IsShowing)
-                    {
-                        controller.Hide();
-                        Time.timeScale = lastTimeScale;
-                    }
-                    else
-                    {
-                        controller.Show();
-                        lastTimeScale = Time.timeScale;
-                        Time.timeScale = 0;
-                    }
-                }
+                Time.timeScale = lastTimeScale;
             }
         }
     }

@@ -1,7 +1,6 @@
 #region
 
 using System;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 #endregion
@@ -54,21 +53,6 @@ namespace Core.Input
             Canceled = null;
             action.Disable();
         }
-
-        public void Pause()
-        {
-            action.started -= OnStarted;
-            action.performed -= OnPerformed;
-            action.canceled -= OnCanceled;
-        }
-
-        public void Resume()
-        {
-            action.started += OnStarted;
-            action.performed += OnPerformed;
-            action.canceled += OnCanceled;
-        }
-
         public InputAction GetInputAction() => action;
     }
 }

@@ -15,7 +15,7 @@ namespace Core.Navigation
             var instance = createScreen(destination);
             if (instance == null)
             {
-                throw new("Screen must be derived from AScreen");
+                throw new InvalidOperationException("Screen must be derived from AScreen");
             }
 
             currentDestination = new(destination.Route, destination.Content, instance);
@@ -26,7 +26,8 @@ namespace Core.Navigation
         private void NavigateBackstack(T route)
         {
             var destination = backStack.FirstOrDefault(x => x.Route.Equals(route));
-            currentDestination = destination ?? throw new($"Screen not found for route {route}");
+            currentDestination = destination ??
+                                 throw new InvalidOperationException($"Screen not found for route {route}");
             currentDestination.Show();
         }
 

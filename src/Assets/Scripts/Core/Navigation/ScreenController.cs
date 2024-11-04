@@ -25,7 +25,7 @@ namespace Core.Navigation
 
         public Destination<T> CurrentDestination => currentDestination;
 
-        public bool IsShowing => currentDestination is { IsHidden: false, };
+        public bool IsShowing => currentDestination is { IsHidden: false };
         private partial void PopBackstack_Internal();
 
         private partial void Navigate_Internal(T route);
@@ -68,8 +68,8 @@ namespace Core.Navigation
             Dismiss();
             while (backStack.Count > 0)
             {
-                Dismiss();
                 currentDestination = backStack.Pop();
+                Dismiss();
             }
         }
 

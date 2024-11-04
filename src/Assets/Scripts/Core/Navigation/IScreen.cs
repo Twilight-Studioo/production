@@ -1,7 +1,3 @@
-#region
-
-#endregion
-
 namespace Core.Navigation
 {
     public interface IScreen

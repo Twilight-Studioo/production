@@ -17,7 +17,7 @@ namespace Core.Navigation
     internal record DestinationStack<T>(T Route, GameObject Content, IScreen Instance)
         : Destination<T>(Route, Content) where T : Enum
     {
-        public IScreen Instance { get; } = Instance;
+        internal IScreen Instance { get; } = Instance;
 
         internal bool IsHidden { get; private set; } = true;
 

@@ -1,6 +1,6 @@
 namespace Core.Utilities
 {
-    public static class Exception
+    public static class NullChecker
     {
         public static T CheckNull<T>(this T obj)
         {
