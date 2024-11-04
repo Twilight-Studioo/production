@@ -1,9 +1,13 @@
 using Core.Navigation;
+using Core.Utilities;
 using Main.Installer;
 using UnityEngine;
 
 namespace Main.Controller.GameNavigation
 {
+    /// <summary>
+    /// ゲーム画面内のナビゲーション状態を定義します
+    ///  </summary>
     public enum Navigation
     {
         Pause,
@@ -29,10 +33,10 @@ namespace Main.Controller.GameNavigation
                     installer.Container.Inject(instance);
                     return instance;
                 }, 
-                new Destination<Navigation>(Navigation.Pause, pausePrefab),
-                new Destination<Navigation>(Navigation.Option, optionPrefab),
-                new Destination<Navigation>(Navigation.Volumes, volumesPrefab),
-                new Destination<Navigation>(Navigation.Controls, controlsPrefab)
+                new Destination<Navigation>(Navigation.Pause, pausePrefab.CheckNull()),
+                new Destination<Navigation>(Navigation.Option, optionPrefab.CheckNull()),
+                new Destination<Navigation>(Navigation.Volumes, volumesPrefab.CheckNull()),
+                new Destination<Navigation>(Navigation.Controls, controlsPrefab.CheckNull())
             );
         }
     }

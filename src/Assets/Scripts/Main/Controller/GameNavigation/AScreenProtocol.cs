@@ -25,15 +25,15 @@ namespace Main.Controller.GameNavigation
         public override void OnCreate()
         {
             cancelAction = ActionAccessor.CreateAction(UI.Cancel);
-            cancelAction.Started += OnCancel_Internal;
+            cancelAction.Performed += OnCancel_Internal;
             cancelAction.Pause();
             
             navigateAction = ActionAccessor.CreateAction(UI.Navigate);
-            navigateAction.Started += OnNavigation_Internal;
+            navigateAction.Performed += OnNavigation_Internal;
             navigateAction.Pause();
 
             clickAction = ActionAccessor.CreateAction(UI.Submit);
-            clickAction.Started += OnClick_Internal;
+            clickAction.Performed += OnClick_Internal;
             clickAction.Pause();
         }
         
@@ -57,30 +57,5 @@ namespace Main.Controller.GameNavigation
             navigateAction.Clear();
             clickAction.Clear();
         }
-    }
-
-    public abstract partial class AScreenProtocol : AScreen
-    {
-        private partial void OnCancel_Internal(InputAction.CallbackContext ctx)
-        {
-            OnCancel();
-        }
-        
-        protected abstract void OnCancel();
-        
-        private partial void OnNavigation_Internal(InputAction.CallbackContext ctx)
-        {
-            var value = ctx.ReadValue<Vector2>();
-            OnNavigation(value);
-        }
-        
-        protected abstract void OnNavigation(Vector2 value);
-        
-        private partial void OnClick_Internal(InputAction.CallbackContext ctx)
-        {
-            OnClick();
-        }
-        protected abstract void OnClick();
-        
     }
 }
