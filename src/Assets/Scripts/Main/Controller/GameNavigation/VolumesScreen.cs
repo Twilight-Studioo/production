@@ -1,11 +1,15 @@
+#region
+
 using UnityEngine;
+
+#endregion
 
 namespace Main.Controller.GameNavigation
 {
     /// <summary>
-    /// 音量調整画面を制御するクラス
+    ///     音量調整画面を制御するクラス
     /// </summary>
-    public class VolumesScreen: AScreenProtocol
+    public class VolumesScreen : ScreenProtocol
     {
         protected override void OnCancel()
         {

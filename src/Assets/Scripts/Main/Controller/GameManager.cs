@@ -1,6 +1,7 @@
 #region
 
 using System;
+using Core.Utilities;
 using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Presenter;
@@ -27,9 +28,9 @@ namespace Main.Controller
             IInputController inputController
         )
         {
-            this.gameController = gameController;
-            this.playerStart = playerStart;
-            this.inputController = inputController;
+            this.gameController = gameController.CheckNull();
+            this.playerStart = playerStart.CheckNull();
+            this.inputController = inputController.CheckNull();
         }
 
         public void Dispose()

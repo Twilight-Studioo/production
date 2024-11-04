@@ -1,5 +1,10 @@
+#region
+
 using System;
 using System.Linq;
+using UnityEngine;
+
+#endregion
 
 namespace Core.Navigation
 {
@@ -11,8 +16,9 @@ namespace Core.Navigation
             var instance = createScreen(destination);
             if (instance == null)
             {
-                throw new ("Screen must be derived from AScreen");
+                throw new("Screen must be derived from AScreen");
             }
+
             currentDestination = new(destination.Route, destination.Content, instance);
             currentDestination.Instance.OnCreate();
             currentDestination.Show();
@@ -21,7 +27,7 @@ namespace Core.Navigation
         private void NavigateBackstack(T route)
         {
             var destination = backStack.FirstOrDefault(x => x.Route.Equals(route));
-            currentDestination = destination ?? throw new ($"Screen not found for route {route}");
+            currentDestination = destination ?? throw new($"Screen not found for route {route}");
             currentDestination.Show();
         }
 
@@ -31,10 +37,12 @@ namespace Core.Navigation
             {
                 return;
             }
+
             currentDestination.Hide();
             currentDestination.Instance.OnDestroy();
             currentDestination = null;
         }
+
         private partial void PopBackstack_Internal()
         {
             Dismiss();
@@ -43,11 +51,9 @@ namespace Core.Navigation
                 currentDestination = null;
                 return;
             }
-            else
-            {
-                currentDestination = backStack.Dequeue();
-                currentDestination.Show();
-            }
+
+            currentDestination = backStack.Pop();
+            currentDestination.Show();
         }
 
         private partial void Navigate_Internal(T route)
@@ -60,7 +66,7 @@ namespace Core.Navigation
             if (currentDestination != null)
             {
                 currentDestination.Hide();
-                backStack.Enqueue(currentDestination);
+                backStack.Push(currentDestination);
             }
 
             if (backStack.FirstOrDefault(x => x.Route.Equals(route)) != null)
@@ -68,21 +74,21 @@ namespace Core.Navigation
                 NavigateBackstack(route);
                 return;
             }
-         
+
             NavigateNew(route);
         }
-        
+
         private partial void Replace_Internal(T route)
         {
             Dismiss();
             NavigateNew(route);
         }
-        
+
         private partial void Hide_Internal()
         {
             currentDestination?.Hide();
         }
-        
+
         private partial void Show_Internal()
         {
             currentDestination?.Show();

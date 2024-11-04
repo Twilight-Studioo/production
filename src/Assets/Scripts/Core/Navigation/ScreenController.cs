@@ -1,21 +1,31 @@
+#region
+
 using System;
 using System.Collections.Generic;
+
+#endregion
 
 namespace Core.Navigation
 {
     public partial class ScreenController<T> where T : Enum
     {
-        public delegate AScreen CreateScreen(Destination<T> destination);
+        public delegate IScreen CreateScreen(Destination<T> destination);
 
-        private readonly Queue<DestinationStack<T>> backStack = new();
+        private readonly Stack<DestinationStack<T>> backStack = new();
+
+        private CreateScreen createScreen;
 
         private DestinationStack<T> currentDestination;
 
-        public Destination<T> CurrentDestination => currentDestination;
-
         private Destination<T>[] screens;
 
-        private CreateScreen createScreen;
+        private ScreenController()
+        {
+        }
+
+        public Destination<T> CurrentDestination => currentDestination;
+
+        public bool IsShowing => currentDestination is { IsHidden: false, };
         private partial void PopBackstack_Internal();
 
         private partial void Navigate_Internal(T route);
@@ -28,10 +38,6 @@ namespace Core.Navigation
 
         private partial Destination<T> FindScreen(T route);
 
-        private ScreenController()
-        {
-        }
-        
         public static ScreenController<T> Create(CreateScreen createScreen, params Destination<T>[] args)
         {
             var controller = new ScreenController<T>
@@ -51,34 +57,31 @@ namespace Core.Navigation
         {
             Navigate_Internal(route);
         }
-        
+
         public void Replace(T route)
         {
             Replace_Internal(route);
         }
-        
+
         public void Reset()
         {
             Dismiss();
             while (backStack.Count > 0)
             {
                 Dismiss();
-                currentDestination = backStack.Dequeue();
+                currentDestination = backStack.Pop();
             }
         }
-        
-        
+
 
         public void Hide()
         {
             Hide_Internal();
         }
-        
+
         public void Show()
         {
             Show_Internal();
         }
-        
-        public bool IsShowing => currentDestination is { IsHidden: false };
     }
 }

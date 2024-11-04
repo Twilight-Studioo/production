@@ -1,5 +1,9 @@
+#region
+
 using System;
 using UnityEngine;
+
+#endregion
 
 namespace Core.Navigation
 {
@@ -9,33 +13,34 @@ namespace Core.Navigation
 
         public GameObject Content { get; } = Content;
     }
-    
-    internal record DestinationStack<T>(T Route, GameObject Content, AScreen Instance): Destination<T>(Route, Content) where T : Enum {
-        public AScreen Instance { get; } = Instance;
-        
+
+    internal record DestinationStack<T>(T Route, GameObject Content, IScreen Instance)
+        : Destination<T>(Route, Content) where T : Enum
+    {
+        public IScreen Instance { get; } = Instance;
+
         internal bool IsHidden { get; private set; } = true;
-        
+
         public void Show()
         {
             if (!IsHidden)
             {
                 return;
             }
-            Instance.gameObject.SetActive(true);
+
             Instance.OnShow();
             IsHidden = false;
         }
-        
+
         public void Hide()
         {
             if (IsHidden)
             {
                 return;
             }
-            Instance.gameObject.SetActive(false);
+
             Instance.OnHide();
             IsHidden = true;
         }
     }
-
 }
