@@ -18,7 +18,6 @@ namespace Main.Controller.GameNavigation
         [SerializeField] private TextMeshProUGUI controlsText;
         [SerializeField] private TextMeshProUGUI backText;
 
-        
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
 
         private IDisposable disposable;
