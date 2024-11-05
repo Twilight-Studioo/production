@@ -1,6 +1,7 @@
 #region
 
 using System;
+using Core.Utilities;
 using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Presenter;
@@ -14,6 +15,7 @@ namespace Main.Controller
     public class GameManager : IStartable, IDisposable
     {
         private readonly IGameController gameController;
+        private readonly IInputController inputController;
         private readonly PlayerPresenter playerPresenter;
         private readonly PlayerStart playerStart;
 
@@ -22,11 +24,13 @@ namespace Main.Controller
         [Inject]
         public GameManager(
             PlayerStart playerStart,
-            IGameController gameController
+            IGameController gameController,
+            IInputController inputController
         )
         {
-            this.gameController = gameController;
-            this.playerStart = playerStart;
+            this.gameController = gameController.CheckNull();
+            this.playerStart = playerStart.CheckNull();
+            this.inputController = inputController.CheckNull();
         }
 
         public void Dispose()
@@ -50,6 +54,7 @@ namespace Main.Controller
 
             gameController.OnPossess(player);
             gameController.Start();
+            inputController.Start();
         }
 
         public static void Register(IContainerBuilder builder)
