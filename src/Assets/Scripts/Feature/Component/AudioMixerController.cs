@@ -10,6 +10,7 @@ namespace Feature.Component
         [SerializeField] private AudioMixer audioMixer;
         [SerializeField] private Slider bgmSlider;
         [SerializeField] private Slider seSlider;
+        [SerializeField] private Slider masterSlider;
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip audioClip;
 
@@ -17,6 +18,7 @@ namespace Feature.Component
         {
             InitializeSlider(bgmSlider, "BGM");
             InitializeSlider(seSlider, "SE");
+            InitializeSlider(masterSlider,"Master");
         }
 
         private void InitializeSlider(Slider slider, string parameterName)
@@ -31,6 +33,10 @@ namespace Feature.Component
             }
         }
 
+        public void SetMaster(float volume)
+        {
+            SetVolume("Master",volume);
+        }
         public void SetBGM(float volume)
         {
             SetVolume("BGM", volume);
@@ -44,7 +50,6 @@ namespace Feature.Component
                 audioSource.PlayOneShot(audioClip);
             }
         }
-
         private void SetVolume(string parameterName, float volume)
         {
             volume = Mathf.Clamp(volume, 0.0001f, 1f);
