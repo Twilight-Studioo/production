@@ -3,7 +3,9 @@ using System.Collections;
 
 public class GunnerController : MonoBehaviour
 {
-    public EnemyParams enemyParams; 
+    public EnemyParams enemyParams;
+    public GameObject bulletPrefab; 
+    public Transform bulletSpawnPoint;
 
     private Transform targetPlayer;
     private Rigidbody rb;
@@ -58,12 +60,41 @@ public class GunnerController : MonoBehaviour
     {
         if (targetPlayer == null || isAttackCooldown) return;
 
+        if (isSpecialAttack)
+        {
+            GroundMovement();
+        }
+        else
+        {
+            AirJumpMovement();
+        }
+
+        FacePlayer();
+    }
+
+    private void FacePlayer()
+    {
+        if (targetPlayer == null) return;
         Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
         directionToPlayer.y = 0;
 
-        rb.MovePosition(transform.position + directionToPlayer * enemyParams.ForwardTeleportDistance * Time.fixedDeltaTime);
+        transform.rotation = Quaternion.LookRotation(directionToPlayer);
+    }
 
-        FacePlayer(directionToPlayer);
+    private void AirJumpMovement()
+    {
+        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
+        directionToPlayer.y = 0;
+
+        rb.AddForce(new Vector3(0, enemyParams.JumpHeight, 0), ForceMode.Impulse); 
+    }
+
+    private void GroundMovement()
+    {
+        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
+        directionToPlayer.y = 0;
+
+        rb.MovePosition(transform.position + directionToPlayer * enemyParams.MoveSpeed * Time.fixedDeltaTime); // 水平移动
     }
 
     private IEnumerator MoveThenAttack()
@@ -98,6 +129,11 @@ public class GunnerController : MonoBehaviour
         }
     }
 
+    public void Shoot()
+    {
+        Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+    }
+
     private IEnumerator SpecialMoveCoroutine()
     {
         if (targetPlayer == null) yield break;
@@ -105,14 +141,13 @@ public class GunnerController : MonoBehaviour
         isSpecialAttack = true;
 
         rb.AddForce(new Vector3(0, enemyParams.JumpHeight, 0), ForceMode.Impulse);
-
         yield return new WaitForSeconds(0.5f);
 
-        Vector3 targetPosition = new Vector3(targetPlayer.position.x, transform.position.y, transform.position.z);
+      // Vector3 targetPosition = new Vector3(targetPlayer.position.x, transform.position.y, transform.position.z);
 
-        rb.MovePosition(new Vector3(targetPosition.x, transform.position.y, transform.position.z));
+      // rb.MovePosition(new Vector3(targetPosition.x, transform.position.y, transform.position.z));
 
-        yield return new WaitForSeconds(0.5f);
+      // yield return new WaitForSeconds(0.5f);
 
         SpecialAttack();
 
@@ -121,7 +156,6 @@ public class GunnerController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         rb.AddForce(new Vector3(0, -enemyParams.JumpHeight, 0), ForceMode.Impulse);
-
         yield return new WaitForSeconds(0.5f);
 
         isSpecialAttack = false;
@@ -162,12 +196,30 @@ public class GunnerController : MonoBehaviour
 
     public void Attack()
     {
+        Shoot();
         Debug.Log("Performing Attack");
     }
 
     public void SpecialAttack()
     {
         Debug.Log("Performing Special Attack");
+    }
+
+    public void StartAttackCooldown(float cooldownTime)
+    {
+        StartCoroutine(AttackCooldownCoroutine(cooldownTime));
+    }
+
+    public bool ShouldPerformSpecialAttack()
+    {
+        return attackCount >= enemyParams.AttacksBeforeSpecialMove;
+    }
+
+    private IEnumerator AttackCooldownCoroutine(float cooldownTime)
+    {
+        isAttackCooldown = true;
+        yield return new WaitForSeconds(cooldownTime);
+        isAttackCooldown = false;
     }
 
     public bool IsOutOfAmmo()

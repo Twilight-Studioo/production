@@ -78,6 +78,15 @@ public class AttackState : IState
         if (!_gunnerController.IsOutOfAmmo())
         {
             _gunnerController.PerformAttack();
+
+            if (_gunnerController.ShouldPerformSpecialAttack())
+            {
+                _gunnerController.StartAttackCooldown(_gunnerController.enemyParams.SpecialAttackCooldown);
+            }
+            else
+            {
+                _gunnerController.StartAttackCooldown(_gunnerController.enemyParams.BasicAttackCooldown);
+            }
         }
         else
         {

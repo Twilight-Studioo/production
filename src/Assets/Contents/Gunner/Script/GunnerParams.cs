@@ -3,6 +3,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GunnerParams.asset", menuName = "Params/GunnerParams", order = 1)]
 public class EnemyParams : ScriptableObject
 {
+    [Tooltip("普通攻撃のクールタイム"), Header("普通攻撃のクールタイム")]
+    public float BasicAttackCooldown = 3f;
+
+    [Tooltip("特殊攻撃のクールタイム"), Header("特殊攻撃のクールタイム")]
+    public float SpecialAttackCooldown = 5f; 
+
     [Tooltip("攻撃範囲（プレイヤーに攻撃できる距離）"),Header("攻撃範囲（プレイヤーに攻撃できる距離）")]
     public float AttackRange = 10f;
 
