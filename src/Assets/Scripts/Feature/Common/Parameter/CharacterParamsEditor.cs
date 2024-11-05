@@ -22,6 +22,7 @@ namespace Feature.Common.Parameter
         private SerializedProperty jumpPower;
         private SerializedProperty maxComboCount;
 
+
         private SerializedProperty maxHasStamina;
         private SerializedProperty recoveryResourceTimeMillis;
         private SerializedProperty recoveryTimeMillis;
@@ -29,6 +30,8 @@ namespace Feature.Common.Parameter
         private bool showStaminaParameters = true;
 
         private bool showSwapParameters = true;
+
+        private bool showAttackPrameters = true;
 
         private SerializedProperty snapPower;
         private SerializedProperty speed;
@@ -42,6 +45,9 @@ namespace Feature.Common.Parameter
         private SerializedProperty swapReturnTimeMillis;
 
         private SerializedProperty useDaggerUseStamina;
+        
+        private SerializedProperty slashEffect;
+        private SerializedProperty normalSlashEffect;
 
         private void OnEnable()
         {
@@ -50,10 +56,6 @@ namespace Feature.Common.Parameter
             speed = serializedObject.FindProperty("speed");
             jumpPower = serializedObject.FindProperty("jumpPower");
             attackPower = serializedObject.FindProperty("attackPower");
-            comboTimeWindow = serializedObject.FindProperty("comboTimeWindow");
-            comboAngleOffset = serializedObject.FindProperty("comboAngleOffset");
-            maxComboCount = serializedObject.FindProperty("maxComboCount");
-            attackCoolTime = serializedObject.FindProperty("attackCoolTime");
 
             // スワップ関連
             swapContinueMaxMillis = serializedObject.FindProperty("swapContinueMaxMillis");
@@ -73,6 +75,14 @@ namespace Feature.Common.Parameter
             recoveryResourceTimeMillis = serializedObject.FindProperty("recoveryStaminaTimeMillis");
             useDaggerUseStamina = serializedObject.FindProperty("useDaggerUseStamina");
             snapPower = serializedObject.FindProperty("snapPower");
+            
+            //攻撃関連
+            comboTimeWindow = serializedObject.FindProperty("comboTimeWindow");
+            comboAngleOffset = serializedObject.FindProperty("comboAngleOffset");
+            maxComboCount = serializedObject.FindProperty("maxComboCount");
+            attackCoolTime = serializedObject.FindProperty("attackCoolTime");
+            slashEffect = serializedObject.FindProperty("slashEffect");
+            normalSlashEffect = serializedObject.FindProperty("normalSlashEffect");
         }
 
         public override void OnInspectorGUI()
@@ -85,10 +95,6 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(jumpPower);
             EditorGUILayout.PropertyField(attackPower);
             //EditorGUILayout.PropertyField(snapPower, new GUIContent("攻撃方向への移動量"));
-            EditorGUILayout.PropertyField(comboTimeWindow, new GUIContent("〇秒以内で連続攻撃"));
-            EditorGUILayout.PropertyField(comboAngleOffset, new GUIContent("連続攻撃時の角度変化"));
-            EditorGUILayout.PropertyField(maxComboCount, new GUIContent("連続攻撃の最大回数(*数の+1の回数、2なら3コンボまで)"));
-            EditorGUILayout.PropertyField(attackCoolTime, new GUIContent("攻撃のクールタイム"));
 
             EditorGUILayout.Space();
             showSwapParameters = EditorGUILayout.Foldout(showSwapParameters, "スワップパラメーター");
@@ -116,7 +122,17 @@ namespace Feature.Common.Parameter
                 EditorGUILayout.PropertyField(recoveryResourceTimeMillis, new GUIContent("何ミリ秒ごとにリソースが回復するか"));
                 EditorGUILayout.PropertyField(useDaggerUseStamina, new GUIContent("クナイを飛ばしたときのスタミナ消費"));
             }
-
+            EditorGUILayout.Space();
+            showAttackPrameters = EditorGUILayout.Foldout(showStaminaParameters, "攻撃パラメーター");
+            if (showStaminaParameters)
+            {
+                EditorGUILayout.PropertyField(slashEffect, new GUIContent("ボルテージ時の攻撃エフェクト"));
+                EditorGUILayout.PropertyField(normalSlashEffect, new GUIContent("非ボルテージ時の攻撃エフェクト"));
+                EditorGUILayout.PropertyField(comboTimeWindow, new GUIContent("〇秒以内で連続攻撃"));
+                EditorGUILayout.PropertyField(comboAngleOffset, new GUIContent("連続攻撃時の角度変化"));
+                EditorGUILayout.PropertyField(maxComboCount, new GUIContent("連続攻撃の最大回数(*数の+1の回数、2なら3コンボまで)"));
+                EditorGUILayout.PropertyField(attackCoolTime, new GUIContent("攻撃のクールタイム"));
+            } 
             serializedObject.ApplyModifiedProperties();
         }
     }
