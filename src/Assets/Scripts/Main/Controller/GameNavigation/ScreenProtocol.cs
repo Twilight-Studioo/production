@@ -34,7 +34,7 @@ namespace Main.Controller.GameNavigation
             clickAction = ActionAccessor.CreateAction(UI.Submit).CheckNull();
         }
 
-        public void OnShow()
+        public virtual void OnShow()
         {
             cancelAction.Performed += OnCancel_Internal;
             navigateAction.Performed += OnNavigation_Internal;
@@ -43,7 +43,7 @@ namespace Main.Controller.GameNavigation
             gameObject.SetActive(true);
         }
 
-        public void OnHide()
+        public virtual void OnHide()
         {
             cancelAction.CheckNull().Performed -= OnCancel_Internal;
             navigateAction.CheckNull().Performed -= OnNavigation_Internal;
