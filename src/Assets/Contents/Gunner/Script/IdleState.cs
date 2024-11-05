@@ -13,6 +13,7 @@ public class IdleState : IState
     public void Enter()
     {
         Debug.Log("Entering Idle State");
+        _gunnerController.PlayAnimation("GUN_standby"); 
     }
 
     public void Execute()

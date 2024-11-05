@@ -7,6 +7,7 @@ public class GunnerController : MonoBehaviour
     public GameObject bulletPrefab; 
     public Transform bulletSpawnPoint;
 
+    private Animation animationComponent;
     private Transform targetPlayer;
     private Rigidbody rb;
     private int attackCount = 0;
@@ -19,6 +20,7 @@ public class GunnerController : MonoBehaviour
 
     private void Start()
     {
+        animationComponent=GetComponent<Animation>();    
         rb = GetComponent<Rigidbody>();
         fsm = new FSM();
         FindPlayer();
@@ -34,6 +36,7 @@ public class GunnerController : MonoBehaviour
         else
         {
             fsm.Update();
+            CheckForCQBAttack();
         }
     }
 
@@ -54,6 +57,13 @@ public class GunnerController : MonoBehaviour
     public bool IsCloseEnoughToAttack()
     {
         return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.AttackRange;
+    }
+
+    private bool IsPlayerBehind()
+    {
+        Vector3 toPlayer = (targetPlayer.position - transform.position).normalized;
+        float dotProduct = Vector3.Dot(transform.forward, toPlayer);
+        return dotProduct < 0; 
     }
 
     public void MoveTowardsPlayer()
@@ -115,6 +125,13 @@ public class GunnerController : MonoBehaviour
     {
         if (isAttackCooldown || isSpecialAttack) return;
 
+        if (IsPlayerBehind())
+        {
+            PlayAnimation("GUN__attackB"); 
+            FacePlayer(); 
+            return;
+        }
+
         if (attackCount >= enemyParams.AttacksBeforeSpecialMove)
         {
             StartCoroutine(SpecialMoveCoroutine());
@@ -122,7 +139,11 @@ public class GunnerController : MonoBehaviour
         }
         else
         {
-            Attack();
+            string[] attackAnimations = { "GUN__attackFA", "GUN__attackFB", "GUN__attackFC" };
+            string selectedAnimation = attackAnimations[Random.Range(0, attackAnimations.Length)];
+            PlayAnimation(selectedAnimation);
+
+            FacePlayer(); 
             StartCoroutine(KnockbackCoroutine());
             StartCoroutine(AttackCooldownCoroutine());
             attackCount++;
@@ -143,16 +164,10 @@ public class GunnerController : MonoBehaviour
         rb.AddForce(new Vector3(0, enemyParams.JumpHeight, 0), ForceMode.Impulse);
         yield return new WaitForSeconds(0.5f);
 
-      // Vector3 targetPosition = new Vector3(targetPlayer.position.x, transform.position.y, transform.position.z);
-
-      // rb.MovePosition(new Vector3(targetPosition.x, transform.position.y, transform.position.z));
-
-      // yield return new WaitForSeconds(0.5f);
-
-        SpecialAttack();
+        PlayAnimation("GUN__beam");
+        yield return new WaitForSeconds(animationComponent["GUN__beam"].length);
 
         StartCoroutine(KnockbackCoroutine());
-
         yield return new WaitForSeconds(0.5f);
 
         rb.AddForce(new Vector3(0, -enemyParams.JumpHeight, 0), ForceMode.Impulse);
@@ -168,16 +183,17 @@ public class GunnerController : MonoBehaviour
         if (targetPlayer == null) yield break;
 
         Vector3 directionAwayFromPlayer = (transform.position - targetPlayer.position).normalized;
-
         rb.AddForce(directionAwayFromPlayer * enemyParams.KnockbackDistance, ForceMode.Impulse);
 
         yield return new WaitForSeconds(0.5f);
+
+        PlayAnimation("GUN__landing");
     }
 
     private IEnumerator AttackCooldownCoroutine()
     {
         isAttackCooldown = true;
-        yield return new WaitForSeconds(enemyParams.AttackCooldown);
+        yield return new WaitForSeconds(enemyParams.BasicAttackCooldown);
         isAttackCooldown = false;
 
         StartCoroutine(MoveThenAttack());
@@ -204,6 +220,13 @@ public class GunnerController : MonoBehaviour
     {
         Debug.Log("Performing Special Attack");
     }
+    private void CheckForCQBAttack()
+    {
+        if (Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.CQBAttackRange)
+        {
+            PlayAnimation("GUN__attack_CQB");
+        }
+    }
 
     public void StartAttackCooldown(float cooldownTime)
     {
@@ -220,6 +243,18 @@ public class GunnerController : MonoBehaviour
         isAttackCooldown = true;
         yield return new WaitForSeconds(cooldownTime);
         isAttackCooldown = false;
+    }
+
+    public void PlayAnimation(string animationName)
+    {
+        if (animationComponent != null && animationComponent[animationName] != null)
+        {
+            animationComponent.CrossFade(animationName);
+        }
+        else
+        {
+            Debug.LogWarning($"Animation '{animationName}' not found on {gameObject.name}");
+        }
     }
 
     public bool IsOutOfAmmo()
