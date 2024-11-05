@@ -278,7 +278,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 59839876}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: 8ff20a1cc29a32946848272a7dd06ed8, type: 3}
+  m_Asset: {fileID: 0}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -2185,7 +2185,8 @@ PrefabInstance:
       value: Env
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8468844802979919658, guid: 5b939b2effde44a1dae4f968d35a8f18, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b939b2effde44a1dae4f968d35a8f18, type: 3}
@@ -2330,7 +2331,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5529220891167547059, guid: 2536c13a70eb64bbdb5c44fa72e0f117, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
