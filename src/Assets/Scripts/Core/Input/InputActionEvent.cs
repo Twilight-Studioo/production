@@ -53,7 +53,6 @@ namespace Core.Input
             Canceled = null;
             action.Disable();
         }
-
         public InputAction GetInputAction() => action;
     }
 }

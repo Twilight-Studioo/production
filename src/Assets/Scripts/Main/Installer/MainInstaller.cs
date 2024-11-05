@@ -10,6 +10,7 @@ using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
 using Main.Controller;
+using Main.Controller.GameNavigation;
 using Main.Factory;
 using UnityEngine;
 using VContainer;
@@ -23,6 +24,11 @@ namespace Main.Installer
     {
         [SerializeField] private CharacterParams characterParams;
         [SerializeField] private GameSettings gameSettings;
+        
+        [SerializeField] private GameObject pausePrefab;
+        [SerializeField] private GameObject optionPrefab;
+        [SerializeField] private GameObject volumesPrefab;
+        [SerializeField] private GameObject controlsPrefab;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -44,12 +50,24 @@ namespace Main.Installer
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);
             builder.Register<SwapModel>(Lifetime.Scoped);
-            builder.RegisterComponent(characterParams);
-            builder.RegisterComponent(gameSettings);
+            builder.RegisterInstance(characterParams);
+            builder.RegisterInstance(gameSettings);
 
             builder.Register<PlayerModel>(Lifetime.Scoped);
             builder.Register<PlayerPresenter>(Lifetime.Scoped);
             builder.Register<IGameController, MainController>(Lifetime.Scoped);
+            builder.Register<IInputController, InputController>(Lifetime.Scoped);
+            builder.RegisterComponent(pausePrefab.GetComponent<PauseScreen>());
+            builder.RegisterComponent(optionPrefab.GetComponent<OptionScreen>());
+            builder.RegisterComponent(volumesPrefab.GetComponent<VolumesScreen>());
+            builder.RegisterComponent(controlsPrefab.GetComponent<ControlsScreen>());
+            builder.RegisterInstance(NavigationExtensions.GetNavigation(
+                pausePrefab,
+                optionPrefab,
+                volumesPrefab,
+                controlsPrefab,
+                this
+            ));
 
             GameManager.Register(builder);
             builder.RegisterEntryPoint<GameManager>(Lifetime.Scoped);
