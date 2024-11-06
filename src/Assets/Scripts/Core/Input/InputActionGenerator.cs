@@ -15,7 +15,7 @@ namespace Core.Input
         private const string NamespaceName = "Core.Input.Generated";
         private const string ClassName = "ActionGuid";
         private const string RequiredNamespace = "using System;\n";
-        private static readonly string SavePath = $"Assets/Script/Core/Input/Generated/{ClassName}.cs";
+        private static readonly string SavePath = $"Assets/Scripts/Core/Input/Generated/{ClassName}.cs";
         private static readonly string ProfilePath = Application.dataPath + "/Resources";
         private static InputActionAssetProfile profileAsset;
 #if UNITY_EDITOR
