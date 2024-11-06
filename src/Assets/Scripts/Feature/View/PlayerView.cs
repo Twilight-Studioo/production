@@ -61,7 +61,6 @@ namespace Feature.View
         {
             position.Value = transform.position;
         }
-
         private void FixedUpdate()
         {
             var pos = rb.position;
@@ -217,47 +216,17 @@ namespace Feature.View
                     comboCount = -1;
                     yDegree = 0;
                 }
-
                 comboCount++;
-                switch (comboCount)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        yDegree += comboAngleOffset;
-                        break;
-                    case 2:
-                        yDegree += lastDegree - comboAngleOffset * 3;
-                        break;
-                }
-                // if (comboCount < maxComboCount)
-                // {
-                //     comboCount++;
-                //     yDegree += lastDegree + comboAngleOffset;
-                //     // if (degree != 90)
-                //     // {
-                //     //     yDegree += lastDegree + comboAngleOffset;
-                //     // }
-                // }
-                // else
-                // {
-                //     // 最大連続攻撃回数に達した場合、リセット
-                //     comboCount = 0;
-                //     // 角度をリセット
-                //     yDegree = 0; 
-                // }
             }
             else
             {
                 comboCount = 0;
-                yDegree = 0;
             }
 
             var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
-            lastDegree = yDegree;
 
             if (degree == 0 && right == false)
             {
@@ -265,7 +234,7 @@ namespace Feature.View
             }
 
             var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
-                Quaternion.Euler(yDegree, 0, degree));
+                Quaternion.Euler(slashingEffect[effectIndex].transform.localEulerAngles.x, slashingEffect[effectIndex].transform.localEulerAngles.y, degree));
 
             var slashingSoundRandom = Random.Range(0, slashingSound.Count);
             var selectedSlashingClip = slashingSound[slashingSoundRandom];
