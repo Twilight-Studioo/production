@@ -21,6 +21,7 @@ namespace Core.Input.Generated
        public static readonly Guid SwapMode = new Guid("51eecf42-f703-42cd-a667-3941c0056639");
        public static readonly Guid Attack = new Guid("b77e5174-cc61-4725-863d-8fc280d8c6ea");
        public static readonly Guid Dagger = new Guid("27a6ca71-fdae-40e1-823f-dbde8ae312e2");
+       public static readonly Guid Pause = new Guid("ddaf9046-5d66-4fc4-9dff-1f632fa3eb8d");
     }
 
 
@@ -30,12 +31,5 @@ namespace Core.Input.Generated
        public static readonly Guid Navigate = new Guid("3ca442ae-f502-40ea-96fb-0dc4e7454d9e");
        public static readonly Guid Submit = new Guid("52b73e8b-f92a-45fd-8e94-f69592faffca");
        public static readonly Guid Cancel = new Guid("001de2c8-ee9f-41d5-ac49-8a8faea1c5e1");
-       public static readonly Guid Point = new Guid("ee89d8d6-2f2b-4ef6-9b46-03460eb0ce4e");
-       public static readonly Guid Click = new Guid("e884510e-f9a8-48d2-945b-93eecdf7f95f");
-       public static readonly Guid ScrollWheel = new Guid("44e9f362-7034-4e6f-9881-952103a302f0");
-       public static readonly Guid MiddleClick = new Guid("d0d5e300-de5d-4c35-8f0b-98a4335c4b93");
-       public static readonly Guid RightClick = new Guid("42360a46-ef7d-4143-9cf2-2abe99fccbcb");
-       public static readonly Guid TrackedDevicePosition = new Guid("18fdc950-5911-4f19-bc1d-1cca2166e0e5");
-       public static readonly Guid TrackedDeviceOrientation = new Guid("c28ebf62-2cb1-4a83-b4dd-fe314b4f5cd8");
     }
 }
