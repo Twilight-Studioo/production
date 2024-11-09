@@ -261,7 +261,8 @@ namespace Feature.Presenter
             if (!isGameOver)
             {
                 playerModel.Attack();
-                playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
+                bool isSpecialAttack = playerModel.VoltageValue >= characterParams.useVoltageAttackValue;
+                playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
                 voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
             }
         }
