@@ -1,5 +1,8 @@
 #region
 
+using System;
+using TMPro;
+using UniRx;
 using UnityEngine;
 
 #endregion
@@ -14,6 +17,31 @@ namespace Main.Controller.GameNavigation
     /// </remarks>
     public class ControlsScreen : ScreenProtocol
     {
+        [SerializeField] private TextMeshProUGUI backText;
+        
+        private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
+
+        private IDisposable disposable;
+        
+        public override void OnShow()
+        {
+            base.OnShow();
+            disposable = currentNavi.Subscribe(OnNaviChanged);
+            currentNavi.Value = Navi.Back;
+        }
+
+        public override void OnHide()
+        {
+            base.OnHide();
+            disposable?.Dispose();
+        }
+        
+        private void OnNaviChanged(Navi navi)
+        {
+            backText.color = navi == Navi.Back ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
+        }
+
+        
         protected override void OnCancel()
         {
             Controller.PopBackstack();
@@ -26,7 +54,17 @@ namespace Main.Controller.GameNavigation
 
         protected override void OnClick()
         {
-            // No operation
+            switch (currentNavi.Value)
+            {
+                case Navi.Back:
+                    Controller.PopBackstack();
+                    break;
+            }
+        }
+        
+        private enum Navi
+        {
+            Back,
         }
     }
 }
