@@ -100,17 +100,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 287fb10ae3b643b9afe758858d3fee3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalSlash:
-  - {fileID: 6881300163551790712, guid: e02e587e898886044b482e628faa7362, type: 3}
-  - {fileID: 6881300163551790712, guid: b7692895983631947bddc890b05c6b77, type: 3}
-  - {fileID: 6881300163551790712, guid: fce4578691e1b8842a842473f1c5a0e5, type: 3}
+  normalSlash: []
   slashingEffect:
   - {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851, type: 3}
   - {fileID: 6881300163551790712, guid: 689bc082f6f5ad24593956527beb1ab3, type: 3}
   - {fileID: 6881300163551790712, guid: 314c3d2979d6b7c4982aefe765acfd1a, type: 3}
   dagger: {fileID: 3452286736134199389, guid: eeeb33f97828b4fa2a32a3bc8d284a3d, type: 3}
-  katana: {fileID: 2091384818344206453}
-  sheath: {fileID: 2197738302003895485}
+  katana: {fileID: 0}
+  sheath: {fileID: 0}
   daggerSpawn: {fileID: 6971175292935995355}
   slashingSound:
   - {fileID: 8300000, guid: a7abe8d111dc8af4e9fa4d8673ddc8a6, type: 3}
@@ -120,7 +117,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 00f051125a9715c44b509b0393b698ad, type: 3}
   - {fileID: 8300000, guid: 8f23cbbf541deae40b2d8a8df0361501, type: 3}
   - {fileID: 8300000, guid: d38b3911d0a83144e86ca595b3c4ce33, type: 3}
-  yDegree: 105
+  yDegree: 0
   newYDegree: 284
 --- !u!1 &1659875179376426182
 GameObject:
@@ -147,7 +144,7 @@ Transform:
   m_GameObject: {fileID: 1659875179376426182}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5480001, z: 0}
+  m_LocalPosition: {x: 0, y: 0.535, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
