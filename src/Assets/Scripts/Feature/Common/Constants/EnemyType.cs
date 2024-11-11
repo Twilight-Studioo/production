@@ -7,6 +7,8 @@ namespace Feature.Common.Constants
         SimpleEnemy2,
 
         Drone,
+        
+        Smasher,
 
         None,
     }
