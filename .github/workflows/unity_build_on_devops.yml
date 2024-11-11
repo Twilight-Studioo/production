@@ -29,6 +29,42 @@ jobs:
         run: |
           echo "${TOKEN_GITHUB}" | gh auth login --with-token
 
+      - name: Verify Commenter is in GitHub Organization
+        id: verify-org
+        run: |
+          COMMENTER="${{ github.event.comment.user.login }}"
+          ORG="Twilight-Studioo"  # Replace with your GitHub organization name or use a secret
+          echo "Verifying if $COMMENTER is a member of the organization $ORG..."
+          
+          if gh api orgs/$ORG/members/$COMMENTER --silent; then
+            echo "$COMMENTER is a member of $ORG."
+            echo "is_member=true" >> $GITHUB_OUTPUT
+          else
+            echo "$COMMENTER is NOT a member of $ORG. Exiting..."
+            echo "is_member=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if PR is Open
+        id: check-pr-state
+        run: |
+          PR_NUMBER="${{ github.event.issue.number }}"
+          PR_STATE=$(gh pr view $PR_NUMBER --json state -q .state)
+          echo "PR #$PR_NUMBER is currently: $PR_STATE"
+          
+          if [ "$PR_STATE" != "OPEN" ]; then
+            echo "PR is not open. Exiting..."
+            echo "pr_open=false" >> $GITHUB_OUTPUT
+          else
+            echo "PR is open."
+            echo "pr_open=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Exit if conditions not met
+        if: steps.verify-org.outputs.is_member != 'true' || steps.check-pr-state.outputs.pr_open != 'true'
+        run: |
+          echo "Conditions not met. Skipping the build trigger."
+          exit 0
+
       - name: Parse build command
         id: parse
         run: |
@@ -55,10 +91,10 @@ jobs:
           commit_sha=${{ steps.parse.outputs.commit }}
           echo "Triggering build for commit: $commit_sha"
 
-          # jq がインストールされていることを確認
+          # Ensure jq is installed
           sudo apt-get install -y jq
 
-          # ペイロードの準備
+          # Prepare payload
           payload=$(jq -n \
             --arg commit "$commit_sha" \
             --arg platform "standalonewindows64" \
@@ -69,7 +105,7 @@ jobs:
               commit: $commit
             }')
 
-          # Unity Cloud Build API を介してビルドをトリガー
+          # Trigger build via Unity Cloud Build API
           response=$(curl -s -w "%{http_code}" -o response.json -X POST "https://build-api.cloud.unity3d.com/api/v1/orgs/${{ secrets.UNITY_ORG_ID }}/projects/${{ secrets.UNITY_PROJECT_ID }}/buildtargets/${{ secrets.BUILD_TARGET_ID }}/builds" \
             -H "${{ secrets.AUTHORIZATION_HEADER }}" \
             -H "Content-Type: application/json" \
@@ -79,19 +115,19 @@ jobs:
 
           if [[ "$response" =~ ^2 ]]; then
             echo "Build triggered successfully."
-            # レスポンスからビルドIDを抽出（配列の最初の要素）
+            # Extract build ID from response
             build_id=$(jq -r '.[0].build' response.json)
             if [[ "$build_id" != "null" ]]; then
               echo "build_id=$build_id" >> $GITHUB_OUTPUT
             else
               echo "Failed to trigger build. HTTP status code: $response"
-              # レスポンスからエラーメッセージを抽出
+              # Extract error message
               error_message=$(jq -r '.[0].error' response.json)
               echo "error_message=$error_message" >> $GITHUB_OUTPUT
             fi
           else
             echo "Failed to trigger build. HTTP status code: $response"
-            # レスポンスからエラーメッセージを抽出
+            # Extract error message
             error_message=$(jq -r '.[0].error' response.json)
             echo "error_message=$error_message" >> $GITHUB_OUTPUT
           fi
