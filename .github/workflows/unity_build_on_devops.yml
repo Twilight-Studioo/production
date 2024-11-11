@@ -51,11 +51,6 @@ jobs:
 
       - name: Trigger Unity Cloud Build
         id: trigger-build
-        env:
-          AUTHORIZATION_HEADER: ${{ secrets.AUTHORIZATION_HEADER }}
-          UNITY_PROJECT_ID: ${{ secrets.UNITY_PROJECT_ID }}
-          BUILD_TARGET_ID: ${{ secrets.BUILD_TARGET_ID }}
-          ORG_ID: ${{ secrets.UNITY_ORG_ID }}
         run: |
           commit_sha=${{ steps.parse.outputs.commit }}
           echo "Triggering build for commit: $commit_sha"
@@ -107,5 +102,7 @@ jobs:
           token: ${{ secrets.TOKEN_GITHUB }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            ✅ ビルドをトリガーしました。コミット: `${{ steps.parse.outputs.commit }}`
+            ✅ ビルドをqueueに追加しました。
+            コミット: `${{ steps.parse.outputs.commit }}`
             ビルドID: `${{ steps.trigger-build.outputs.build_id }}`
+            状況はDiscordの#unity-buildチャンネルで確認してください。(完了すると自動でリンクが貼られます)
