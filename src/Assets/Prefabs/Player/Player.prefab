@@ -100,14 +100,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 287fb10ae3b643b9afe758858d3fee3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalSlash: []
+  normalSlash:
+  - {fileID: 6881300163551790712, guid: e02e587e898886044b482e628faa7362, type: 3}
+  - {fileID: 6881300163551790712, guid: b7692895983631947bddc890b05c6b77, type: 3}
+  - {fileID: 6881300163551790712, guid: fce4578691e1b8842a842473f1c5a0e5, type: 3}
   slashingEffect:
   - {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851, type: 3}
   - {fileID: 6881300163551790712, guid: 689bc082f6f5ad24593956527beb1ab3, type: 3}
   - {fileID: 6881300163551790712, guid: 314c3d2979d6b7c4982aefe765acfd1a, type: 3}
   dagger: {fileID: 3452286736134199389, guid: eeeb33f97828b4fa2a32a3bc8d284a3d, type: 3}
-  katana: {fileID: 0}
-  sheath: {fileID: 0}
+  katana: {fileID: 2091384818344206453}
+  sheath: {fileID: 2197738302003895485}
   daggerSpawn: {fileID: 6971175292935995355}
   slashingSound:
   - {fileID: 8300000, guid: a7abe8d111dc8af4e9fa4d8673ddc8a6, type: 3}
@@ -588,6 +591,7 @@ MonoBehaviour:
   katana: {fileID: 2091384818344206453}
   sheath: {fileID: 2197738302003895485}
   katanaReverse: {fileID: 5725220125908825019}
+  hideDelay: 0.2
 --- !u!4 &6636439314739941677 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8934263015960043164, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,

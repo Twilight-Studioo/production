@@ -31,7 +31,7 @@ namespace Feature.Common.Parameter
 
         private bool showSwapParameters = true;
 
-        private bool showAttackPrameters = true;
+        private bool showAttackParameters = true;
 
         private SerializedProperty snapPower;
         private SerializedProperty speed;
@@ -123,8 +123,8 @@ namespace Feature.Common.Parameter
                 EditorGUILayout.PropertyField(useDaggerUseStamina, new GUIContent("クナイを飛ばしたときのスタミナ消費"));
             }
             EditorGUILayout.Space();
-            showAttackPrameters = EditorGUILayout.Foldout(showStaminaParameters, "攻撃パラメーター");
-            if (showStaminaParameters)
+            showAttackParameters = EditorGUILayout.Foldout(showAttackParameters, "攻撃パラメーター");
+            if (showAttackParameters)
             {
                 EditorGUILayout.PropertyField(slashEffect, new GUIContent("ボルテージ時の攻撃エフェクト"));
                 EditorGUILayout.PropertyField(normalSlashEffect, new GUIContent("非ボルテージ時の攻撃エフェクト"));

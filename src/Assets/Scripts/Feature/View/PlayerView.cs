@@ -48,8 +48,8 @@ namespace Feature.View
         private bool right = true;
 
         private float vignetteChange; //赤くなるまでの時間
-        [SerializeField] private float yDegree =105f; //刀のy座標回転初期値
-        [SerializeField] private float newYDegree = 284f; //刀の二段目攻撃のy座標回転値
+        [SerializeField, Tooltip("刀の初期回転角度（一段目の攻撃時）")] private float yDegree =105f;
+        [SerializeField, Tooltip("刀の二段目攻撃時の回転角度")] private float newYDegree = 284f;
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
