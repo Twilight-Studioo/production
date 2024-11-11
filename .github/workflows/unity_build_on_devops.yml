@@ -25,9 +25,9 @@ jobs:
 
       - name: Authenticate GitHub CLI
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
         run: |
-          echo "${GITHUB_TOKEN}" | gh auth login --with-token
+          echo "${TOKEN_GITHUB}" | gh auth login --with-token
 
       - name: Parse build command
         id: parse
@@ -70,40 +70,40 @@ jobs:
             '{
               clean: false,
               delay: 0,
-              commit: $commit,
-              branch: "",
-              headless: false,
-              label: "",
-              platform: $platform,
-              operatingSystemSelected: "",
-              operatingSystemVersion: "",
-              buildTargetGroupIds: [],
-              groupBuildId: "",
-              machineTypeLabel: $machineTypeLabel,
-              architecture: ""
+              commit: $commit
             }')
 
           # Unity Cloud Build API を介してビルドをトリガー
-          response=$(curl -s -w "%{http_code}" -o response.json -X POST "https://build-api.cloud.unity3d.com/api/v1/orgs/${ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${BUILD_TARGET_ID}/builds" \
-            -H "${AUTHORIZATION_HEADER}" \
+          response=$(curl -s -w "%{http_code}" -o response.json -X POST "https://build-api.cloud.unity3d.com/api/v1/orgs/${{ secrets.UNITY_ORG_ID }}/projects/${{ secrets.UNITY_PROJECT_ID }}/buildtargets/${{ secrets.BUILD_TARGET_ID }}/builds" \
+            -H "${{ secrets.AUTHORIZATION_HEADER }}" \
             -H "Content-Type: application/json" \
             -d "$payload")
 
+          echo "HTTP Status Code: $response"
+
           if [[ "$response" =~ ^2 ]]; then
             echo "Build triggered successfully."
-            # レスポンスからビルドIDを抽出
-            build_id=$(jq -r '.id' response.json)
-            echo "build_id=$build_id" >> $GITHUB_OUTPUT
+            # レスポンスからビルドIDを抽出（配列の最初の要素）
+            build_id=$(jq -r '.[0].build' response.json)
+            if [[ "$build_id" != "null" ]]; then
+              echo "build_id=$build_id" >> $GITHUB_OUTPUT
+            else
+              echo "Failed to trigger build. HTTP status code: $response"
+              # レスポンスからエラーメッセージを抽出
+              error_message=$(jq -r '.[0].error' response.json)
+              echo "error_message=$error_message" >> $GITHUB_OUTPUT
+            fi
           else
             echo "Failed to trigger build. HTTP status code: $response"
-            cat response.json
-            exit 1
+            # レスポンスからエラーメッセージを抽出
+            error_message=$(jq -r '.[0].error' response.json)
+            echo "error_message=$error_message" >> $GITHUB_OUTPUT
           fi
 
       - name: Comment on PR
         uses: peter-evans/create-or-update-comment@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN_GITHUB }}
           issue-number: ${{ github.event.issue.number }}
           body: |
             ✅ ビルドをトリガーしました。コミット: `${{ steps.parse.outputs.commit }}`
