@@ -50,6 +50,7 @@ jobs:
           fi
 
       - name: Trigger Unity Cloud Build
+        id: trigger-build
         env:
           AUTHORIZATION_HEADER: ${{ secrets.AUTHORIZATION_HEADER }}
           UNITY_PROJECT_ID: ${{ secrets.UNITY_PROJECT_ID }}
