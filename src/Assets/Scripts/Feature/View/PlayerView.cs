@@ -243,6 +243,9 @@ namespace Feature.View
                 case 1:
                     katana.gameObject.transform.Rotate(0,yDegree * Time.deltaTime,0);
                     break;
+                case 2:
+                    katana.gameObject.transform.Rotate(0,newYDegree * Time.deltaTime,0);
+                    break;
             }
             
             GameObject effectPrefab = voltage ? slashingEffect[effectIndex] : normalSlash[effectIndex];

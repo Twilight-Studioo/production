@@ -15,6 +15,7 @@ namespace Feature.Component
         private void Awake()
         {
             animator = GetComponent<Animator>();
+            sheath.SetActive(true);
             FinishAnimation();
             if (katana == null || sheath == null || katanaReverse == null)
             {
@@ -28,7 +29,6 @@ namespace Feature.Component
             if (isAttacking) return;
             isAttacking = true;
             katana.SetActive(true);
-            sheath.SetActive(true);
         }
 
         public void FinishAnimation()
@@ -40,9 +40,9 @@ namespace Feature.Component
         {
             if (!IsPlayingAttackAnimation())
             {
+                sheath.SetActive(true);
                 isAttacking = false;
                 katana.SetActive(false);
-                sheath.SetActive(false);
                 katanaReverse.SetActive(false);
             }
         }
