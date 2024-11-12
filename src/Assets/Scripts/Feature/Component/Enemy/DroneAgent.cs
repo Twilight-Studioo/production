@@ -71,6 +71,10 @@ namespace Feature.Component.Enemy
         {
         }
 
+        public void Delete()
+        {
+        }
+
 
         public GetHealth OnGetHealth { set; get; }
 
