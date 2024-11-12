@@ -19,7 +19,7 @@ using VContainer;
 
 namespace Main.Controller
 {
-    public class MainController : IGameController
+    public class GameController : IGameController
     {
         private const float DaggerCooldown = 0.5f;
 
@@ -46,7 +46,7 @@ namespace Main.Controller
         private IDisposable updateDisposable;
 
         [Inject]
-        public MainController(
+        public GameController(
             PlayerModel playerModel,
             PlayerPresenter playerPresenter,
             SwapPresenter swapPresenter,

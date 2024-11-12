@@ -4,6 +4,7 @@ using Core.Navigation;
 using Core.Utilities;
 using Main.Installer;
 using UnityEngine;
+using VContainer.Unity;
 
 #endregion
 
@@ -18,6 +19,7 @@ namespace Main.Controller.GameNavigation
         Option,
         Volumes,
         Controls,
+        Title,
     }
 
     public static class NavigationExtensions
@@ -27,7 +29,8 @@ namespace Main.Controller.GameNavigation
             GameObject optionPrefab,
             GameObject volumesPrefab,
             GameObject controlsPrefab,
-            MainInstaller installer
+            GameObject titlePrefab,
+            LifetimeScope installer
         )
         {
             return ScreenController<Navigation>.Create(
@@ -40,7 +43,8 @@ namespace Main.Controller.GameNavigation
                 new Destination<Navigation>(Navigation.Pause, pausePrefab.CheckNull()),
                 new Destination<Navigation>(Navigation.Option, optionPrefab.CheckNull()),
                 new Destination<Navigation>(Navigation.Volumes, volumesPrefab.CheckNull()),
-                new Destination<Navigation>(Navigation.Controls, controlsPrefab.CheckNull())
+                new Destination<Navigation>(Navigation.Controls, controlsPrefab.CheckNull()),
+                new Destination<Navigation>(Navigation.Title, titlePrefab.CheckNull())
             );
         }
     }

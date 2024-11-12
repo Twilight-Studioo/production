@@ -1,9 +1,11 @@
 #region
 
+using System;
 using Core.Input;
 using Core.Input.Generated;
 using Core.Navigation;
 using Core.Utilities;
+using Main.Scene;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -12,7 +14,7 @@ using VContainer;
 
 namespace Main.Controller.GameNavigation
 {
-    public abstract partial class ScreenProtocol : MonoBehaviour, IScreen
+    public abstract partial class ScreenProtocol<T> : MonoBehaviour, IScreen where T : Enum
     {
         private InputActionEvent cancelAction;
         private InputActionEvent clickAction;
@@ -20,7 +22,9 @@ namespace Main.Controller.GameNavigation
 
         [Inject] public InputActionAccessor ActionAccessor { get; set; }
 
-        [Inject] public ScreenController<Navigation> Controller { get; set; }
+        [Inject] public ScreenController<T> Controller { get; set; }
+        
+        [Inject] public RootInstance RootInstance { get; set; }
 
         public void OnDestroy()
         {
