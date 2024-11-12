@@ -133,11 +133,11 @@ jobs:
           fi
 
       - name: Comment on PR
-        uses: peter-evans/create-or-update-comment@v3
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          token: ${{ secrets.TOKEN_GITHUB }}
-          issue-number: ${{ github.event.issue.number }}
-          body: |
+          hide_and_recreate: true
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          message: |
             ✅ ビルドをqueueに追加しました。
             コミット: `${{ steps.parse.outputs.commit }}`
             ビルドID: `${{ steps.trigger-build.outputs.build_id }}`
