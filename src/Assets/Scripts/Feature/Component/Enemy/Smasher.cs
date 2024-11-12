@@ -1,67 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using Core.Utilities;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
-using Feature.Interface;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Feature.Component.Enemy
 {
-    public class Smasher : MonoBehaviour, IEnemyAgent
+    public class Smasher : MonoBehaviour
     {
         [SerializeField] private SmasherPrams bossPrams;
+        [SerializeField] private GameObject Player;
         public EnemyType EnemyType => EnemyType.Smasher;
 
         private bool onPlayer = false;
 
         private float coolTime;
         private bool canAttack = false;
+        private bool hit = false;
         private Rigidbody rb;
         private int rnd;
+        private Rigidbody playerRb;
+
+        private float playerDistance = 0;
 
         private bool UpperAttack = false;
 
         private void Start()
         {
             coolTime = 0;
+            playerRb = Player.GetComponent<Rigidbody>();
             rb = this.gameObject.GetComponent<Rigidbody>();
         }
-
-        public void FlowCancel()
-        {
-        }
-
-        public void FlowExecute()
-        {
-        }
-
-        public Action RequireDestroy { set; get; }
-
-        public GetHealth OnGetHealth { get; set; }
-
-        public void SetParams(EnemyParams @params)
-        {
-            if (@params is SmasherPrams smasherPrams)
-            {
-                bossPrams = smasherPrams;
-            }
-        }
-
-        public void SetPatrolPoints(List<Vector3> pts)
-        {
-        }
-
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
-        {
-            var imp = (transform.position - attacker.position).normalized;
-            imp.y += 10f;
-            StartCoroutine(transform.Knockback(imp, 10f, 0.5f));
-        }
-
-        public event Action OnTakeDamageEvent;
-
+        
         private void Update()
         {
             ManageCooldown();
@@ -73,6 +43,7 @@ namespace Feature.Component.Enemy
 
         private void Attack()
         {
+            CurrentDistance();
             rnd = Random.Range(1, 3);
             switch (rnd)
             {
@@ -85,7 +56,7 @@ namespace Feature.Component.Enemy
             }
         }
 
-    private void ManageCooldown()
+        private void ManageCooldown()
         {
             if (coolTime > 0)
             { 
@@ -99,18 +70,49 @@ namespace Feature.Component.Enemy
 
         private void ChargeAttack()
         {
-            rb.AddForce(-Vector3.right*bossPrams.chargeDistance,ForceMode.Impulse);
+            rb.transform.Translate(-Vector3.right*bossPrams.chargeDistance);
             coolTime = bossPrams.chargeIntervalSec;
             canAttack = false;
         }
 
         private void Upper()
         {
-            rb.AddForce(Vector3.up*bossPrams.upperHeight,ForceMode.Impulse);
+            rb.transform.Translate(Vector3.up*bossPrams.upperHeight);
+            
             coolTime = bossPrams.upperIntervalSec;
             canAttack = false;
             UpperAttack = true;
         }
-        
+
+        private void Slap()
+        {
+            
+        }
+
+        private void CurrentDistance()
+        {
+            playerDistance = DistancePlayer();
+        }
+
+        private float DistancePlayer()
+        {
+            return  Vector3.Distance(playerRb.position, rb.position);
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                hit = true;
+            }
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                hit = false;
+            }
+        }
     }
 }

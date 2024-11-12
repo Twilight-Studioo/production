@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8857542075583970487}
   - component: {fileID: 3861494411319458098}
   - component: {fileID: 4289087810486203429}
-  - component: {fileID: 6364252856412960377}
   m_Layer: 0
   m_Name: Smasher
   m_TagString: Untagged
@@ -136,15 +135,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 8
   m_CollisionDetection: 0
---- !u!114 &6364252856412960377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3495553469206181156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d8785206bbd4ca99ae248f40f4a8c2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

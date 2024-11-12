@@ -26,6 +26,9 @@ namespace Feature.Common.Parameter
         [Tooltip("アッパー後の待機時間"), Header("アッパー後の待機時間"),]
         public float upperIntervalSec = 1;
 
+        [Tooltip("平手打ちの当たる距離"), Header("平手打ちの当たる距離"),]
+        public float slapDistance = 3f;
+
     }
 
     public enum SmasherAttackType
