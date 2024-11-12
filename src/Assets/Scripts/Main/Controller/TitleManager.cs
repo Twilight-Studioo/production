@@ -18,7 +18,6 @@ namespace Main.Controller
         }
         public void Start()
         {
-            Debug.Log("TitleManager Start");
             controller.Start();
         }
     }

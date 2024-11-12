@@ -1,4 +1,5 @@
 using System;
+using Core.Utilities;
 using Main.Scene.Generated;
 using TMPro;
 using UniRx;
@@ -96,7 +97,7 @@ namespace Main.Controller.GameNavigation
                     Controller.Navigate(Navigation.Option);
                     break;
                 case Navi.Quit:
-                    Controller.PopBackstack();
+                    SceneUtility.Finished();
                     break;
             }
         }

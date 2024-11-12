@@ -175,5 +175,14 @@ namespace Core.Utilities
             AssetDatabase.Refresh();
 #endif
         }
+
+        public static void Finished()
+        {
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
     }
 }
