@@ -136,7 +136,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           hide_and_recreate: true
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
             ✅ ビルドをqueueに追加しました。
             コミット: `${{ steps.parse.outputs.commit }}`
