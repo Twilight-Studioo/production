@@ -31,7 +31,7 @@ namespace Feature.Interface
 
         void SetPosition(Vector3 position);
 
-        void Attack(float degree, uint damage);
+        void Attack(float degree, uint damage,bool voltage);
 
         void Dagger(float degree, float h, float v);
 

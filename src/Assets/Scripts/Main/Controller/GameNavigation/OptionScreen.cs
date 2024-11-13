@@ -12,7 +12,7 @@ namespace Main.Controller.GameNavigation
     /// <summary>
     ///     オプション画面のUI操作を制御するクラス
     /// </summary>
-    public class OptionScreen : ScreenProtocol
+    public class OptionScreen : ScreenProtocol<Navigation>
     {
         [SerializeField] private TextMeshProUGUI volumesText;
         [SerializeField] private TextMeshProUGUI controlsText;

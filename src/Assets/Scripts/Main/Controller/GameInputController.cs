@@ -18,7 +18,7 @@ namespace Main.Controller
     /// <summary>
     ///     ゲーム内の入力制御を管理するコントローラークラス
     /// </summary>
-    public class InputController : IInputController
+    public class GameInputController : IGameInputController
     {
         /// <summary>
         ///     入力アクションへのアクセスを提供するクラス
@@ -33,7 +33,7 @@ namespace Main.Controller
         private float lastTimeScale = 1f;
 
         [Inject]
-        public InputController(
+        public GameInputController(
             InputActionAccessor accessor,
             ScreenController<Navigation> controller
         )
@@ -44,6 +44,7 @@ namespace Main.Controller
 
         public void Start()
         {
+            controller.Reset();
             controller.Hide();
             var pauseActionEvent = accessor.CreateAction(Player.Pause).CheckNull();
             pauseActionEvent.Performed += OnPauseReserved;

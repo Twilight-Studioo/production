@@ -1,16 +1,22 @@
 {
-  "name": "Core.Utilities",
-  "rootNamespace": "",
-  "references": [
-    "GUID:560b04d1a97f54a4e82edc0cbbb69285"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Core.Utilities",
+    "rootNamespace": "",
+    "references": [
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
+        "GUID:be0d2672886cc45b2bcea5a5053a5347",
+        "GUID:5540e30183c82e84b954c033c388e06c",
+        "GUID:deb134e809c8f7d4aa2f81c6edfdc7e2",
+        "GUID:4077802dea91b4b6d878b48b4160bd81",
+        "GUID:fe25561d224ed4743af4c60938a59d0b",
+        "GUID:2073209246492244c9ad62c89d8d37bb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

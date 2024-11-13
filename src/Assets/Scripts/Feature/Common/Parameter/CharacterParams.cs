@@ -24,6 +24,7 @@ namespace Feature.Common.Parameter
 
         [Tooltip("連続攻撃の最大回数(*数の+1の回数、2なら3コンボ)")]
         public float maxComboCount = 3;
+        
 
         [Tooltip("攻撃のクールタイム")] public float attackCoolTime = 0.2f;
         // スワップ関連
@@ -71,6 +72,11 @@ namespace Feature.Common.Parameter
         [Tooltip("ボルテージ使用時の攻撃上昇倍率")] public int voltageAttackPowerValue = 2;
 
         [Tooltip("クナイを飛ばしたときのスタミナ消費")] public uint useDaggerUseStamina = 2;
+        
+        //攻撃関連
+        [Tooltip("ボルテージ時の攻撃エフェクト")] public GameObject slashEffect;
+        [Tooltip("非ボルテージ時の攻撃エフェクト")] public GameObject normalSlashEffect;
+        
     }
 
     [Serializable]
