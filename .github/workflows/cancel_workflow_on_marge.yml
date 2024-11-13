@@ -1,0 +1,16 @@
+name: Cancel Workflows on PR Merge
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  cancel-in-progress:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Cancel In-Progress Workflows
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
