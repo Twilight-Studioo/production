@@ -1,5 +1,6 @@
 using Core.Input;
 using Core.Utilities;
+using Main.Controller;
 using Main.Controller.GameNavigation;
 using Main.Scene;
 using UnityEngine;
@@ -35,6 +36,7 @@ namespace Main.Installer
             builder.RegisterComponent(titlePrefab.GetComponent<TitleScreen>().CheckNull());
             
             builder.Register<RootInstance>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<RootManager>();
         }
     }
 }
