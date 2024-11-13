@@ -139,6 +139,7 @@ jobs:
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          number: ${{ github.event.issue.number }}
           hide_and_recreate: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
