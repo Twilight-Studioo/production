@@ -75,7 +75,7 @@ namespace Feature.View
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.CompareTag("Ground"))
+            if (collision.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
             {
                 isGrounded.Value = true;
             }
