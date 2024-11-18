@@ -46,6 +46,7 @@ namespace Feature.View
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
+        private bool isMovementDisabled;
 
         private float vignetteChange; //赤くなるまでの時間
         [SerializeField, Tooltip("刀の初期回転角度（一段目の攻撃時）")] private float yDegree =105f;
@@ -75,7 +76,7 @@ namespace Feature.View
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.CompareTag("Ground"))
+            if (collision.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
             {
                 isGrounded.Value = true;
             }
@@ -100,9 +101,18 @@ namespace Feature.View
         {
             var imp = (transform.position - attacker.position).normalized;
             imp.y += 1f;
-            rb.AddForce(imp * 5f, ForceMode.Impulse);
+            this.UniqueStartCoroutine(Knockback(imp, 5f, 0.4f));
+            // rb.AddForce(imp * 5f, ForceMode.Impulse);
             OnDamageEvent?.Invoke(damage);
             animator.OnTakeDamage();
+        }
+        
+        private IEnumerator Knockback(Vector3 direction, float strength, float duration)
+        {
+            isMovementDisabled = true;
+            yield return transform.Knockback(direction, strength, duration);
+            yield return new WaitForSeconds(0.9f);
+            isMovementDisabled = false;
         }
         public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
@@ -135,6 +145,10 @@ namespace Feature.View
 
         public void Move(Vector3 direction, float power)
         {
+            if (isMovementDisabled)
+            {
+                return;
+            }
             //向き
             if (direction.x > 0)
             {
