@@ -30,6 +30,8 @@ namespace Feature.Component
             PramSet();
 
             rb = GetComponent<Rigidbody>();
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
             this.UniqueStartCoroutine(this.DelayMethod(lifeTime, Delete), "onLifetime delete dagger");
             capsuleCollider = gameObject.GetComponent<Collider>();
 
@@ -51,6 +53,7 @@ namespace Feature.Component
 
         private void OnTriggerEnter(Collider collision)
         {
+            
             if (collision.gameObject.CompareTag("Enemy"))
             {
                 var enemy = collision.gameObject.GetComponent<IEnemy>()
@@ -59,33 +62,23 @@ namespace Feature.Component
                 capsuleCollider.isTrigger = false;
                 if (rb != null)
                 {
-                    rb.isKinematic = true; // ナイフが動かないようにする
-                    h *= -0.5f;
-                    v = 0.5f;
-                    if (h <= 0)
-                        RotateToTarget(200, 0.2f);
-                    else
-                        RotateToTarget(-200, 0.2f);
-
-                    rb.isKinematic = false;
+                    rb.velocity = Vector3.zero;
+                    transform.SetParent(collision.transform);
+                    var component = GetComponent<Rigidbody>();
+                    if (component != null) component.isKinematic = true;
+                    position.Value = transform.position;
                 }
 
                 this.UniqueStartCoroutine(this.DelayMethod(0.5f, Delete), "onAttacked delete dagger");
             }
-            else if (collision.gameObject.CompareTag("Wall"))
+            else if (collision.gameObject.CompareTag("Wall")||collision.gameObject.CompareTag("Ground"))
             {
-                var component = GetComponent<Rigidbody>();
-                if (component != null) component.isKinematic = true;
-                position.Value = transform.position;
-            }
-            else if (collision.gameObject.CompareTag("Ground"))
-            {
+                rb.velocity = Vector3.zero;
                 var component = GetComponent<Rigidbody>();
                 if (component != null) component.isKinematic = true;
                 position.Value = transform.position;
             }
         }
-
         public void OnSelected()
         {
         }

@@ -64,13 +64,38 @@ namespace Feature.View
         {
             position.Value = transform.position;
         }
+
         private void FixedUpdate()
         {
             var pos = rb.position;
             pos.y = 0;
+
+            // 水平方向の速度を計算
             speed.Value = (pos - previousPosition).magnitude / Time.fixedDeltaTime;
             previousPosition = pos;
-            animator.SetSpeed(speed.Value);
+
+            // 高い場所から落下している場合や、ジャンプ後の移動速度をチェック
+            if (isGrounded.Value)
+            {
+                if (rb.velocity.y < 0)
+                {
+                    animator.SetSpeed(0);
+                }
+                else
+                { 
+                    animator.SetSpeed(speed.Value);
+                }
+
+                animator.SetIsFalling(false);
+            }
+            else
+            {
+                if (rb.velocity.y < -0.1f) // 落下速度がある程度大きい場合に落下とみなす
+                {
+                    animator.SetSpeed(speed.Value);
+                    animator.SetIsFalling(true);
+                }
+            }
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -78,6 +103,7 @@ namespace Feature.View
             if (collision.gameObject.CompareTag("Ground"))
             {
                 isGrounded.Value = true;
+                animator.SetIsFalling(false);
             }
         }
 
