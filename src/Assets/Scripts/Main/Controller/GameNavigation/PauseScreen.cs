@@ -1,6 +1,7 @@
 #region
 
 using System;
+using Main.Scene.Generated;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Main.Controller.GameNavigation
     /// <summary>
     ///     ポーズ画面の動作を制御するクラス
     /// </summary>
-    public class PauseScreen : ScreenProtocol
+    public class PauseScreen : ScreenProtocol<Navigation>
     {
         [SerializeField] private TextMeshProUGUI resumeText;
         [SerializeField] private TextMeshProUGUI goToOptionText;
@@ -93,7 +94,8 @@ namespace Main.Controller.GameNavigation
                     Controller.Navigate(Navigation.Option);
                     break;
                 case Navi.GoToTitle:
-                    // TODO: タイトル画面に遷移
+                    Controller.Reset();
+                    SceneLoaderFeatures.TitleScene(null).Bind(RootInstance).Load();
                     break;
             }
         }

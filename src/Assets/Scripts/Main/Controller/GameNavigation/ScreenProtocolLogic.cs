@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace Main.Controller.GameNavigation
 {
-    public abstract partial class ScreenProtocol
+    public abstract partial class ScreenProtocol<T>
     {
         private partial void OnCancel_Internal(InputAction.CallbackContext ctx)
         {
