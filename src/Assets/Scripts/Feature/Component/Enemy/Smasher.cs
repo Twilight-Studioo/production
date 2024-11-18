@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using Core.Utilities;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using UnityEngine;
@@ -9,79 +11,125 @@ namespace Feature.Component.Enemy
     public class Smasher : MonoBehaviour
     {
         [SerializeField] private SmasherPrams bossPrams;
-        [SerializeField] private GameObject Player;
         public EnemyType EnemyType => EnemyType.Smasher;
 
         private bool onPlayer = false;
-
-        private float coolTime;
+        private bool onGround = true;
+        private float xDistance = 0;
         private bool canAttack = false;
         private bool hit = false;
-        private Rigidbody rb;
         private int rnd;
-        private Rigidbody playerRb;
+        private Transform playerTransform;
 
         private float playerDistance = 0;
+        private Vector3 positionAtAttack;
 
         private bool UpperAttack = false;
 
+        [SerializeField] private GameObject Debris;
+        
+
         private void Start()
         {
-            coolTime = 0;
-            playerRb = Player.GetComponent<Rigidbody>();
-            rb = this.gameObject.GetComponent<Rigidbody>();
+            StartCoroutine(Attack());
         }
         
         private void Update()
         {
-            ManageCooldown();
-            if (canAttack)
-            {
-                Attack();
-            }
+            playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+            xDistance = Mathf.Abs(transform.position.x - positionAtAttack.x);
         }
 
-        private void Attack()
+        private IEnumerator Attack()
         {
-            CurrentDistance();
-            rnd = Random.Range(1, 3);
+            rnd = Random.Range(1, 2);
             switch (rnd)
             {
                 case 1:
-                    ChargeAttack();
-                    break;
-                case 2:
-                    Upper();
+                    yield return ChargeAttack();
+                    yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
+                    Upper(); 
+                    yield return new WaitForSeconds(bossPrams.upperIntervalSec); 
+                    FallAttack();
+                    yield return new WaitUntil(() => onGround == true);
+                    DebrisAttack();
+                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
+                    
                     break;
             }
+
+            StartCoroutine(Attack());
         }
 
-        private void ManageCooldown()
+        private IEnumerator ChargeAttack()
         {
-            if (coolTime > 0)
-            { 
-                coolTime -= Time.deltaTime;
+            yield return new WaitForSeconds(bossPrams.chargeTime);
+            CurrentDistance();
+            if (playerDistance < 0)
+            {
+                transform.Translate(Vector3.right*bossPrams.chargeDistance);
             }
-            else if(coolTime <= 0)
-            { 
-                canAttack = true;
+            else
+            {
+                transform.Translate(-Vector3.right*bossPrams.chargeDistance);
             }
-        }
-
-        private void ChargeAttack()
-        {
-            rb.transform.Translate(-Vector3.right*bossPrams.chargeDistance);
-            coolTime = bossPrams.chargeIntervalSec;
-            canAttack = false;
         }
 
         private void Upper()
         {
-            rb.transform.Translate(Vector3.up*bossPrams.upperHeight);
-            
-            coolTime = bossPrams.upperIntervalSec;
-            canAttack = false;
-            UpperAttack = true;
+            transform.Translate(Vector3.up*bossPrams.upperHeight);
+        }
+
+        private void Jump()
+        {
+            transform.Translate(Vector3.up*bossPrams.upperHeight);
+        }
+
+        private void FallAttack()
+        {
+            CurrentDistance();
+            var absoluteDistance = ConvertAbsolute(playerDistance);
+            Debug.Log(playerDistance);
+            if (absoluteDistance <= bossPrams.fallAttackDistance)
+            {
+                Debug.Log("playerDistance <= bossPrams.fallAttackDistance");
+                StopCoroutine(MoveTowardsTarget(bossPrams.fallSpeed ));
+            }
+            else
+            {
+                Debug.Log("else");
+                if (playerDistance < 0)
+                {
+                    transform.Translate(bossPrams.fallAttackDistance,0,0);
+                }
+                else
+                {
+                    transform.Translate(-bossPrams.fallAttackDistance,0,0);
+                }
+            }
+        }
+
+        private IEnumerator MoveTowardsTarget(float speed)
+        {
+            while (xDistance > 0)
+            {
+                transform.position = Vector3.MoveTowards(
+                    transform.position,
+                    positionAtAttack,
+                    speed * Time.deltaTime
+                );
+                
+                xDistance = Mathf.Abs(transform.position.x - positionAtAttack.x);
+                
+                yield return null;
+            }
+        }
+
+        private void DebrisAttack()
+        {
+            Instantiate(Debris,transform.position,Quaternion.identity);
+            var debrisRb = Debris.GetComponent<Rigidbody>();
+            debrisRb.AddForce(-bossPrams.debrisSpeed,0,0);
         }
 
         private void Slap()
@@ -89,14 +137,21 @@ namespace Feature.Component.Enemy
             
         }
 
+        private float ConvertAbsolute(float distance)
+        {
+            var absolute = Mathf.Abs(distance);
+            return absolute;
+        }
+
         private void CurrentDistance()
         {
             playerDistance = DistancePlayer();
+            positionAtAttack = playerTransform.position;
         }
 
         private float DistancePlayer()
         {
-            return  Vector3.Distance(playerRb.position, rb.position);
+            return  Vector3.Distance(playerTransform.position, transform.position);
         }
 
         private void OnCollisionEnter(Collision other)
@@ -105,6 +160,11 @@ namespace Feature.Component.Enemy
             {
                 hit = true;
             }
+
+            if (other.gameObject.CompareTag("Ground"))
+            {
+                onGround = true;
+            }
         }
 
         private void OnCollisionExit(Collision other)
@@ -112,6 +172,11 @@ namespace Feature.Component.Enemy
             if (other.gameObject.CompareTag("Player"))
             {
                 hit = false;
+            }
+            
+            if (other.gameObject.CompareTag("Ground"))
+            {
+                onGround = false;
             }
         }
     }
