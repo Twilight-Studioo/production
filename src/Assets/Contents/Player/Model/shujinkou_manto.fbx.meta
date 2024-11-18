@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 57707812d9920cd43a8629c443a48e78
+guid: 8ed13ab303f86474d8b4b1c2c7807440
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,18 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: tex_beruto
-    second: {fileID: 2100000, guid: 4b78127113b89ca4a95c008d46e15a27, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: tex_body
-    second: {fileID: 2100000, guid: 8dc3e5687750dac408e0d1edb61b70a4, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: tex_face
-    second: {fileID: 2100000, guid: af3e12f970b2a004cbe4c59d6ffa3b4c, type: 2}
+      name: manto
+    second: {fileID: 2100000, guid: 44da6866da5112c4b9c870fa52fbbea5, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
