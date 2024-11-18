@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   speed: 10
-  jumpPower: 10
+  jumpPower: 7
   attackPower: 5
   comboTimeWindow: 0.7
   comboAngleOffset: 0
