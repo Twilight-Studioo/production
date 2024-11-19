@@ -13,7 +13,7 @@ namespace Main.Scene.Generated
     {
         TitleScene,
         Stage,
-        EndScene,
+        GameOverScene,
     }
 
     public static class SceneLoaderFeatures
@@ -26,9 +26,9 @@ namespace Main.Scene.Generated
         {
             return new SceneLoader(Scene.Stage, "Assets/Scenes/Template/Stage.unity", sceneDataModel);
         }
-        public static SceneLoader EndScene(ISceneDataModel sceneDataModel)
+        public static SceneLoader GameOverScene(ISceneDataModel sceneDataModel)
         {
-            return new SceneLoader(Scene.EndScene, "Assets/Scenes/Tests/EndScene.unity", sceneDataModel);
+            return new SceneLoader(Scene.GameOverScene, "Assets/Scenes/OutGame/GameOverScene.unity", sceneDataModel);
         }
     }
 }

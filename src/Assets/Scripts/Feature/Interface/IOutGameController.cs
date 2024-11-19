@@ -1,6 +1,6 @@
 namespace Feature.Interface
 {
-    public interface ITitleController
+    public interface IOutGameController
     {
         public void Start();
     }

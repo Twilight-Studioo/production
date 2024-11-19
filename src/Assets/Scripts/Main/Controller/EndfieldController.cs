@@ -1,23 +1,34 @@
 #region
 
 using System;
+using Core.Utilities;
+using Feature.Interface;
+using Main.Scene;
+using Main.Scene.Generated;
 using UniRx;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using VContainer;
 
 #endregion
 
-namespace Feature.Component
+namespace Main.Controller
 {
-    public class EndFieldController
+    public class EndFieldController: IEndFieldController
     {
         private readonly CompositeDisposable disposable = new();
+        private readonly RootInstance rootInstance;
         private readonly Image endFieldImage;
         private readonly float fadeDuration = 2f;
 
-        public EndFieldController()
+        private bool isEnded = false;
+
+        [Inject]
+        public EndFieldController(
+            RootInstance rootInstance
+        )
         {
+            this.rootInstance = rootInstance.CheckNull();
             endFieldImage = GameObject.Find("EndField").GetComponent<Image>();
             endFieldImage.color = new(0, 0, 0, 0);
         }
@@ -30,7 +41,6 @@ namespace Feature.Component
                     if (health <= 0)
                     {
                         endFieldImage.enabled = true;
-                        Debug.Log("Player has died. Starting fade out process.");
                         FadeToBlackAndChangeScene();
                     }
                 })
@@ -48,9 +58,10 @@ namespace Feature.Component
                     var alpha = Mathf.Clamp01(fadeTimer / fadeDuration);
                     endFieldImage.color = new(0, 0, 0, alpha);
 
-                    if (alpha >= 1)
+                    if (alpha >= 1 && !isEnded)
                     {
-                        SceneManager.LoadScene("EndScene");
+                        isEnded = true;
+                        SceneLoaderFeatures.GameOverScene(null).Bind(rootInstance).Load();
                     }
                 })
                 .AddTo(disposable);
