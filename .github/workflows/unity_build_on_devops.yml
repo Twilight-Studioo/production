@@ -4,12 +4,22 @@ on:
   issue_comment:
     types: [created]
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   trigger-build:
     runs-on: ubuntu-latest
     if: >
       github.event.issue.pull_request != null &&
       startsWith(github.event.comment.body, '/build')
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -135,8 +145,9 @@ jobs:
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          number: ${{ github.event.issue.number }}
           hide_and_recreate: true
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
             ✅ ビルドをqueueに追加しました。
             コミット: `${{ steps.parse.outputs.commit }}`

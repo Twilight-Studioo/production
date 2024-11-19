@@ -10,7 +10,7 @@ namespace Main.Installer
 
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<ITitleController, TitleController>(Lifetime.Scoped);
+            builder.Register<IOutGameController, TitleController>(Lifetime.Scoped);
 
             builder.RegisterEntryPoint<TitleManager>(Lifetime.Scoped);
         }

@@ -1,5 +1,6 @@
 using Core.Input;
 using Core.Utilities;
+using Main.Controller;
 using Main.Controller.GameNavigation;
 using Main.Scene;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Main.Installer
         [SerializeField] private GameObject volumesPrefab;
         [SerializeField] private GameObject controlsPrefab;
         [SerializeField] private GameObject titlePrefab;
+        [SerializeField] private GameObject gameOverPrefab;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -25,6 +27,7 @@ namespace Main.Installer
                 volumesPrefab,
                 controlsPrefab,
                 titlePrefab,
+                gameOverPrefab,
                 this
             ).CheckNull());
 
@@ -33,8 +36,10 @@ namespace Main.Installer
             builder.RegisterComponent(volumesPrefab.GetComponent<VolumesScreen>().CheckNull());
             builder.RegisterComponent(controlsPrefab.GetComponent<ControlsScreen>().CheckNull());
             builder.RegisterComponent(titlePrefab.GetComponent<TitleScreen>().CheckNull());
+            builder.RegisterComponent(gameOverPrefab.GetComponent<GameOverScreen>().CheckNull());
             
             builder.Register<RootInstance>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<RootManager>();
         }
     }
 }

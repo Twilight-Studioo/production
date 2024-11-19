@@ -41,6 +41,7 @@ namespace Main.Installer
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);
             builder.Register<SwapModel>(Lifetime.Scoped);
+            builder.Register<IEndFieldController, EndFieldController>(Lifetime.Scoped);
             builder.RegisterInstance(characterParams);
             builder.RegisterInstance(gameSettings);
 
