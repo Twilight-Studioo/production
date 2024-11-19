@@ -26,6 +26,8 @@ namespace Feature.Component.Enemy
         private Transform playerTransform;
         private Rigidbody bossRb;
         private NavMeshAgent Agent;
+        private Vector3 playerPosition;
+        private bool playerRightSide = false;
 
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
@@ -41,11 +43,21 @@ namespace Feature.Component.Enemy
             Agent = GetComponent<NavMeshAgent>();
             StartCoroutine(Attack());
         }
-        
+
         private void Update()
         {
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             xDistance = Mathf.Abs(transform.position.x - positionAtAttack.x);
+            var distance = transform.position.x - playerTransform.position.x;
+            if (distance < 0)
+            {
+                playerRightSide = true;
+            }
+            playerPosition = playerTransform.position;
+            var direction = playerPosition - transform.position;
+            direction.y = 0;
+            var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
         }
 
         private IEnumerator Attack()
@@ -56,13 +68,10 @@ namespace Feature.Component.Enemy
                 case 1:
                     yield return ChargeAttack();
                     yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
-                    /*Upper();
-                    yield return null;
-                    FallAttack();
-                    yield return new WaitUntil(() => onGround == true);
-                    yield return null;
-                    DebrisAttack();
-                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);*/
+                    Upper();
+                    yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+                    StartCoroutine(FallAttack());
+                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
                     
                     break;
             }
@@ -74,66 +83,67 @@ namespace Feature.Component.Enemy
         {
             yield return new WaitForSeconds(bossPrams.chargeTime);
             CurrentDistance();
-            if (playerDistance < 0)
-            {
-                //StartCoroutine(MoveTowardsTarget(bossPrams.chargeSpeed, Vector3.right * bossPrams.chargeDistance));
-                bossRb.AddForce(bossPrams.chargeSpeed*Vector3.right);
-            }
-            else
-            {
-                //StartCoroutine(MoveTowardsTarget(bossPrams.chargeSpeed, -Vector3.right * bossPrams.chargeDistance));
-                bossRb.AddForce(bossPrams.chargeSpeed*Vector3.left);
-            }
+            Debug.Log(playerDistance);
+            bossRb.AddRelativeForce(bossPrams.chargeSpeed*Vector3.forward);
 
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(bossPrams.chargeAttackTime);
             bossRb.velocity = Vector3.zero;
         }
 
         private void Upper()
         {
-            bossRb.AddForce(0,bossPrams.upperHeight*100,0);
+            bossRb.AddForce(0,bossPrams.upperHeight*10,0);
         }
 
         private void Jump()
         {
-            bossRb.AddForce(0,bossPrams.upperHeight*100,0);
+            bossRb.AddForce(0,bossPrams.upperHeight*10,0);
         }
 
-        private void FallAttack()
+        private IEnumerator FallAttack()
         {
             CurrentDistance();
-            var absoluteDistance = ConvertAbsolute(playerDistance);
             Debug.Log(playerDistance);
-            if (absoluteDistance <= bossPrams.fallAttackDistance)
+            if (playerDistance <= bossPrams.fallAttackDistance)
             {
                 Debug.Log("playerDistance <= bossPrams.fallAttackDistance");
                 StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,positionAtAttack));
-                bossRb.velocity = Vector3.zero;
             }
             else
             {
-                Debug.Log("else");
-                if (playerDistance < 0)
+                Debug.Log("fallAttack" + playerDistance);
+                if (playerRightSide)
                 {
-                    transform.Translate(bossPrams.fallAttackDistance,0,0);
+                    StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,new Vector3(transform.
+                        position.x + bossPrams.fallAttackDistance,positionAtAttack.y,positionAtAttack.z)));
                 }
                 else
                 {
-                    transform.Translate(-bossPrams.fallAttackDistance,0,0);
+                    StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,new Vector3(transform.
+                        position.x - bossPrams.fallAttackDistance,positionAtAttack.y,positionAtAttack.z)));
+
                 }
             }
+            yield return new WaitUntil(() => onGround == true);
+            bossRb.velocity = Vector3.zero;
+            yield return new WaitForSeconds(bossPrams.fallAttackIntervalSec);
+            DebrisAttack();
         }
 
         private IEnumerator MoveTowardsTarget(float speed,Vector3 target)
         {
             while (xDistance > 0)
             {
-                transform.position = Vector3.MoveTowards(
+                transform.localPosition = Vector3.MoveTowards(
                     transform.position,
                     target,
                     speed * Time.deltaTime
                 );
                 yield return null;
+                if (onGround)
+                {
+                    break;
+                }
             }
             bossRb.velocity = Vector3.zero;
         }
@@ -141,19 +151,11 @@ namespace Feature.Component.Enemy
         private void DebrisAttack()
         {
             Instantiate(Debris,transform.position,Quaternion.identity);
-            var debrisRb = Debris.GetComponent<Rigidbody>();
-            debrisRb.AddForce(-bossPrams.debrisSpeed,0,0);
         }
 
         private void Slap()
         {
             
-        }
-
-        private float ConvertAbsolute(float distance)
-        {
-            var absolute = Mathf.Abs(distance);
-            return absolute;
         }
 
         private void CurrentDistance()
@@ -171,7 +173,7 @@ namespace Feature.Component.Enemy
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                
+                other.gameObject.GetComponent<IDamaged>().OnDamage(0,transform.position,transform);
             }
 
             if (other.gameObject.CompareTag("Ground"))

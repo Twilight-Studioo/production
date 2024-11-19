@@ -1,5 +1,6 @@
 ﻿using Feature.Common.Constants;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Feature.Common.Parameter
 {
@@ -10,8 +11,8 @@ namespace Feature.Common.Parameter
         [Tooltip("攻撃の種類"), Header("攻撃の種類"),] 
         public SmasherAttackType attackType = SmasherAttackType.Charge;
         
-        [Tooltip("突進距離"), Header("突進距離"),] 
-        public float chargeDistance = 5f;
+        [Tooltip("突進する時間"), Header("突進時する時間"),] 
+        public float chargeAttackTime = 5f;
         
         [Tooltip("突進の速度"), Header("突進の速度"),] 
         public float chargeSpeed = 5f;
@@ -40,7 +41,7 @@ namespace Feature.Common.Parameter
         [Tooltip("平手打ちのダメージ"), Header("平手打ちのダメージ"),]
         public uint slapDamage = 3;
 
-        [Tooltip("落下攻撃の当たる距離"), Header("落下攻撃の当たる距離"),]
+        [FormerlySerializedAs("strikingDistanceOfFallAttack"),FormerlySerializedAs("落下攻撃の当たる距離"),Tooltip("落下攻撃の当たる距離"), Header("落下攻撃の当たる距離"),]
         public float fallAttackDistance = 10;
 
         [Tooltip("落下速度"), Header("落下速度"),] 
@@ -50,7 +51,7 @@ namespace Feature.Common.Parameter
         public uint fallAttackDamage = 10;
         
         [Tooltip("落下攻撃後の待機時間"), Header("落下攻撃後の待機時間"),]
-        public float fallotAttackIntervalSec = 1;
+        public float fallAttackIntervalSec = 1;
 
         [Tooltip("瓦礫のダメージ"), Header("瓦礫のダメージ"),]
         public uint debrisDamage = 5;

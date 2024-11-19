@@ -20,18 +20,18 @@ MonoBehaviour:
   patrolSpeed: 1
   pursuitSpeed: 1.4
   attackType: 0
-  chargeDistance: 2
+  chargeAttackTime: 0.5
   chargeSpeed: 500
   chargeTime: 2
   chargeAttackDamage: 10
   chargeIntervalSec: 2
-  upperHeight: 10
+  upperHeight: 40
   upperDamage: 10
   upperIntervalSec: 1
   slapDistance: 3
   slapDamage: 3
-  fallAttackDistance: 10
-  fallSpeed: 20
+  fallAttackDistance: 20
+  fallSpeed: 200
   fallAttackDamage: 10
   fallAttackIntervalSec: 1
   debrisDamage: 5

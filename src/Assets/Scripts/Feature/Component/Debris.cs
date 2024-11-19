@@ -14,19 +14,24 @@ namespace Feature.Component
         private Rigidbody debrisRb;
         private bool accelation = true;
         private int count = 0;
+        private bool playerRightSide = false;
 
         private void Start()
         {
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             debrisRb = GetComponent<Rigidbody>();
-            distance = Vector3.Distance(playerTransform.position, transform.position);
+            distance = transform.position.x - playerTransform.position.x;
+            if (distance < 0)
+            {
+                playerRightSide = true;
+            }
         }
 
         private void Update()
         {
             if (accelation)
             {
-                if (distance < 0)
+                if (playerRightSide)
                 {
                     debrisRb.AddForce(bossPrams.debrisSpeed,0,0);
                 }
