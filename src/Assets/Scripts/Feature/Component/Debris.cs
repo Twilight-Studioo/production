@@ -20,7 +20,6 @@ namespace Feature.Component
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             debrisRb = GetComponent<Rigidbody>();
             distance = Vector3.Distance(playerTransform.position, transform.position);
-            
         }
 
         private void Update()

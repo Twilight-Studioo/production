@@ -12,6 +12,9 @@ namespace Feature.Common.Parameter
         
         [Tooltip("突進距離"), Header("突進距離"),] 
         public float chargeDistance = 5f;
+        
+        [Tooltip("突進の速度"), Header("突進の速度"),] 
+        public float chargeSpeed = 5f;
 
         [Tooltip("チャージ時間"), Header("チャージ時間"),] 
         public float chargeTime = 2;
@@ -41,10 +44,13 @@ namespace Feature.Common.Parameter
         public float fallAttackDistance = 10;
 
         [Tooltip("落下速度"), Header("落下速度"),] 
-        public float fallSpeed = 2;
+        public float fallSpeed = 20;
         
         [Tooltip("落下攻撃のダメージ"), Header("落下攻撃のメージ"),]
         public uint fallAttackDamage = 10;
+        
+        [Tooltip("落下攻撃後の待機時間"), Header("落下攻撃後の待機時間"),]
+        public float fallotAttackIntervalSec = 1;
 
         [Tooltip("瓦礫のダメージ"), Header("瓦礫のダメージ"),]
         public uint debrisDamage = 5;

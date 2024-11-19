@@ -3,7 +3,10 @@ using System.Collections;
 using Core.Utilities;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
+using Feature.Interface;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Assertions.Must;
 using Random = UnityEngine.Random;
 
 namespace Feature.Component.Enemy
@@ -14,12 +17,15 @@ namespace Feature.Component.Enemy
         public EnemyType EnemyType => EnemyType.Smasher;
 
         private bool onPlayer = false;
-        private bool onGround = true;
+        public bool onGround = true;
         private float xDistance = 0;
+        private float yDistance = 0;
         private bool canAttack = false;
         private bool hit = false;
         private int rnd;
         private Transform playerTransform;
+        private Rigidbody bossRb;
+        private NavMeshAgent Agent;
 
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
@@ -31,6 +37,8 @@ namespace Feature.Component.Enemy
 
         private void Start()
         {
+            bossRb = GetComponent<Rigidbody>();
+            Agent = GetComponent<NavMeshAgent>();
             StartCoroutine(Attack());
         }
         
@@ -48,12 +56,13 @@ namespace Feature.Component.Enemy
                 case 1:
                     yield return ChargeAttack();
                     yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
-                    Upper(); 
-                    yield return new WaitForSeconds(bossPrams.upperIntervalSec); 
+                    /*Upper();
+                    yield return null;
                     FallAttack();
                     yield return new WaitUntil(() => onGround == true);
+                    yield return null;
                     DebrisAttack();
-                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
+                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);*/
                     
                     break;
             }
@@ -67,22 +76,27 @@ namespace Feature.Component.Enemy
             CurrentDistance();
             if (playerDistance < 0)
             {
-                transform.Translate(Vector3.right*bossPrams.chargeDistance);
+                //StartCoroutine(MoveTowardsTarget(bossPrams.chargeSpeed, Vector3.right * bossPrams.chargeDistance));
+                bossRb.AddForce(bossPrams.chargeSpeed*Vector3.right);
             }
             else
             {
-                transform.Translate(-Vector3.right*bossPrams.chargeDistance);
+                //StartCoroutine(MoveTowardsTarget(bossPrams.chargeSpeed, -Vector3.right * bossPrams.chargeDistance));
+                bossRb.AddForce(bossPrams.chargeSpeed*Vector3.left);
             }
+
+            yield return new WaitForSeconds(1);
+            bossRb.velocity = Vector3.zero;
         }
 
         private void Upper()
         {
-            transform.Translate(Vector3.up*bossPrams.upperHeight);
+            bossRb.AddForce(0,bossPrams.upperHeight*100,0);
         }
 
         private void Jump()
         {
-            transform.Translate(Vector3.up*bossPrams.upperHeight);
+            bossRb.AddForce(0,bossPrams.upperHeight*100,0);
         }
 
         private void FallAttack()
@@ -93,7 +107,8 @@ namespace Feature.Component.Enemy
             if (absoluteDistance <= bossPrams.fallAttackDistance)
             {
                 Debug.Log("playerDistance <= bossPrams.fallAttackDistance");
-                StopCoroutine(MoveTowardsTarget(bossPrams.fallSpeed ));
+                StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,positionAtAttack));
+                bossRb.velocity = Vector3.zero;
             }
             else
             {
@@ -109,20 +124,18 @@ namespace Feature.Component.Enemy
             }
         }
 
-        private IEnumerator MoveTowardsTarget(float speed)
+        private IEnumerator MoveTowardsTarget(float speed,Vector3 target)
         {
             while (xDistance > 0)
             {
                 transform.position = Vector3.MoveTowards(
                     transform.position,
-                    positionAtAttack,
+                    target,
                     speed * Time.deltaTime
                 );
-                
-                xDistance = Mathf.Abs(transform.position.x - positionAtAttack.x);
-                
                 yield return null;
             }
+            bossRb.velocity = Vector3.zero;
         }
 
         private void DebrisAttack()
@@ -158,7 +171,7 @@ namespace Feature.Component.Enemy
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                hit = true;
+                
             }
 
             if (other.gameObject.CompareTag("Ground"))
