@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29178800038c5304d9f4202730ce47ec, type: 3}
   m_Name: GunnerParams
   m_EditorClassIdentifier: 
+  BasicAttackCooldown: 3
+  SpecialAttackCooldown: 5
   AttackRange: 10
+  CQBAttackRange: 2
   DetectionRange: 20
   MaxAmmo: 6
   ReloadTime: 2
@@ -20,7 +23,9 @@ MonoBehaviour:
   JumpHeight: 8
   SpecialMoveSpeed: 6
   KnockbackDistance: 3
-  AttackCooldown: 5
   AttacksBeforeSpecialMove: 3
-  ForwardTeleportDistance: 5
   MoveDurationBeforeAttack: 5
+  ReturnToIdleDelay: 2
+  BackAngleThreshold: 90
+  MeleeAttackCooldown: 2
+  RangedAttackCooldown: 3

@@ -24,4 +24,9 @@ public class FSM : MonoBehaviour
             _currentState.Execute();
         }
     }
+
+    public IState GetCurrentState()
+    {
+        return _currentState;
+    }
 }

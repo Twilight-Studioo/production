@@ -7,9 +7,9 @@ public class EnemyParams : ScriptableObject
     public float BasicAttackCooldown = 3f;
 
     [Tooltip("特殊攻撃のクールタイム"), Header("特殊攻撃のクールタイム")]
-    public float SpecialAttackCooldown = 5f; 
+    public float SpecialAttackCooldown = 5f;
 
-    [Tooltip("普通攻撃範囲"),Header("攻撃範囲")]
+    [Tooltip("普通攻撃範囲"), Header("攻撃範囲")]
     public float AttackRange = 10f;
 
     [Tooltip("CQB攻撃範囲"), Header("CQB攻撃範囲")]
@@ -41,4 +41,16 @@ public class EnemyParams : ScriptableObject
 
     [Tooltip("攻撃前の移動時間（攻撃前に敵が移動する時間）"), Header("攻撃前の移動時間（攻撃前に敵が移動する時間）")]
     public float MoveDurationBeforeAttack = 5f;
+
+    [Tooltip("アクション後に待機状態に戻るまでの遅延時間"), Header("アクション後に待機状態に戻るまでの遅延時間")]
+    public float ReturnToIdleDelay = 2f;
+
+    [Tooltip("プレーヤーが背後にいると判断する角度閾値"), Header("プレーヤーが背後にいると判断する角度閾値")]
+    public float BackAngleThreshold = 120f;
+
+    [Tooltip("近距離攻撃のクールダウン時間"), Header("近距離攻撃のクールダウン時間")]
+    public float MeleeAttackCooldown = 2f;
+
+    [Tooltip("遠距離攻撃のクールダウン時間"), Header("遠距離攻撃のクールダウン時間")]
+    public float RangedAttackCooldown = 3f;
 }

@@ -5,29 +5,31 @@ public class GunnerController : MonoBehaviour
 {
     public EnemyParams enemyParams;
     public GameObject bulletPrefab; 
-    public Transform bulletSpawnPoint;
+    public Transform bulletSpawnPoint; 
 
-    private Animation animationComponent;
+    public Animator Animator { get; private set; }
     private Transform targetPlayer;
     private Rigidbody rb;
-    private int attackCount = 0;
-    private bool isAttacking = false;
-    private bool isAttackCooldown = false;
-    private bool isSpecialAttack = false;
-    private float moveTimer = 0f;
-
     private FSM fsm;
+    private int currentAmmo;
+    private int attackCount;
+    private bool isJumping;
 
     private void Start()
     {
-        animationComponent=GetComponent<Animation>();    
+        Animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         fsm = new FSM();
+        currentAmmo = enemyParams.MaxAmmo;
+        attackCount = 0;
+        isJumping = false;
+
         FindPlayer();
+
         fsm.SetState(new IdleState(this));
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (targetPlayer == null)
         {
@@ -36,7 +38,12 @@ public class GunnerController : MonoBehaviour
         else
         {
             fsm.Update();
-            CheckForCQBAttack();
+        }
+
+        if (isJumping && IsGrounded())
+        {
+            isJumping = false;
+            ChangeState(new LandingState(this));
         }
     }
 
@@ -49,9 +56,20 @@ public class GunnerController : MonoBehaviour
         }
     }
 
+    public void ChangeState(IState newState)
+    {
+        fsm.SetState(newState);
+    }
+
     public bool IsPlayerInRange()
     {
         return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.DetectionRange;
+    }
+    public bool IsPlayerBehind()
+    {
+        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
+        float angle = Vector3.Angle(transform.forward, directionToPlayer);
+        return angle > enemyParams.BackAngleThreshold;
     }
 
     public bool IsCloseEnoughToAttack()
@@ -59,178 +77,24 @@ public class GunnerController : MonoBehaviour
         return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.AttackRange;
     }
 
-    private bool IsPlayerBehind()
+    public bool IsOutOfAmmo()
     {
-        Vector3 toPlayer = (targetPlayer.position - transform.position).normalized;
-        float dotProduct = Vector3.Dot(transform.forward, toPlayer);
-        return dotProduct < 0; 
+        return currentAmmo <= 0;
     }
 
-    public void MoveTowardsPlayer()
+    public bool IsGrounded()
     {
-        if (targetPlayer == null || isAttackCooldown) return;
-
-        if (isSpecialAttack)
+        RaycastHit hit;
+        float groundCheckDistance = 0.2f; 
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance))
         {
-            GroundMovement();
+            return hit.collider.CompareTag("Ground");
         }
-        else
-        {
-            AirJumpMovement();
-        }
-
-        FacePlayer();
+        return false;
     }
-
-    private void FacePlayer()
+    public bool IsCloseEnoughToCQB()
     {
-        if (targetPlayer == null) return;
-        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
-        directionToPlayer.y = 0;
-
-        transform.rotation = Quaternion.LookRotation(directionToPlayer);
-    }
-
-    private void AirJumpMovement()
-    {
-        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
-        directionToPlayer.y = 0;
-
-        rb.AddForce(new Vector3(0, enemyParams.JumpHeight, 0), ForceMode.Impulse); 
-    }
-
-    private void GroundMovement()
-    {
-        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
-        directionToPlayer.y = 0;
-
-        rb.MovePosition(transform.position + directionToPlayer * enemyParams.MoveSpeed * Time.fixedDeltaTime); // 水平移动
-    }
-
-    private IEnumerator MoveThenAttack()
-    {
-        moveTimer = 0f;
-
-        while (moveTimer < enemyParams.MoveDurationBeforeAttack)
-        {
-            MoveTowardsPlayer();
-            moveTimer += Time.fixedDeltaTime;
-            yield return null;
-        }
-
-        PerformAttack();
-    }
-
-    public void PerformAttack()
-    {
-        if (isAttackCooldown || isSpecialAttack) return;
-
-        if (IsPlayerBehind())
-        {
-            PlayAnimation("GUN__attackB"); 
-            FacePlayer(); 
-            return;
-        }
-
-        if (attackCount >= enemyParams.AttacksBeforeSpecialMove)
-        {
-            StartCoroutine(SpecialMoveCoroutine());
-            attackCount = 0;
-        }
-        else
-        {
-            string[] attackAnimations = { "GUN__attackFA", "GUN__attackFB", "GUN__attackFC" };
-            string selectedAnimation = attackAnimations[Random.Range(0, attackAnimations.Length)];
-            PlayAnimation(selectedAnimation);
-
-            FacePlayer(); 
-            StartCoroutine(KnockbackCoroutine());
-            StartCoroutine(AttackCooldownCoroutine());
-            attackCount++;
-        }
-    }
-
-    public void Shoot()
-    {
-        Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
-    }
-
-    private IEnumerator SpecialMoveCoroutine()
-    {
-        if (targetPlayer == null) yield break;
-
-        isSpecialAttack = true;
-
-        rb.AddForce(new Vector3(0, enemyParams.JumpHeight, 0), ForceMode.Impulse);
-        yield return new WaitForSeconds(0.5f);
-
-        PlayAnimation("GUN__beam");
-        yield return new WaitForSeconds(animationComponent["GUN__beam"].length);
-
-        StartCoroutine(KnockbackCoroutine());
-        yield return new WaitForSeconds(0.5f);
-
-        rb.AddForce(new Vector3(0, -enemyParams.JumpHeight, 0), ForceMode.Impulse);
-        yield return new WaitForSeconds(0.5f);
-
-        isSpecialAttack = false;
-
-        StartCoroutine(AttackCooldownCoroutine());
-    }
-
-    private IEnumerator KnockbackCoroutine()
-    {
-        if (targetPlayer == null) yield break;
-
-        Vector3 directionAwayFromPlayer = (transform.position - targetPlayer.position).normalized;
-        rb.AddForce(directionAwayFromPlayer * enemyParams.KnockbackDistance, ForceMode.Impulse);
-
-        yield return new WaitForSeconds(0.5f);
-
-        PlayAnimation("GUN__landing");
-    }
-
-    private IEnumerator AttackCooldownCoroutine()
-    {
-        isAttackCooldown = true;
-        yield return new WaitForSeconds(enemyParams.BasicAttackCooldown);
-        isAttackCooldown = false;
-
-        StartCoroutine(MoveThenAttack());
-    }
-
-    private void FacePlayer(Vector3 directionToPlayer)
-    {
-        if (targetPlayer == null) return;
-
-        Vector3 direction = (targetPlayer.position - transform.position).normalized;
-        direction.y = 0;
-
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-        transform.rotation = targetRotation;
-    }
-
-    public void Attack()
-    {
-        Shoot();
-        Debug.Log("Performing Attack");
-    }
-
-    public void SpecialAttack()
-    {
-        Debug.Log("Performing Special Attack");
-    }
-    private void CheckForCQBAttack()
-    {
-        if (Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.CQBAttackRange)
-        {
-            PlayAnimation("GUN__attack_CQB");
-        }
-    }
-
-    public void StartAttackCooldown(float cooldownTime)
-    {
-        StartCoroutine(AttackCooldownCoroutine(cooldownTime));
+        return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.CQBAttackRange;
     }
 
     public bool ShouldPerformSpecialAttack()
@@ -238,37 +102,70 @@ public class GunnerController : MonoBehaviour
         return attackCount >= enemyParams.AttacksBeforeSpecialMove;
     }
 
-    private IEnumerator AttackCooldownCoroutine(float cooldownTime)
-    {
-        isAttackCooldown = true;
-        yield return new WaitForSeconds(cooldownTime);
-        isAttackCooldown = false;
-    }
-
-    public void PlayAnimation(string animationName)
-    {
-        if (animationComponent != null && animationComponent[animationName] != null)
-        {
-            animationComponent.CrossFade(animationName);
-        }
-        else
-        {
-            Debug.LogWarning($"Animation '{animationName}' not found on {gameObject.name}");
-        }
-    }
-
-    public bool IsOutOfAmmo()
-    {
-        return false;
-    }
-
     public void ReloadAmmo()
     {
-        Debug.Log("Reloading Ammo");
+        currentAmmo = enemyParams.MaxAmmo;
+        attackCount = 0; 
+        Debug.Log("Ammo reloaded");
     }
 
-    public void ChangeState(IState newState)
+    public void MoveTowardsPlayer()
     {
-        fsm.SetState(newState);
+        if (targetPlayer == null) return;
+
+        FacePlayer();
+
+        Vector3 direction = (targetPlayer.position - transform.position).normalized;
+        rb.MovePosition(transform.position + direction * enemyParams.MoveSpeed * Time.deltaTime);
+    }
+
+    private void FacePlayer()
+    {
+        if (targetPlayer == null) return;
+
+        Vector3 direction = (targetPlayer.position - transform.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+    }
+
+    private void FacePlayer()
+    {
+        if (targetPlayer == null) return;
+
+        Vector3 direction = (targetPlayer.position - transform.position).normalized;
+        direction.y = 0;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+    }
+
+    public void PerformAttack()
+    {
+        if (!IsOutOfAmmo())
+        {
+            Animator.SetTrigger("Attack");
+            currentAmmo--;
+            attackCount++;
+        }
+    }
+
+    public void TriggerJump()
+    {
+        isJumping = true;
+
+        rb.AddForce(Vector3.up * enemyParams.JumpHeight, ForceMode.Impulse);
+
+        Debug.Log("Jump started");
+    }
+
+    public void StartAttackCooldown(float cooldownTime)
+    {
+        StartCoroutine(AttackCooldownCoroutine(cooldownTime));
+    }
+
+    private IEnumerator AttackCooldownCoroutine(float cooldownTime)
+    {
+        yield return new WaitForSeconds(cooldownTime);
+        Debug.Log("Cooldown completed");
     }
 }
