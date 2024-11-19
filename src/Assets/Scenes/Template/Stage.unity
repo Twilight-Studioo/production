@@ -861,7 +861,7 @@ PrefabInstance:
     - target: {fileID: 7094686518649341032, guid: 7784bbebbe59b48598260b4cb22659e2,
         type: 3}
       propertyPath: m_Name
-      value: DeleteSpawnItem
+      value: DeleteSpawnItemArea
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

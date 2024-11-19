@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5133841172817896497}
   - component: {fileID: -5035500278592277055}
   m_Layer: 0
-  m_Name: DeleteSpawnItem
+  m_Name: DeleteSpawnItemArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
