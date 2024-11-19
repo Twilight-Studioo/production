@@ -2,7 +2,6 @@
 
 using Core.Navigation;
 using Core.Utilities;
-using Main.Installer;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -20,6 +19,7 @@ namespace Main.Controller.GameNavigation
         Volumes,
         Controls,
         Title,
+        GameOver,
     }
 
     public static class NavigationExtensions
@@ -30,6 +30,7 @@ namespace Main.Controller.GameNavigation
             GameObject volumesPrefab,
             GameObject controlsPrefab,
             GameObject titlePrefab,
+            GameObject gameOverPrefab,
             LifetimeScope installer
         )
         {
@@ -44,7 +45,8 @@ namespace Main.Controller.GameNavigation
                 new Destination<Navigation>(Navigation.Option, optionPrefab.CheckNull()),
                 new Destination<Navigation>(Navigation.Volumes, volumesPrefab.CheckNull()),
                 new Destination<Navigation>(Navigation.Controls, controlsPrefab.CheckNull()),
-                new Destination<Navigation>(Navigation.Title, titlePrefab.CheckNull())
+                new Destination<Navigation>(Navigation.Title, titlePrefab.CheckNull()),
+                new Destination<Navigation>(Navigation.GameOver, gameOverPrefab.CheckNull())
             );
         }
     }
