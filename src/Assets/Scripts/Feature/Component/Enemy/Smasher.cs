@@ -35,7 +35,7 @@ namespace Feature.Component.Enemy
         private bool UpperAttack = false;
 
         [SerializeField] private GameObject Debris;
-        
+        [SerializeField] private GameObject Mine;
 
         private void Start()
         {
@@ -62,7 +62,7 @@ namespace Feature.Component.Enemy
 
         private IEnumerator Attack()
         {
-            rnd = Random.Range(1, 2);
+            rnd = Random.Range(1, 4);
             switch (rnd)
             {
                 case 1:
@@ -72,7 +72,20 @@ namespace Feature.Component.Enemy
                     yield return new WaitForSeconds(bossPrams.upperIntervalSec);
                     StartCoroutine(FallAttack());
                     yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
+                    break;
                     
+                case 2 :
+                    Jump();
+                    yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+                    StartCoroutine(FallAttack());
+                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
+                    break;
+                
+                case 3 :
+                    StrikeMine();
+                    yield return new WaitForSeconds(bossPrams.mineIntervalSec);
+                    yield return ChargeAttack();
+                    yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
                     break;
             }
 
@@ -85,19 +98,18 @@ namespace Feature.Component.Enemy
             CurrentDistance();
             Debug.Log(playerDistance);
             bossRb.AddRelativeForce(bossPrams.chargeSpeed*Vector3.forward);
-
             yield return new WaitForSeconds(bossPrams.chargeAttackTime);
             bossRb.velocity = Vector3.zero;
         }
 
         private void Upper()
         {
-            bossRb.AddForce(0,bossPrams.upperHeight*10,0);
+            bossRb.AddForce(0,bossPrams.upperHeight,0);
         }
 
         private void Jump()
         {
-            bossRb.AddForce(0,bossPrams.upperHeight*10,0);
+            bossRb.AddForce(0,bossPrams.upperHeight,0);
         }
 
         private IEnumerator FallAttack()
@@ -151,6 +163,11 @@ namespace Feature.Component.Enemy
         private void DebrisAttack()
         {
             Instantiate(Debris,transform.position,Quaternion.identity);
+        }
+
+        private void StrikeMine()
+        {
+            Instantiate(Mine,transform.position,Quaternion.identity);
         }
 
         private void Slap()

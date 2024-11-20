@@ -61,6 +61,18 @@ namespace Feature.Common.Parameter
         
         [Tooltip("瓦礫攻撃後の待機時間"), Header("瓦礫攻撃後の待機時間"),]
         public float debrisAttackIntervalSec = 1;
+        
+        [Tooltip("地雷発射後の待機時間"), Header("地雷発射後の待機時間"),]
+        public uint mineIntervalSec = 10;
+        
+        [Tooltip("地雷発射の速度(縦)"), Header("地雷発射の速度(縦)"),]
+        public uint mineSpeedVertical = 10;
+        
+        [Tooltip("地雷発射の速度(横)"), Header("地雷発射の速度(横)"),]
+        public uint mineSpeedBeside = 5;
+        
+        [Tooltip("地雷のダメージ"), Header("地雷のメージ"),]
+        public uint mineDamage = 10;
     }
 
     public enum SmasherAttackType
