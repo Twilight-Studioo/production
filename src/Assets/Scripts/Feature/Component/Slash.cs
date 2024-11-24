@@ -17,9 +17,13 @@ namespace Feature.Component
 
         private void OnTriggerEnter(Collider other)
         {
-            var enemy = other.gameObject.GetComponent<IEnemy>()
-                        ?? other.gameObject.GetComponentInParent<IEnemy>();
-            enemy?.OnDamage(damage, other.transform.position, transform);
+            var enemy = other.gameObject.GetComponent<IDamaged>()
+                        ?? other.gameObject.GetComponentInParent<IDamaged>();
+            if (enemy == null || other.gameObject.CompareTag("Player"))
+            {
+                return;
+            }
+            enemy.OnDamage(damage, other.transform.position, transform);
             if (enemy != null)
             {
                 audioSource.PlayOneShot(hitSound);
