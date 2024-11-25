@@ -27,6 +27,8 @@ namespace Feature.Common.Parameter
         
 
         [Tooltip("攻撃のクールタイム")] public float attackCoolTime = 0.2f;
+        
+        [Tooltip("最大コンボ後のクールタイム")] public float maxComboCoolTime = 1.0f;
         // スワップ関連
 
         [Tooltip("スワップの最大継続時間(Milli)"), Space(10),]

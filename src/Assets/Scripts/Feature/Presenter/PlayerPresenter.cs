@@ -112,7 +112,7 @@ namespace Feature.Presenter
                 .AddTo(playerHpBar);
             endFieldController.SubscribeToPlayerHealth(playerModel.Health);
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
-                playerModel.MaxComboCount, playerModel.AttackCoolTime, audioSource
+                playerModel.MaxComboCount, playerModel.AttackCoolTime, playerModel.MaxComboCoolTime, audioSource
             );
             playerModel.PlayerStateChange += StateHandler;
         }
@@ -259,7 +259,7 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            if (!isGameOver)
+            if (!isGameOver && playerModel.CanAttack.Value && playerView.CanAttack())
             {
                 playerModel.Attack();
                 bool isSpecialAttack = playerModel.VoltageValue >= characterParams.useVoltageAttackValue;
