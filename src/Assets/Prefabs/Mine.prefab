@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 7996673717855975755}
   - component: {fileID: 6262920550848987171}
   - component: {fileID: 1120554908903989780}
+  - component: {fileID: 4234218791633759005}
   m_Layer: 0
   m_Name: Mine
-  m_TagString: Untagged
+  m_TagString: SwapItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -64,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 2586f88905e521442893e379cc9735bb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -147,3 +148,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bossPrams: {fileID: 11400000, guid: 754cc4f51958ddc4e823500d9c3989b2, type: 2}
+--- !u!114 &4234218791633759005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4968052675775006875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 493fc45227594a5a92b7412761dc4bad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effect: {fileID: 0}
+  isSwap: 0
+  highlightRimThreshold: 0

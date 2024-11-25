@@ -6,7 +6,7 @@ using Feature.Common.Parameter;
 using Feature.Interface;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Assertions.Must;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Feature.Component.Enemy
@@ -28,14 +28,18 @@ namespace Feature.Component.Enemy
         private NavMeshAgent Agent;
         private Vector3 playerPosition;
         private bool playerRightSide = false;
+        private bool chargeAttack = false;
+        private bool fallAttack = false;
+        private GameObject mine;
+        
 
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
 
         private bool UpperAttack = false;
 
-        [SerializeField] private GameObject Debris;
-        [SerializeField] private GameObject Mine;
+        [SerializeField] private GameObject debrisPrefab;
+        [SerializeField] private GameObject minePrefab;
 
         private void Start()
         {
@@ -94,12 +98,14 @@ namespace Feature.Component.Enemy
 
         private IEnumerator ChargeAttack()
         {
+            chargeAttack = true;
             yield return new WaitForSeconds(bossPrams.chargeTime);
             CurrentDistance();
             Debug.Log(playerDistance);
             bossRb.AddRelativeForce(bossPrams.chargeSpeed*Vector3.forward);
             yield return new WaitForSeconds(bossPrams.chargeAttackTime);
             bossRb.velocity = Vector3.zero;
+            chargeAttack = false;
         }
 
         private void Upper()
@@ -114,6 +120,7 @@ namespace Feature.Component.Enemy
 
         private IEnumerator FallAttack()
         {
+            fallAttack = true;
             CurrentDistance();
             Debug.Log(playerDistance);
             if (playerDistance <= bossPrams.fallAttackDistance)
@@ -139,6 +146,7 @@ namespace Feature.Component.Enemy
             yield return new WaitUntil(() => onGround == true);
             bossRb.velocity = Vector3.zero;
             yield return new WaitForSeconds(bossPrams.fallAttackIntervalSec);
+            fallAttack = false;
             DebrisAttack();
         }
 
@@ -162,12 +170,12 @@ namespace Feature.Component.Enemy
 
         private void DebrisAttack()
         {
-            Instantiate(Debris,transform.position,Quaternion.identity);
+            Instantiate(debrisPrefab,transform.position,Quaternion.identity);
         }
 
         private void StrikeMine()
         {
-            Instantiate(Mine,transform.position,Quaternion.identity);
+            mine = ObjectFactory.Instance.CreateObject(minePrefab, transform.position, Quaternion.identity);
         }
 
         private void Slap()
@@ -190,7 +198,18 @@ namespace Feature.Component.Enemy
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                other.gameObject.GetComponent<IDamaged>().OnDamage(0,transform.position,transform);
+                if (chargeAttack)
+                {
+                    other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.chargeAttackDamage,transform.position,transform);
+                }
+                else if (fallAttack)
+                {
+                    other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.fallAttackDamage,transform.position,transform);
+                }
+                else
+                {
+                    other.gameObject.GetComponent<IDamaged>().OnDamage(0,transform.position,transform);
+                }
             }
 
             if (other.gameObject.CompareTag("Ground"))

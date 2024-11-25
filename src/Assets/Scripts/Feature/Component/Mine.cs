@@ -55,7 +55,7 @@ namespace Feature.Component
             if (other.gameObject.CompareTag("Player"))
             {
                 other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.mineDamage,transform.position,transform);
-                Destroy(this.gameObject);
+                this.gameObject.GetComponent<ISwappable>().Delete();
             }
         }
     }

@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1792210027200020226}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5519028, y: 0.25699997, z: 0}
+  m_LocalPosition: {x: 0, y: 0.25699997, z: 0.473}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -224,7 +224,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3495553469206181156}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 0.75
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -241,7 +241,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 88
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!114 &7990809426514261438
 MonoBehaviour:
@@ -256,7 +256,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bossPrams: {fileID: 11400000, guid: 754cc4f51958ddc4e823500d9c3989b2, type: 2}
-  Debris: {fileID: 1288972277542475340, guid: 9ee9135df19c20d4a867756f8f0f5f47, type: 3}
+  onGround: 1
+  debris: {fileID: 1288972277542475340, guid: 9ee9135df19c20d4a867756f8f0f5f47, type: 3}
+  mine: {fileID: 4968052675775006875, guid: 3a0b54af16b82ee47ad98aa1908ca74f, type: 3}
 --- !u!1 &6628709985180516270
 GameObject:
   m_ObjectHideFlags: 0

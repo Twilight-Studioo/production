@@ -30,7 +30,7 @@ namespace Feature.Component
 
         private float speed = 1.0f;
 
-        private bool Swapped;
+        private bool swapped;
 
         private Transform target;
         private Renderer targetRenderer;
@@ -116,7 +116,7 @@ namespace Feature.Component
         public void OnSwap(Vector2 p)
         {
             transform.position = p;
-            Swapped = true;
+            swapped = true;
         }
 
         public event Action OnHitEvent;
@@ -161,6 +161,6 @@ namespace Feature.Component
             Destroy(gameObject);
         }
 
-        public bool IsSwapped() => Swapped;
+        public bool IsSwapped() => swapped;
     }
 }
