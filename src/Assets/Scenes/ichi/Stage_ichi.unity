@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 0f9d25b188020c3449b53bd131fe4b0b, type: 2}
 --- !u!4 &43965334 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3383274944086381728, guid: d308aaef09aee734d806df6dde9aea6d,
@@ -1171,6 +1171,84 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93c2c421579dbd442a0c10c43650b5b1, type: 3}
+--- !u!1001 &474222597
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -13.054059
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957117387110517815, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7437453453869855136, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: points.Array.data[0].x
+      value: -26.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7437453453869855136, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: points.Array.data[1].x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529875732360637480, guid: a1bb7634d6aec412b97028e350fb9469,
+        type: 3}
+      propertyPath: m_Name
+      value: EnemySpawnPoint
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a1bb7634d6aec412b97028e350fb9469, type: 3}
 --- !u!1 &490511288
 GameObject:
   m_ObjectHideFlags: 0
@@ -4829,7 +4907,7 @@ PrefabInstance:
     - target: {fileID: 974588675384877354, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: field of view
-      value: 67.2
+      value: 75.84304
       objectReference: {fileID: 0}
     - target: {fileID: 1516243489501864038, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
@@ -4884,12 +4962,12 @@ PrefabInstance:
     - target: {fileID: 1961276430645119237, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000004291217
+      value: -0.000000004291217
       objectReference: {fileID: 0}
     - target: {fileID: 1961276430645119237, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -2.9863173e-10
+      value: 2.9863173e-10
       objectReference: {fileID: 0}
     - target: {fileID: 3606400983697465113, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
@@ -4975,6 +5053,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271379122264895468, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
+        type: 3}
+      propertyPath: m_Lens.FieldOfView
+      value: 75.84304
       objectReference: {fileID: 0}
     - target: {fileID: 7729599276646446907, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
@@ -5079,3 +5162,4 @@ SceneRoots:
   - {fileID: 2494931118670944904}
   - {fileID: 1503386066}
   - {fileID: 213538022}
+  - {fileID: 474222597}
