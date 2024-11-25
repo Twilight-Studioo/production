@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 973484435902756107}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.05585942, y: -1e-45, z: -0, w: 0.99843866}
-  m_LocalPosition: {x: -4.0499907, y: 4.04, z: -9.800032}
+  m_LocalRotation: {x: 0.024976555, y: -1e-45, z: -0, w: 0.999688}
+  m_LocalPosition: {x: -123.45002, y: 76.96, z: -34.00003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -294,8 +294,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1661854541293155685}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.05585942, y: -1e-45, z: -0, w: 0.99843866}
-  m_LocalPosition: {x: -4.0499907, y: 4.04, z: -9.800032}
+  m_LocalRotation: {x: 0.016170124, y: -0, z: -0, w: 0.9998693}
+  m_LocalPosition: {x: -4.0499907, y: 4.04, z: -34.00003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -556,7 +556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 2.7, z: -9.8}
+  m_FollowOffset: {x: 0, y: 2.7, z: -34}
   m_XDamping: 2.5
   m_YDamping: 2.9
   m_ZDamping: 2
@@ -719,8 +719,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3829548396830025091}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0694235, y: 0.000000004291217, z: -2.9863173e-10, w: 0.9975873}
-  m_LocalPosition: {x: -4.0499907, y: 4.14, z: -14.300032}
+  m_LocalRotation: {x: 0.029373681, y: -0, z: -0, w: 0.9995685}
+  m_LocalPosition: {x: -4.0499907, y: 4.14, z: -34.00003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -748,7 +748,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 7880068736608460418}
   m_Follow: {fileID: 7880068736608460418}
   m_Lens:
-    FieldOfView: 79.3
+    FieldOfView: 32
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -885,7 +885,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 2.8, z: -14.3}
+  m_FollowOffset: {x: 0, y: 2.8, z: -34}
   m_XDamping: 8.2
   m_YDamping: 7.9
   m_ZDamping: 1
@@ -958,8 +958,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectDistanceThreshold: 20
   virtualCamera: {fileID: 7271379122264895468}
-  minFOV: 67.2
-  maxFOV: 100
+  minFOV: 24
+  maxFOV: 30
   minDistance: 2
   maxDistance: 20
   fovMargin: 5
