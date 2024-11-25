@@ -5,14 +5,14 @@ using Feature.Interface;
 using Main.Controller.GameNavigation;
 using VContainer;
 
-namespace Main.Controller
+namespace Main.Controller.GameOver
 {
-    public class TitleController: IOutGameController
+    public class GameOverController: IOutGameController
     {
         private readonly InputActionAccessor accessor;
         private readonly ScreenController<Navigation> controller;
         [Inject]
-        public TitleController(
+        public GameOverController(
             InputActionAccessor accessor,
             ScreenController<Navigation> controller
         )
@@ -23,7 +23,7 @@ namespace Main.Controller
         public void Start()
         {
             controller.Reset();
-            controller.Navigate(Navigation.Title);
+            controller.Navigate(Navigation.GameOver);
         }
     }
 }

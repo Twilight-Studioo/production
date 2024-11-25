@@ -4,13 +4,13 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Main.Controller
+namespace Main.Controller.GameOver
 {
-    public class TitleManager: IStartable
+    public class GameOverManager: IStartable
     {
         private readonly IOutGameController controller;
         [Inject]
-        public TitleManager(
+        public GameOverManager(
             IOutGameController controller
         )
         {
