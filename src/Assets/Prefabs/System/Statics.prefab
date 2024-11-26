@@ -312,7 +312,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8588103418973680680}
   - component: {fileID: 8673267923572853573}
-  - component: {fileID: 3885856482781034563}
   m_Layer: 0
   m_Name: Installer
   m_TagString: Untagged
@@ -348,33 +347,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: 
+    TypeName: Main.Installer.RootInstaller
   autoRun: 1
   autoInjectGameObjects: []
   characterParams: {fileID: 11400000, guid: ff0abe4541d12444b8f2c2f950daebc2, type: 2}
   gameSettings: {fileID: 11400000, guid: 8a53a45fe1b0e447fbfa4740df1db905, type: 2}
-  pausePrefab: {fileID: 7612237818007759691, guid: b4307d7943a524187a7b47f5395aefd0,
-    type: 3}
-  optionPrefab: {fileID: 7612237818007759691, guid: 728efec8b694d4860a6b1cfc4c1936d2,
-    type: 3}
-  volumesPrefab: {fileID: 7612237818007759691, guid: d0e72dac4299046c387e0cba742141b3,
-    type: 3}
-  controlsPrefab: {fileID: 7612237818007759691, guid: 5f1ef8768124145c0a0f5062fb9189c1,
-    type: 3}
---- !u!114 &3885856482781034563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7875515698578903318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 839a9dce8ae54a96beb975b1b1f764cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputActionAsset: {fileID: -944628639613478452, guid: 76d496628dadb6f4d8f915bb7ea2aaaf,
-    type: 3}
 --- !u!1001 &5870329775406970056
 PrefabInstance:
   m_ObjectHideFlags: 0

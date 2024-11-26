@@ -35,7 +35,7 @@ namespace Feature.View
         private float attackCoolTime;
         private AudioSource audioSource;
         private float comboAngleOffset; // 連続攻撃時の角度変化
-        private float comboCount = -1;
+        private int comboCount = -1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private bool isGravityDisabled;
 
@@ -43,9 +43,11 @@ namespace Feature.View
         private float lastDegree;
         private float maxComboCount; // 連続攻撃の最大回数
         private float monochrome;
+        private float maxComboCoolTime;
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
+        private bool isMovementDisabled;
 
         private float vignetteChange; //赤くなるまでの時間
         [SerializeField, Tooltip("刀の初期回転角度（一段目の攻撃時）")] private float yDegree =105f;
@@ -75,7 +77,7 @@ namespace Feature.View
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.CompareTag("Ground"))
+            if (collision.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
             {
                 isGrounded.Value = true;
             }
@@ -100,9 +102,18 @@ namespace Feature.View
         {
             var imp = (transform.position - attacker.position).normalized;
             imp.y += 1f;
-            rb.AddForce(imp * 5f, ForceMode.Impulse);
+            this.UniqueStartCoroutine(Knockback(imp, 5f, 0.4f));
+            // rb.AddForce(imp * 5f, ForceMode.Impulse);
             OnDamageEvent?.Invoke(damage);
             animator.OnTakeDamage();
+        }
+        
+        private IEnumerator Knockback(Vector3 direction, float strength, float duration)
+        {
+            isMovementDisabled = true;
+            yield return transform.Knockback(direction, strength, duration);
+            yield return new WaitForSeconds(0.9f);
+            isMovementDisabled = false;
         }
         public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
@@ -114,14 +125,14 @@ namespace Feature.View
 
         public GameObject GetGameObject() => gameObject;
 
-        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
-            AudioSource audioSource)
+        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime, AudioSource audioSource)
         {
             this.comboTimeWindow = comboTimeWindow;
             this.comboAngleOffset = comboAngleOffset;
             this.maxComboCount = maxComboCount;
             this.attackCoolTime = attackCoolTime;
             this.audioSource = audioSource;
+            this.maxComboCoolTime = maxComboCoolTime;
         }
 
         public void SetPosition(Vector3 p)
@@ -135,6 +146,10 @@ namespace Feature.View
 
         public void Move(Vector3 direction, float power)
         {
+            if (isMovementDisabled)
+            {
+                return;
+            }
             //向き
             if (direction.x > 0)
             {
@@ -203,6 +218,12 @@ namespace Feature.View
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
         } // ReSharper disable Unity.PerformanceAnalysis
+        
+        public bool CanAttack()
+        {
+            var currentTime = Time.time;
+            return currentTime - lastAttackTime >= (comboCount == 2 ? maxComboCoolTime : attackCoolTime);
+        }
         public void Attack(float degree, uint damage, bool voltage)
         {
             var currentTime = Time.time;
@@ -225,7 +246,7 @@ namespace Feature.View
                 comboCount = 0;
             }
 
-            var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
+            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;

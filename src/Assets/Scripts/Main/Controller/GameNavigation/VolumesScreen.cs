@@ -13,7 +13,7 @@ namespace Main.Controller.GameNavigation
     /// <summary>
     ///     音量調整画面を制御するクラス
     /// </summary>
-    public class VolumesScreen : ScreenProtocol
+    public class VolumesScreen : ScreenProtocol<Navigation>
     {
         
         [SerializeField] private TextMeshProUGUI masterSliderText;
