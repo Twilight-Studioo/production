@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   speed: 10
-  jumpPower: 10
+  jumpPower: 7
   attackPower: 5
   comboTimeWindow: 0.7
   comboAngleOffset: 0
@@ -37,3 +37,7 @@ MonoBehaviour:
   addVoltageSwapValue: 10
   voltageAttackPowerValue: 2
   useDaggerUseStamina: 20
+  slashEffect: {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851,
+    type: 3}
+  normalSlashEffect: {fileID: 6881300163551790712, guid: 5cad2843d9f4a354ab23675c72d9520b,
+    type: 3}

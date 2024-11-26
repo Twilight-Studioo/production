@@ -22,7 +22,7 @@ namespace Feature.Presenter
         private readonly AudioSource audioSource;
         private readonly CharacterParams characterParams;
 
-        private readonly EndFieldController endFieldController;
+        private readonly IEndFieldController endFieldController;
         private readonly EnemyParams enemyParams;
 
         private readonly GameUIView gameUIView;
@@ -43,7 +43,8 @@ namespace Feature.Presenter
             VoltageBar voltageBar,
             GameUIView ui,
             VolumeController volumeController,
-            AudioSource audioSource
+            AudioSource audioSource,
+            IEndFieldController endFieldController
         )
         {
             playerModel = model;
@@ -51,7 +52,7 @@ namespace Feature.Presenter
             gameUIView = ui;
             swapTimer = new();
             this.voltageBar = voltageBar;
-            endFieldController = new();
+            this.endFieldController = endFieldController;
             this.audioSource = audioSource;
         }
 
@@ -106,12 +107,12 @@ namespace Feature.Presenter
                     if (x <= 0)
                     {
                         isGameOver = true;
-                        endFieldController.SubscribeToPlayerHealth(playerModel.Health);
                     }
                 })
                 .AddTo(playerHpBar);
+            endFieldController.SubscribeToPlayerHealth(playerModel.Health);
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
-                playerModel.MaxComboCount, playerModel.AttackCoolTime, audioSource
+                playerModel.MaxComboCount, playerModel.AttackCoolTime, playerModel.MaxComboCoolTime, audioSource
             );
             playerModel.PlayerStateChange += StateHandler;
         }
@@ -258,10 +259,11 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            if (!isGameOver)
+            if (!isGameOver && playerModel.CanAttack.Value && playerView.CanAttack())
             {
                 playerModel.Attack();
-                playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
+                bool isSpecialAttack = playerModel.VoltageValue >= characterParams.useVoltageAttackValue;
+                playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
                 voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
             }
         }

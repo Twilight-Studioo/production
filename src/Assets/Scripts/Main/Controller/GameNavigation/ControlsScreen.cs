@@ -15,7 +15,7 @@ namespace Main.Controller.GameNavigation
     /// <remarks>
     ///     AScreenProtocolを継承し、画面のナビゲーションと入力処理を管理します
     /// </remarks>
-    public class ControlsScreen : ScreenProtocol
+    public class ControlsScreen : ScreenProtocol<Navigation>
     {
         [SerializeField] private TextMeshProUGUI backText;
         

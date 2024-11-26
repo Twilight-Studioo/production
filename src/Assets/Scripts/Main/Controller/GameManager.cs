@@ -15,7 +15,7 @@ namespace Main.Controller
     public class GameManager : IStartable, IDisposable
     {
         private readonly IGameController gameController;
-        private readonly IInputController inputController;
+        private readonly IGameInputController gameInputController;
         private readonly PlayerPresenter playerPresenter;
         private readonly PlayerStart playerStart;
 
@@ -25,12 +25,12 @@ namespace Main.Controller
         public GameManager(
             PlayerStart playerStart,
             IGameController gameController,
-            IInputController inputController
+            IGameInputController gameInputController
         )
         {
             this.gameController = gameController.CheckNull();
             this.playerStart = playerStart.CheckNull();
-            this.inputController = inputController.CheckNull();
+            this.gameInputController = gameInputController.CheckNull();
         }
 
         public void Dispose()
@@ -54,7 +54,7 @@ namespace Main.Controller
 
             gameController.OnPossess(player);
             gameController.Start();
-            inputController.Start();
+            gameInputController.Start();
         }
 
         public static void Register(IContainerBuilder builder)

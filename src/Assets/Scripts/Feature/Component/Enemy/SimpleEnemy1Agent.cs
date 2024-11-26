@@ -108,7 +108,7 @@ namespace Feature.Component.Enemy
 
         public void OnSwap(Vector2 p)
         {
-            transform.position = p;
+            agent.Warp(p);
         }
 
 #pragma warning disable CS0067

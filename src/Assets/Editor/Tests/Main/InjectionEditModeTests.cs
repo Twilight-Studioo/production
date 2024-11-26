@@ -19,7 +19,7 @@ namespace Editor.Tests.Main
     {
         private GameManager gameManager;
         private Mock<IGameController> mockGameController;
-        private Mock<IInputController> mockInputController;
+        private Mock<IGameInputController> mockInputController;
         private GameObject playerGameObject;
         private GameObject playerPrefab;
         private PlayerStart playerStart;

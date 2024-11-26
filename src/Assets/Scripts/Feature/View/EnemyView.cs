@@ -37,7 +37,11 @@ namespace Feature.View
             {
                 OnHealth0Event?.Invoke();
                 agent.FlowCancel();
-                Destroy(gameObject);
+                agent.Delete();
+                if (gameObject != null)
+                {
+                    Destroy(gameObject);
+                }
                 OnRemoveEvent?.Invoke();
             }
         }
