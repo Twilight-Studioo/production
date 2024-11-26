@@ -1,28 +1,24 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class GunnerController : MonoBehaviour
 {
     public EnemyParams enemyParams;
-    public GameObject bulletPrefab; 
-    public Transform bulletSpawnPoint; 
+    public GameObject bulletPrefab;
+    public Transform bulletSpawnPoint;
 
     public Animator Animator { get; private set; }
+    public Rigidbody rb { get; private set; }
     private Transform targetPlayer;
-    private Rigidbody rb;
     private FSM fsm;
     private int currentAmmo;
     private int attackCount;
-    private bool isJumping;
 
     private void Start()
     {
         Animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
         fsm = new FSM();
         currentAmmo = enemyParams.MaxAmmo;
         attackCount = 0;
-        isJumping = false;
 
         FindPlayer();
 
@@ -38,19 +34,6 @@ public class GunnerController : MonoBehaviour
         else
         {
             fsm.Update();
-        }
-
-        if (isJumping)
-        {
-            if (IsGrounded())
-            {
-                isJumping = false;
-                ChangeState(new LandingState(this));
-            }
-            else
-            {
-                Debug.Log("Still jumping...");
-            }
         }
     }
 
@@ -70,15 +53,7 @@ public class GunnerController : MonoBehaviour
 
     public bool IsPlayerInRange()
     {
-        bool inRange = targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.DetectionRange;
-        Debug.Log($"IsPlayerInRange: {inRange}");
-        return inRange;
-    }
-    public bool IsPlayerBehind()
-    {
-        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
-        float angle = Vector3.Angle(transform.forward, directionToPlayer);
-        return angle > enemyParams.BackAngleThreshold;
+        return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.DetectionRange;
     }
 
     public bool IsCloseEnoughToAttack()
@@ -86,47 +61,55 @@ public class GunnerController : MonoBehaviour
         return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.AttackRange;
     }
 
+    public bool IsPlayerBehind()
+    {
+        Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
+        float angle = Vector3.Angle(transform.forward, directionToPlayer);
+        return angle > enemyParams.BackAngleThreshold;
+    }
+
+    public void PerformAttack()
+    {
+        if (!IsOutOfAmmo())
+        {
+            int attackType = Random.Range(0, 2); 
+            if (IsPlayerBehind())
+            {
+                Animator.SetTrigger("BackAttack");
+            }
+            else if (IsCloseEnoughToAttack())
+            {
+                Animator.SetTrigger("CloseAttack");
+            }
+            else
+            {
+                if (attackType == 0)
+                {
+                    Animator.SetTrigger("AttackA");
+                }
+                else if (attackType == 1)
+                {
+                    Animator.SetTrigger("AttackB");
+                }
+            }
+            currentAmmo--;
+            attackCount++;
+        }
+    }
+
     public bool IsOutOfAmmo()
     {
         return currentAmmo <= 0;
     }
 
-    public bool IsGrounded()
-    {
-        RaycastHit hit;
-        float groundCheckDistance = 0.2f;
-        bool grounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance) && hit.collider.CompareTag("Ground");
-        Debug.Log($"IsGrounded: {grounded}");
-        return grounded;
-    }
-    public bool IsCloseEnoughToCQB()
-    {
-        return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.CQBAttackRange;
-    }
-
-    public bool ShouldPerformSpecialAttack()
-    {
-        return attackCount >= enemyParams.AttacksBeforeSpecialMove;
-    }
-
     public void ReloadAmmo()
     {
         currentAmmo = enemyParams.MaxAmmo;
-        attackCount = 0; 
+        attackCount = 0;
         Debug.Log("Ammo reloaded");
     }
 
-    public void MoveTowardsPlayer()
-    {
-        if (targetPlayer == null) return;
-
-        FacePlayer();
-
-        Vector3 direction = (targetPlayer.position - transform.position).normalized;
-        rb.MovePosition(transform.position + direction * enemyParams.MoveSpeed * Time.deltaTime);
-    }
-
-    private void FacePlayer()
+    public void FacePlayer()
     {
         if (targetPlayer == null) return;
 
@@ -135,35 +118,5 @@ public class GunnerController : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-    }
-
-    public void PerformAttack()
-    {
-        if (!IsOutOfAmmo())
-        {
-            Animator.SetTrigger("Attack");
-            currentAmmo--;
-            attackCount++;
-        }
-    }
-
-    public void TriggerJump()
-    {
-        isJumping = true;
-
-        rb.AddForce(Vector3.up * enemyParams.JumpHeight, ForceMode.Impulse);
-
-        Debug.Log("Jump started");
-    }
-
-    public void StartAttackCooldown(float cooldownTime)
-    {
-        StartCoroutine(AttackCooldownCoroutine(cooldownTime));
-    }
-
-    private IEnumerator AttackCooldownCoroutine(float cooldownTime)
-    {
-        yield return new WaitForSeconds(cooldownTime);
-        Debug.Log("Cooldown completed");
     }
 }

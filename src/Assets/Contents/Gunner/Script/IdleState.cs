@@ -19,44 +19,11 @@ public class IdleState : IState
     {
         if (_gunnerController.IsPlayerInRange())
         {
-            _gunnerController.ChangeState(new MoveState(_gunnerController));
+            _gunnerController.PerformAttack();
         }
     }
 
     public void Exit() { }
-}
-public class MoveState : IState
-{
-    private GunnerController _gunnerController;
-
-    public MoveState(GunnerController gunnerController)
-    {
-        _gunnerController = gunnerController;
-    }
-
-    public void Enter()
-    {
-        Debug.Log("Entering Move State");
-    }
-
-    public void Execute()
-    {
-        _gunnerController.MoveTowardsPlayer();
-
-        if (_gunnerController.IsCloseEnoughToAttack())
-        {
-            _gunnerController.ChangeState(new AttackState(_gunnerController));
-        }
-        else if (!_gunnerController.IsPlayerInRange())
-        {
-            _gunnerController.ChangeState(new IdleState(_gunnerController));
-        }
-    }
-
-    public void Exit()
-    {
-        Debug.Log("Exiting Move State");
-    }
 }
 public class AttackState : IState
 {
@@ -71,22 +38,15 @@ public class AttackState : IState
     {
         if (_gunnerController.IsPlayerBehind())
         {
-            _gunnerController.Animator.SetTrigger("BackAttack");
+            ExecuteBackAttack();
         }
         else if (_gunnerController.IsCloseEnoughToAttack())
         {
-            _gunnerController.Animator.SetTrigger("CloseAttack");
+            ExecuteCloseAttack();
         }
         else
         {
-            if (Random.Range(0, 2) == 0)
-            {
-                _gunnerController.Animator.SetTrigger("AttackA");
-            }
-            else
-            {
-                _gunnerController.Animator.SetTrigger("AttackB");
-            }
+            ExecuteRangedAttack();
         }
     }
 
@@ -96,10 +56,73 @@ public class AttackState : IState
         {
             _gunnerController.ChangeState(new ReloadState(_gunnerController));
         }
+        else if (!_gunnerController.IsPlayerInRange())
+        {
+            _gunnerController.ChangeState(new IdleState(_gunnerController));
+        }
+        else if (IsCurrentAnimationFinished())
+        {
+            _gunnerController.ChangeState(new AttackState(_gunnerController));
+        }
     }
 
-    public void Exit() { }
+    public void Exit()
+    {
+        Debug.Log("Exiting AttackState");
+    }
+
+    private void ExecuteBackAttack()
+    {
+        _gunnerController.FacePlayer();
+        _gunnerController.Animator.SetTrigger("BackAttack");
+        ApplyMovement(true); 
+        Debug.Log("Executing BackAttack with forward movement");
+    }
+
+    private void ExecuteCloseAttack()
+    {
+        _gunnerController.Animator.SetTrigger("CloseAttack");
+        ApplyMovement(true); 
+        Debug.Log("Executing CloseAttack with forward movement");
+    }
+
+    private void ExecuteRangedAttack()
+    {
+        int attackType = Random.Range(0, 2);
+        if (attackType == 0)
+        {
+            _gunnerController.Animator.SetTrigger("AttackA");
+            ApplyMovement(false); 
+            Debug.Log("Executing AttackA with backward movement");
+        }
+        else
+        {
+            _gunnerController.Animator.SetTrigger("AttackB");
+            ApplyMovement(false);
+            Debug.Log("Executing AttackB with backward movement");
+        }
+    }
+
+    private bool IsCurrentAnimationFinished()
+    {
+        AnimatorStateInfo stateInfo = _gunnerController.Animator.GetCurrentAnimatorStateInfo(0);
+        return stateInfo.normalizedTime >= 1.0f && !stateInfo.loop; 
+    }
+
+    private void ApplyMovement(bool forward)
+    {
+        float directionMultiplier = forward ? 1 : -1;
+        float moveDistance = directionMultiplier * _gunnerController.enemyParams.KnockbackDistance;
+
+        Vector3 moveVector = _gunnerController.transform.forward * moveDistance;
+        _gunnerController.rb.MovePosition(_gunnerController.rb.position + moveVector);
+
+        Debug.Log($"Rigidbody Movement applied: {moveVector}, New position: {_gunnerController.rb.position}");
+    }
 }
+
+
+
 public class ReloadState : IState
 {
     private GunnerController _gunnerController;

@@ -34,7 +34,7 @@ public class EnemyParams : ScriptableObject
     public float SpecialMoveSpeed = 6f;
 
     [Tooltip("ノックバック距離"), Header("ノックバック距離")]
-    public float KnockbackDistance = 3f;
+    public float KnockbackDistance = 1.5f;
 
     [Tooltip("特殊攻撃までの通常攻撃回数（特殊攻撃を行う前に通常攻撃を行う回数）"), Header("特殊攻撃までの通常攻撃回数（特殊攻撃を行う前に通常攻撃を行う回数）")]
     public int AttacksBeforeSpecialMove = 3;
