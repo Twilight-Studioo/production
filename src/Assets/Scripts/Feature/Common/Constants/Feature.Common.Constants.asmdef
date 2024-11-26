@@ -1,3 +1,16 @@
 {
-  "name": "Feature.Common.Constants"
+    "name": "Feature.Common.Constants",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f2d12220e8ba244b0a3bbac6b49b3cbd"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
