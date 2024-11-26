@@ -136,6 +136,8 @@ namespace Feature.Model
         public float ComboAngleOffset => characterParams.comboAngleOffset;
         public float MaxComboCount => characterParams.maxComboCount;
         public float AttackCoolTime => characterParams.attackCoolTime;
+        
+        public float MaxComboCoolTime => characterParams.maxComboCoolTime;
 
         public Vector3 Forward { get; private set; }
 

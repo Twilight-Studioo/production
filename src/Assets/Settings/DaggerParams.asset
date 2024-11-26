@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: DaggerParams
   m_EditorClassIdentifier: 
   lifeTime: 3
-  speed: 20
+  speed: 12
   damage: 1

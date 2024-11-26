@@ -31,12 +31,13 @@ namespace Feature.Interface
 
         void SetPosition(Vector3 position);
 
+        bool CanAttack();
+
         void Attack(float degree, uint damage,bool voltage);
 
         void Dagger(float degree, float h, float v);
 
-        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
-            AudioSource audioSource);
+        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime, AudioSource audioSource);
 
         Vector3 GetForward();
     }

@@ -35,7 +35,7 @@ namespace Feature.View
         private float attackCoolTime;
         private AudioSource audioSource;
         private float comboAngleOffset; // 連続攻撃時の角度変化
-        private float comboCount = -1;
+        private int comboCount = -1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private bool isGravityDisabled;
 
@@ -43,6 +43,7 @@ namespace Feature.View
         private float lastDegree;
         private float maxComboCount; // 連続攻撃の最大回数
         private float monochrome;
+        private float maxComboCoolTime;
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
@@ -124,14 +125,14 @@ namespace Feature.View
 
         public GameObject GetGameObject() => gameObject;
 
-        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
-            AudioSource audioSource)
+        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime, AudioSource audioSource)
         {
             this.comboTimeWindow = comboTimeWindow;
             this.comboAngleOffset = comboAngleOffset;
             this.maxComboCount = maxComboCount;
             this.attackCoolTime = attackCoolTime;
             this.audioSource = audioSource;
+            this.maxComboCoolTime = maxComboCoolTime;
         }
 
         public void SetPosition(Vector3 p)
@@ -217,6 +218,12 @@ namespace Feature.View
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
         } // ReSharper disable Unity.PerformanceAnalysis
+        
+        public bool CanAttack()
+        {
+            var currentTime = Time.time;
+            return currentTime - lastAttackTime >= (comboCount == 2 ? maxComboCoolTime : attackCoolTime);
+        }
         public void Attack(float degree, uint damage, bool voltage)
         {
             var currentTime = Time.time;
@@ -239,7 +246,7 @@ namespace Feature.View
                 comboCount = 0;
             }
 
-            var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
+            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
