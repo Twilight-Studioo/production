@@ -66,7 +66,18 @@ namespace Feature.Presenter
         {
             playerView = view;
 
-            playerView.OnDamageEvent += playerModel.TakeDamage;
+            playerView.OnDamageEvent += d =>
+            {
+                if (playerModel.TakeDamage(d))
+                {
+                    return new DamageResult.Killed(playerView.GetTransform());
+                }
+                else
+                {
+                    return new DamageResult.Damaged(playerView.GetTransform());
+                }
+            };
+            playerView.OnHitHandler += playerModel.OnEnemyAttacked;
             playerView.SwapRange = characterParams.canSwapDistance;
             playerView.GetPositionRef()
                 .Subscribe(position =>
@@ -262,7 +273,7 @@ namespace Feature.Presenter
             if (!isGameOver && playerModel.CanAttack.Value && playerView.CanAttack())
             {
                 playerModel.Attack();
-                bool isSpecialAttack = playerModel.VoltageValue >= characterParams.useVoltageAttackValue;
+                var isSpecialAttack = playerModel.VoltageValue >= characterParams.useVoltageAttackValue;
                 playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
                 voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
             }

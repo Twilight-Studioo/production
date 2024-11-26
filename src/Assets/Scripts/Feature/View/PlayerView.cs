@@ -48,6 +48,7 @@ namespace Feature.View
         private Rigidbody rb;
         private bool right = true;
         private bool isMovementDisabled;
+        public event Action<DamageResult> OnHitHandler;
 
         private float vignetteChange; //赤くなるまでの時間
         [SerializeField, Tooltip("刀の初期回転角度（一段目の攻撃時）")] private float yDegree =105f;
@@ -98,14 +99,15 @@ namespace Feature.View
             }
         }
 
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             var imp = (transform.position - hitPoint).normalized;
             imp.y += 1f;
             this.UniqueStartCoroutine(Knockback(imp, 5f, 0.4f));
             // rb.AddForce(imp * 5f, ForceMode.Impulse);
-            OnDamageEvent?.Invoke(damage);
+            var result = OnDamageEvent?.Invoke(damage);
             animator.OnTakeDamage();
+            return result;
         }
         
         private IEnumerator Knockback(Vector3 direction, float strength, float duration)
@@ -142,7 +144,7 @@ namespace Feature.View
 
         public Transform GetTransform() => transform;
 
-        public event Action<uint> OnDamageEvent;
+        public event DamageHandler<uint> OnDamageEvent;
 
         public void Move(Vector3 direction, float power)
         {
@@ -278,7 +280,9 @@ namespace Feature.View
             var hitSoundRandom = Random.Range(0, hitSound.Count);
             var selectedHitClip = hitSound[hitSoundRandom];
             var slash = obj.GetComponent<Slash>();
+            slash.OnHitEvent += OnHitHandler;
             slash.SetDamage(damage, selectedHitClip, audioSource);
+            
             Destroy(obj, 0.5f);
             animator.SetAttackComboCount(comboCount);
             animator.OnAttack(0);

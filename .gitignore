@@ -76,3 +76,7 @@ crashlytics-build.properties
 /*tmp
 /test
 .DS_Store
+
+mono_crash*.json
+crash_dump*.mdmp
+crash_dump*.dmp
