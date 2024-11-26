@@ -40,10 +40,17 @@ public class GunnerController : MonoBehaviour
             fsm.Update();
         }
 
-        if (isJumping && IsGrounded())
+        if (isJumping)
         {
-            isJumping = false;
-            ChangeState(new LandingState(this));
+            if (IsGrounded())
+            {
+                isJumping = false;
+                ChangeState(new LandingState(this));
+            }
+            else
+            {
+                Debug.Log("Still jumping...");
+            }
         }
     }
 
@@ -63,7 +70,9 @@ public class GunnerController : MonoBehaviour
 
     public bool IsPlayerInRange()
     {
-        return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.DetectionRange;
+        bool inRange = targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.DetectionRange;
+        Debug.Log($"IsPlayerInRange: {inRange}");
+        return inRange;
     }
     public bool IsPlayerBehind()
     {
@@ -85,12 +94,10 @@ public class GunnerController : MonoBehaviour
     public bool IsGrounded()
     {
         RaycastHit hit;
-        float groundCheckDistance = 0.2f; 
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance))
-        {
-            return hit.collider.CompareTag("Ground");
-        }
-        return false;
+        float groundCheckDistance = 0.2f;
+        bool grounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance) && hit.collider.CompareTag("Ground");
+        Debug.Log($"IsGrounded: {grounded}");
+        return grounded;
     }
     public bool IsCloseEnoughToCQB()
     {
@@ -117,15 +124,6 @@ public class GunnerController : MonoBehaviour
 
         Vector3 direction = (targetPlayer.position - transform.position).normalized;
         rb.MovePosition(transform.position + direction * enemyParams.MoveSpeed * Time.deltaTime);
-    }
-
-    private void FacePlayer()
-    {
-        if (targetPlayer == null) return;
-
-        Vector3 direction = (targetPlayer.position - transform.position).normalized;
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
     }
 
     private void FacePlayer()

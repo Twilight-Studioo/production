@@ -47,6 +47,10 @@ public class MoveState : IState
         {
             _gunnerController.ChangeState(new AttackState(_gunnerController));
         }
+        else if (!_gunnerController.IsPlayerInRange())
+        {
+            _gunnerController.ChangeState(new IdleState(_gunnerController));
+        }
     }
 
     public void Exit()

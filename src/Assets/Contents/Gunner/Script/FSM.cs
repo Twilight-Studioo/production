@@ -10,10 +10,12 @@ public class FSM : MonoBehaviour
     {
         if (_currentState != null)
         {
+            Debug.Log($"Exiting state: {_currentState.GetType().Name}");
             _currentState.Exit();
         }
 
         _currentState = newState;
+        Debug.Log($"Entering state: {_currentState.GetType().Name}");
         _currentState.Enter();
     }
 
