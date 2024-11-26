@@ -100,7 +100,7 @@ namespace Feature.View
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            var imp = (transform.position - attacker.position).normalized;
+            var imp = (transform.position - hitPoint).normalized;
             imp.y += 1f;
             this.UniqueStartCoroutine(Knockback(imp, 5f, 0.4f));
             // rb.AddForce(imp * 5f, ForceMode.Impulse);
