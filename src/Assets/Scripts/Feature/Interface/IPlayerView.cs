@@ -17,7 +17,9 @@ namespace Feature.Interface
         IReadOnlyReactiveProperty<float> Speed { get; }
         Transform GetTransform();
 
-        event Action<uint> OnDamageEvent;
+        public event DamageHandler<uint> OnDamageEvent;
+        
+        public event Action<DamageResult> OnHitHandler;
 
         IReadOnlyReactiveProperty<Vector3> GetPositionRef();
 

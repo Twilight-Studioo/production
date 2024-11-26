@@ -1,5 +1,6 @@
 #region
 
+using System;
 using Feature.Interface;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ namespace Feature.Component
         private AudioSource audioSource;
         private uint damage;
         private AudioClip hitSound;
+        
+        public event Action<DamageResult> OnHitEvent;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -23,11 +26,9 @@ namespace Feature.Component
             {
                 return;
             }
-            enemy.OnDamage(damage, other.transform.position, transform);
-            if (enemy != null)
-            {
-                audioSource.PlayOneShot(hitSound);
-            }
+            var result = enemy.OnDamage(damage, other.transform.position, transform);
+            audioSource.PlayOneShot(hitSound);
+            OnHitEvent?.Invoke(result);
         }
 
         public void SetDamage(uint dmg, AudioClip selectedClip, AudioSource audioSource)

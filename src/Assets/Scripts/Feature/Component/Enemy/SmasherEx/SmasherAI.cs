@@ -120,14 +120,17 @@ namespace Feature.Component.Enemy.SmasherEx
             OnRemoveEvent?.Invoke();
         }
 
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             Debug.Log($"OnDamage: {damage}");
             currentHealth -= damage;
             if (currentHealth <= 0)
             {
                 Dispose();
+                return new DamageResult.Killed(transform);
             }
+
+            return new DamageResult.Damaged(transform);
         }
     }
 }

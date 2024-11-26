@@ -3,7 +3,6 @@
 using System;
 using Feature.Common.Parameter;
 using Feature.Interface;
-using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -42,8 +41,6 @@ namespace Feature.Model
         private readonly IReactiveProperty<int> daggerStamina;
         public readonly IReadOnlyReactiveProperty<int> DaggerStamina;
 
-        private readonly GameUIView gameUIView;
-
         private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
 
         private readonly CompositeDisposable playerModelTimer = new();
@@ -65,12 +62,12 @@ namespace Feature.Model
 
         private IDisposable swapUseStaminaSubscription;
         private IDisposable useDaggerUseStamina;
+        private IDisposable swappedRecoveryHealth;
         public int VoltageValue;
 
         [Inject]
         public PlayerModel(
             CharacterParams character
-            // GameUIView ui
         )
         {
             characterParams = character;
@@ -232,6 +229,22 @@ namespace Feature.Model
             {
                 PlayerStateChange?.Invoke(PlayerStateEvent.SwapExec);
                 swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapExecUseStamina, 0);
+                
+                var recoveryDurationSeconds = characterParams.swappedRecoveryHealthTimeMillis / 1000f;
+                var recoveryIntervalSeconds = characterParams.swappedRecoveryHealthIntervalMillis / 1000f;
+                var swappedRecoveryHealthQuantity = characterParams.swappedRecoveryHealthQuantity;
+
+                // スワップ後に一定間隔でHPを回復する
+                // NOTE: 重ねがけはなし
+                swappedRecoveryHealth?.Dispose();
+                swappedRecoveryHealth = Observable
+                    .Interval(TimeSpan.FromSeconds(recoveryIntervalSeconds))
+                    .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(recoveryDurationSeconds)))
+                    .Subscribe(_ =>
+                        {
+                            health.Value = (int)Mathf.Min(health.Value + swappedRecoveryHealthQuantity, characterParams.health);
+                        })
+                    .AddTo(playerModelTimer);
             }
         }
 
@@ -258,6 +271,33 @@ namespace Feature.Model
                 .AddTo(attackAfterCompositeDisposable);
         }
 
+        public void OnEnemyAttacked(DamageResult result)
+        {
+            switch (result)
+            {
+                case DamageResult.Damaged:
+                    OnEnemyAttackedDamage();
+                    break;
+                case DamageResult.Killed:
+                    OnEnemyKilled();
+                    break;
+                case DamageResult.Missed:
+                    // no-op
+                    break;
+            }
+        }
+        private void OnEnemyAttackedDamage()
+        {
+            var damagedRecovery = characterParams.damagedRecoveryHealth;
+            health.Value = Mathf.Min(health.Value + (int)damagedRecovery, characterParams.health);
+        }
+
+        private void OnEnemyKilled()
+        {
+            var killedRecovery = characterParams.killRecoveryHealth;
+            health.Value = Mathf.Min(health.Value + (int)killedRecovery, characterParams.health);
+        }
+
         public void UpdatePosition(Vector3 pos)
         {
             // TODO: 要件に合わせて、方向は限定する
@@ -266,9 +306,10 @@ namespace Feature.Model
             position.Value = pos;
         }
 
-        public void TakeDamage(uint damage)
+        public bool TakeDamage(uint damage)
         {
             health.Value = Mathf.Max((int)(health.Value - damage), 0);
+            return health.Value == 0;
         }
 
         public void AddVoltageSwap()

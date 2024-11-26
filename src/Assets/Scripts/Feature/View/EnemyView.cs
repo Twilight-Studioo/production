@@ -29,7 +29,7 @@ namespace Feature.View
             agent.FlowExecute();
         }
 
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             OnDamageEvent?.Invoke();
             CurrentHealth -= damage;
@@ -44,11 +44,13 @@ namespace Feature.View
                     Destroy(gameObject);
                 }
                 OnRemoveEvent?.Invoke();
+                return new DamageResult.Killed(transform);
             }
             else
             {
                 // hit event for agent
                 agent.OnDamage(damage, hitPoint, attacker);
+                return new DamageResult.Damaged(transform);
             }
         }
 
