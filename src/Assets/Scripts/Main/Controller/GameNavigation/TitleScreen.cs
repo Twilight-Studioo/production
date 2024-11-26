@@ -87,11 +87,11 @@ namespace Main.Controller.GameNavigation
             {
                 case Navi.Start:
                     // TODO: production code here
-                    Controller.Reset();
-                    SceneLoaderFeatures.Stage(null).Bind(RootInstance).Load();
+                    Controller.Navigate(Navigation.StageSelect);
                     break;
                 case Navi.Continue:
                     // TODO: Continue the game logic here
+                    Controller.Navigate(Navigation.StageSelect);
                     break;
                 case Navi.Option:
                     Controller.Navigate(Navigation.Option);

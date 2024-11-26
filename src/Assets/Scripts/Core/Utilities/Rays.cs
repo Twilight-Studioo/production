@@ -20,7 +20,7 @@ namespace Core.Utilities
             var results = new RaycastHit[capacity];
             Physics.BoxCastNonAlloc(transform.position, halfExtents, direction, results, Quaternion.identity,
                 maxDistance);
-            GizmoManager.Instance.RequestGizmo(transform.position, halfExtents, direction, maxDistance, 1f);
+            GizmoManager.Instance?.RequestGizmo(transform.position, halfExtents, direction, maxDistance, 1f);
             return results;
         }
 
