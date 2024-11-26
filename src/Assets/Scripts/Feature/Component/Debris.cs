@@ -27,7 +27,7 @@ namespace Feature.Component
             }
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (accelation)
             {

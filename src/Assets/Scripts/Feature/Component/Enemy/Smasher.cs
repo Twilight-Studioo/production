@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Codice.Client.GameUI.Explorer;
+using Core.Utilities;
 using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
@@ -12,7 +13,7 @@ using Random = UnityEngine.Random;
 
 namespace Feature.Component.Enemy
 {
-    public class Smasher : MonoBehaviour
+    public class Smasher : MonoBehaviour,IDamaged
     {
         [SerializeField] private SmasherPrams bossPrams;
         public EnemyType EnemyType => EnemyType.Smasher;
@@ -69,7 +70,7 @@ namespace Feature.Component.Enemy
 
         private void UpdateHealth()
         {
-            bossHealthBar.value = health / bossPrams.health;
+            bossHealthBar.value = (float)health / bossPrams.health;
         }
         
         private IEnumerator Attack()
@@ -197,6 +198,14 @@ namespace Feature.Component.Enemy
         private float DistancePlayer()
         {
             return  Vector3.Distance(playerTransform.position, transform.position);
+        }
+        
+        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        {
+            var imp = (transform.position - attacker.position).normalized;
+            imp.y += 0.3f;
+            health -= damage;
+            UpdateHealth();
         }
 
         private void OnCollisionEnter(Collision other)
