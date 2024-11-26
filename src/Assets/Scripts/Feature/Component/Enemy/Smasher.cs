@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
-using Core.Utilities;
+﻿using System.Collections;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Serialization;
+using ObjectFactory = Core.Utilities.ObjectFactory;
 using Random = UnityEngine.Random;
 
 namespace Feature.Component.Enemy
@@ -25,13 +22,11 @@ namespace Feature.Component.Enemy
         private int rnd;
         private Transform playerTransform;
         private Rigidbody bossRb;
-        private NavMeshAgent Agent;
         private Vector3 playerPosition;
         private bool playerRightSide = false;
         private bool chargeAttack = false;
         private bool fallAttack = false;
         private GameObject mine;
-        
 
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
@@ -40,11 +35,10 @@ namespace Feature.Component.Enemy
 
         [SerializeField] private GameObject debrisPrefab;
         [SerializeField] private GameObject minePrefab;
-
+        
         private void Start()
         {
-            bossRb = GetComponent<Rigidbody>();
-            Agent = GetComponent<NavMeshAgent>();
+            bossRb = GetComponent<Rigidbody>(); 
             StartCoroutine(Attack());
         }
 
