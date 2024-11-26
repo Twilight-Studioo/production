@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Core.Utilities;
 using UnityEngine;
 
-namespace Feature.Component.Enemy.Smasher
+namespace Feature.Component.Enemy.SmasherEx
 {
     [RequireComponent(typeof(Collider))]
     public class DebrisSpawner: MonoBehaviour

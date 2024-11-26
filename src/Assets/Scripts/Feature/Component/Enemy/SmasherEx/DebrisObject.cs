@@ -3,7 +3,7 @@ using Feature.Interface;
 using UniRx;
 using UnityEngine;
 
-namespace Feature.Component.Enemy.Smasher
+namespace Feature.Component.Enemy.SmasherEx
 {
     /// <summary>
     /// 瓦礫オブジェクト

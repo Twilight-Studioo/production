@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using Core.Utilities;
-using Feature.Component.Enemy.Smasher.State;
+using Feature.Component.Enemy.SmasherEx.State;
 using UnityEngine;
 
-namespace Feature.Component.Enemy.Smasher
+namespace Feature.Component.Enemy.SmasherEx
 {
     public partial class SmasherAI
     {

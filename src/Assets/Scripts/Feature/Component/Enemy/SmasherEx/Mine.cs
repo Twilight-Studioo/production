@@ -4,7 +4,7 @@ using Core.Utilities;
 using Feature.Interface;
 using UnityEngine;
 
-namespace Feature.Component.Enemy.Smasher
+namespace Feature.Component.Enemy.SmasherEx
 {
     /// <summary>
     /// Smasherが投げる地雷
