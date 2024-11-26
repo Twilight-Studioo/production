@@ -5,6 +5,7 @@ namespace Feature.Common.Parameter
     [CustomEditor(typeof(SmasherPrams))]
     public class SmasherPramsEditor : Editor
     {
+        private SerializedProperty health;
         private SerializedProperty chargeAttackTime;
         private SerializedProperty chargeSpeed;
         private SerializedProperty chargeTime;
@@ -29,6 +30,7 @@ namespace Feature.Common.Parameter
 
         private void OnEnable()
         {
+            health = serializedObject.FindProperty("health");
             chargeAttackTime = serializedObject.FindProperty("chargeAttackTime");
             chargeSpeed = serializedObject.FindProperty("chargeSpeed");
             chargeTime = serializedObject.FindProperty("chargeTime");
@@ -58,6 +60,7 @@ namespace Feature.Common.Parameter
             serializedObject.Update();
 
             EditorGUILayout.LabelField("Smasher Parameters", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(health);
 
             // 突進系パラメータ
             EditorGUILayout.Space();

@@ -1,8 +1,12 @@
 ﻿using System.Collections;
+using Codice.Client.GameUI.Explorer;
+using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
+using Unity.Plastic.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.UI;
 using ObjectFactory = Core.Utilities.ObjectFactory;
 using Random = UnityEngine.Random;
 
@@ -27,9 +31,12 @@ namespace Feature.Component.Enemy
         private bool chargeAttack = false;
         private bool fallAttack = false;
         private GameObject mine;
+        private uint health;
+        [SerializeField] private Slider bossHealthBar;
 
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
+        
 
         private bool UpperAttack = false;
 
@@ -38,7 +45,9 @@ namespace Feature.Component.Enemy
         
         private void Start()
         {
-            bossRb = GetComponent<Rigidbody>(); 
+            bossRb = GetComponent<Rigidbody>();
+            health = bossPrams.health;
+            UpdateHealth();
             StartCoroutine(Attack());
         }
 
@@ -58,6 +67,11 @@ namespace Feature.Component.Enemy
             transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
         }
 
+        private void UpdateHealth()
+        {
+            bossHealthBar.value = health / bossPrams.health;
+        }
+        
         private IEnumerator Attack()
         {
             rnd = Random.Range(1, 4);
@@ -116,15 +130,12 @@ namespace Feature.Component.Enemy
         {
             fallAttack = true;
             CurrentDistance();
-            Debug.Log(playerDistance);
             if (playerDistance <= bossPrams.fallAttackDistance)
             {
-                Debug.Log("playerDistance <= bossPrams.fallAttackDistance");
                 StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,positionAtAttack));
             }
             else
             {
-                Debug.Log("fallAttack" + playerDistance);
                 if (playerRightSide)
                 {
                     StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,new Vector3(transform.
@@ -153,7 +164,7 @@ namespace Feature.Component.Enemy
                     target,
                     speed * Time.deltaTime
                 );
-                yield return null;
+                yield return new WaitForFixedUpdate();
                 if (onGround)
                 {
                     break;
