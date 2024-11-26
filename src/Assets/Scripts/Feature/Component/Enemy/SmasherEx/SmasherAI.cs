@@ -3,12 +3,12 @@ using System.Collections;
 using Core.Utilities;
 using Core.Utilities.Health;
 using DynamicActFlow.Runtime.Core.Flow;
-using Feature.Component.Enemy.Smasher.State;
+using Feature.Component.Enemy.SmasherEx.State;
 using Feature.Interface;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Feature.Component.Enemy.Smasher
+namespace Feature.Component.Enemy.SmasherEx
 {
     public partial class SmasherAI: FlowScope, IHealthBar, IDisposable, IDamaged
     {

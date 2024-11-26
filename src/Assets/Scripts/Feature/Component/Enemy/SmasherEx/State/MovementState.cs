@@ -1,4 +1,4 @@
-namespace Feature.Component.Enemy.Smasher.State
+namespace Feature.Component.Enemy.SmasherEx.State
 {
     internal abstract record MovementState
     {

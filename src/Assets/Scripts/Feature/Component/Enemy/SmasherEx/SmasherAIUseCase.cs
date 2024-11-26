@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Linq;
 using Core.Utilities;
-using Feature.Component.Enemy.Smasher.State;
+using Feature.Component.Enemy.SmasherEx.State;
 using UnityEngine;
 using UnityEngine.AI;
 using ObjectFactory = Core.Utilities.ObjectFactory;
 
-namespace Feature.Component.Enemy.Smasher
+namespace Feature.Component.Enemy.SmasherEx
 {
     public partial class SmasherAI
     {
