@@ -1,5 +1,6 @@
 using Core.Input;
 using Core.Utilities;
+using Feature.Common.Parameter;
 using Main.Controller;
 using Main.Controller.GameNavigation;
 using Main.Scene;
@@ -18,6 +19,7 @@ namespace Main.Installer
         [SerializeField] private GameObject titlePrefab;
         [SerializeField] private GameObject gameOverPrefab;
         [SerializeField] private GameObject stageSelectPrefab;
+        [SerializeField] private GameSettings settings;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -32,6 +34,8 @@ namespace Main.Installer
                 stageSelectPrefab,
                 this
             ).CheckNull());
+
+            builder.RegisterInstance(settings);
 
             builder.RegisterComponent(pausePrefab.GetComponent<PauseScreen>().CheckNull());
             builder.RegisterComponent(optionPrefab.GetComponent<OptionScreen>().CheckNull());

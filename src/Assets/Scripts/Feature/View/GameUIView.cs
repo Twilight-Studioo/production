@@ -26,9 +26,9 @@ namespace Feature.View
         private void Update()
         {
             var value = slider.value - swapExecValue;
-            var pos = swapExecLine.anchoredPosition;
-            pos.x = fillArea.rect.x + (value < 0 ? 0 : value) * fillArea.rect.width;
-            swapExecLine.anchoredPosition = pos;
+            // var pos = swapExecLine.anchoredPosition;
+            // pos.x = fillArea.rect.x + (value < 0 ? 0 : value) * fillArea.rect.width;
+            // swapExecLine.anchoredPosition = pos;
         }
 
         public void SetVolume(float volume)

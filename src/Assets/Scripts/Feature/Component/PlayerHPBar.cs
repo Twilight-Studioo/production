@@ -14,6 +14,7 @@ namespace Feature.Component
         private const float DelaySpeed = 1.0f;
         public Image hpBackground;
         public Image hpDelay;
+        public Image hpDelay2;
         public Image hpCurrent;
         public TextMeshProUGUI hpText;
         private Coroutine delayCoroutine;
@@ -21,34 +22,31 @@ namespace Feature.Component
         public void UpdateHealthBar(int currentHealth, int maxHealth)
         {
             var currentHealthRatio = (float)currentHealth / maxHealth;
-            var newWidth = currentHealthRatio * hpBackground.rectTransform.sizeDelta.x;
 
-            hpCurrent.rectTransform.sizeDelta = new(newWidth, hpCurrent.rectTransform.sizeDelta.y);
+            hpCurrent.fillAmount = currentHealthRatio;
 
             if (delayCoroutine != null)
             {
                 StopCoroutine(delayCoroutine);
             }
 
-            delayCoroutine = StartCoroutine(UpdateDelayBar(newWidth));
+            delayCoroutine = StartCoroutine(UpdateDelayBar(currentHealthRatio));
 
             if (hpText != null)
             {
-                hpText.text = currentHealth + " / " + maxHealth;
+                hpText.text = currentHealth + " % ";
             }
         }
 
-        private IEnumerator UpdateDelayBar(float targetWidth)
+        private IEnumerator UpdateDelayBar(float targetFillAmount)
         {
-            while (hpDelay.rectTransform.sizeDelta.x > targetWidth)
+            while (hpDelay.fillAmount > targetFillAmount)
             {
-                hpDelay.rectTransform.sizeDelta =
-                    new(Mathf.Lerp(hpDelay.rectTransform.sizeDelta.x, targetWidth, DelaySpeed * Time.deltaTime),
-                        hpDelay.rectTransform.sizeDelta.y);
+                hpDelay.fillAmount = Mathf.Lerp(hpDelay.fillAmount, targetFillAmount, DelaySpeed * Time.deltaTime);
                 yield return null;
             }
 
-            hpDelay.rectTransform.sizeDelta = new(targetWidth, hpDelay.rectTransform.sizeDelta.y);
+            hpDelay.fillAmount = targetFillAmount;
         }
     }
 }

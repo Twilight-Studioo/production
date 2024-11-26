@@ -15,11 +15,11 @@ namespace Core.Utilities
             Physics.Raycast(transform.position, direction, out var hit, maxDistance) ? hit.distance : maxDistance;
 
         public static RaycastHit[] GetBoxCastAll(this Transform transform, Vector3 halfExtents, Vector3 direction,
-            float maxDistance, int capacity = 5)
+            float maxDistance, int capacity = 5, LayerMask layerMask = default)
         {
             var results = new RaycastHit[capacity];
             Physics.BoxCastNonAlloc(transform.position, halfExtents, direction, results, Quaternion.identity,
-                maxDistance);
+                maxDistance, layerMask);
             GizmoManager.Instance?.RequestGizmo(transform.position, halfExtents, direction, maxDistance, 1f);
             return results;
         }
