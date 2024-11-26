@@ -97,7 +97,7 @@ namespace Feature.Component.Enemy.Smasher
             if (agent.enabled && agent.velocity.sqrMagnitude < 0.01f)
             {
                 keepStandStillTime += Time.fixedDeltaTime;
-                if (keepStandStillTime > 10f && state is Standby or MoveToNearPlayerWithAgent or MoveToLeavePlayerWithAgent)
+                if (keepStandStillTime > 7f && state is Standby or MoveToNearPlayerWithAgent or MoveToLeavePlayerWithAgent)
                 {
                     keepStandStillTime = 0;
                     StartCoroutine(DelaySecondsRestartFlow(0.1f));

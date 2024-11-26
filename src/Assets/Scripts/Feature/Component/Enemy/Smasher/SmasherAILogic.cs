@@ -145,7 +145,6 @@ namespace Feature.Component.Enemy.Smasher
                 var toMineDistance = Vector3.Distance(transform.position, spawnedMine.transform.position);
                 if (toMineDistance > 7f && !ExistsBetweenTwoPoints(transform.position, spawnedMine.transform.position, player.transform))
                 {
-                    Debug.Log(toMineDistance);
                     break;
                 }
                 ChargingForwardTick(chargeSpeed, rayLength);
@@ -210,12 +209,12 @@ namespace Feature.Component.Enemy.Smasher
                 }
                 yield return new WaitForFixedUpdate();
                 var direction = (target - transform.position).normalized;
-                rb.velocity = direction * 10f;
+                rb.velocity = direction * 15f;
             }
             rb.velocity = Vector3.zero;
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForSeconds(0.6f);
             rb.useGravity = false;
-            rb.velocity = Physics.gravity * 2f;
+            rb.velocity = Physics.gravity * 4f;
             while (transform.GetGroundDistance(10f) > 1.5f)
             {
                 yield return new WaitForFixedUpdate();
@@ -225,6 +224,29 @@ namespace Feature.Component.Enemy.Smasher
             Debug.Log("着地");
             rb.isKinematic = true;
             agent.enabled = true;
+            yield return new WaitForFixedUpdate();
+            var hits = transform.GetBoxCastAll(new Vector3(50f, 1f, 1f), Vector3.up, 0.5f, 100, LayerMask.GetMask("Default", "NotHitAreaObject", "Character"));
+            foreach (var raycastHit in hits)
+            {
+                if (raycastHit.transform == null)
+                {
+                    continue;
+                }
+                
+                var damaged = raycastHit.transform.GetComponent<IDamaged>();
+                if (damaged != null)
+                {
+                    damaged.OnDamage(10, raycastHit.point - new Vector3(0f, 1f, 0f), transform);
+                    continue;
+                }
+                var component = raycastHit.transform.GetComponent<Rigidbody>();
+                if (component != null)
+                {
+                    component.velocity = Vector3.up * 3f;
+                }
+            }
+            debrisSpawner.RandomLifeTimeDestroy(0.6f);
+            debrisSpawner.RandomSpawnDebris(20);
             yield return new WaitForSeconds(2f);
         }
     }

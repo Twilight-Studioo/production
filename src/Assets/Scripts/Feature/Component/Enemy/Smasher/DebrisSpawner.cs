@@ -10,6 +10,7 @@ namespace Feature.Component.Enemy.Smasher
         [SerializeField] private GameObject debrisPrefab;
         private Collider spawnerCollider;
         private List<DebrisObject> debrisObjects = new List<DebrisObject>();
+        private int maxDebrisCount = 40;
         private void Awake()
         {
             spawnerCollider = GetComponent<Collider>();
@@ -49,6 +50,10 @@ namespace Feature.Component.Enemy.Smasher
         
         private void SpawnDebris(Vector3 position)
         {
+            if (debrisObjects.Count >= maxDebrisCount)
+            {
+                return;
+            }
             var item = ObjectFactory.Instance.CreateObject(debrisPrefab, position, Quaternion.identity);
             var debrisObject = item.GetComponent<DebrisObject>().CheckNull();
             debrisObjects.Add(debrisObject);
