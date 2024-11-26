@@ -35,6 +35,7 @@ namespace Feature.View
             CurrentHealth -= damage;
             if (CurrentHealth <= 0)
             {
+                // delete 
                 OnHealth0Event?.Invoke();
                 agent.FlowCancel();
                 agent.Delete();
@@ -43,6 +44,11 @@ namespace Feature.View
                     Destroy(gameObject);
                 }
                 OnRemoveEvent?.Invoke();
+            }
+            else
+            {
+                // hit event for agent
+                agent.OnDamage(damage, hitPoint, attacker);
             }
         }
 
