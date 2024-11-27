@@ -13,5 +13,7 @@ namespace Feature.Interface
         public void PlayLoopFile(AudioAssetType audioType);
 
         public void PlayOneShotSE(AudioAssetType type);
+
+        public void LoadSaveData();
     }
 }

@@ -48,6 +48,7 @@ namespace Main.Controller
             {
                 return;
             }
+            audioMixerController.LoadSaveData();
 
             isStarted = true;
             var player = playerStart.OnStart();

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
 using Core.Utilities;
 using Feature.Common.Constants;
@@ -10,29 +12,30 @@ using UnityEngine.Audio;
 using UnityEngine.Serialization;
 using VContainer;
 
+#endregion
+
 namespace Main.Controller.Save
 {
     /// <summary>
-    /// audio mixerの設定と再生を行うクラス
+    ///     audio mixerの設定と再生を行うクラス
     /// </summary>
     public class AudioMixerController : MonoBehaviour, IAudioMixerController
     {
-        [SerializeField] private AudioMixer audioMixer;
-        [FormerlySerializedAs("audioSourceSE"),SerializeField] private AudioSource audioSourceBgm;
-        [SerializeField] private GameObject seAudioPrefab;
-        private readonly List<AudioSource> seSources = new ();
-        
         // WARNING: 安易に変更しない
         private const float MinDecibels = -80.0f;
         private const float MaxDecibels = 10.0f;
         private const float DefaultVolume = 0.6f;
-        // WARNING: 安易に変更しない
+        [SerializeField] private AudioMixer audioMixer;
 
-        [Inject]
-        private GameSaveManager gameSaveManager;
-        
-        [Inject]
-        private GameAudioAssets gameAudioAssets;
+        [FormerlySerializedAs("audioSourceSE"), SerializeField,]
+        private AudioSource audioSourceBgm;
+
+        [SerializeField] private GameObject seAudioPrefab;
+        private readonly List<AudioSource> seSources = new();
+
+        [Inject] private GameAudioAssets gameAudioAssets;
+
+        [Inject] private GameSaveManager gameSaveManager;
 
         private void Start()
         {
@@ -40,7 +43,72 @@ namespace Main.Controller.Save
                 .Subscribe(OnValueChanged)
                 .AddTo(this);
         }
-        
+
+        public void SetMasterVolume(float volume)
+        {
+            SetVolume("Master", volume);
+        }
+
+        public void SetBgmVolume(float volume)
+        {
+            SetVolume("BGM", volume);
+        }
+
+        public void SetSeVolume(float volume)
+        {
+            SetVolume("SE", volume);
+        }
+
+        public void PlayLoopFile(AudioAssetType type)
+        {
+            var audioClip = gameAudioAssets.GetAudioClip(type);
+            if (audioClip == null)
+            {
+                Debug.LogError("AudioClip is null");
+                return;
+            }
+
+            if (audioSourceBgm.isPlaying)
+            {
+                audioSourceBgm.Stop();
+            }
+
+            audioSourceBgm.clip = audioClip;
+            audioSourceBgm.loop = true;
+            audioSourceBgm.Play();
+        }
+
+        public void PlayOneShotSE(AudioAssetType type)
+        {
+            var audioClip = gameAudioAssets.GetAudioClip(type);
+            if (audioClip == null)
+            {
+                Debug.LogError("AudioClip is null");
+                return;
+            }
+
+            var canUsingCache = seSources.FirstOrDefault(x => !x.isPlaying);
+            if (canUsingCache == null)
+            {
+                var audioSource = Instantiate(seAudioPrefab, transform).GetComponent<AudioSource>().CheckNull();
+                audioSource.clip = audioClip;
+                audioSource.Play();
+                seSources.Add(audioSource);
+            }
+            else
+            {
+                canUsingCache.clip = audioClip;
+                canUsingCache.Play();
+            }
+        }
+
+        public void LoadSaveData()
+        {
+            SetMasterVolume(gameSaveManager.GetMasterVolume());
+            SetBgmVolume(gameSaveManager.GetBgmVolume());
+            SetSeVolume(gameSaveManager.GetSeVolume());
+        }
+
         private void OnValueChanged(string key)
         {
             if (key == GameSaveKeys.MasterVolumeKey)
@@ -57,60 +125,6 @@ namespace Main.Controller.Save
             }
         }
 
-        public void SetMasterVolume(float volume)
-        {
-            SetVolume("Master",volume);
-        }
-        public void SetBgmVolume(float volume)
-        {
-            SetVolume("BGM", volume);
-        }
-
-        public void SetSeVolume(float volume)
-        {
-            SetVolume("SE", volume);
-        }
-        
-        public void PlayLoopFile(AudioAssetType type)
-        {
-            var audioClip = gameAudioAssets.GetAudioClip(type);
-            if (audioClip == null)
-            {
-                Debug.LogError("AudioClip is null");
-                return;
-            }
-            if (audioSourceBgm.isPlaying)
-            {
-                audioSourceBgm.Stop();
-            }
-            audioSourceBgm.clip = audioClip;
-            audioSourceBgm.loop = true;
-            audioSourceBgm.Play();
-        }
-        public void PlayOneShotSE(AudioAssetType type)
-        {
-            
-            var audioClip = gameAudioAssets.GetAudioClip(type);
-            if (audioClip == null)
-            {
-                Debug.LogError("AudioClip is null");
-                return;
-            }
-            var canUsingCache = seSources.FirstOrDefault(x => !x.isPlaying);
-            if (canUsingCache == null)
-            {
-                var audioSource = Instantiate(seAudioPrefab, transform).GetComponent<AudioSource>().CheckNull();
-                audioSource.clip = audioClip;
-                audioSource.Play();
-                seSources.Add(audioSource);
-            }
-            else
-            {
-                canUsingCache.clip = audioClip;
-                canUsingCache.Play();
-            }
-        }
-        
         private void SetVolume(string exposedParameter, float volume)
         {
             volume = Mathf.Clamp(volume, 0.0001f, 1.0f);
