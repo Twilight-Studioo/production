@@ -19,7 +19,6 @@ namespace Feature.Presenter
 {
     public class PlayerPresenter : IDisposable
     {
-        private readonly AudioSource audioSource;
         private readonly CharacterParams characterParams;
 
         private readonly IEndFieldController endFieldController;
@@ -32,6 +31,8 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
         private readonly VoltageBar voltageBar;
+        
+        private readonly IAudioMixerController audioMixerController;
 
         private bool isGameOver;
         private IPlayerView playerView;
@@ -43,8 +44,8 @@ namespace Feature.Presenter
             VoltageBar voltageBar,
             GameUIView ui,
             VolumeController volumeController,
-            AudioSource audioSource,
-            IEndFieldController endFieldController
+            IEndFieldController endFieldController,
+            IAudioMixerController audioMixerController
         )
         {
             playerModel = model;
@@ -53,7 +54,7 @@ namespace Feature.Presenter
             swapTimer = new();
             this.voltageBar = voltageBar;
             this.endFieldController = endFieldController;
-            this.audioSource = audioSource;
+            this.audioMixerController = audioMixerController.CheckNull();
         }
 
         public void Dispose()
@@ -77,7 +78,7 @@ namespace Feature.Presenter
                     return new DamageResult.Damaged(playerView.GetTransform());
                 }
             };
-            playerView.OnHitHandler += playerModel.OnEnemyAttacked;
+            playerView.OnHitHandler += OnAttackHitHandler;
             playerView.SwapRange = characterParams.canSwapDistance;
             playerView.GetPositionRef()
                 .Subscribe(position =>
@@ -123,9 +124,15 @@ namespace Feature.Presenter
                 .AddTo(playerHpBar);
             endFieldController.SubscribeToPlayerHealth(playerModel.Health);
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
-                playerModel.MaxComboCount, playerModel.AttackCoolTime, playerModel.MaxComboCoolTime, audioSource
+                playerModel.MaxComboCount, playerModel.AttackCoolTime, playerModel.MaxComboCoolTime
             );
             playerModel.PlayerStateChange += StateHandler;
+        }
+        
+        private void OnAttackHitHandler(DamageResult result)
+        {
+            playerModel.OnEnemyAttacked(result);
+            audioMixerController.PlayOneShotSE(AudioAssetType.SlashingHit);
         }
 
         private void StateHandler(PlayerStateEvent stateEvent)
@@ -275,6 +282,7 @@ namespace Feature.Presenter
                 playerModel.Attack();
                 var isSpecialAttack = playerModel.VoltagePower.Value >= characterParams.useVoltageAttackValue;
                 playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
+                audioMixerController.PlayOneShotSE(AudioAssetType.Slashing);
                 voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue);
             }
         }

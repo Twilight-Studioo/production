@@ -1,8 +1,10 @@
 using Core.Input;
 using Core.Utilities;
+using Core.Utilities.Save;
 using Feature.Common.Parameter;
 using Main.Controller;
 using Main.Controller.GameNavigation;
+using Main.Controller.Save;
 using Main.Scene;
 using UnityEngine;
 using VContainer;
@@ -42,7 +44,7 @@ namespace Main.Installer
             builder.RegisterComponent(controlsPrefab.GetComponent<ControlsScreen>().CheckNull());
             builder.RegisterComponent(titlePrefab.GetComponent<TitleScreen>().CheckNull());
             builder.RegisterComponent(gameOverPrefab.GetComponent<GameOverScreen>().CheckNull());
-            
+            builder.Register<GameSaveManager>(Lifetime.Singleton);
             builder.Register<RootInstance>(Lifetime.Singleton);
             builder.RegisterEntryPoint<RootManager>();
         }

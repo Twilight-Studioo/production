@@ -39,7 +39,7 @@ namespace Feature.Interface
 
         void Dagger(float degree, float h, float v);
 
-        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime, AudioSource audioSource);
+        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime);
 
         Vector3 GetForward();
     }
