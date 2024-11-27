@@ -112,14 +112,6 @@ MonoBehaviour:
   katana: {fileID: 2091384818344206453}
   sheath: {fileID: 2197738302003895485}
   daggerSpawn: {fileID: 6971175292935995355}
-  slashingSound:
-  - {fileID: 8300000, guid: a7abe8d111dc8af4e9fa4d8673ddc8a6, type: 3}
-  - {fileID: 8300000, guid: aa63c2543e584874fab20a22e8328acf, type: 3}
-  - {fileID: 8300000, guid: ce5413244d8a15d43836d0e02279a618, type: 3}
-  hitSound:
-  - {fileID: 8300000, guid: 00f051125a9715c44b509b0393b698ad, type: 3}
-  - {fileID: 8300000, guid: 8f23cbbf541deae40b2d8a8df0361501, type: 3}
-  - {fileID: 8300000, guid: d38b3911d0a83144e86ca595b3c4ce33, type: 3}
   yDegree: 0
   newYDegree: 284
 --- !u!1 &1659875179376426182
@@ -133,7 +125,7 @@ GameObject:
   - component: {fileID: 6971175292935995355}
   m_Layer: 7
   m_Name: daggerSpawn
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -197,7 +189,7 @@ GameObject:
   - component: {fileID: 4718312777403831573}
   m_Layer: 7
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1647,6 +1639,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 1210925894218255225, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
       propertyPath: m_Layer
@@ -2005,6 +2002,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 665688755906558383, guid: fcd94c8e567ce8444a7b54bd7547e301,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
         type: 3}
