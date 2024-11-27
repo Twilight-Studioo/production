@@ -273,16 +273,16 @@ namespace Feature.Presenter
             if (!isGameOver && playerModel.CanAttack.Value && playerView.CanAttack())
             {
                 playerModel.Attack();
-                var isSpecialAttack = playerModel.VoltageValue >= characterParams.useVoltageAttackValue;
+                var isSpecialAttack = playerModel.VoltagePower.Value >= characterParams.useVoltageAttackValue;
                 playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
-                voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
+                voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue);
             }
         }
 
         private void AddVoltageSwap()
         {
             playerModel.AddVoltageSwap();
-            voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
+            voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue);
         }
 
         public Transform GetTransform() => playerView.GetTransform();
