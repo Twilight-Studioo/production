@@ -352,6 +352,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   characterParams: {fileID: 11400000, guid: ff0abe4541d12444b8f2c2f950daebc2, type: 2}
   gameSettings: {fileID: 11400000, guid: 8a53a45fe1b0e447fbfa4740df1db905, type: 2}
+  gameAudioAssets: {fileID: 11400000, guid: 5e077b8ddf4fd4bedb1c9b2c349db0d8, type: 2}
 --- !u!1001 &5870329775406970056
 PrefabInstance:
   m_ObjectHideFlags: 0

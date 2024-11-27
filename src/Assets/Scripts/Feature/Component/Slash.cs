@@ -12,9 +12,7 @@ namespace Feature.Component
 {
     public class Slash : MonoBehaviour
     {
-        private AudioSource audioSource;
         private uint damage;
-        private AudioClip hitSound;
         
         public event Action<DamageResult> OnHitEvent;
 
@@ -27,15 +25,12 @@ namespace Feature.Component
                 return;
             }
             var result = enemy.OnDamage(damage, other.transform.position, transform);
-            audioSource.PlayOneShot(hitSound);
             OnHitEvent?.Invoke(result);
         }
 
-        public void SetDamage(uint dmg, AudioClip selectedClip, AudioSource audioSource)
+        public void SetDamage(uint dmg)
         {
             damage = dmg;
-            hitSound = selectedClip;
-            this.audioSource = audioSource;
         }
     }
 }
