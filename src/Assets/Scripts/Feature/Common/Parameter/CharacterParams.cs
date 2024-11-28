@@ -96,6 +96,9 @@ namespace Feature.Common.Parameter
         [Tooltip("ボルテージ使用時の攻撃上昇倍率")] public int voltageAttackPowerValue = 2;
         
         [Tooltip("ボルテージの最大値")] public int maxVoltage = 100;
+
+        [Tooltip("ダメージ後の回復")]
+        public uint damagedRecoveryVoltage = 5;
         
         [Tooltip("敵を倒した時の回復量(ボルテージ)")]
         public uint killRecoveryVoltage = 10;
