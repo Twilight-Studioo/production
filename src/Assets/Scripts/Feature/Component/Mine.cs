@@ -58,6 +58,11 @@ namespace Feature.Component
                 this.gameObject.GetComponent<ISwappable>().Delete();
             }
             
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.mineDamage,transform.position,transform);
+                this.gameObject.GetComponent<ISwappable>().Delete();
+            }
             
         }
     }

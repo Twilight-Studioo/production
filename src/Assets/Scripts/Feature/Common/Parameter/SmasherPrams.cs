@@ -8,7 +8,7 @@ namespace Feature.Common.Parameter
     public class SmasherPrams : EnemyParams
     {
         [Tooltip("体力")]
-        public uint health = 100;
+        public uint health  = 100;
         
         [Tooltip("突進する時間")]
         public float chargeAttackTime = 0.5f;

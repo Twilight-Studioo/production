@@ -1,7 +1,4 @@
 ﻿using System.Collections;
-using Codice.Client.GameUI.Explorer;
-using Core.Utilities;
-using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
@@ -200,12 +197,13 @@ namespace Feature.Component.Enemy
             return  Vector3.Distance(playerTransform.position, transform.position);
         }
         
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             var imp = (transform.position - attacker.position).normalized;
             imp.y += 0.3f;
             health -= damage;
             UpdateHealth();
+            return new DamageResult.Damaged(transform);
         }
 
         private void OnCollisionEnter(Collision other)
