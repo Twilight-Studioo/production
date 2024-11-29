@@ -128,6 +128,7 @@ namespace Feature.Component.Enemy
 
         private IEnumerator ChargeAttack()
         {
+            Debug.Log("突進");
             chargeAttack = true;
             yield return new WaitForSeconds(bossPrams.chargeTime);
             CurrentDistance();
@@ -140,16 +141,19 @@ namespace Feature.Component.Enemy
 
         private void Upper()
         {
+            Debug.Log("アッパー");
             bossRb.AddForce(0,bossPrams.upperHeight,0);
         }
 
         private void Jump()
         {
+            Debug.Log("ジャンプ");
             bossRb.AddForce(0,bossPrams.upperHeight,0);
         }
 
         private IEnumerator FallAttack()
         {
+            Debug.Log("落下攻撃");
             fallAttack = true;
             CurrentDistance();
             if (playerDistance <= bossPrams.fallAttackDistance)
@@ -197,11 +201,13 @@ namespace Feature.Component.Enemy
 
         private void DebrisAttack()
         {
+            Debug.Log("瓦礫攻撃");
             Instantiate(debrisPrefab,transform.position,Quaternion.identity);
         }
 
         private void StrikeMine()
         {
+            Debug.Log("地雷発射");
             mine = ObjectFactory.Instance.CreateObject(minePrefab, transform.position, Quaternion.identity);
         }
 
