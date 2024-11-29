@@ -2,6 +2,7 @@
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
+using UniRx;
 using Unity.Plastic.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +32,7 @@ namespace Feature.Component.Enemy
         private GameObject mine;
         private uint health;
         [SerializeField] private Slider bossHealthBar;
+        [SerializeField] private Animator animator;
 
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
@@ -72,31 +74,53 @@ namespace Feature.Component.Enemy
         
         private IEnumerator Attack()
         {
-            rnd = Random.Range(1, 4);
+            rnd = Random.Range(1, 6);
             switch (rnd)
             {
                 case 1:
-                    yield return ChargeAttack();
+                    Debug.Log("111");
+                    yield return StartCoroutine(ChargeAttack());
                     yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
                     Upper();
                     yield return new WaitForSeconds(bossPrams.upperIntervalSec);
-                    StartCoroutine(FallAttack());
+                    yield return StartCoroutine(FallAttack());
                     yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
                     break;
                     
                 case 2 :
+                    Debug.Log("222");
                     Jump();
                     yield return new WaitForSeconds(bossPrams.upperIntervalSec);
-                    StartCoroutine(FallAttack());
+                    yield return StartCoroutine(FallAttack());
                     yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
                     break;
                 
                 case 3 :
+                    Debug.Log("333");
                     StrikeMine();
                     yield return new WaitForSeconds(bossPrams.mineIntervalSec);
-                    yield return ChargeAttack();
+                    yield return StartCoroutine(ChargeAttack());
                     yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
                     break;
+                
+                case 4:
+                    Debug.Log("444");
+                    yield return StartCoroutine(ChargeAttack());
+                    yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
+                    yield return StartCoroutine(ChargeAttack());
+                    yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
+                    break;
+                
+                case 5:
+                    Debug.Log("555");
+                    StrikeMine();
+                    yield return new WaitForSeconds(bossPrams.mineIntervalSec);
+                    Jump();
+                    yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+                    yield return StartCoroutine(FallAttack());
+                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
+                    break;
+                    
             }
 
             StartCoroutine(Attack());

@@ -19,7 +19,7 @@ MonoBehaviour:
   maxHp: 100
   patrolSpeed: 1
   pursuitSpeed: 1.4
-  attackType: 0
+  health: 100
   chargeAttackTime: 0.5
   chargeSpeed: 500
   chargeTime: 3
@@ -31,13 +31,13 @@ MonoBehaviour:
   slapDistance: 3
   slapDamage: 3
   fallAttackDistance: 20
-  fallSpeed: 200
+  fallSpeed: 100
   fallAttackDamage: 10
-  fallAttackIntervalSec: 1
+  fallAttackIntervalSec: 3
   debrisDamage: 5
   debrisSpeed: 30
-  debrisAttackIntervalSec: 1
-  mineIntervalSec: 1
+  debrisAttackIntervalSec: 5
+  mineIntervalSec: 5
   mineSpeedVertical: 50
   mineSpeedBeside: 25
   mineDamage: 10
