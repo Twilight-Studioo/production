@@ -18,27 +18,27 @@ using UnityEngine.AI;
 
 namespace Feature.Component.Enemy
 {
-    public class SimpleEnemy2Agent : FlowScope, IEnemyAgent, ISwappable
+    public class SimpleEnemy2FlyAgent : FlowScope, IEnemyAgent, ISwappable
     {
         [SerializeField] private GameObject bulletPrefab;
 
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
-        private NavMeshAgent agent;
         private Rigidbody rb;
 
-        private bool canBullet;
+        private bool canBullet = false;
 
-        private SimpleEnemy2Params enemyParams;
+        private SimpleEnemy2FlyParams enemyParams;
 
         private OnHitRushAttack onHitBullet;
 
         private Transform playerTransform;
         private List<Vector3> points;
+        
+        private float lastAttackedTime;
 
         private void Awake()
         {
-            agent = GetComponent<NavMeshAgent>();
             rb = GetComponent<Rigidbody>();
             position.Value = transform.position;
         }
@@ -52,6 +52,8 @@ namespace Feature.Component.Enemy
 
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy2;
+
+        private Coroutine movableCoroutine;
 
 
         public void FlowCancel()
@@ -67,9 +69,9 @@ namespace Feature.Component.Enemy
 
         public void SetParams(EnemyParams @params)
         {
-            if (@params is SimpleEnemy2Params enemy1Params)
+            if (@params is SimpleEnemy2FlyParams enemy2FlyParams)
             {
-                enemyParams = enemy1Params;
+                enemyParams = enemy2FlyParams;
             }
             else
             {
@@ -92,11 +94,7 @@ namespace Feature.Component.Enemy
         private IEnumerator HitStop(Vector3 imp)
         {
             FlowCancel();
-            agent.enabled = false;
-            rb.isKinematic = false;
             yield return transform.Knockback(imp, 3f, 0.8f);
-            rb.isKinematic = true;
-            agent.enabled = true;
             FlowStart();
         }
 #pragma warning disable CS0067
@@ -121,6 +119,14 @@ namespace Feature.Component.Enemy
                 .Param("IsClose", true)
                 .Param("Object", playerTransform);
 
+        private void FixedUpdate()
+        {
+            if (!canBullet && Time.time - lastAttackedTime > enemyParams.shootCoolDownSec)
+            {
+                canBullet = true;
+            }
+        }
+
         protected override IEnumerator Flow(IFlowBuilder context)
         {
             if (enemyParams == null)
@@ -133,44 +139,51 @@ namespace Feature.Component.Enemy
                 playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
                 yield return Wait(0.5f);
             }
+            canBullet = true;
+            if (movableCoroutine != null)
+            {
+                StopCoroutine(movableCoroutine);   
+            }
+            movableCoroutine = StartCoroutine(Movable());
 
             while (true)
             {
                 // パトロール状態
-                agent.ResetPath();
 
                 var distance = Vector3.Distance(playerTransform.position, transform.position);
-
-                if (Math.Abs(enemyParams.shootDistance - distance) < 1f || canBullet)
+                
+                if (enemyParams.pursuitDistance < distance)
                 {
+                    yield return new WaitForSeconds(0.5f);
+                    continue;
+                }
+
+                if (Math.Abs(enemyParams.shootDistance - distance) < 2f && distance > 1f && canBullet)
+                {
+                    Debug.Log("Attack");
                     canBullet = false;
+                    lastAttackedTime = Time.time;
                     yield return Attack();
                 }
-                else if (enemyParams.pursuitDistance > distance)
-                {
-                    yield return Action("AIMoveToTargetDistance")
-                        .Param("Target", playerTransform)
-                        .Param("Distance", enemyParams.shootDistance)
-                        .Param("MoveSpeed", 1f)
-                        .IfEnd(
-                            UnFocusTrigger().Build(), // プレイヤーを見失った場合のトリガー
-                            AttackTrigger().Build()
-                        )
-                        .Build();
-                    canBullet = true;
-                }
-                else
-                {
-                    yield return Action("PointsAIMoveTo")
-                        .Param("Points", points)
-                        .Param("MoveSpeed", enemyParams.patrolSpeed)
-                        .IfEnd(
-                            FocusTrigger().Build(), // プレイヤー発見のトリガー
-                            AttackTrigger().Build() // 攻撃モードのトリガー
-                        )
-                        .Build();
-                }
+
+                yield return new WaitForSeconds(0.2f);
             }
+        }
+
+        private IEnumerator Movable()
+        {
+            if (playerTransform == null)
+            {
+                playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+            }
+            yield return Action("FlyingEnemyV2")
+                .Param("Target", playerTransform)
+                .Param("Power", enemyParams.movePower)
+                .Param("Distance", enemyParams.distance)
+                .Param("MaxHeightFromGround", enemyParams.maxHeightFromGround)
+                .Param("MinDistanceToCeiling", enemyParams.minDistanceToCeiling)
+                .Build();
+            rb.velocity = Vector3.zero;
         }
 
         private IEnumerator Attack()
@@ -215,7 +228,7 @@ namespace Feature.Component.Enemy
 
         public void OnSwap(Vector2 p)
         {
-            agent.Warp(p);
+            transform.position = p;
         }
 
         public event Action OnDestroyEvent;
