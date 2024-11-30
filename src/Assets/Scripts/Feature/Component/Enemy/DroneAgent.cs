@@ -92,7 +92,7 @@ namespace Feature.Component.Enemy
 
                 if (distance > enemyParams.playerKeepDistance)
                 {
-                    yield return Action("FlyingEnemy")
+                    yield return Action("FlyingEnemyV1")
                         .Param("Transform", playerTransform)
                         .Param("PlayerMinDistance", enemyParams.playerKeepDistance)
                         .IfEnd(
