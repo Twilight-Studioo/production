@@ -166,8 +166,12 @@ namespace Feature.Component.Enemy
                 case DroneAttackType.Bullet:
                     for (var _ = 0; _ < enemyParams.shotCount; _++)
                     {
-                        var bullet = ObjectFactory.Instance.CreateObject(enemyParams.bulletPrefab, transform.position,
+                        var toPlayerDirection = (playerTransform.position - transform.position).normalized;
+                        var bullet = ObjectFactory.Instance.CreateObject(
+                            enemyParams.bulletPrefab,
+                            transform.position + toPlayerDirection * 1f,
                             Quaternion.identity);
+                        bullet.transform.LookAt(playerTransform);
                         var bulletRb = bullet.GetComponent<DamagedTrigger>();
                         bulletRb.SetHitObject(false, true, true);
                         bulletRb.ExecuteWithFollow(playerTransform, enemyParams.bulletSpeed, enemyParams.damage,
