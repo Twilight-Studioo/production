@@ -178,10 +178,13 @@ namespace Feature.Component.Enemy
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
-                var bullet = ObjectFactory.Instance.CreateObject(bulletPrefab, transform.position, Quaternion.identity);
+                var bullet = ObjectFactory.Instance.CreateObject(
+                    bulletPrefab,
+                    transform.position + dir * 1f,
+                    Quaternion.identity);
                 bullet.transform.LookAt(playerTransform);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
-                bulletRb.SetHitObject(false, true, true);
+                bulletRb.SetHitObject(true, true, true);
                 bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
                 bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                 yield return Wait(enemyParams.shootIntervalSec);
