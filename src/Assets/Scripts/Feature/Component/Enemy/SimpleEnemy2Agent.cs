@@ -179,6 +179,7 @@ namespace Feature.Component.Enemy
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
                 var bullet = ObjectFactory.Instance.CreateObject(bulletPrefab, transform.position, Quaternion.identity);
+                bullet.transform.LookAt(playerTransform);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
                 bulletRb.SetHitObject(false, true, true);
                 bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
