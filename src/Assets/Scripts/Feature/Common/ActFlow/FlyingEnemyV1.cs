@@ -13,8 +13,8 @@ using UnityEngine;
 
 namespace Feature.Common.ActFlow
 {
-    [ActionTag("FlyingEnemy")]
-    public class FlyingEnemyAction : FixedUpdatedAction, IGizmoDrawable, IDisposable
+    [ActionTag("FlyingEnemyV1")]
+    public class FlyingEnemyV1Action : FixedUpdatedAction, IGizmoDrawable, IDisposable
     {
         // 移動速度と回避力
         private const float MoveSpeed = 10f; // seek時のspeed
