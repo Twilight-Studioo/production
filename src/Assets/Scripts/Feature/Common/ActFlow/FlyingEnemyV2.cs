@@ -5,6 +5,7 @@ using Core.Utilities;
 using DynamicActFlow.Runtime.Core;
 using DynamicActFlow.Runtime.Core.Action;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 #endregion
 
@@ -125,21 +126,17 @@ namespace Feature.Common.ActFlow
 
             var ownerPosition = Owner.transform.position;
             var playerPosition = Player.position;
+            var directionToPlayer = (playerPosition - ownerPosition).normalized;
             var distanceToPlayer = Vector3.Distance(ownerPosition, playerPosition);
 
-            if (distanceToPlayer < Distance)
-            {
-                var fleeDirection = (ownerPosition - playerPosition).normalized;
-                return fleeDirection * Power;
-            }
+            // 距離の差を計算
+            var distanceDifference = distanceToPlayer - Distance;
 
-            if (distanceToPlayer > Distance)
-            {
-                var chaseDirection = (playerPosition - ownerPosition).normalized;
-                return chaseDirection * Power;
-            }
+            // 移動力を距離の差に比例させる（負の値も考慮）
+            var moveForce = directionToPlayer * 
+                                (Power * Random.Range(0.8f, 1.0f)) * (distanceDifference / Distance);
 
-            return Vector3.zero;
+            return moveForce;
         }
 
         // 高さを調整する動作

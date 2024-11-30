@@ -94,9 +94,7 @@ namespace Feature.Component.Enemy
         private IEnumerator HitStop(Vector3 imp)
         {
             FlowCancel();
-            rb.isKinematic = false;
             yield return transform.Knockback(imp, 3f, 0.8f);
-            rb.isKinematic = true;
             FlowStart();
         }
 #pragma warning disable CS0067
