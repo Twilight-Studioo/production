@@ -8,6 +8,7 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
+using UnityEngine.VFX;
 
 #endregion
 
@@ -20,6 +21,7 @@ namespace Feature.View
         [SerializeField] private GameObject dagger;
         [SerializeField] private GameObject katana;
         [SerializeField] private GameObject sheath;
+        [SerializeField] private GameObject swappingEffect;
         public Transform daggerSpawn;
 
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
@@ -134,7 +136,29 @@ namespace Feature.View
 
         public void SetPosition(Vector3 p)
         {
+            // スワップ前の位置を取得
+            var previousPosition = transform.position;
+
             transform.position = p;
+            
+            if (swappingEffect != null)
+            {
+                // 生成
+                var instantiateEffect = ObjectFactory.Instance.CreateObject(
+                    swappingEffect,
+                    transform.position,
+                    Quaternion.identity
+                );
+
+                // VisualEffect コンポーネントを取得
+                var visualEffect = instantiateEffect.GetComponent<VisualEffect>();
+
+                //Target_position更新
+                if (visualEffect != null)
+                {
+                    visualEffect.SetVector3("Target_position_position", new Vector3(previousPosition.x, previousPosition.y, 0));
+                }
+            }
         }
 
         public Transform GetTransform() => transform;

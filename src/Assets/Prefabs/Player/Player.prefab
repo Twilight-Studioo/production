@@ -111,6 +111,8 @@ MonoBehaviour:
   dagger: {fileID: 3452286736134199389, guid: eeeb33f97828b4fa2a32a3bc8d284a3d, type: 3}
   katana: {fileID: 2091384818344206453}
   sheath: {fileID: 2197738302003895485}
+  swappingEffect: {fileID: 1526506704024680905, guid: f86d1597207debf479dee12f285f4a3d,
+    type: 3}
   daggerSpawn: {fileID: 6971175292935995355}
   yDegree: 0
   newYDegree: 284
