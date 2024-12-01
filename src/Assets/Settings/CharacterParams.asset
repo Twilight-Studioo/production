@@ -28,7 +28,7 @@ MonoBehaviour:
   maxComboCoolTime: 1
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
-  canSwapDistance: 10
+  canSwapDistance: 20
   swapReturnTimeMillis: 1000
   swapReturnCurve: 0
   maxHasStamina: 12
