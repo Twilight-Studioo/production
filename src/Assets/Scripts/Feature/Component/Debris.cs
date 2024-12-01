@@ -52,7 +52,7 @@ namespace Feature.Component
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                other.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
+                other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
             }
 
             if (other.gameObject.CompareTag("Ground"))

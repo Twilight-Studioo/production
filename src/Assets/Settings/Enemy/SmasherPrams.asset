@@ -27,17 +27,17 @@ MonoBehaviour:
   chargeIntervalSec: 0.3
   upperHeight: 400
   upperDamage: 10
-  upperIntervalSec: 0.5
+  upperIntervalSec: 1
   slapDistance: 3
   slapDamage: 3
   fallAttackDistance: 20
   fallSpeed: 100
   fallAttackDamage: 10
-  fallAttackIntervalSec: 3
+  fallAttackIntervalSec: 1
   debrisDamage: 5
   debrisSpeed: 30
-  debrisAttackIntervalSec: 5
+  debrisAttackIntervalSec: 20
   mineIntervalSec: 5
   mineSpeedVertical: 50
   mineSpeedBeside: 25
-  mineDamage: 10
+  mineDamage: 20

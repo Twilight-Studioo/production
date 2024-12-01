@@ -732,33 +732,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 702092973}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &935523088 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4481266917897338749, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
-    type: 3}
-  m_PrefabInstance: {fileID: 1005097888}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &935523089
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 935523088}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 58b45a8be2917ce45817719e87cc8cbc, type: 3}
-  m_Controller: {fileID: 9100000, guid: cdcb72eb42e0c1d4bb618cd88168e296, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1005097888
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -780,7 +753,7 @@ PrefabInstance:
     - target: {fileID: 3691127161474883186, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.78
+      value: 2.061
       objectReference: {fileID: 0}
     - target: {fileID: 3691127161474883186, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
@@ -822,11 +795,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7990809426514261438, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
+    - target: {fileID: 7727255943852718289, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
-      propertyPath: animator
-      value: 
-      objectReference: {fileID: 935523089}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7990809426514261438, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: bossHealthBar
@@ -835,11 +808,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4481266917897338749, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 935523089}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbf47b1c7e1f582418b2678c0a9bf8c7, type: 3}
 --- !u!1 &1053946958
 GameObject:

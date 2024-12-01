@@ -3,7 +3,6 @@ using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
 using UniRx;
-using Unity.Plastic.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
 using ObjectFactory = Core.Utilities.ObjectFactory;
@@ -37,6 +36,9 @@ namespace Feature.Component.Enemy
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
         
+        private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
+        private Vector3 previousPosition;
+        
 
         private bool UpperAttack = false;
 
@@ -48,6 +50,7 @@ namespace Feature.Component.Enemy
             bossRb = GetComponent<Rigidbody>();
             health = bossPrams.health;
             UpdateHealth();
+            StartCoroutine(StartTime(3));
             StartCoroutine(Attack());
         }
 
@@ -66,6 +69,7 @@ namespace Feature.Component.Enemy
             var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
             transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
         }
+        
 
         private void UpdateHealth()
         {
@@ -74,54 +78,48 @@ namespace Feature.Component.Enemy
         
         private IEnumerator Attack()
         {
-            rnd = Random.Range(1, 6);
+            rnd = Random.Range(1, 7);
             switch (rnd)
             {
                 case 1:
                     Debug.Log("111");
                     yield return StartCoroutine(ChargeAttack());
-                    yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
-                    Upper();
-                    yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+                    yield return StartCoroutine(Upper());
                     yield return StartCoroutine(FallAttack());
-                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
                     break;
                     
                 case 2 :
                     Debug.Log("222");
-                    Jump();
-                    yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+                    yield return StartCoroutine(Jump());
                     yield return StartCoroutine(FallAttack());
-                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
                     break;
                 
                 case 3 :
                     Debug.Log("333");
-                    StrikeMine();
-                    yield return new WaitForSeconds(bossPrams.mineIntervalSec);
+                    yield return StartCoroutine(StrikeMine());
                     yield return StartCoroutine(ChargeAttack());
-                    yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
                     break;
                 
                 case 4:
                     Debug.Log("444");
                     yield return StartCoroutine(ChargeAttack());
-                    yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
+                    animator.SetTrigger("ReturnStandby");
                     yield return StartCoroutine(ChargeAttack());
-                    yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
                     break;
                 
                 case 5:
                     Debug.Log("555");
-                    StrikeMine();
-                    yield return new WaitForSeconds(bossPrams.mineIntervalSec);
-                    Jump();
-                    yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+                    yield return StartCoroutine(StrikeMine());
+                    yield return StartCoroutine(Jump());
                     yield return StartCoroutine(FallAttack());
-                    yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
+                    break;
+                
+                case 6 :
+                    yield return StartCoroutine(StrikeMine());
                     break;
                     
             }
+            animator.SetTrigger("ReturnStandby");
 
             StartCoroutine(Attack());
         }
@@ -129,6 +127,7 @@ namespace Feature.Component.Enemy
         private IEnumerator ChargeAttack()
         {
             Debug.Log("突進");
+            animator.SetTrigger("OnForwardattack");
             chargeAttack = true;
             yield return new WaitForSeconds(bossPrams.chargeTime);
             CurrentDistance();
@@ -137,18 +136,23 @@ namespace Feature.Component.Enemy
             yield return new WaitForSeconds(bossPrams.chargeAttackTime);
             bossRb.velocity = Vector3.zero;
             chargeAttack = false;
+            yield return new WaitForSeconds(bossPrams.chargeIntervalSec); 
         }
 
-        private void Upper()
+        private IEnumerator Upper()
         {
+            animator.SetTrigger("OnUpper");
             Debug.Log("アッパー");
             bossRb.AddForce(0,bossPrams.upperHeight,0);
+            yield return new WaitForSeconds(bossPrams.upperIntervalSec);
         }
 
-        private void Jump()
+        private IEnumerator Jump()
         {
             Debug.Log("ジャンプ");
+            animator.SetTrigger("OnJump");
             bossRb.AddForce(0,bossPrams.upperHeight,0);
+            yield return new WaitForSeconds(bossPrams.upperIntervalSec);
         }
 
         private IEnumerator FallAttack()
@@ -178,7 +182,7 @@ namespace Feature.Component.Enemy
             bossRb.velocity = Vector3.zero;
             yield return new WaitForSeconds(bossPrams.fallAttackIntervalSec);
             fallAttack = false;
-            DebrisAttack();
+            StartCoroutine(DebrisAttack());
         }
 
         private IEnumerator MoveTowardsTarget(float speed,Vector3 target)
@@ -199,16 +203,24 @@ namespace Feature.Component.Enemy
             bossRb.velocity = Vector3.zero;
         }
 
-        private void DebrisAttack()
+        private IEnumerator DebrisAttack()
         {
             Debug.Log("瓦礫攻撃");
             Instantiate(debrisPrefab,transform.position,Quaternion.identity);
+            yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
         }
 
-        private void StrikeMine()
+        private IEnumerator StrikeMine()
         {
+            animator.SetTrigger("OnMine");
             Debug.Log("地雷発射");
             mine = ObjectFactory.Instance.CreateObject(minePrefab, transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(bossPrams.mineIntervalSec);
+        }
+
+        private IEnumerator StartTime(float time)
+        {
+            yield return new WaitForSeconds(time);
         }
 
         private void Slap()
@@ -232,7 +244,9 @@ namespace Feature.Component.Enemy
             var imp = (transform.position - attacker.position).normalized;
             imp.y += 0.3f;
             health -= damage;
+            animator.SetTrigger("OnDamage");
             UpdateHealth();
+            //animator.ResetTrigger("OnDamage");
             return new DamageResult.Damaged(transform);
         }
 
