@@ -542,7 +542,7 @@ Material:
     - _OutlineDstBlendAlphaFA: 1
     - _OutlineDstBlendFA: 1
     - _OutlineEnableLighting: 1
-    - _OutlineFixWidth: 0.5
+    - _OutlineFixWidth: 0.61
     - _OutlineLitApplyTex: 0
     - _OutlineLitOffset: -8
     - _OutlineLitScale: 10
@@ -563,7 +563,7 @@ Material:
     - _OutlineVectorScale: 1
     - _OutlineVectorUVMode: 0
     - _OutlineVertexR2Width: 0
-    - _OutlineWidth: 0.04
+    - _OutlineWidth: 0.4
     - _OutlineZBias: 0
     - _OutlineZClip: 1
     - _OutlineZTest: 2
@@ -758,8 +758,8 @@ Material:
     - _MatCap2ndColor: {r: 1, g: 1, b: 1, a: 1}
     - _MatCapBlendUV1: {r: 0, g: 0, b: 0, a: 0}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
-    - _OutlineColor: {r: 0.75427186, g: 1.4150943, b: 1.3948531, a: 1}
-    - _OutlineLitColor: {r: 0, g: 4, b: 3.63731, a: 0.26}
+    - _OutlineColor: {r: 0.52135986, g: 0.88341445, b: 1.0943396, a: 1}
+    - _OutlineLitColor: {r: 1.3001066, g: 3.151762, b: 3.3207548, a: 1}
     - _OutlineTexHSVG: {r: 0, g: 1, b: 1, a: 1}
     - _OutlineTex_ScrollRotate: {r: 0, g: 0, b: 0, a: 0}
     - _ReflectionColor: {r: 0.8574065, g: 0.8962264, b: 0.70598966, a: 1}
