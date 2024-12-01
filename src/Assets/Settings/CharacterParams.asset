@@ -12,14 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8589ddc99af04180a128a537e285a9e2, type: 3}
   m_Name: CharacterParams
   m_EditorClassIdentifier: 
-  health: 100
   speed: 10
-  jumpPower: 10
+  jumpPower: 7
+  health: 100
+  damagedRecoveryHealth: 1
+  killRecoveryHealth: 10
+  swappedRecoveryHealthTimeMillis: 1000
+  swappedRecoveryHealthIntervalMillis: 500
+  swappedRecoveryHealthQuantity: 1
   attackPower: 5
   comboTimeWindow: 0.7
   comboAngleOffset: 0
   maxComboCount: 2
   attackCoolTime: 0.33
+  maxComboCoolTime: 1
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
   canSwapDistance: 10
@@ -33,11 +39,12 @@ MonoBehaviour:
   recoveryTimeMillis: 800
   resourceRecoveryQuantity: 1
   recoveryStaminaTimeMillis: 10
+  useDaggerUseStamina: 20
   useVoltageAttackValue: 50
   addVoltageSwapValue: 10
   voltageAttackPowerValue: 2
-  useDaggerUseStamina: 20
-  slashEffect: {fileID: 6881300163551790712, guid: 15b2f9983eeeab442a107f095b81e851,
-    type: 3}
-  normalSlashEffect: {fileID: 6881300163551790712, guid: 5cad2843d9f4a354ab23675c72d9520b,
-    type: 3}
+  maxVoltage: 100
+  killRecoveryVoltage: 10
+  swappedRecoveryVoltageTimeMillis: 1000
+  swappedRecoveryVoltageIntervalMillis: 500
+  swappedRecoveryVoltageQuantity: 5

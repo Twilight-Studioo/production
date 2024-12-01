@@ -19,7 +19,6 @@ namespace Feature.Presenter
 {
     public class PlayerPresenter : IDisposable
     {
-        private readonly AudioSource audioSource;
         private readonly CharacterParams characterParams;
 
         private readonly IEndFieldController endFieldController;
@@ -32,6 +31,8 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
         private readonly VoltageBar voltageBar;
+        
+        private readonly IAudioMixerController audioMixerController;
 
         private bool isGameOver;
         private IPlayerView playerView;
@@ -43,8 +44,8 @@ namespace Feature.Presenter
             VoltageBar voltageBar,
             GameUIView ui,
             VolumeController volumeController,
-            AudioSource audioSource,
-            IEndFieldController endFieldController
+            IEndFieldController endFieldController,
+            IAudioMixerController audioMixerController
         )
         {
             playerModel = model;
@@ -53,7 +54,7 @@ namespace Feature.Presenter
             swapTimer = new();
             this.voltageBar = voltageBar;
             this.endFieldController = endFieldController;
-            this.audioSource = audioSource;
+            this.audioMixerController = audioMixerController.CheckNull();
         }
 
         public void Dispose()
@@ -66,7 +67,18 @@ namespace Feature.Presenter
         {
             playerView = view;
 
-            playerView.OnDamageEvent += playerModel.TakeDamage;
+            playerView.OnDamageEvent += d =>
+            {
+                if (playerModel.TakeDamage(d))
+                {
+                    return new DamageResult.Killed(playerView.GetTransform());
+                }
+                else
+                {
+                    return new DamageResult.Damaged(playerView.GetTransform());
+                }
+            };
+            playerView.OnHitHandler += OnAttackHitHandler;
             playerView.SwapRange = characterParams.canSwapDistance;
             playerView.GetPositionRef()
                 .Subscribe(position =>
@@ -112,9 +124,15 @@ namespace Feature.Presenter
                 .AddTo(playerHpBar);
             endFieldController.SubscribeToPlayerHealth(playerModel.Health);
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
-                playerModel.MaxComboCount, playerModel.AttackCoolTime, audioSource
+                playerModel.MaxComboCount, playerModel.AttackCoolTime, playerModel.MaxComboCoolTime
             );
             playerModel.PlayerStateChange += StateHandler;
+        }
+        
+        private void OnAttackHitHandler(DamageResult result)
+        {
+            playerModel.OnEnemyAttacked(result);
+            audioMixerController.PlayOneShotSE(AudioAssetType.SlashingHit);
         }
 
         private void StateHandler(PlayerStateEvent stateEvent)
@@ -259,19 +277,20 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            if (!isGameOver)
+            if (!isGameOver && playerModel.CanAttack.Value && playerView.CanAttack())
             {
                 playerModel.Attack();
-                bool isSpecialAttack = playerModel.VoltageValue >= characterParams.useVoltageAttackValue;
+                var isSpecialAttack = playerModel.VoltagePower.Value >= characterParams.useVoltageAttackValue;
                 playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
-                voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
+                audioMixerController.PlayOneShotSE(AudioAssetType.Slashing);
+                voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue);
             }
         }
 
         private void AddVoltageSwap()
         {
             playerModel.AddVoltageSwap();
-            voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
+            voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue);
         }
 
         public Transform GetTransform() => playerView.GetTransform();

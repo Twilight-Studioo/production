@@ -25,6 +25,7 @@ namespace Feature.Component.Enemy
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private NavMeshAgent agent;
+        private Rigidbody rb;
 
         private bool canBullet;
 
@@ -38,6 +39,7 @@ namespace Feature.Component.Enemy
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            rb = GetComponent<Rigidbody>();
             position.Value = transform.position;
         }
 
@@ -83,8 +85,19 @@ namespace Feature.Component.Enemy
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             var imp = (transform.position - attacker.position).normalized;
-            imp.y += 10f;
-            StartCoroutine(transform.Knockback(imp, 10f, 0.5f));
+            imp.y += 0.3f;
+            this.UniqueStartCoroutine(HitStop(imp), $"HitStop_{gameObject.name}");;
+        }
+        
+        private IEnumerator HitStop(Vector3 imp)
+        {
+            FlowCancel();
+            agent.enabled = false;
+            rb.isKinematic = false;
+            yield return transform.Knockback(imp, 3f, 0.8f);
+            rb.isKinematic = true;
+            agent.enabled = true;
+            FlowStart();
         }
 #pragma warning disable CS0067
         public event Action OnTakeDamageEvent;
@@ -165,9 +178,13 @@ namespace Feature.Component.Enemy
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
-                var bullet = ObjectFactory.Instance.CreateObject(bulletPrefab, transform.position, Quaternion.identity);
+                var bullet = ObjectFactory.Instance.CreateObject(
+                    bulletPrefab,
+                    transform.position + dir * 1f,
+                    Quaternion.identity);
+                bullet.transform.LookAt(playerTransform);
                 var bulletRb = bullet.GetComponent<DamagedTrigger>();
-                bulletRb.SetHitObject(false, true, true);
+                bulletRb.SetHitObject(true, true, true);
                 bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
                 bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                 yield return Wait(enemyParams.shootIntervalSec);

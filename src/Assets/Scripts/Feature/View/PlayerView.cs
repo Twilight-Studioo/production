@@ -8,7 +8,6 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 #endregion
 
@@ -23,8 +22,6 @@ namespace Feature.View
         [SerializeField] private GameObject sheath;
         public Transform daggerSpawn;
 
-        [SerializeField] private List<AudioClip> slashingSound;
-        [SerializeField] private List<AudioClip> hitSound;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
@@ -33,9 +30,8 @@ namespace Feature.View
         private AnimationWrapper animator;
         private float attackComboCount;
         private float attackCoolTime;
-        private AudioSource audioSource;
         private float comboAngleOffset; // 連続攻撃時の角度変化
-        private float comboCount = -1;
+        private int comboCount = -1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private bool isGravityDisabled;
 
@@ -43,10 +39,12 @@ namespace Feature.View
         private float lastDegree;
         private float maxComboCount; // 連続攻撃の最大回数
         private float monochrome;
+        private float maxComboCoolTime;
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
         private bool isMovementDisabled;
+        public event Action<DamageResult> OnHitHandler;
 
         private float vignetteChange; //赤くなるまでの時間
         [SerializeField, Tooltip("刀の初期回転角度（一段目の攻撃時）")] private float yDegree =105f;
@@ -97,14 +95,15 @@ namespace Feature.View
             }
         }
 
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            var imp = (transform.position - attacker.position).normalized;
+            var imp = (transform.position - hitPoint).normalized;
             imp.y += 1f;
             this.UniqueStartCoroutine(Knockback(imp, 5f, 0.4f));
             // rb.AddForce(imp * 5f, ForceMode.Impulse);
-            OnDamageEvent?.Invoke(damage);
+            var result = OnDamageEvent?.Invoke(damage);
             animator.OnTakeDamage();
+            return result;
         }
         
         private IEnumerator Knockback(Vector3 direction, float strength, float duration)
@@ -124,14 +123,13 @@ namespace Feature.View
 
         public GameObject GetGameObject() => gameObject;
 
-        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
-            AudioSource audioSource)
+        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime)
         {
             this.comboTimeWindow = comboTimeWindow;
             this.comboAngleOffset = comboAngleOffset;
             this.maxComboCount = maxComboCount;
             this.attackCoolTime = attackCoolTime;
-            this.audioSource = audioSource;
+            this.maxComboCoolTime = maxComboCoolTime;
         }
 
         public void SetPosition(Vector3 p)
@@ -141,7 +139,7 @@ namespace Feature.View
 
         public Transform GetTransform() => transform;
 
-        public event Action<uint> OnDamageEvent;
+        public event DamageHandler<uint> OnDamageEvent;
 
         public void Move(Vector3 direction, float power)
         {
@@ -217,6 +215,12 @@ namespace Feature.View
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
         } // ReSharper disable Unity.PerformanceAnalysis
+        
+        public bool CanAttack()
+        {
+            var currentTime = Time.time;
+            return currentTime - lastAttackTime >= (comboCount == 2 ? maxComboCoolTime : attackCoolTime);
+        }
         public void Attack(float degree, uint damage, bool voltage)
         {
             var currentTime = Time.time;
@@ -239,7 +243,7 @@ namespace Feature.View
                 comboCount = 0;
             }
 
-            var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
+            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
@@ -259,19 +263,15 @@ namespace Feature.View
                     break;
             }
             
-            GameObject effectPrefab = voltage ? slashingEffect[effectIndex] : normalSlash[effectIndex];
+            var effectPrefab = voltage ? slashingEffect[effectIndex] : normalSlash[effectIndex];
 
             var obj = Instantiate(effectPrefab, transform.position + new Vector3(0f, 1f, 0),
                     Quaternion.Euler(effectPrefab.transform.localEulerAngles.x, effectPrefab.transform.localEulerAngles.y, degree));
-            
-            var slashingSoundRandom = Random.Range(0, slashingSound.Count);
-            var selectedSlashingClip = slashingSound[slashingSoundRandom];
-            audioSource.PlayOneShot(selectedSlashingClip);
 
-            var hitSoundRandom = Random.Range(0, hitSound.Count);
-            var selectedHitClip = hitSound[hitSoundRandom];
             var slash = obj.GetComponent<Slash>();
-            slash.SetDamage(damage, selectedHitClip, audioSource);
+            slash.OnHitEvent += OnHitHandler;
+            slash.SetDamage(damage);
+            
             Destroy(obj, 0.5f);
             animator.SetAttackComboCount(comboCount);
             animator.OnAttack(0);

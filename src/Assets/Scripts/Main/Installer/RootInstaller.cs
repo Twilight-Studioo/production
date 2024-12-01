@@ -1,7 +1,10 @@
 using Core.Input;
 using Core.Utilities;
+using Core.Utilities.Save;
+using Feature.Common.Parameter;
 using Main.Controller;
 using Main.Controller.GameNavigation;
+using Main.Controller.Save;
 using Main.Scene;
 using UnityEngine;
 using VContainer;
@@ -17,6 +20,8 @@ namespace Main.Installer
         [SerializeField] private GameObject controlsPrefab;
         [SerializeField] private GameObject titlePrefab;
         [SerializeField] private GameObject gameOverPrefab;
+        
+        [SerializeField] private GameSettings settings;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -31,13 +36,15 @@ namespace Main.Installer
                 this
             ).CheckNull());
 
+            builder.RegisterInstance(settings);
+
             builder.RegisterComponent(pausePrefab.GetComponent<PauseScreen>().CheckNull());
             builder.RegisterComponent(optionPrefab.GetComponent<OptionScreen>().CheckNull());
             builder.RegisterComponent(volumesPrefab.GetComponent<VolumesScreen>().CheckNull());
             builder.RegisterComponent(controlsPrefab.GetComponent<ControlsScreen>().CheckNull());
             builder.RegisterComponent(titlePrefab.GetComponent<TitleScreen>().CheckNull());
             builder.RegisterComponent(gameOverPrefab.GetComponent<GameOverScreen>().CheckNull());
-            
+            builder.Register<GameSaveManager>(Lifetime.Singleton);
             builder.Register<RootInstance>(Lifetime.Singleton);
             builder.RegisterEntryPoint<RootManager>();
         }

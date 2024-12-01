@@ -3,7 +3,6 @@
 using System;
 using Feature.Common.Parameter;
 using Feature.Interface;
-using Feature.View;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -21,7 +20,7 @@ namespace Feature.Model
         }
 
         private const float AttackAfterMovableMillis = 250;
-        private const int MaxVoltageValue = 100;
+        private int MaxVoltageValue => characterParams.maxVoltage;
         private const int MinVoltageValue = 0;
 
         private readonly CompositeDisposable attackAfterCompositeDisposable = new();
@@ -41,8 +40,6 @@ namespace Feature.Model
         private readonly CharacterParams characterParams;
         private readonly IReactiveProperty<int> daggerStamina;
         public readonly IReadOnlyReactiveProperty<int> DaggerStamina;
-
-        private readonly GameUIView gameUIView;
 
         private readonly IReactiveProperty<int> health = new ReactiveProperty<int>();
 
@@ -65,12 +62,15 @@ namespace Feature.Model
 
         private IDisposable swapUseStaminaSubscription;
         private IDisposable useDaggerUseStamina;
-        public int VoltageValue;
+        private IDisposable swappedRecoveryHealth;
+        private IDisposable swappedRecoveryVoltage;
+        
+        private IReactiveProperty<int> voltagePower = new ReactiveProperty<int>(0);
+        public readonly IReadOnlyReactiveProperty<int> VoltagePower;
 
         [Inject]
         public PlayerModel(
             CharacterParams character
-            // GameUIView ui
         )
         {
             characterParams = character;
@@ -86,6 +86,7 @@ namespace Feature.Model
             CanDagger = canDagger.ToReadOnlyReactiveProperty();
             Health = health.ToReadOnlyReactiveProperty();
             CanAttack = canAttack.ToReadOnlyReactiveProperty();
+            VoltagePower = voltagePower.ToReadOnlyReactiveProperty();
             // recover stamina
 
 
@@ -136,6 +137,8 @@ namespace Feature.Model
         public float ComboAngleOffset => characterParams.comboAngleOffset;
         public float MaxComboCount => characterParams.maxComboCount;
         public float AttackCoolTime => characterParams.attackCoolTime;
+        
+        public float MaxComboCoolTime => characterParams.maxComboCoolTime;
 
         public Vector3 Forward { get; private set; }
 
@@ -230,6 +233,36 @@ namespace Feature.Model
             {
                 PlayerStateChange?.Invoke(PlayerStateEvent.SwapExec);
                 swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapExecUseStamina, 0);
+                
+                var recoveryHealthDurationSeconds = characterParams.swappedRecoveryHealthTimeMillis / 1000f;
+                var recoveryHealthIntervalSeconds = characterParams.swappedRecoveryHealthIntervalMillis / 1000f;
+                var swappedRecoveryHealthQuantity = characterParams.swappedRecoveryHealthQuantity;
+
+                // スワップ後に一定間隔でHPを回復する
+                // NOTE: 重ねがけはなし
+                swappedRecoveryHealth?.Dispose();
+                swappedRecoveryHealth = Observable
+                    .Interval(TimeSpan.FromSeconds(recoveryHealthIntervalSeconds))
+                    .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(recoveryHealthDurationSeconds)))
+                    .Subscribe(_ =>
+                        {
+                            health.Value = (int)Mathf.Min(health.Value + swappedRecoveryHealthQuantity, characterParams.health);
+                        })
+                    .AddTo(playerModelTimer);
+                
+                var recoveryVoltageDurationSeconds = characterParams.swappedRecoveryVoltageTimeMillis / 1000f;
+                var recoveryVoltageIntervalSeconds = characterParams.swappedRecoveryVoltageIntervalMillis / 1000f;
+                var swappedRecoveryVoltageQuantity = characterParams.swappedRecoveryVoltageQuantity;
+                
+                swappedRecoveryVoltage?.Dispose();
+                swappedRecoveryVoltage = Observable
+                    .Interval(TimeSpan.FromSeconds(recoveryVoltageIntervalSeconds))
+                    .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(recoveryVoltageDurationSeconds)))
+                    .Subscribe(_ =>
+                    {
+                        voltagePower.Value = (int)Mathf.Min(voltagePower.Value + swappedRecoveryVoltageQuantity, MaxVoltageValue);
+                    })
+                    .AddTo(playerModelTimer);
             }
         }
 
@@ -256,6 +289,39 @@ namespace Feature.Model
                 .AddTo(attackAfterCompositeDisposable);
         }
 
+        public void OnEnemyAttacked(DamageResult result)
+        {
+            switch (result)
+            {
+                case DamageResult.Damaged:
+                    OnEnemyAttackedDamage();
+                    break;
+                case DamageResult.Killed:
+                    OnEnemyKilled();
+                    break;
+                case DamageResult.Missed:
+                    // no-op
+                    break;
+            }
+        }
+        private void OnEnemyAttackedDamage()
+        {
+            var damagedRecovery = characterParams.damagedRecoveryHealth;
+            health.Value = Mathf.Min(health.Value + (int)damagedRecovery, characterParams.health);
+
+            var damagedRecoveryVoltage = characterParams.damagedRecoveryVoltage;
+            voltagePower.Value = Mathf.Min(voltagePower.Value + (int)damagedRecoveryVoltage, MaxVoltageValue);
+        }
+
+        private void OnEnemyKilled()
+        {
+            var killedRecovery = characterParams.killRecoveryHealth;
+            health.Value = Mathf.Min(health.Value + (int)killedRecovery, characterParams.health);
+            
+            var killedVoltage = characterParams.killRecoveryVoltage;
+            voltagePower.Value = Mathf.Min(voltagePower.Value + (int)killedVoltage, MaxVoltageValue);
+        }
+
         public void UpdatePosition(Vector3 pos)
         {
             // TODO: 要件に合わせて、方向は限定する
@@ -264,22 +330,23 @@ namespace Feature.Model
             position.Value = pos;
         }
 
-        public void TakeDamage(uint damage)
+        public bool TakeDamage(uint damage)
         {
             health.Value = Mathf.Max((int)(health.Value - damage), 0);
+            return health.Value == 0;
         }
 
         public void AddVoltageSwap()
         {
-            VoltageValue += characterParams.addVoltageSwapValue;
-            VoltageValue = Mathf.Clamp(VoltageValue, MinVoltageValue, MaxVoltageValue);
+            voltagePower.Value += characterParams.addVoltageSwapValue;
+            voltagePower.Value = Mathf.Clamp(voltagePower.Value, MinVoltageValue, MaxVoltageValue);
         }
 
         public int GetVoltageAttackPower()
         {
-            if (VoltageValue >= characterParams.useVoltageAttackValue)
+            if (voltagePower.Value >= characterParams.useVoltageAttackValue)
             {
-                VoltageValue -= characterParams.useVoltageAttackValue;
+                voltagePower.Value -= characterParams.useVoltageAttackValue;
                 return characterParams.attackPower * characterParams.voltageAttackPowerValue;
             }
 

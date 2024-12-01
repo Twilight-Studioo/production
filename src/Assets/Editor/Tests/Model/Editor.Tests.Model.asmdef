@@ -8,6 +8,7 @@
     "Feature.Model",
     "Feature.Common.Parameter",
     "Editor.Tests.Common",
+    "Core.Utilities",
     "UniRx"
   ],
   "includePlatforms": [
