@@ -14,7 +14,7 @@ namespace Feature.Component.Environment
 {
     public class ItemSpawner : MonoBehaviour
     {
-        [SerializeField] private GameObject item; // 複数からランダムに選ぶようにしたい（後々）
+        [SerializeField] private List<GameObject> items;
         [SerializeField] private uint spawnQuantity = 1; // 1度に何個スポーンするか
         [SerializeField] private float spawnDistance = 20.0f; // アイテムをスポーンし始める距離
         [SerializeField] private float respawnTimeSec = 5.0f; // リスポーンするまでの秒数
@@ -27,7 +27,7 @@ namespace Feature.Component.Environment
 
         private void Awake()
         {
-            if (item == null)
+            if (items.Count == 0)
             {
                 Debug.LogWarning("ItemSpawner にアイテムがセットされていません！");
             }
@@ -72,6 +72,11 @@ namespace Feature.Component.Environment
 
             for (var i = 0; i < spawnQuantity; i++)
             {
+                var item = items.RandomElement();
+                if (item == default)
+                {
+                    continue;
+                }
                 ObjectFactory.Instance.CreateObject(item, new(pos.x, pos.y, 0), Quaternion.identity);
             }
 
