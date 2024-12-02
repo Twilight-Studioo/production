@@ -3,6 +3,7 @@ using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.UI;
 using ObjectFactory = Core.Utilities.ObjectFactory;
@@ -30,11 +31,13 @@ namespace Feature.Component.Enemy
         private bool fallAttack = false;
         private GameObject mine;
         private uint health;
+        private float lastDamageTime = 0f;
         [SerializeField] private Slider bossHealthBar;
         [SerializeField] private Animator animator;
 
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
+        [SerializeField] private Collider kickCollider;
         
         private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
         private Vector3 previousPosition;
@@ -77,7 +80,7 @@ namespace Feature.Component.Enemy
         
         private IEnumerator Attack()
         {
-            rnd = Random.Range(1, 7);
+            rnd = Random.Range(6, 7);
             switch (rnd)
             {
                 case 1:
@@ -210,7 +213,7 @@ namespace Feature.Component.Enemy
         {
             Debug.Log("瓦礫攻撃");
             yield return new WaitForSeconds(bossPrams.debrisAttackOccurrenceTime);
-            animator.SetTrigger("Kick");
+            animator.SetTrigger("DebriAttack");
             Instantiate(debrisPrefab,transform.position,Quaternion.identity);
             yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
         }
@@ -230,6 +233,25 @@ namespace Feature.Component.Enemy
             
         }
 
+        /*private void Kick()
+        {
+            kickCollider.OnTriggerEnterAsObservable().Subscribe(other =>
+                {
+                    var damaged = other.gameObject.GetComponent<IDamaged>();
+                    if (damaged != null)
+                    {
+                        damaged.OnDamage(bossPrams.kickDamage, transform.position, transform);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"IDamaged が {other.gameObject.name} に存在しません。");
+                    }
+                })
+                .AddTo(this);
+
+        }*/
+        
+
         private void CurrentDistance()
         {
             playerDistance = DistancePlayer();
@@ -243,12 +265,16 @@ namespace Feature.Component.Enemy
         
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            var imp = (transform.position - attacker.position).normalized;
-            imp.y += 0.3f;
+            var currentTime = Time.time;
             health -= damage;
             animator.SetTrigger("OnDamage");
             UpdateHealth();
-            //animator.ResetTrigger("OnDamage");
+            if (currentTime - lastDamageTime <= bossPrams.kickTriggerTime)
+            {
+                animator.SetTrigger("Kick");
+                //Kick();
+            }
+            lastDamageTime = currentTime;
             return new DamageResult.Damaged(transform);
         }
 

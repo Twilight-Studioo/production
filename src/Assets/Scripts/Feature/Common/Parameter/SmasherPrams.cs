@@ -96,5 +96,11 @@ namespace Feature.Common.Parameter
         
         [Tooltip("地雷のダメージ")]
         public uint mineDamage = 10;
+
+        [Tooltip("キックする連続攻撃の時間")]
+        public float kickTriggerTime = 1.5f;
+        
+        [Tooltip("キックダメージ")]
+        public uint kickDamage = 10;
     }
 }
