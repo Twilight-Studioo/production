@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 7990809426514261438}
   m_Layer: 0
   m_Name: Smasher
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -142,6 +142,7 @@ Transform:
   - {fileID: 8391143088042384219}
   - {fileID: 1474730875639111919}
   - {fileID: 4457603223001244331}
+  - {fileID: 7464421195796111045}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8447855068191790843
@@ -260,11 +261,42 @@ MonoBehaviour:
   onGround: 1
   bossHealthBar: {fileID: 0}
   animator: {fileID: 7727255943852718289}
-  kickCollider: {fileID: 7546683961258684560}
+  kickCollider: {fileID: 7306018456155841237}
   debrisPrefab: {fileID: 1288972277542475340, guid: 9ee9135df19c20d4a867756f8f0f5f47,
     type: 3}
   minePrefab: {fileID: 4968052675775006875, guid: 3a0b54af16b82ee47ad98aa1908ca74f,
     type: 3}
+--- !u!1 &5070997775858505843
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7464421195796111045}
+  m_Layer: 0
+  m_Name: StrikePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7464421195796111045
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5070997775858505843}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.14, y: 1.17, z: -0.37}
+  m_LocalScale: {x: 0.57142836, y: 0.57142854, z: 0.57142836}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3691127161474883186}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6628709985180516270
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,7 +307,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1474730875639111919}
   - component: {fileID: 7546683961258684560}
-  - component: {fileID: 1293068373567581328}
+  - component: {fileID: 7306018456155841237}
+  - component: {fileID: 829879054650323488}
   m_Layer: 0
   m_Name: KickArea
   m_TagString: Untagged
@@ -292,7 +325,7 @@ Transform:
   m_GameObject: {fileID: 6628709985180516270}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.169, z: 0.621}
+  m_LocalPosition: {x: -0, y: 0.266, z: 0.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -321,7 +354,30 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &1293068373567581328
+--- !u!136 &7306018456155841237
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628709985180516270}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &829879054650323488
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

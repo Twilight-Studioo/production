@@ -36,6 +36,7 @@ namespace Feature.Component.Enemy
         private bool kick = false;
         [SerializeField] private Slider bossHealthBar;
         [SerializeField] private Animator animator;
+        [SerializeField] private Transform strikePoint;
 
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
@@ -164,10 +165,10 @@ namespace Feature.Component.Enemy
         private IEnumerator FallAttack()
         {
             Debug.Log("落下攻撃");
+            CurrentDistance();
             yield return new WaitForSeconds(bossPrams.fallAttackOccurrenceTime);
             animator.SetTrigger("Fall");
             fallAttack = true;
-            CurrentDistance();
             if (playerDistance <= bossPrams.fallAttackDistance)
             {
                 StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,positionAtAttack));
@@ -225,7 +226,7 @@ namespace Feature.Component.Enemy
             Debug.Log("地雷発射");
             yield return new WaitForSeconds(bossPrams.mineOccurrenceTime);
             animator.SetTrigger("OnMine");
-            mine = ObjectFactory.Instance.CreateObject(minePrefab, transform.position, Quaternion.identity);
+            mine = ObjectFactory.Instance.CreateObject(minePrefab, strikePoint.transform.position, Quaternion.identity);
             yield return new WaitForSeconds(bossPrams.mineIntervalSec);
         }
         
@@ -245,10 +246,6 @@ namespace Feature.Component.Enemy
                     {
                         damaged.OnDamage(bossPrams.kickDamage, transform.position, transform);  
                         kick = false;
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"IDamaged が {other.gameObject.name} に存在しません。");
                     }
                 })
                 .AddTo(this);
