@@ -91,6 +91,7 @@ namespace Feature.Common.Parameter
         //ボルテージ関連
         [ToggleGroup("ボルテージ"), Tooltip("攻撃時に使うボルテージの量")] public int useVoltageAttackValue = 50;
 
+        [Tooltip("2段階目ボルテージ量")] public int votageTwoAttackValue = 65;
         [Tooltip("1回のスワップで増えるボルテージの量")] public int addVoltageSwapValue = 10;
 
         [Tooltip("ボルテージ使用時の攻撃上昇倍率")] public int voltageAttackPowerValue = 2;

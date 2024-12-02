@@ -13,16 +13,16 @@ namespace Feature.Component
         [SerializeField] private Image fill;
 
 
-        public void UpdateVoltageBar(int voltageValue, int useVoltageAttackValue)
+        public void UpdateVoltageBar(int voltageValue, int useVoltageAttackValue, int votageTwoAttackValue, int maxVoltage)
         {
-            if (voltageValue >= useVoltageAttackValue)
-            {
+            if (voltageValue >= maxVoltage)
+                fill.color = Color.red;
+            else if (voltageValue >= votageTwoAttackValue)
+                fill.color = Color.green;
+            else if (voltageValue >= useVoltageAttackValue)
                 fill.color = Color.yellow;
-            }
             else
-            {
                 fill.color = Color.blue;
-            }
 
             voltageBar.value = voltageValue;
         }
