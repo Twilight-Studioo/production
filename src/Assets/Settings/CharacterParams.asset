@@ -40,10 +40,11 @@ MonoBehaviour:
   resourceRecoveryQuantity: 1
   recoveryStaminaTimeMillis: 10
   useDaggerUseStamina: 20
-  useVoltageAttackValue: 50
+  useVoltageAttackValue: 30
   addVoltageSwapValue: 10
   voltageAttackPowerValue: 2
   maxVoltage: 100
+  damagedRecoveryVoltage: 5
   killRecoveryVoltage: 10
   swappedRecoveryVoltageTimeMillis: 1000
   swappedRecoveryVoltageIntervalMillis: 500
