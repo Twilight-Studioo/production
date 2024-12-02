@@ -5,6 +5,7 @@ using Feature.Interface;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using ObjectFactory = Core.Utilities.ObjectFactory;
 using Random = UnityEngine.Random;
@@ -32,6 +33,7 @@ namespace Feature.Component.Enemy
         private GameObject mine;
         private uint health;
         private float lastDamageTime = 0f;
+        private bool kick = false;
         [SerializeField] private Slider bossHealthBar;
         [SerializeField] private Animator animator;
 
@@ -233,14 +235,16 @@ namespace Feature.Component.Enemy
             
         }
 
-        /*private void Kick()
+        private void Kick()
         {
-            kickCollider.OnTriggerEnterAsObservable().Subscribe(other =>
+            kickCollider.OnTriggerEnterAsObservable().Where(_ => kick == true)
+                .Subscribe(other =>
                 {
                     var damaged = other.gameObject.GetComponent<IDamaged>();
                     if (damaged != null)
                     {
-                        damaged.OnDamage(bossPrams.kickDamage, transform.position, transform);
+                        damaged.OnDamage(bossPrams.kickDamage, transform.position, transform);  
+                        kick = false;
                     }
                     else
                     {
@@ -248,8 +252,7 @@ namespace Feature.Component.Enemy
                     }
                 })
                 .AddTo(this);
-
-        }*/
+        }
         
 
         private void CurrentDistance()
@@ -272,7 +275,8 @@ namespace Feature.Component.Enemy
             if (currentTime - lastDamageTime <= bossPrams.kickTriggerTime)
             {
                 animator.SetTrigger("Kick");
-                //Kick();
+                kick = true;
+                Kick();
             }
             lastDamageTime = currentTime;
             return new DamageResult.Damaged(transform);
@@ -292,7 +296,7 @@ namespace Feature.Component.Enemy
                 }
                 else
                 {
-                    other.gameObject.GetComponent<IDamaged>().OnDamage(0,transform.position,transform);
+                    //other.gameObject.GetComponent<IDamaged>().OnDamage(0,transform.position,transform);
                 }
             }
 
