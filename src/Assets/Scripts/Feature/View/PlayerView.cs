@@ -22,6 +22,7 @@ namespace Feature.View
         [SerializeField] private GameObject katana;
         [SerializeField] private GameObject sheath;
         [SerializeField] private GameObject swappingEffect;
+        [SerializeField] private VisualEffect visualEffect;
         public Transform daggerSpawn;
 
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
@@ -335,7 +336,25 @@ namespace Feature.View
             rb.velocity = Vector3.zero;
             rb.AddForce(force, ForceMode.VelocityChange);
         }
-
+        public void VoltageEffect(int voltageValue, int useVoltageAttackValue, int votageTwoAttackValue, int maxVoltage)
+        {
+            if (voltageValue >= maxVoltage)
+            {
+                visualEffect.SetUInt("Voltage",3);
+            }
+            else if (voltageValue >= votageTwoAttackValue)
+            {
+                visualEffect.SetUInt("Voltage",2);
+            }
+            else if (voltageValue >= useVoltageAttackValue)
+            {
+                visualEffect.SetUInt("Voltage",1);
+            }
+            else
+            {
+                visualEffect.SetUInt("Voltage",0);
+            }
+        }
         public bool IsGrounded() => isGrounded.Value;
 
         public Vector3 GetForward() => right ? Vector3.right : Vector3.left;
