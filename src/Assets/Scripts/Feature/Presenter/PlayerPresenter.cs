@@ -283,14 +283,14 @@ namespace Feature.Presenter
                 var isSpecialAttack = playerModel.VoltagePower.Value >= characterParams.useVoltageAttackValue;
                 playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
                 audioMixerController.PlayOneShotSE(AudioAssetType.Slashing);
-                voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue);
+                voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,characterParams.votageTwoAttackValue,characterParams.maxVoltage);
             }
         }
 
         private void AddVoltageSwap()
         {
             playerModel.AddVoltageSwap();
-            voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue);
+            voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,characterParams.votageTwoAttackValue,characterParams.maxVoltage);
         }
 
         public Transform GetTransform() => playerView.GetTransform();

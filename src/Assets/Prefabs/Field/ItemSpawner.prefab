@@ -48,3 +48,4 @@ MonoBehaviour:
   spawnQuantity: 1
   spawnDistance: 50
   respawnTimeSec: 5
+  spawnPoints: []
