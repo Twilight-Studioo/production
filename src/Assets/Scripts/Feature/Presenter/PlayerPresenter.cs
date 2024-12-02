@@ -284,6 +284,8 @@ namespace Feature.Presenter
                 playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
                 audioMixerController.PlayOneShotSE(AudioAssetType.Slashing);
                 voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,characterParams.votageTwoAttackValue,characterParams.maxVoltage);
+                playerView.VoltageEffect( playerModel.VoltagePower.Value,  characterParams.useVoltageAttackValue, characterParams.votageTwoAttackValue,
+                    characterParams.maxVoltage);
             }
         }
 
@@ -291,6 +293,8 @@ namespace Feature.Presenter
         {
             playerModel.AddVoltageSwap();
             voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,characterParams.votageTwoAttackValue,characterParams.maxVoltage);
+            playerView.VoltageEffect( playerModel.VoltagePower.Value,  characterParams.useVoltageAttackValue, characterParams.votageTwoAttackValue,
+                characterParams.maxVoltage);
         }
 
         public Transform GetTransform() => playerView.GetTransform();

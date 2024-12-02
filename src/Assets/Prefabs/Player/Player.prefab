@@ -113,6 +113,7 @@ MonoBehaviour:
   sheath: {fileID: 2197738302003895485}
   swappingEffect: {fileID: 1526506704024680905, guid: f86d1597207debf479dee12f285f4a3d,
     type: 3}
+  visualEffect: {fileID: 1246268142677691980}
   daggerSpawn: {fileID: 6971175292935995355}
   yDegree: 0
   newYDegree: 284
@@ -2033,7 +2034,7 @@ PrefabInstance:
     - target: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
         type: 3}
       propertyPath: m_PropertySheet.m_Uint.m_Array.Array.data[0].m_Value
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
         type: 3}
@@ -2105,6 +2106,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fcd94c8e567ce8444a7b54bd7547e301, type: 3}
+--- !u!2083052967 &1246268142677691980 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
+    type: 3}
+  m_PrefabInstance: {fileID: 3711499264593795156}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8062294964629520596 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6657132132341995648, guid: fcd94c8e567ce8444a7b54bd7547e301,
