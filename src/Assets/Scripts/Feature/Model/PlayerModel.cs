@@ -308,6 +308,9 @@ namespace Feature.Model
         {
             var damagedRecovery = characterParams.damagedRecoveryHealth;
             health.Value = Mathf.Min(health.Value + (int)damagedRecovery, characterParams.health);
+
+            var damagedRecoveryVoltage = characterParams.damagedRecoveryVoltage;
+            voltagePower.Value = Mathf.Min(voltagePower.Value + (int)damagedRecoveryVoltage, MaxVoltageValue);
         }
 
         private void OnEnemyKilled()
