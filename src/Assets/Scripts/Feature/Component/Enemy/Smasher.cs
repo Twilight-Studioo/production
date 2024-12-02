@@ -158,6 +158,7 @@ namespace Feature.Component.Enemy
         private IEnumerator FallAttack()
         {
             Debug.Log("落下攻撃");
+            animator.SetTrigger("Fall");
             fallAttack = true;
             CurrentDistance();
             if (playerDistance <= bossPrams.fallAttackDistance)
@@ -182,7 +183,7 @@ namespace Feature.Component.Enemy
             bossRb.velocity = Vector3.zero;
             yield return new WaitForSeconds(bossPrams.fallAttackIntervalSec);
             fallAttack = false;
-            StartCoroutine(DebrisAttack());
+            yield return StartCoroutine(DebrisAttack());
         }
 
         private IEnumerator MoveTowardsTarget(float speed,Vector3 target)
@@ -206,6 +207,7 @@ namespace Feature.Component.Enemy
         private IEnumerator DebrisAttack()
         {
             Debug.Log("瓦礫攻撃");
+            animator.SetTrigger("Kick");
             Instantiate(debrisPrefab,transform.position,Quaternion.identity);
             yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
         }

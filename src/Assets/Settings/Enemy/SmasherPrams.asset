@@ -37,7 +37,7 @@ MonoBehaviour:
   debrisDamage: 5
   debrisSpeed: 20
   debrisAttackIntervalSec: 5
-  mineIntervalSec: 5
+  mineIntervalSec: 3
   mineSpeedVertical: 50
   mineSpeedBeside: 25
   mineDamage: 20
