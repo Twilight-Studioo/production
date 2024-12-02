@@ -36,7 +36,8 @@ namespace Feature.Common.Parameter
         private SerializedProperty mineSpeedBeside;
         private SerializedProperty mineDamage;
         private SerializedProperty kickTriggerTime;
-
+        private SerializedProperty kickDamage;
+        
         private void OnEnable()
         {
             health = serializedObject.FindProperty("health");
@@ -70,6 +71,7 @@ namespace Feature.Common.Parameter
             mineSpeedBeside = serializedObject.FindProperty("mineSpeedBeside");
             mineDamage = serializedObject.FindProperty("mineDamage");
             kickTriggerTime = serializedObject.FindProperty("kickTriggerTime");
+            kickDamage = serializedObject.FindProperty("kickDamage");
         }
 
         public override void OnInspectorGUI()
@@ -141,6 +143,7 @@ namespace Feature.Common.Parameter
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("被ダメ", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(kickTriggerTime);
+            EditorGUILayout.PropertyField(kickDamage);
 
             // 更新終了
             serializedObject.ApplyModifiedProperties();

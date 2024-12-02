@@ -82,7 +82,7 @@ namespace Feature.Component.Enemy
         
         private IEnumerator Attack()
         {
-            rnd = Random.Range(6, 7);
+            rnd = Random.Range(1, 7);
             switch (rnd)
             {
                 case 1:
