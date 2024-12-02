@@ -610,11 +610,11 @@ Material:
     - _RefractionColorFromMain: 0
     - _RefractionFresnelPower: 0.5
     - _RefractionStrength: 0.1
-    - _RimApplyTransparency: 1
+    - _RimApplyTransparency: 0
     - _RimBackfaceMask: 1
     - _RimBlendMode: 1
-    - _RimBlur: 0.1
-    - _RimBorder: 0.5
+    - _RimBlur: 0.42
+    - _RimBorder: 0.32
     - _RimDirRange: 0
     - _RimDirStrength: 0
     - _RimEnableLighting: 1
@@ -623,7 +623,7 @@ Material:
     - _RimIndirBorder: 0.985
     - _RimIndirRange: 0
     - _RimMainStrength: 0
-    - _RimNormalStrength: 1
+    - _RimNormalStrength: 0.95
     - _RimShadeBlur: 1
     - _RimShadeBorder: 0.5
     - _RimShadeFresnelPower: 1
@@ -717,7 +717,7 @@ Material:
     - _UsePOM: 0
     - _UseParallax: 0
     - _UseReflection: 1
-    - _UseRim: 0
+    - _UseRim: 1
     - _UseRimShade: 0
     - _UseShadow: 1
     - _VertexLightStrength: 0
@@ -798,7 +798,7 @@ Material:
     - _ReflectionColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectionCubeColor: {r: 0, g: 0, b: 0, a: 1}
     - _RefractionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RimColor: {r: 0.98742133, g: 0.0031048902, b: 0.0031048902, a: 1}
+    - _RimColor: {r: 1.9748427, g: 0.0062097805, b: 0.0062097805, a: 0}
     - _RimIndirColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimShadeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Shadow2ndColor: {r: 0, g: 0, b: 0, a: 0}
