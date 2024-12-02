@@ -27,6 +27,9 @@ namespace Feature.Common.Parameter
 
         [Tooltip("アッパーの高さ")]
         public float upperHeight = 400f;
+        
+        [Tooltip("アッパーの発生時間")] 
+        public float upperOccurrenceTime = 0.5f;
 
         [Tooltip("アッパーのダメージ")]
         public uint upperDamage = 10;
@@ -34,11 +37,23 @@ namespace Feature.Common.Parameter
         [Tooltip("アッパー後の待機時間")]
         public float upperIntervalSec = 0.5f;
 
+        [Tooltip("ジャンプの発生時間")] 
+        public float jumpOccurrenceTime = 0.5f;
+        
+        [Tooltip("ジャンプ後の待機時間")] 
+        public float jumpIntervalSec = 0.5f;
+
         [Tooltip("平手打ちの当たる距離")]
         public float slapDistance = 3f;
         
         [Tooltip("平手打ちのダメージ")]
         public uint slapDamage = 3;
+
+        [Tooltip("平手打ちの発生時間")]
+        public float slapOccurrenceTime = 0.1f;
+        
+        [Tooltip("平手打ち後の待機時間")]
+        public float slapIntervalSec = 0.1f;
 
         [Tooltip("落下攻撃の当たる距離")]
         public float fallAttackDistance = 20f;
@@ -48,6 +63,9 @@ namespace Feature.Common.Parameter
         
         [Tooltip("落下攻撃のダメージ")]
         public uint fallAttackDamage = 10;
+        
+        [Tooltip("落下攻撃の発生時間")]
+        public float fallAttackOccurrenceTime = 0.1f;
         
         [Tooltip("落下攻撃後の待機時間")]
         public float fallAttackIntervalSec = 1f;
@@ -59,10 +77,16 @@ namespace Feature.Common.Parameter
         public float debrisSpeed = 30f;
         
         [Tooltip("瓦礫攻撃後の待機時間")]
+        public float debrisAttackOccurrenceTime = 1f;
+        
+        [Tooltip("瓦礫攻撃後の待機時間")]
         public float debrisAttackIntervalSec = 1f;
         
         [Tooltip("地雷発射後の待機時間")]
-        public uint mineIntervalSec = 10;
+        public float mineOccurrenceTime  = 1f;
+        
+        [Tooltip("地雷発射後の待機時間")]
+        public float mineIntervalSec = 10f;
         
         [Tooltip("地雷発射の速度(縦)")]
         public uint mineSpeedVertical = 50;

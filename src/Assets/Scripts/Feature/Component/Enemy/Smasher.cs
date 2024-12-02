@@ -50,7 +50,6 @@ namespace Feature.Component.Enemy
             bossRb = GetComponent<Rigidbody>();
             health = bossPrams.health;
             UpdateHealth();
-            StartCoroutine(StartTime(3));
             StartCoroutine(Attack());
         }
 
@@ -141,8 +140,9 @@ namespace Feature.Component.Enemy
 
         private IEnumerator Upper()
         {
-            animator.SetTrigger("OnUpper");
             Debug.Log("アッパー");
+            yield return new WaitForSeconds(bossPrams.upperOccurrenceTime);
+            animator.SetTrigger("OnUpper");
             bossRb.AddForce(0,bossPrams.upperHeight,0);
             yield return new WaitForSeconds(bossPrams.upperIntervalSec);
         }
@@ -150,14 +150,16 @@ namespace Feature.Component.Enemy
         private IEnumerator Jump()
         {
             Debug.Log("ジャンプ");
+            yield return new WaitForSeconds(bossPrams.jumpOccurrenceTime);
             animator.SetTrigger("OnJump");
             bossRb.AddForce(0,bossPrams.upperHeight,0);
-            yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+            yield return new WaitForSeconds(bossPrams.jumpIntervalSec);
         }
 
         private IEnumerator FallAttack()
         {
             Debug.Log("落下攻撃");
+            yield return new WaitForSeconds(bossPrams.fallAttackOccurrenceTime);
             animator.SetTrigger("Fall");
             fallAttack = true;
             CurrentDistance();
@@ -207,6 +209,7 @@ namespace Feature.Component.Enemy
         private IEnumerator DebrisAttack()
         {
             Debug.Log("瓦礫攻撃");
+            yield return new WaitForSeconds(bossPrams.debrisAttackOccurrenceTime);
             animator.SetTrigger("Kick");
             Instantiate(debrisPrefab,transform.position,Quaternion.identity);
             yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
@@ -214,16 +217,13 @@ namespace Feature.Component.Enemy
 
         private IEnumerator StrikeMine()
         {
-            animator.SetTrigger("OnMine");
             Debug.Log("地雷発射");
+            yield return new WaitForSeconds(bossPrams.mineOccurrenceTime);
+            animator.SetTrigger("OnMine");
             mine = ObjectFactory.Instance.CreateObject(minePrefab, transform.position, Quaternion.identity);
             yield return new WaitForSeconds(bossPrams.mineIntervalSec);
         }
-
-        private IEnumerator StartTime(float time)
-        {
-            yield return new WaitForSeconds(time);
-        }
+        
 
         private void Slap()
         {
