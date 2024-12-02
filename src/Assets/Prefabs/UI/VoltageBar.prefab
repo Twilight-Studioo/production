@@ -256,6 +256,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   voltageBar: {fileID: 2256357191993288944}
   fill: {fileID: 375716038872412998}
+  voltageGameObject: {fileID: 690427865376889176, guid: e35f659dc96364216acb46f208f83a5b,
+    type: 3}
 --- !u!1 &4049600521319578412
 GameObject:
   m_ObjectHideFlags: 0

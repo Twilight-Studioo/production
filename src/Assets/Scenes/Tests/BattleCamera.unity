@@ -1834,6 +1834,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -3.800003
       objectReference: {fileID: 0}
+    - target: {fileID: 3918240359711819816, guid: ec52b863a8c5442f3bf9a82e85a42e98,
+        type: 3}
+      propertyPath: visualEffect
+      value: 
+      objectReference: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
+        type: 3}
+    - target: {fileID: 3918240359711819816, guid: ec52b863a8c5442f3bf9a82e85a42e98,
+        type: 3}
+      propertyPath: visualEffectGameObject
+      value: 
+      objectReference: {fileID: 665688755906558383, guid: fcd94c8e567ce8444a7b54bd7547e301,
+        type: 3}
     - target: {fileID: 4056644079389105336, guid: ec52b863a8c5442f3bf9a82e85a42e98,
         type: 3}
       propertyPath: m_Name
