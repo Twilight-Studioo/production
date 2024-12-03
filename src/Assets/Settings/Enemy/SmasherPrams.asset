@@ -19,7 +19,7 @@ MonoBehaviour:
   maxHp: 100
   patrolSpeed: 1
   pursuitSpeed: 1.4
-  health: 1000
+  health: 500
   chargeAttackTime: 0.5
   chargeSpeed: 750
   chargeTime: 1.2
@@ -36,7 +36,7 @@ MonoBehaviour:
   slapOccurrenceTime: 0.1
   slapIntervalSec: 0.1
   fallAttackDistance: 15
-  fallSpeed: 100
+  fallSpeed: 80
   fallAttackDamage: 10
   fallAttackOccurrenceTime: 0.1
   fallAttackIntervalSec: 0

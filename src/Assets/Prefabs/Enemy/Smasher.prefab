@@ -136,7 +136,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.888014, y: 1.96, z: 0}
-  m_LocalScale: {x: 1.75, y: 1.75, z: 1.75}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8391143088042384219}
@@ -214,10 +214,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.29
+  m_Height: 1.94
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.34, z: 0}
 --- !u!54 &4289087810486203429
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -261,6 +261,7 @@ MonoBehaviour:
   onGround: 1
   bossHealthBar: {fileID: 0}
   animator: {fileID: 7727255943852718289}
+  strikePoint: {fileID: 7464421195796111045}
   kickCollider: {fileID: 7306018456155841237}
   debrisPrefab: {fileID: 1288972277542475340, guid: 9ee9135df19c20d4a867756f8f0f5f47,
     type: 3}
@@ -291,7 +292,7 @@ Transform:
   m_GameObject: {fileID: 5070997775858505843}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.14, y: 1.17, z: -0.37}
+  m_LocalPosition: {x: -0.14, y: 1.09, z: -0.45}
   m_LocalScale: {x: 0.57142836, y: 0.57142854, z: 0.57142836}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -652,12 +652,6 @@ Transform:
   - {fileID: 1935501546}
   m_Father: {fileID: 213538022}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &622027459 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7464421195796111045, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
-    type: 3}
-  m_PrefabInstance: {fileID: 1005097888}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &629945884 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8204222567533354696, guid: eb24f1183dba74c2386e4891da3440b6,
@@ -827,7 +821,7 @@ PrefabInstance:
     - target: {fileID: 3691127161474883186, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.061
+      value: 4.2
       objectReference: {fileID: 0}
     - target: {fileID: 3691127161474883186, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
@@ -869,11 +863,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7990809426514261438, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
-        type: 3}
-      propertyPath: strikePoint
-      value: 
-      objectReference: {fileID: 622027459}
     - target: {fileID: 7990809426514261438, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: bossHealthBar
@@ -2020,7 +2009,7 @@ PrefabInstance:
     - target: {fileID: 7437453453869855136, guid: a1bb7634d6aec412b97028e350fb9469,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7437453453869855136, guid: a1bb7634d6aec412b97028e350fb9469,
         type: 3}

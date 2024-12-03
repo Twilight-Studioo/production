@@ -16,12 +16,9 @@ namespace Feature.Component.Enemy
     {
         [SerializeField] private SmasherPrams bossPrams;
         public EnemyType EnemyType => EnemyType.Smasher;
-
-        private bool onPlayer = false;
+        
         public bool onGround = true;
         private float xDistance = 0;
-        private float yDistance = 0;
-        private bool canAttack = false;
         private bool hit = false;
         private int rnd;
         private Transform playerTransform;
@@ -30,6 +27,7 @@ namespace Feature.Component.Enemy
         private bool playerRightSide = false;
         private bool chargeAttack = false;
         private bool fallAttack = false;
+        private bool upper = false;
         private GameObject mine;
         private uint health;
         private float lastDamageTime = 0f;
@@ -44,9 +42,6 @@ namespace Feature.Component.Enemy
         
         private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
         private Vector3 previousPosition;
-        
-
-        private bool UpperAttack = false;
 
         [SerializeField] private GameObject debrisPrefab;
         [SerializeField] private GameObject minePrefab;
@@ -83,7 +78,7 @@ namespace Feature.Component.Enemy
         
         private IEnumerator Attack()
         {
-            rnd = Random.Range(1, 7);
+            rnd = Random.Range(1, 8);
             switch (rnd)
             {
                 case 1:
@@ -122,6 +117,11 @@ namespace Feature.Component.Enemy
                 case 6 :
                     yield return StartCoroutine(StrikeMine());
                     break;
+                
+                case 7 :
+                    yield return StartCoroutine(Jump());
+                    yield return new WaitForSeconds(3);
+                    break;
                     
             }
             animator.SetTrigger("ReturnStandby");
@@ -147,10 +147,12 @@ namespace Feature.Component.Enemy
         private IEnumerator Upper()
         {
             Debug.Log("アッパー");
+            upper = true;
             yield return new WaitForSeconds(bossPrams.upperOccurrenceTime);
-            animator.SetTrigger("OnUpper");
             bossRb.AddForce(0,bossPrams.upperHeight,0);
+            animator.SetTrigger("OnUpper");
             yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+            upper = false;
         }
 
         private IEnumerator Jump()
@@ -233,7 +235,7 @@ namespace Feature.Component.Enemy
 
         private void Slap()
         {
-            
+            Debug.Log("ヒラテウチー");
         }
 
         private void Kick()
@@ -290,6 +292,12 @@ namespace Feature.Component.Enemy
                 else if (fallAttack)
                 {
                     other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.fallAttackDamage,transform.position,transform);
+                }
+                else if (upper)
+                {
+                    other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.upperDamage,
+                        new Vector3(other.gameObject.transform.position.x, other.gameObject.transform.position.y - 1.1f,
+                            other.gameObject.transform.position.z), transform);
                 }
                 else
                 {
