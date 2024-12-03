@@ -11,9 +11,6 @@ namespace Feature.Component
 {
     public class DamagedTrigger : MonoBehaviour, ISwappable
     {
-        private static readonly int RimThreshold = Shader.PropertyToID("_RimThreashould");
-        [SerializeField] private float highlightThreshold;
-
 
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
@@ -26,20 +23,11 @@ namespace Feature.Component
 
         private float lastUpdateDirectionTime;
 
-        private Material material;
-
         private float speed = 1.0f;
 
-        private bool Swapped;
+        private bool swapped;
 
         private Transform target;
-        private Renderer targetRenderer;
-
-        private void Awake()
-        {
-            targetRenderer = GetComponent<Renderer>();
-            material = targetRenderer.material;
-        }
 
         private void Update()
         {
@@ -90,22 +78,10 @@ namespace Feature.Component
 
         public void OnInSelectRange()
         {
-            if (material == null)
-            {
-                return;
-            }
-
-            material.SetFloat(RimThreshold, highlightThreshold);
         }
 
         public void OnOutSelectRange()
         {
-            if (material == null)
-            {
-                return;
-            }
-
-            material.SetFloat(RimThreshold, 1);
         }
 
         public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position;
@@ -116,7 +92,7 @@ namespace Feature.Component
         public void OnSwap(Vector2 p)
         {
             transform.position = p;
-            Swapped = true;
+            swapped = true;
         }
 
         public event Action OnHitEvent;
@@ -161,6 +137,6 @@ namespace Feature.Component
             Destroy(gameObject);
         }
 
-        public bool IsSwapped() => Swapped;
+        public bool IsSwapped() => swapped;
     }
 }

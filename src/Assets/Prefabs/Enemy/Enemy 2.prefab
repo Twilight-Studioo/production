@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoPlay: 0
-  bulletPrefab: {fileID: 7359196021201563163, guid: d0e23bcee8f76406db28e20292aa6f84,
+  bulletPrefab: {fileID: 7359196021201563163, guid: 052105eff95385244b406d70ebee8e0f,
     type: 3}
 --- !u!1001 &524503771379390800
 PrefabInstance:
