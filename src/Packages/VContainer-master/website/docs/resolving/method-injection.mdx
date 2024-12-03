@@ -1,0 +1,23 @@
+---
+id: method-injection
+title: Method Injection
+---
+
+If you need to inject dependencies into a type but can't do so with constructors, consider using method injection instead. This is most useful for `MonoBehaviour`s but can be done with any class, including test cases within the [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest).
+
+```csharp
+public class SomeBehaviour : MonoBehaviour
+{
+    float speed;
+
+    [Inject]
+    public void Construct(GameSettings settings)
+    {
+        speed = settings.speed;
+    }
+}
+```
+
+The `[Inject]`-annotated method can have any name and any accessibility level.
+
+For more information about managing `MonoBehaviour`s and `GameObject`s, see [Injecting into MonoBehaviours](gameobject-injection).

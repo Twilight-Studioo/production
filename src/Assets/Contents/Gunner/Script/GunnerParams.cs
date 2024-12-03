@@ -53,4 +53,40 @@ public class EnemyParams : ScriptableObject
 
     [Tooltip("遠距離攻撃のクールダウン時間"), Header("遠距離攻撃のクールダウン時間")]
     public float RangedAttackCooldown = 3f;
+
+    [Tooltip("フライ攻撃の弾薬数"), Header("フライ攻撃の弾薬数")]
+    public int FlyAttackAmmo = 3;
+
+    [Tooltip("特殊攻撃の弾薬数"), Header("特殊攻撃の弾薬数")]
+    public int SpecialAttackAmmo = 3;
+
+    [Tooltip("遠距離攻撃範囲（50）"), Header("遠距離攻撃範囲（50）")]
+    public float OverAttackRange = 50;
+
+    [Tooltip("遠距離範囲（30）"), Header("遠距離範囲（30）")]
+    public int FarDistanceRange = 30;
+
+    [Tooltip("中距離範囲（18）"), Header("中距離範囲（18）")]
+    public int MidDistanceRange = 18;
+
+    [Tooltip("フライ攻撃のクールダウン"), Header("フライ攻撃のクールダウン")]
+    public int FlyAttackColdTime = 18;
+
+    [Tooltip("前方距離"), Header("前方距離")]
+    public float ForwardDistance = 1.5f;
+
+    [Tooltip("弾速"), Header("弾速")]
+    public float BulletSpeed = 1.5f;
+
+    [Tooltip("弾のダメージ"), Header("弾のダメージ")]
+    public uint Damage = 10;
+
+    [Tooltip("弾の寿命"), Header("弾の寿命")]
+    public float BulletLifeTime = 5f;
+
+    [Tooltip("レーザーの寿命"), Header("レーザーの寿命")]
+    public float RayLifeTime = 1f;
+
+    [Tooltip("レーザーの幅"), Header("レーザーの幅")]
+    public float RayW = 0.5f;
 }

@@ -19,7 +19,7 @@ MonoBehaviour:
   DetectionRange: 20
   MaxAmmo: 6
   ReloadTime: 2
-  MoveSpeed: 3.5
+  MoveSpeed: 0.5
   JumpHeight: 8
   SpecialMoveSpeed: 6
   KnockbackDistance: 3
@@ -29,3 +29,15 @@ MonoBehaviour:
   BackAngleThreshold: 90
   MeleeAttackCooldown: 2
   RangedAttackCooldown: 3
+  FlyAttackAmmo: 3
+  SpecialAttackAmmo: 3
+  OverAttackRange: 35
+  FarDistanceRange: 20
+  MidDistanceRange: 10
+  FlyAttackColdTime: 18
+  ForwardDistance: 1.5
+  BulletSpeed: 8
+  Damage: 10
+  BulletLifeTime: 5
+  RayLifeTime: 1000
+  RayW: 1.87
