@@ -20,7 +20,7 @@ namespace Main.Installer
         [SerializeField] private GameObject controlsPrefab;
         [SerializeField] private GameObject titlePrefab;
         [SerializeField] private GameObject gameOverPrefab;
-        
+        [SerializeField] private GameObject stageSelectPrefab;
         [SerializeField] private GameSettings settings;
 
         protected override void Configure(IContainerBuilder builder)
@@ -33,6 +33,7 @@ namespace Main.Installer
                 controlsPrefab,
                 titlePrefab,
                 gameOverPrefab,
+                stageSelectPrefab,
                 this
             ).CheckNull());
 
