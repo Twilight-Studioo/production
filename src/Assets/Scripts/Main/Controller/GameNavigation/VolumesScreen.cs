@@ -1,10 +1,12 @@
 #region
 
 using System;
+using Main.Controller.Save;
 using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 #endregion
 
@@ -23,7 +25,9 @@ namespace Main.Controller.GameNavigation
         [SerializeField] private TextMeshProUGUI seSliderText;
         [SerializeField] private Slider seSlider;
         [SerializeField] private TextMeshProUGUI backText;
-
+        
+        [Inject]
+        private GameSaveManager localSave;
         
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
 
@@ -35,10 +39,13 @@ namespace Main.Controller.GameNavigation
             disposable = currentNavi.Subscribe(OnNaviChanged);
             currentNavi.Value = Navi.Master;
             masterSlider.maxValue = 1;
+            masterSlider.value = localSave.GetMasterVolume();
             masterSlider.minValue = 0;
             bgmSlider.maxValue = 1;
+            bgmSlider.value = localSave.GetBgmVolume();
             bgmSlider.minValue = 0;
             seSlider.maxValue = 1;
+            seSlider.value = localSave.GetSeVolume();
             seSlider.minValue = 0;
         }
 
@@ -74,17 +81,20 @@ namespace Main.Controller.GameNavigation
         
         protected void OnNavigationHorizontal(float value)
         {
-            var changed = value > 0 ? 0.1f : -0.1f;
+            var changed = value > 0 ? 0.05f : -0.05f;
             switch (currentNavi.Value)
             {
                 case Navi.Master:
                     masterSlider.value += changed;
+                    SetMasterVolume(masterSlider.value);
                     break;
                 case Navi.BGM:
                     bgmSlider.value += changed;
+                    SetBgmVolume(bgmSlider.value);
                     break;
                 case Navi.Se:
                     seSlider.value += changed;
+                    SetSeVolume(seSlider.value);
                     break;
             }
         }
@@ -137,6 +147,24 @@ namespace Main.Controller.GameNavigation
                     Controller.PopBackstack();
                     break;
             }
+        }
+        
+        private void SetMasterVolume(float value)
+        {
+            value = Mathf.Clamp(value, 0.0001f, 1.0f);
+            localSave.SetMasterVolume(value);
+        }
+        
+        private void SetBgmVolume(float value)
+        {
+            value = Mathf.Clamp(value, 0.0001f, 1.0f);
+            localSave.SetBgmVolume(value);
+        }
+        
+        private void SetSeVolume(float value)
+        {
+            value = Mathf.Clamp(value, 0.0001f, 1.0f);
+            localSave.SetSeVolume(value);
         }
         
         private enum Navi

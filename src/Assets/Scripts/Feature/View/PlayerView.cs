@@ -8,7 +8,7 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.VFX;
 
 #endregion
 
@@ -21,10 +21,10 @@ namespace Feature.View
         [SerializeField] private GameObject dagger;
         [SerializeField] private GameObject katana;
         [SerializeField] private GameObject sheath;
+        [SerializeField] private GameObject swappingEffect;
+        [SerializeField] private VisualEffect visualEffect;
         public Transform daggerSpawn;
 
-        [SerializeField] private List<AudioClip> slashingSound;
-        [SerializeField] private List<AudioClip> hitSound;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
@@ -33,7 +33,6 @@ namespace Feature.View
         private AnimationWrapper animator;
         private float attackComboCount;
         private float attackCoolTime;
-        private AudioSource audioSource;
         private float comboAngleOffset; // 連続攻撃時の角度変化
         private int comboCount = -1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
@@ -127,19 +126,40 @@ namespace Feature.View
 
         public GameObject GetGameObject() => gameObject;
 
-        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime, AudioSource audioSource)
+        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime)
         {
             this.comboTimeWindow = comboTimeWindow;
             this.comboAngleOffset = comboAngleOffset;
             this.maxComboCount = maxComboCount;
             this.attackCoolTime = attackCoolTime;
-            this.audioSource = audioSource;
             this.maxComboCoolTime = maxComboCoolTime;
         }
 
         public void SetPosition(Vector3 p)
         {
+            // スワップ前の位置を取得
+            var previousPosition = transform.position;
+
             transform.position = p;
+            
+            if (swappingEffect != null)
+            {
+                // 生成
+                var instantiateEffect = ObjectFactory.Instance.CreateObject(
+                    swappingEffect,
+                    transform.position,
+                    Quaternion.identity
+                );
+
+                // VisualEffect コンポーネントを取得
+                var visualEffect = instantiateEffect.GetComponent<VisualEffect>();
+
+                //Target_position更新
+                if (visualEffect != null)
+                {
+                    visualEffect.SetVector3("Target_position_position", new Vector3(previousPosition.x, previousPosition.y, 0));
+                }
+            }
         }
 
         public Transform GetTransform() => transform;
@@ -268,20 +288,14 @@ namespace Feature.View
                     break;
             }
             
-            GameObject effectPrefab = voltage ? slashingEffect[effectIndex] : normalSlash[effectIndex];
+            var effectPrefab = voltage ? slashingEffect[effectIndex] : normalSlash[effectIndex];
 
             var obj = Instantiate(effectPrefab, transform.position + new Vector3(0f, 1f, 0),
                     Quaternion.Euler(effectPrefab.transform.localEulerAngles.x, effectPrefab.transform.localEulerAngles.y, degree));
-            
-            var slashingSoundRandom = Random.Range(0, slashingSound.Count);
-            var selectedSlashingClip = slashingSound[slashingSoundRandom];
-            audioSource.PlayOneShot(selectedSlashingClip);
 
-            var hitSoundRandom = Random.Range(0, hitSound.Count);
-            var selectedHitClip = hitSound[hitSoundRandom];
             var slash = obj.GetComponent<Slash>();
             slash.OnHitEvent += OnHitHandler;
-            slash.SetDamage(damage, selectedHitClip, audioSource);
+            slash.SetDamage(damage);
             
             Destroy(obj, 0.5f);
             animator.SetAttackComboCount(comboCount);
@@ -322,7 +336,25 @@ namespace Feature.View
             rb.velocity = Vector3.zero;
             rb.AddForce(force, ForceMode.VelocityChange);
         }
-
+        public void VoltageEffect(int voltageValue, int useVoltageAttackValue, int votageTwoAttackValue, int maxVoltage)
+        {
+            if (voltageValue >= maxVoltage)
+            {
+                visualEffect.SetUInt("Voltage",3);
+            }
+            else if (voltageValue >= votageTwoAttackValue)
+            {
+                visualEffect.SetUInt("Voltage",2);
+            }
+            else if (voltageValue >= useVoltageAttackValue)
+            {
+                visualEffect.SetUInt("Voltage",1);
+            }
+            else
+            {
+                visualEffect.SetUInt("Voltage",0);
+            }
+        }
         public bool IsGrounded() => isGrounded.Value;
 
         public Vector3 GetForward() => right ? Vector3.right : Vector3.left;

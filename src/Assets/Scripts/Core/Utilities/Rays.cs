@@ -17,6 +17,10 @@ namespace Core.Utilities
         public static RaycastHit[] GetBoxCastAll(this Transform transform, Vector3 halfExtents, Vector3 direction,
             float maxDistance, int capacity = 5, LayerMask layerMask = default)
         {
+            if (layerMask == default)
+            {
+                layerMask = Physics.DefaultRaycastLayers;
+            }
             var results = new RaycastHit[capacity];
             Physics.BoxCastNonAlloc(transform.position, halfExtents, direction, results, Quaternion.identity,
                 maxDistance, layerMask);

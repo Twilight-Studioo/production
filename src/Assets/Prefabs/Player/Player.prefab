@@ -111,15 +111,10 @@ MonoBehaviour:
   dagger: {fileID: 3452286736134199389, guid: eeeb33f97828b4fa2a32a3bc8d284a3d, type: 3}
   katana: {fileID: 2091384818344206453}
   sheath: {fileID: 2197738302003895485}
+  swappingEffect: {fileID: 1526506704024680905, guid: f86d1597207debf479dee12f285f4a3d,
+    type: 3}
+  visualEffect: {fileID: 1246268142677691980}
   daggerSpawn: {fileID: 6971175292935995355}
-  slashingSound:
-  - {fileID: 8300000, guid: a7abe8d111dc8af4e9fa4d8673ddc8a6, type: 3}
-  - {fileID: 8300000, guid: aa63c2543e584874fab20a22e8328acf, type: 3}
-  - {fileID: 8300000, guid: ce5413244d8a15d43836d0e02279a618, type: 3}
-  hitSound:
-  - {fileID: 8300000, guid: 00f051125a9715c44b509b0393b698ad, type: 3}
-  - {fileID: 8300000, guid: 8f23cbbf541deae40b2d8a8df0361501, type: 3}
-  - {fileID: 8300000, guid: d38b3911d0a83144e86ca595b3c4ce33, type: 3}
   yDegree: 0
   newYDegree: 284
 --- !u!1 &1659875179376426182
@@ -133,7 +128,7 @@ GameObject:
   - component: {fileID: 6971175292935995355}
   m_Layer: 7
   m_Name: daggerSpawn
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -197,7 +192,7 @@ GameObject:
   - component: {fileID: 4718312777403831573}
   m_Layer: 7
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1647,6 +1642,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 1210925894218255225, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
       propertyPath: m_Layer
@@ -2006,6 +2006,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 665688755906558383, guid: fcd94c8e567ce8444a7b54bd7547e301,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
         type: 3}
       propertyPath: m_PropertySheet.m_Uint.m_Array.Array.size
@@ -2029,7 +2034,7 @@ PrefabInstance:
     - target: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
         type: 3}
       propertyPath: m_PropertySheet.m_Uint.m_Array.Array.data[0].m_Value
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
         type: 3}
@@ -2101,6 +2106,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fcd94c8e567ce8444a7b54bd7547e301, type: 3}
+--- !u!2083052967 &1246268142677691980 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 2506893861646505496, guid: fcd94c8e567ce8444a7b54bd7547e301,
+    type: 3}
+  m_PrefabInstance: {fileID: 3711499264593795156}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8062294964629520596 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6657132132341995648, guid: fcd94c8e567ce8444a7b54bd7547e301,
