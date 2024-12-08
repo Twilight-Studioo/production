@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 
 namespace Feature.Common.Parameter
 {
@@ -147,3 +148,4 @@ namespace Feature.Common.Parameter
         }
     }
 }
+#endif
