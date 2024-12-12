@@ -37,6 +37,9 @@ namespace Feature.Common.Parameter
         private SerializedProperty mineDamage;
         private SerializedProperty kickTriggerTime;
         private SerializedProperty kickDamage;
+        private SerializedProperty kickbackHalf;
+        private SerializedProperty kickbackOneThird;
+        private SerializedProperty kickbackTenth;
         
         private void OnEnable()
         {
@@ -72,6 +75,9 @@ namespace Feature.Common.Parameter
             mineDamage = serializedObject.FindProperty("mineDamage");
             kickTriggerTime = serializedObject.FindProperty("kickTriggerTime");
             kickDamage = serializedObject.FindProperty("kickDamage");
+            kickbackHalf = serializedObject.FindProperty("kickbackHalf");
+            kickbackOneThird = serializedObject.FindProperty("kickbackOneThird");
+            kickbackTenth = serializedObject.FindProperty("kickbackTenth");
         }
 
         public override void OnInspectorGUI()
@@ -144,6 +150,9 @@ namespace Feature.Common.Parameter
             EditorGUILayout.LabelField("被ダメ", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(kickTriggerTime);
             EditorGUILayout.PropertyField(kickDamage);
+            EditorGUILayout.PropertyField(kickbackHalf);
+            EditorGUILayout.PropertyField(kickbackOneThird);
+            EditorGUILayout.PropertyField(kickbackTenth);
 
             // 更新終了
             serializedObject.ApplyModifiedProperties();

@@ -5,7 +5,6 @@ using Feature.Interface;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 using ObjectFactory = Core.Utilities.ObjectFactory;
 using Random = UnityEngine.Random;
@@ -32,6 +31,7 @@ namespace Feature.Component.Enemy
         private uint health;
         private float lastDamageTime = 0f;
         private bool kick = false;
+        private bool slap = false;
         [SerializeField] private Slider bossHealthBar;
         [SerializeField] private Animator animator;
         [SerializeField] private Transform strikePoint;
@@ -39,6 +39,7 @@ namespace Feature.Component.Enemy
         private float playerDistance = 0;
         private Vector3 positionAtAttack;
         [SerializeField] private Collider kickCollider;
+        [SerializeField] private Collider slapCollider;
         
         private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
         private Vector3 previousPosition;
@@ -78,14 +79,22 @@ namespace Feature.Component.Enemy
         
         private IEnumerator Attack()
         {
-            rnd = Random.Range(1, 8);
+            rnd = Random.Range(7, 8);
             switch (rnd)
             {
                 case 1:
                     Debug.Log("111");
                     yield return StartCoroutine(ChargeAttack());
                     yield return StartCoroutine(Upper());
-                    yield return StartCoroutine(FallAttack());
+                    if (hit)
+                    {
+                        yield return StartCoroutine(Slap());
+                        hit = false;
+                    }
+                    else
+                    {
+                        yield return StartCoroutine(FallAttack());
+                    }
                     break;
                     
                 case 2 :
@@ -119,8 +128,17 @@ namespace Feature.Component.Enemy
                     break;
                 
                 case 7 :
-                    yield return StartCoroutine(Jump());
-                    yield return new WaitForSeconds(3);
+                    yield return StartCoroutine(Upper());
+                    if (hit)
+                    {
+                        yield return StartCoroutine(Slap());
+                        hit = false;
+                    }
+                    else
+                    {
+                        yield return StartCoroutine(FallAttack());
+                    }
+                    yield return new WaitForSeconds(5); 
                     break;
                     
             }
@@ -147,12 +165,25 @@ namespace Feature.Component.Enemy
         private IEnumerator Upper()
         {
             Debug.Log("アッパー");
-            upper = true;
             yield return new WaitForSeconds(bossPrams.upperOccurrenceTime);
+            upper = true;
+            kickCollider.OnTriggerEnterAsObservable().Where(_ => upper == true)
+                .Subscribe(other =>
+                {
+                    var damaged = other.gameObject.GetComponent<IDamaged>();
+                    if (damaged != null)
+                    {
+                        damaged.OnDamage(bossPrams.upperDamage,
+                            new Vector3(other.gameObject.transform.position.x, other.gameObject.transform.position.y - 1.1f,
+                                other.gameObject.transform.position.z), transform);
+                        upper = false;
+                        hit = true;
+                    }
+                })
+                .AddTo(this);
             bossRb.AddForce(0,bossPrams.upperHeight,0);
             animator.SetTrigger("OnUpper");
             yield return new WaitForSeconds(bossPrams.upperIntervalSec);
-            upper = false;
         }
 
         private IEnumerator Jump()
@@ -233,9 +264,24 @@ namespace Feature.Component.Enemy
         }
         
 
-        private void Slap()
+        private IEnumerator Slap()
         {
             Debug.Log("ヒラテウチー");
+            yield return new WaitForSeconds(bossPrams.slapOccurrenceTime);
+            animator.SetTrigger("OnSlap");
+            slap = true;
+            slapCollider.OnTriggerEnterAsObservable().Where(_ => slap == true)
+                .Subscribe(other =>
+                {
+                    var damaged = other.gameObject.GetComponent<IDamaged>();
+                    if (damaged != null)
+                    {
+                        damaged.OnDamage(bossPrams.slapDamage, transform.position, transform);  
+                        slap = false;
+                    }
+                })
+                .AddTo(this);
+            yield return new WaitForSeconds(bossPrams.slapIntervalSec);
         }
 
         private void Kick()
@@ -269,6 +315,18 @@ namespace Feature.Component.Enemy
         {
             var currentTime = Time.time;
             health -= damage;
+            if (health < bossPrams.health/2)
+            {
+                bossRb.AddRelativeForce(bossPrams.kickbackHalf*Vector3.back);
+            }
+            else if(health < bossPrams.health/3)
+            {
+                bossRb.AddRelativeForce(bossPrams.kickbackOneThird*Vector3.back);
+            }
+            else if (health < bossPrams.health / 10)
+            {
+                bossRb.AddRelativeForce(bossPrams.kickbackTenth*Vector3.back);
+            }
             animator.SetTrigger("OnDamage");
             UpdateHealth();
             if (currentTime - lastDamageTime <= bossPrams.kickTriggerTime)
@@ -293,12 +351,6 @@ namespace Feature.Component.Enemy
                 {
                     other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.fallAttackDamage,transform.position,transform);
                 }
-                else if (upper)
-                {
-                    other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.upperDamage,
-                        new Vector3(other.gameObject.transform.position.x, other.gameObject.transform.position.y - 1.1f,
-                            other.gameObject.transform.position.z), transform);
-                }
                 else
                 {
                     //other.gameObject.GetComponent<IDamaged>().OnDamage(0,transform.position,transform);
@@ -313,11 +365,6 @@ namespace Feature.Component.Enemy
 
         private void OnCollisionExit(Collision other)
         {
-            if (other.gameObject.CompareTag("Player"))
-            {
-                hit = false;
-            }
-            
             if (other.gameObject.CompareTag("Ground"))
             {
                 onGround = false;
