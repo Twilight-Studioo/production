@@ -282,6 +282,8 @@ namespace Feature.Component.Enemy
                 })
                 .AddTo(this);
             yield return new WaitForSeconds(bossPrams.slapIntervalSec);
+            yield return new WaitUntil(() => onGround == true);
+            animator.SetTrigger("OnGround");
         }
 
         private void Kick()
