@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Codice.Client.BaseCommands;
 using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
@@ -33,11 +34,16 @@ namespace Feature.Component.Enemy
 
         private Transform playerTransform;
 
+        private Animator animator;
+
+        private bool isGrounded;
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             rb = GetComponent<Rigidbody>();
             position.Value = transform.position;
+            animator = GetComponentInChildren<Animator>();
         }
 
         private void Update()
@@ -50,7 +56,23 @@ namespace Feature.Component.Enemy
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy1;
 
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
+            {
+                isGrounded = true;
+                animator.SetBool("IsFalling", false);
+            }
+        }
 
+        private void OnCollisionExit(Collision other)
+        {
+            if (other.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
+            {
+                isGrounded = false;
+                animator.SetBool("IsFalling", true);
+            }
+        }
         public void FlowCancel()
         {
             FlowStop();
@@ -149,6 +171,12 @@ namespace Feature.Component.Enemy
                 .Param("Target", enemyParams.pursuitDistance)
                 .Param("IsClose", false)
                 .Param("Object", playerTransform);
+        
+        private TriggerRef LostSightTrigger() =>
+            Trigger("Distance")
+                .Param("Target", enemyParams.foundDistance)
+                .Param("IsClose", false)
+                .Param("Object", playerTransform);
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
@@ -176,6 +204,8 @@ namespace Feature.Component.Enemy
                 var distance = Vector3.Distance(playerTransform.position, transform.position);
                 if (enemyParams.rushStartDistance > distance)
                 {
+                    animator.Play("attack");
+                    animator.Update(0);
                     yield return Attack();
                 }
 
@@ -193,11 +223,16 @@ namespace Feature.Component.Enemy
                         )
                         .Build();
                 }
+                else
+                {
+                    animator.Play("miss");
+                    yield return Wait(2.0f);
+                }
             }
         }
 
         private IEnumerator Attack()
-        {
+        { 
             onHitRushAttack = TakeDamage;
             agent.ResetPath();
             yield return Wait(enemyParams.rushBeforeDelay);

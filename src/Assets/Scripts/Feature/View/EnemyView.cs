@@ -1,4 +1,4 @@
-#region
+                                                                                                                                                                        #region
 
 using System;
 using Core.Utilities.Health;
@@ -13,7 +13,6 @@ namespace Feature.View
     public class EnemyView : MonoBehaviour, IHealthBar, IEnemy, IDamaged
     {
         private IEnemyAgent agent;
-
         public EnemyType EnemyType => agent.EnemyType;
 
         public event Action OnDamageEvent;

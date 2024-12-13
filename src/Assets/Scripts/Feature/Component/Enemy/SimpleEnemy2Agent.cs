@@ -36,18 +36,20 @@ namespace Feature.Component.Enemy
         private Transform playerTransform;
         private List<Vector3> points;
 
+        private Animator animator;
+        public bool isGrounded;
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             rb = GetComponent<Rigidbody>();
             position.Value = transform.position;
+            animator = GetComponentInChildren<Animator>();
         }
 
         private void Update()
         {
             position.Value = transform.position;
         }
-
         public Action RequireDestroy { set; get; }
 
         public GetHealth OnGetHealth { get; set; }
@@ -120,6 +122,12 @@ namespace Feature.Component.Enemy
                 .Param("Target", enemyParams.shootDistance)
                 .Param("IsClose", true)
                 .Param("Object", playerTransform);
+        
+        private TriggerRef LostSightTrigger() =>
+            Trigger("Distance")
+                .Param("Target", enemyParams.foundDistance)
+                .Param("IsClose", false)
+                .Param("Object", playerTransform);
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
@@ -159,7 +167,7 @@ namespace Feature.Component.Enemy
                         .Build();
                     canBullet = true;
                 }
-                else
+                else if((enemyParams.foundDistance > distance))
                 {
                     yield return Action("PointsAIMoveTo")
                         .Param("Points", points)
@@ -170,11 +178,18 @@ namespace Feature.Component.Enemy
                         )
                         .Build();
                 }
+                else
+                {
+                    // プレイヤーを見失った場合の処理
+                    animator.Play("miss");
+                    yield return Wait(2.0f);
+                }
             }
         }
 
         private IEnumerator Attack()
         {
+            animator.Play("attackB");
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
@@ -224,6 +239,23 @@ namespace Feature.Component.Enemy
         {
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
+        }
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
+            {
+                isGrounded = true;
+                animator.SetBool("IsFalling", false);
+            }
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            if (other.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
+            {
+                isGrounded = false;
+                animator.SetBool("IsFalling", true);
+            }
         }
     }
 }
