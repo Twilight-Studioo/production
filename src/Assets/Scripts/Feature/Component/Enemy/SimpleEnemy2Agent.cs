@@ -37,7 +37,6 @@ namespace Feature.Component.Enemy
         private List<Vector3> points;
 
         private Animator animator;
-        public bool isGrounded;
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -122,12 +121,6 @@ namespace Feature.Component.Enemy
                 .Param("Target", enemyParams.shootDistance)
                 .Param("IsClose", true)
                 .Param("Object", playerTransform);
-        
-        private TriggerRef LostSightTrigger() =>
-            Trigger("Distance")
-                .Param("Target", enemyParams.foundDistance)
-                .Param("IsClose", false)
-                .Param("Object", playerTransform);
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
@@ -180,9 +173,8 @@ namespace Feature.Component.Enemy
                 }
                 else
                 {
-                    // プレイヤーを見失った場合の処理
                     animator.Play("miss");
-                    yield return Wait(2.0f);
+                    yield return Wait(5.0f);
                 }
             }
         }
@@ -239,23 +231,6 @@ namespace Feature.Component.Enemy
         {
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
-        }
-        private void OnCollisionEnter(Collision other)
-        {
-            if (other.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
-            {
-                isGrounded = true;
-                animator.SetBool("IsFalling", false);
-            }
-        }
-
-        private void OnCollisionExit(Collision other)
-        {
-            if (other.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
-            {
-                isGrounded = false;
-                animator.SetBool("IsFalling", true);
-            }
         }
     }
 }

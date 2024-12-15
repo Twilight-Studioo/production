@@ -36,8 +36,6 @@ namespace Feature.Component.Enemy
 
         private Animator animator;
 
-        private bool isGrounded;
-
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -55,24 +53,7 @@ namespace Feature.Component.Enemy
 
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy1;
-
-        private void OnCollisionEnter(Collision other)
-        {
-            if (other.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
-            {
-                isGrounded = true;
-                animator.SetBool("IsFalling", false);
-            }
-        }
-
-        private void OnCollisionExit(Collision other)
-        {
-            if (other.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
-            {
-                isGrounded = false;
-                animator.SetBool("IsFalling", true);
-            }
-        }
+        
         public void FlowCancel()
         {
             FlowStop();
@@ -171,12 +152,6 @@ namespace Feature.Component.Enemy
                 .Param("Target", enemyParams.pursuitDistance)
                 .Param("IsClose", false)
                 .Param("Object", playerTransform);
-        
-        private TriggerRef LostSightTrigger() =>
-            Trigger("Distance")
-                .Param("Target", enemyParams.foundDistance)
-                .Param("IsClose", false)
-                .Param("Object", playerTransform);
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
@@ -226,7 +201,7 @@ namespace Feature.Component.Enemy
                 else
                 {
                     animator.Play("miss");
-                    yield return Wait(2.0f);
+                    yield return Wait(5.0f);
                 }
             }
         }
