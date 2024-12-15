@@ -55,11 +55,11 @@ namespace Feature.Component
                 other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
                 this.gameObject.GetComponent<ISwappable>().Delete();
             }
-            else if(other.gameObject.CompareTag("Enemy"))
-            {
-                other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
-                this.gameObject.GetComponent<ISwappable>().Delete();
-            }
+            // else if(other.gameObject.CompareTag("Enemy"))
+            // {
+            //     other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
+            //     this.gameObject.GetComponent<ISwappable>().Delete();
+            // }
 
             if (other.gameObject.CompareTag("Ground"))
             {

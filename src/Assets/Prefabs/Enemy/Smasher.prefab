@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2022946376560845435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3913916013528945277}
+  m_Layer: 0
+  m_Name: SpownPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3913916013528945277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022946376560845435}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.531}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3691127161474883186}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3495553469206181156
 GameObject:
   m_ObjectHideFlags: 0
@@ -38,6 +69,7 @@ Transform:
   - {fileID: 3989800014555817018}
   - {fileID: 4457603223001244331}
   - {fileID: 7464421195796111045}
+  - {fileID: 3913916013528945277}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8447855068191790843
@@ -158,7 +190,8 @@ MonoBehaviour:
   animator: {fileID: 7727255943852718289}
   strikePoint: {fileID: 7464421195796111045}
   kickCollider: {fileID: 7306018456155841237}
-  slapCollider: {fileID: 0}
+  slapCollider: {fileID: 3316023136784049740}
+  spawnPoint: {fileID: 2022946376560845435}
   debrisPrefab: {fileID: 1288972277542475340, guid: 9ee9135df19c20d4a867756f8f0f5f47,
     type: 3}
   minePrefab: {fileID: 4968052675775006875, guid: 3a0b54af16b82ee47ad98aa1908ca74f,
@@ -222,7 +255,7 @@ Transform:
   m_GameObject: {fileID: 6628709985180516270}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.266, z: 0.52}
+  m_LocalPosition: {x: -0, y: 0.101, z: 0.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

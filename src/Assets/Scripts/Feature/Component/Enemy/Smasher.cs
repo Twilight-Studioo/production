@@ -40,6 +40,7 @@ namespace Feature.Component.Enemy
         private Vector3 positionAtAttack;
         [SerializeField] private Collider kickCollider;
         [SerializeField] private Collider slapCollider;
+        [SerializeField] private GameObject spawnPoint;
         
         private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
         private Vector3 previousPosition;
@@ -79,7 +80,7 @@ namespace Feature.Component.Enemy
         
         private IEnumerator Attack()
         {
-            rnd = Random.Range(7, 8);
+            rnd = Random.Range(1, 8);
             switch (rnd)
             {
                 case 1:
@@ -150,9 +151,9 @@ namespace Feature.Component.Enemy
         private IEnumerator ChargeAttack()
         {
             Debug.Log("突進");
-            animator.SetTrigger("OnForwardattack");
             chargeAttack = true;
             yield return new WaitForSeconds(bossPrams.chargeTime);
+            animator.SetTrigger("OnForwardattack");
             CurrentDistance();
             Debug.Log(playerDistance);
             bossRb.AddRelativeForce(bossPrams.chargeSpeed*Vector3.forward);
@@ -189,8 +190,8 @@ namespace Feature.Component.Enemy
         private IEnumerator Jump()
         {
             Debug.Log("ジャンプ");
-            yield return new WaitForSeconds(bossPrams.jumpOccurrenceTime);
             animator.SetTrigger("OnJump");
+            yield return new WaitForSeconds(bossPrams.jumpOccurrenceTime);
             bossRb.AddForce(0,bossPrams.upperHeight,0);
             yield return new WaitForSeconds(bossPrams.jumpIntervalSec);
         }
@@ -250,7 +251,7 @@ namespace Feature.Component.Enemy
             Debug.Log("瓦礫攻撃");
             yield return new WaitForSeconds(bossPrams.debrisAttackOccurrenceTime);
             animator.SetTrigger("DebriAttack");
-            Instantiate(debrisPrefab,transform.position,Quaternion.identity);
+            Instantiate(debrisPrefab,spawnPoint.transform.position,Quaternion.identity);
             yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
         }
 
@@ -262,7 +263,6 @@ namespace Feature.Component.Enemy
             mine = ObjectFactory.Instance.CreateObject(minePrefab, strikePoint.transform.position, Quaternion.identity);
             yield return new WaitForSeconds(bossPrams.mineIntervalSec);
         }
-        
 
         private IEnumerator Slap()
         {
