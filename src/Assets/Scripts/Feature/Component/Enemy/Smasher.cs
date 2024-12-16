@@ -28,6 +28,7 @@ namespace Feature.Component.Enemy
         private bool fallAttack = false;
         private bool upper = false;
         private GameObject mine;
+        private GameObject debris;
         private uint health;
         private float lastDamageTime = 0f;
         private bool kick = false;
@@ -80,7 +81,7 @@ namespace Feature.Component.Enemy
         
         private IEnumerator Attack()
         {
-            rnd = Random.Range(1, 8);
+            rnd = Random.Range(7, 8);
             switch (rnd)
             {
                 case 1:
@@ -174,17 +175,21 @@ namespace Feature.Component.Enemy
                     var damaged = other.gameObject.GetComponent<IDamaged>();
                     if (damaged != null)
                     {
-                        damaged.OnDamage(bossPrams.upperDamage,
-                            new Vector3(other.gameObject.transform.position.x, other.gameObject.transform.position.y - 1.1f,
-                                other.gameObject.transform.position.z), transform);
-                        upper = false;
+                        var hitPoint = new Vector3(other.gameObject.transform.position.x,
+                            other.gameObject.transform.position.y - 5f,
+                            other.gameObject.transform.position.z);
+                        damaged.OnDamage(bossPrams.upperDamage,hitPoint, transform);
+                        other.gameObject.GetComponent<Rigidbody>().AddForce(0, bossPrams.upperHeight, 0);
                         hit = true;
+                        upper = false;
+                        Debug.Log("Upper Hit!!");
                     }
                 })
                 .AddTo(this);
-            bossRb.AddForce(0,bossPrams.upperHeight,0);
             animator.SetTrigger("OnUpper");
+            bossRb.AddForce(0,bossPrams.upperHeight,0);
             yield return new WaitForSeconds(bossPrams.upperIntervalSec);
+            upper = false;
         }
 
         private IEnumerator Jump()
@@ -251,7 +256,10 @@ namespace Feature.Component.Enemy
             Debug.Log("瓦礫攻撃");
             yield return new WaitForSeconds(bossPrams.debrisAttackOccurrenceTime);
             animator.SetTrigger("DebriAttack");
-            Instantiate(debrisPrefab,spawnPoint.transform.position,Quaternion.identity);
+            yield return new WaitForSeconds(0.2f);
+            Instantiate(debrisPrefab, spawnPoint.transform.position, Quaternion.identity);
+            debris = ObjectFactory.Instance.CreateObject(debrisPrefab,spawnPoint.transform.position,Quaternion.identity);
+            debris.GetComponent<Debris>().Kick();
             yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
         }
 
