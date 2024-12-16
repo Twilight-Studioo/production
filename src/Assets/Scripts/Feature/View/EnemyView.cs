@@ -16,7 +16,7 @@ namespace Feature.View
 
         public EnemyType EnemyType => agent.EnemyType;
 
-        public event Action OnDamageEvent;
+        public event DamageHandler<uint, Vector3> OnDamageEvent;
 
         public event Action OnTakeDamageEvent;
 
@@ -31,8 +31,9 @@ namespace Feature.View
 
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            OnDamageEvent?.Invoke();
+            OnDamageEvent?.Invoke(damage, attacker.position);
             CurrentHealth -= damage;
+            Debug.Log($"CurrentHealth {CurrentHealth}");
             if (CurrentHealth <= 0)
             {
                 // delete 
