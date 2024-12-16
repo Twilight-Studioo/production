@@ -179,8 +179,6 @@ namespace Feature.Component.Enemy
                 var distance = Vector3.Distance(playerTransform.position, transform.position);
                 if (enemyParams.rushStartDistance > distance)
                 {
-                    animator.Play("attack");
-                    animator.Update(0);
                     yield return Attack();
                 }
 
@@ -221,15 +219,21 @@ namespace Feature.Component.Enemy
 
         private void TakeDamage()
         {
+            
             var player = ObjectFactory.Instance.FindPlayer();
             if (player == null)
             {
                 return;
-            }
-
+            } 
+            animator.Play("attackA");
             var view = player.GetComponent<IDamaged>();
             view.OnDamage(enemyParams.damage, transform.position, transform);
             OnTakeDamageEvent?.Invoke();
+        }
+
+        public void DestroyEnemy()
+        {
+            animator.Play("lose");
         }
     }
 }

@@ -238,5 +238,10 @@ namespace Feature.Component.Enemy
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
         }
+
+        public void DestroyEnemy()
+        {
+            
+        }
     }
 }
