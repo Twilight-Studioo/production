@@ -8,6 +8,7 @@ using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Presenter;
 using UnityEngine;
+using VContainer;
 
 #endregion
 
@@ -16,6 +17,8 @@ namespace Main.Factory
     public class EnemyFactory : MonoBehaviour
     {
         [SerializeField] private EnemiesSetting settings;
+        
+        [Inject] private DamageEffectFactory damageEffectFactory;
 
         private readonly IObjectUtil objectUtil = new ObjectUtil();
 
@@ -25,6 +28,7 @@ namespace Main.Factory
             {
                 throw new("Settings is not set");
             }
+            damageEffectFactory.CheckNull();
 
             settings.SettingValidate();
 
@@ -49,6 +53,13 @@ namespace Main.Factory
             var presenter = new EnemyPresenter(enemyComponent, agent, start.GetParam ?? enemyRef.parameters);
             OnAddField?.Invoke(presenter);
             enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);
+            enemyComponent.OnDamageEvent += (damage, hitPoint) =>
+            {
+                var rotation = Quaternion.LookRotation(enemy.transform.position - hitPoint);
+                Debug.Log($"rotation {rotation}");
+                damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.Enemy);
+                return new DamageResult.Damaged(enemy.transform);
+            };
             presenter.Execute(start.Points);
             return enemyComponent;
         }

@@ -5,6 +5,7 @@ using Core.Utilities;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Component;
+using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Model;
 using Feature.View;
@@ -33,6 +34,7 @@ namespace Feature.Presenter
         private readonly VoltageBar voltageBar;
         
         private readonly IAudioMixerController audioMixerController;
+        private readonly DamageEffectFactory damageEffectFactory;
 
         private bool isGameOver;
         private IPlayerView playerView;
@@ -45,7 +47,8 @@ namespace Feature.Presenter
             GameUIView ui,
             VolumeController volumeController,
             IEndFieldController endFieldController,
-            IAudioMixerController audioMixerController
+            IAudioMixerController audioMixerController,
+            DamageEffectFactory damageEffectFactory
         )
         {
             playerModel = model;
@@ -55,6 +58,7 @@ namespace Feature.Presenter
             this.voltageBar = voltageBar;
             this.endFieldController = endFieldController;
             this.audioMixerController = audioMixerController.CheckNull();
+            this.damageEffectFactory = damageEffectFactory.CheckNull();
         }
 
         public void Dispose()
@@ -67,8 +71,11 @@ namespace Feature.Presenter
         {
             playerView = view;
 
-            playerView.OnDamageEvent += d =>
+            playerView.OnDamageEvent += (d, hit) =>
             {
+                // pos to hit point
+                var rotation = Quaternion.LookRotation(playerView.GetTransform().position - hit);
+                damageEffectFactory.PlayEffectAtPosition(playerView.GetTransform().position, rotation, DamageEffectFactory.Type.Player);
                 if (playerModel.TakeDamage(d))
                 {
                     return new DamageResult.Killed(playerView.GetTransform());
