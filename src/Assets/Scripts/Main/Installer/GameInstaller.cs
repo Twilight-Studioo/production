@@ -32,6 +32,7 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<TargetGroupManager>();
             builder.RegisterComponentInHierarchy<EnemyFactory>();
             builder.RegisterComponentInHierarchy<SwapEffectFactory>();
+            builder.RegisterComponentInHierarchy<DamageEffectFactory>();
             builder.RegisterComponentInHierarchy<GameUIView>();
             builder.RegisterComponentInHierarchy<VoltageBar>();
             builder.RegisterComponentInHierarchy<SelectorEffect>();
