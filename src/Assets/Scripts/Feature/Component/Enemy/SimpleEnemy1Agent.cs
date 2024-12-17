@@ -14,6 +14,7 @@ using Feature.Interface;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.UI;
 
 #endregion
 
@@ -35,6 +36,8 @@ namespace Feature.Component.Enemy
         private Transform playerTransform;
 
         private Animator animator;
+
+        private bool loseAnimation = false;
 
         private void Awake()
         {
@@ -224,15 +227,22 @@ namespace Feature.Component.Enemy
             if (player == null)
             {
                 return;
-            } 
-            animator.Play("attackA");
-            var view = player.GetComponent<IDamaged>();
-            view.OnDamage(enemyParams.damage, transform.position, transform);
-            OnTakeDamageEvent?.Invoke();
+            }
+
+            if (!loseAnimation)
+            {
+                animator.Play("attackA");
+                var view = player.GetComponent<IDamaged>();
+                view.OnDamage(enemyParams.damage, transform.position, transform);
+                OnTakeDamageEvent?.Invoke();
+            }
+
         }
 
         public void DestroyEnemy()
         {
+            //Debug.Log("lose");
+            loseAnimation = true;
             animator.Play("lose");
         }
     }

@@ -37,6 +37,7 @@ namespace Feature.Component.Enemy
         private List<Vector3> points;
 
         private Animator animator;
+        private bool loseAnimation = false;
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -181,23 +182,27 @@ namespace Feature.Component.Enemy
 
         private IEnumerator Attack()
         {
-            animator.Play("attackB");
-            var dir = (playerTransform.position - transform.position).normalized;
-            for (var _ = 0; _ < enemyParams.shootCount; _++)
+            if (!loseAnimation)
             {
-                var bullet = ObjectFactory.Instance.CreateObject(
-                    bulletPrefab,
-                    transform.position + dir * 1f,
-                    Quaternion.identity);
-                bullet.transform.LookAt(playerTransform);
-                var bulletRb = bullet.GetComponent<DamagedTrigger>();
-                bulletRb.SetHitObject(true, true, true);
-                bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
-                bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
-                yield return Wait(enemyParams.shootIntervalSec);
+                animator.Play("attackB");
+                var dir = (playerTransform.position - transform.position).normalized;
+                for (var _ = 0; _ < enemyParams.shootCount; _++)
+                {
+                    var bullet = ObjectFactory.Instance.CreateObject(
+                        bulletPrefab,
+                        transform.position + dir * 1f,
+                        Quaternion.identity);
+                    bullet.transform.LookAt(playerTransform);
+                    var bulletRb = bullet.GetComponent<DamagedTrigger>();
+                    bulletRb.SetHitObject(true, true, true);
+                    bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
+                    bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
+                    yield return Wait(enemyParams.shootIntervalSec);
+                }
+                
+                yield return Wait(enemyParams.shootAfterSec);
             }
 
-            yield return Wait(enemyParams.shootAfterSec);
         }
 
         public void OnSelected()
@@ -234,6 +239,8 @@ namespace Feature.Component.Enemy
         }
         public void DestroyEnemy()
         {
+            //Debug.Log("lose");
+            loseAnimation = true;
             animator.Play("lose");
         }
     }

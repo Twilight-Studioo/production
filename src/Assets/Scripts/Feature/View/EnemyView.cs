@@ -39,6 +39,7 @@ namespace Feature.View
                 // delete 
                 OnHealth0Event?.Invoke();
                 agent.FlowCancel();
+                agent.DestroyEnemy();
                 StartCoroutine(WaitForDeathAnimation());
                 // agent.Delete();
                 // if (gameObject != null)
