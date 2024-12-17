@@ -36,7 +36,7 @@ public class GunnerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(Vector3.Distance(targetPlayer.position,transform.position));
+        Debug.Log(Vector3.Distance(targetPlayer.position, transform.position));
         if (targetPlayer == null)
         {
             FindPlayer();
@@ -70,7 +70,7 @@ public class GunnerController : MonoBehaviour
     {
         var bullet = ObjectFactory.Instance.CreateObject(bulletRay, bulletSpawnPoint.position, Quaternion.identity);
         var dir = transform.forward.normalized;
-        bullet.transform.position = bulletSpawnPoint.position + new Vector3(dir.x,0,0) * (bullet.transform.localScale.x / 2);
+        bullet.transform.position = bulletSpawnPoint.position + new Vector3(dir.x, 0, 0) * (bullet.transform.localScale.x / 2);
         bullet.transform.position = new Vector3(bullet.transform.position.x, bullet.transform.position.y, 0);
         bullet.transform.localScale = new Vector3(bullet.transform.localScale.x, enemyParams.RayW, 1);
         var bulletRb = bullet.GetComponent<DamagedTrigger>();
@@ -108,7 +108,6 @@ public class GunnerController : MonoBehaviour
     public bool IsPlayerInMidRange()
     {
         return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.MidDistanceRange;
-
     }
 
 

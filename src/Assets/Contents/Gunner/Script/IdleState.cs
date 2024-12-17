@@ -15,7 +15,7 @@ public class IdleState : IState//Gunner默认状态
 
     public void Enter()
     {
-        _gunnerController.Animator.SetBool("Idle",true);
+        _gunnerController.Animator.SetBool("Idle", true);
         coldTimer = Time.time;
     }
 
@@ -31,8 +31,9 @@ public class IdleState : IState//Gunner默认状态
         {
             _gunnerController.ChangeState(new BackAttackState(_gunnerController));
             _gunnerController.attackCount++;
+            return;
         }
-        if (_gunnerController.GetCurrentAttackCount() >= _gunnerController.enemyParams.SpecialAttackAmmo )//进行特殊攻击判定
+        if (_gunnerController.GetCurrentAttackCount() >= _gunnerController.enemyParams.SpecialAttackAmmo)//进行特殊攻击判定
         {
             _gunnerController.ChangeState(new SpecialAttackState(_gunnerController));
             _gunnerController.attackCount = 0;
@@ -87,12 +88,16 @@ public class FaceAttackState : IState//主角与gunner距离小于18进入此状
 
     public void Execute()
     {
-
         if (_gunnerController.IsCurrentAnimationFinished())
         {
-            //Debug.Log(3333);
-           
-            _gunnerController.ChangeState(new IdleState(_gunnerController));
+            if (_gunnerController.IsPlayerInOverRange())
+            {
+                _gunnerController.ChangeState(new FarDistanceAttackState(_gunnerController)); // 连击远距离
+            }
+            else
+            {
+                _gunnerController.ChangeState(new IdleState(_gunnerController));
+            }
         }
     }
 
@@ -106,16 +111,74 @@ public class FaceAttackState : IState//主角与gunner距离小于18进入此状
 
     private void ExecuteCloseAttack()
     {
-        _gunnerController.Animator.SetBool("CloseAttack",true);
-       //_gunnerController.ApplyMovement(true);
+        _gunnerController.Animator.SetBool("CloseAttack", true);
+        //_gunnerController.ApplyMovement(true);
         Debug.Log("Executing CloseAttack with forward movement");
     }
 }
 public class MidDistanceAttackState : IState//距离在18到30之间进入此攻击状态
 {
     private GunnerController _gunnerController;
+    private bool hasTransitioned = false;
 
     public MidDistanceAttackState(GunnerController gunnerController)
+    {
+        _gunnerController = gunnerController;
+    }
+
+    public void Enter()
+    {
+        ExecuteRangedAttack();
+        hasTransitioned = false;
+    }
+
+    public void Execute()
+    {
+        if (hasTransitioned) return;
+
+        if (_gunnerController.IsCurrentAnimationFinished())
+        {
+            if (_gunnerController.IsPlayerInMidRange())
+            {
+                _gunnerController.ChangeState(new MidDistanceAttackStateNext(_gunnerController));
+                _gunnerController.attackCount++;
+            }
+            else if (_gunnerController.IsPlayerOverRange())
+            {
+                _gunnerController.ChangeState(new FarDistanceAttackState(_gunnerController));
+                _gunnerController.attackCount++;
+            }
+            else if (_gunnerController.IsPlayerBehind())
+            {
+                _gunnerController.ChangeState(new BackAttackState(_gunnerController));
+                _gunnerController.attackCount++;
+            }
+            else
+            {
+                _gunnerController.ChangeState(new IdleState(_gunnerController));
+            }
+
+            hasTransitioned = true;
+        }
+    }
+
+    public void Exit()
+    {
+        _gunnerController.Animator.SetBool("AttackA", false);
+        Debug.Log("Exiting MidDistanceAttackState");
+    }
+
+    private void ExecuteRangedAttack()
+    {
+        _gunnerController.Animator.SetBool("AttackA", true);
+        Debug.Log("Executing AttackA (MidDistanceAttackState) with ranged attack");
+    }
+}
+public class MidDistanceAttackStateNext : IState//距离在18到30之间进入此攻击状态的二段
+{
+    private GunnerController _gunnerController;
+
+    public MidDistanceAttackStateNext(GunnerController gunnerController)
     {
         _gunnerController = gunnerController;
     }
@@ -129,30 +192,25 @@ public class MidDistanceAttackState : IState//距离在18到30之间进入此攻
     {
         if (_gunnerController.IsCurrentAnimationFinished())
         {
-            _gunnerController.ChangeState(new IdleState(_gunnerController));
+            if (_gunnerController.attackCount >= 2)
+            {
+                _gunnerController.ChangeState(new BeamAttackState(_gunnerController));
+            }
+            else
+            {
+                _gunnerController.ChangeState(new IdleState(_gunnerController));
+            }
         }
     }
 
     public void Exit()
     {
-        _gunnerController.Animator.SetBool("AttackA", false);
         _gunnerController.Animator.SetBool("AttackB", false);
     }
     private void ExecuteRangedAttack()
     {
-        int attackType = Random.Range(0, 2);
-        if (attackType == 0)
-        {
-            _gunnerController.Animator.SetBool("AttackA", true);
-           // _gunnerController.ApplyMovement(false);
-            Debug.Log("Executing AttackA with backward movement");
-        }
-        else
-        {
-            _gunnerController.Animator.SetBool("AttackB", true);
-            //_gunnerController.ApplyMovement(false);
-            Debug.Log("Executing AttackB with backward movement");
-        }
+        _gunnerController.Animator.SetBool("AttackB", true);
+        Debug.Log("Executing AttackB with backward movement");
     }
 }
 public class FarDistanceAttackState : IState//距离在30到50之间进入此攻击状态
@@ -171,7 +229,7 @@ public class FarDistanceAttackState : IState//距离在30到50之间进入此攻
 
     public void Execute()
     {
-       if(_gunnerController.IsCurrentAnimationFinished())
+        if (_gunnerController.IsCurrentAnimationFinished())
         {
             _gunnerController.ChangeState(new IdleState(_gunnerController));
         }
@@ -197,7 +255,7 @@ public class OverDistanceAttackState : IState//距离在50以上进入此攻击�
 
     public void Execute()
     {
-        if(_gunnerController.IsCurrentAnimationFinished())
+        if (_gunnerController.IsCurrentAnimationFinished())
         {
             _gunnerController.ChangeState(new FarDistanceAttackState(_gunnerController));
         }
@@ -208,7 +266,6 @@ public class OverDistanceAttackState : IState//距离在50以上进入此攻击�
         _gunnerController.Animator.SetBool("FarAttack", false);
     }
 }
-
 public class SpecialAttackState : IState//特殊攻击状态
 {
     private GunnerController _gunnerController;
@@ -224,7 +281,7 @@ public class SpecialAttackState : IState//特殊攻击状态
 
     public void Execute()
     {
-       if(_gunnerController.IsCurrentAnimationFinished())
+        if (_gunnerController.IsCurrentAnimationFinished())
         {
             _gunnerController.ChangeState(new IdleState(_gunnerController));
         }
@@ -235,7 +292,6 @@ public class SpecialAttackState : IState//特殊攻击状态
         _gunnerController.Animator.SetBool("SpecialAttack", false);
     }
 }
-
 public class BackAttackState : IState//背后攻击状态
 {
     private GunnerController _gunnerController;
@@ -252,7 +308,7 @@ public class BackAttackState : IState//背后攻击状态
 
     public void Execute()
     {
-        if(IsCurrentAnimationFinished())
+        if (IsCurrentAnimationFinished())
         {
             _gunnerController.ChangeState(new IdleState(_gunnerController));
         }
@@ -286,7 +342,6 @@ public class BackAttackState : IState//背后攻击状态
         Debug.Log($"Rigidbody Movement applied: {moveVector}, New position: {_gunnerController.rb.position}");
     }
 }
-
 public class FlyAttackState : IState//特殊攻击触发的飞天攻击
 {
     private GunnerController _gunnerController;
@@ -299,18 +354,97 @@ public class FlyAttackState : IState//特殊攻击触发的飞天攻击
     {
         _gunnerController.transform.position += new Vector3(0, 10, 0);
         _gunnerController.rb.isKinematic = true;
-       _gunnerController.ShootFlyRayBullet();
+        _gunnerController.ShootFlyRayBullet();
     }
 
     public void Execute()
     {
-       
+        if (_gunnerController.IsCurrentAnimationFinished())
+        {
+            _gunnerController.ChangeState(new GUNLandingState(_gunnerController));
+        }
     }
-   
+
     public void Exit()
     {
         //_gunnerController.transform.position -= new Vector3(0, 10, 0);
         _gunnerController.rb.isKinematic = false;
         _gunnerController.Animator.SetTrigger("Landing");
     }
+}
+public class GUNLandingState : IState
+{
+    private GunnerController _gunnerController;
+
+    public GUNLandingState(GunnerController gunnerController)
+    {
+        _gunnerController = gunnerController;
+    }
+
+    public void Enter()
+    {
+        _gunnerController.Animator.SetTrigger("Landing");
+        Debug.Log("Gunner is landing...");
+    }
+
+    public void Execute()
+    {
+        if (_gunnerController.IsCurrentAnimationFinished())
+        {
+            _gunnerController.ChangeState(new IdleState(_gunnerController));
+        }
+    }
+
+    public void Exit() { }
+}
+public class BeamAttackState : IState
+{
+    private GunnerController _gunnerController;
+
+    public BeamAttackState(GunnerController gunnerController)
+    {
+        _gunnerController = gunnerController;
+    }
+
+    public void Enter()
+    {
+        _gunnerController.Animator.SetTrigger("BeamAttack");
+        Debug.Log("Triggering Beam Attack");
+    }
+
+    public void Execute()
+    {
+        if (_gunnerController.IsCurrentAnimationFinished())
+        {
+            _gunnerController.ChangeState(new IdleState(_gunnerController));
+        }
+    }
+
+    public void Exit() { }
+}
+public class GUNLackState : IState
+{
+    private GunnerController _gunnerController;
+
+    public GUNLackState(GunnerController gunnerController)
+    {
+        _gunnerController = gunnerController;
+    }
+
+    public void Enter()
+    {
+        _gunnerController.Animator.SetTrigger("Lack");
+        Debug.Log("Ammo is out. Reloading...");
+        _gunnerController.ReloadAmmo();
+    }
+
+    public void Execute()
+    {
+        if (_gunnerController.IsCurrentAnimationFinished())
+        {
+            _gunnerController.ChangeState(new IdleState(_gunnerController));
+        }
+    }
+
+    public void Exit() { }
 }
