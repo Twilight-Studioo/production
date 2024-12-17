@@ -36,7 +36,8 @@ namespace Feature.Component.Enemy
         private List<Vector3> points;
         
         private float lastAttackedTime;
-
+        private Animator animator;
+        private bool loseAnimation = false;
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
@@ -188,6 +189,7 @@ namespace Feature.Component.Enemy
 
         private IEnumerator Attack()
         {
+            animator.Play("attackA");
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
@@ -202,7 +204,6 @@ namespace Feature.Component.Enemy
                 bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                 yield return Wait(enemyParams.shootIntervalSec);
             }
-
             yield return Wait(enemyParams.shootAfterSec);
         }
 
@@ -241,7 +242,8 @@ namespace Feature.Component.Enemy
 
         public void DestroyEnemy()
         {
-            
+            loseAnimation = true;
+            animator.Play("defeat");
         }
     }
 }

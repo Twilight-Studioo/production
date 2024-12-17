@@ -241,9 +241,8 @@ namespace Feature.Component.Enemy
 
         public void DestroyEnemy()
         {
-            //Debug.Log("lose");
             loseAnimation = true;
-            animator.Play("lose");
+            animator.Play("defeat");
         }
     }
 }

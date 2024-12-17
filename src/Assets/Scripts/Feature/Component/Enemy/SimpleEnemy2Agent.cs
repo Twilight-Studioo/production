@@ -64,7 +64,7 @@ namespace Feature.Component.Enemy
         public void FlowExecute()
         {
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
-            FlowStart();
+            FlowStart(); 
         }
 
         public void SetParams(EnemyParams @params)
@@ -138,45 +138,49 @@ namespace Feature.Component.Enemy
 
             while (true)
             {
-                // パトロール状態
-                agent.ResetPath();
+                if (!loseAnimation)
+                {
+                    // パトロール状態
+                    agent.ResetPath();
 
-                var distance = Vector3.Distance(playerTransform.position, transform.position);
+                    var distance = Vector3.Distance(playerTransform.position, transform.position);
 
-                if (Math.Abs(enemyParams.shootDistance - distance) < 1f || canBullet)
-                {
-                    canBullet = false;
-                    yield return Attack();
+                    if (Math.Abs(enemyParams.shootDistance - distance) < 1f || canBullet)
+                    {
+                        canBullet = false;
+                        yield return Attack();
+                    }
+                    else if (enemyParams.pursuitDistance > distance)
+                    {
+                        yield return Action("AIMoveToTargetDistance")
+                            .Param("Target", playerTransform)
+                            .Param("Distance", enemyParams.shootDistance)
+                            .Param("MoveSpeed", 1f)
+                            .IfEnd(
+                                UnFocusTrigger().Build(), // プレイヤーを見失った場合のトリガー
+                                AttackTrigger().Build()
+                            )
+                            .Build();
+                        canBullet = true;
+                    }
+                    else if((enemyParams.foundDistance > distance))
+                    {
+                        yield return Action("PointsAIMoveTo")
+                            .Param("Points", points)
+                            .Param("MoveSpeed", enemyParams.patrolSpeed)
+                            .IfEnd(
+                                FocusTrigger().Build(), // プレイヤー発見のトリガー
+                                AttackTrigger().Build() // 攻撃モードのトリガー
+                            )
+                            .Build();
+                    }
+                    else
+                    {
+                        animator.Play("miss");
+                        yield return Wait(5.0f);
+                    }
                 }
-                else if (enemyParams.pursuitDistance > distance)
-                {
-                    yield return Action("AIMoveToTargetDistance")
-                        .Param("Target", playerTransform)
-                        .Param("Distance", enemyParams.shootDistance)
-                        .Param("MoveSpeed", 1f)
-                        .IfEnd(
-                            UnFocusTrigger().Build(), // プレイヤーを見失った場合のトリガー
-                            AttackTrigger().Build()
-                        )
-                        .Build();
-                    canBullet = true;
-                }
-                else if((enemyParams.foundDistance > distance))
-                {
-                    yield return Action("PointsAIMoveTo")
-                        .Param("Points", points)
-                        .Param("MoveSpeed", enemyParams.patrolSpeed)
-                        .IfEnd(
-                            FocusTrigger().Build(), // プレイヤー発見のトリガー
-                            AttackTrigger().Build() // 攻撃モードのトリガー
-                        )
-                        .Build();
-                }
-                else
-                {
-                    animator.Play("miss");
-                    yield return Wait(5.0f);
-                }
+
             }
         }
 
@@ -239,9 +243,8 @@ namespace Feature.Component.Enemy
         }
         public void DestroyEnemy()
         {
-            //Debug.Log("lose");
             loseAnimation = true;
-            animator.Play("lose");
+            animator.Play("defeat");
         }
     }
 }

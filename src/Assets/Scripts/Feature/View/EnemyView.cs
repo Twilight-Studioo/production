@@ -59,7 +59,7 @@ namespace Feature.View
         private IEnumerator WaitForDeathAnimation()
         {
             // アニメーションの長さを待機
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(3);
 
             // オブジェクト削除
             if (gameObject != null)
