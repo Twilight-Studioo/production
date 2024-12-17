@@ -1,4 +1,6 @@
 using Core.Utilities;
+using Core.Utilities.Tag;
+using Feature.Common.Constants.Tag;
 using Feature.Interface;
 using UnityEngine;
 
@@ -46,7 +48,7 @@ namespace Feature.Component
                     continue;
                 }
 
-                if (hit.collider.CompareTag("SwapItem"))
+                if (hit.collider.HasTag<SwapItemTag>())
                 {
                     var obj = hit.collider.gameObject.GetComponent<ISwappable>();
                     obj?.Delete();
