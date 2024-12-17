@@ -36,7 +36,7 @@ public class GunnerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(Vector3.Distance(targetPlayer.position, transform.position));
+       // Debug.Log(Vector3.Distance(targetPlayer.position, transform.position));
         if (targetPlayer == null)
         {
             FindPlayer();
@@ -108,6 +108,7 @@ public class GunnerController : MonoBehaviour
     public bool IsPlayerInMidRange()
     {
         return targetPlayer != null && Vector3.Distance(transform.position, targetPlayer.position) <= enemyParams.MidDistanceRange;
+
     }
 
 
@@ -153,27 +154,39 @@ public class GunnerController : MonoBehaviour
     }
     public void ApplyForwordMovement()
     {
-        float directionMultiplier = 1;
-        float moveDistance = directionMultiplier * enemyParams.ForwardDistance;
-        Vector3 direction = (targetPlayer.position - transform.position).normalized;
-        direction.y = 0;
-        direction.z = 0;
-        Vector3 moveVector = direction * moveDistance;
-        rb.MovePosition(rb.position + moveVector);
+        //float directionMultiplier = 1;
+        //float moveDistance = directionMultiplier * enemyParams.ForwardDistance;
+        //Vector3 direction = (targetPlayer.position - transform.position).normalized;
+        //direction.y = 0;
+        //direction.z = 0;
+        //Vector3 moveVector = direction * moveDistance;
+        //rb.MovePosition(rb.position + moveVector);
 
-        Debug.Log($"Rigidbody Movement applied: {moveVector}, New position: {rb.position}");
+        //Debug.Log($"Rigidbody Movement applied: {moveVector}, New position: {rb.position}");
+
+        Vector3 direction = (targetPlayer.position - transform.position).normalized;
+        direction.y = 0; // 保持水平移动
+        rb.velocity = direction * enemyParams.ForwardDistance;
+
+        Debug.Log($"Applying forward movement with velocity: {rb.velocity}");
     }
     public void ApplyBackMovement()
     {
-        float directionMultiplier = -1;
-        float moveDistance = directionMultiplier * enemyParams.KnockbackDistance;
-        Vector3 direction = (targetPlayer.position - transform.position).normalized;
-        direction.y = 0;
-        direction.z = 0;
-        Vector3 moveVector = direction * moveDistance;
-        rb.MovePosition(rb.position + moveVector);
+        //float directionMultiplier = -1;
+        //float moveDistance = directionMultiplier * enemyParams.KnockbackDistance;
+        //Vector3 direction = (targetPlayer.position - transform.position).normalized;
+        //direction.y = 0;
+        //direction.z = 0;
+        //Vector3 moveVector = direction * moveDistance;
+        //rb.MovePosition(rb.position + moveVector);
 
-        Debug.Log($"Rigidbody Movement applied: {moveVector}, New position: {rb.position}");
+        //Debug.Log($"Rigidbody Movement applied: {moveVector}, New position: {rb.position}");
+
+        Vector3 direction = (transform.position - targetPlayer.position).normalized;
+        direction.y = 0; // 保持水平移动
+        rb.velocity = direction * enemyParams.KnockbackDistance;
+
+        Debug.Log($"Applying backward movement with velocity: {rb.velocity}");
     }
     private GameObject bullet;
     public void ShootFlyRayBullet()
@@ -213,7 +226,7 @@ public class GunnerController : MonoBehaviour
     {
         AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
         //Debug.Log(!stateInfo.loop);
-        return stateInfo.normalizedTime >= 1.0f; //&& !stateInfo.loop;
+        return stateInfo.normalizedTime >= 1.0f && !stateInfo.loop;
     }
     public bool IsOutOfAmmo()
     {
@@ -245,5 +258,10 @@ public class GunnerController : MonoBehaviour
         direction.y = 0;
         direction.z = 0;
         transform.forward = direction;
+    }
+    public void StopMovement()
+    {
+        rb.velocity = Vector3.zero;
+        Debug.Log("Stopping movement, velocity set to zero.");
     }
 }
