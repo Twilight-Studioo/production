@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Codice.Client.BaseCommands;
 using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
@@ -13,6 +14,7 @@ using Feature.Interface;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.UI;
 
 #endregion
 
@@ -33,11 +35,16 @@ namespace Feature.Component.Enemy
 
         private Transform playerTransform;
 
+        private Animator animator;
+
+        private bool loseAnimation = false;
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             rb = GetComponent<Rigidbody>();
             position.Value = transform.position;
+            animator = GetComponentInChildren<Animator>();
         }
 
         private void Update()
@@ -49,8 +56,7 @@ namespace Feature.Component.Enemy
 
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy1;
-
-
+        
         public void FlowCancel()
         {
             FlowStop();
@@ -193,11 +199,16 @@ namespace Feature.Component.Enemy
                         )
                         .Build();
                 }
+                else
+                {
+                    animator.Play("miss");
+                    yield return Wait(5.0f);
+                }
             }
         }
 
         private IEnumerator Attack()
-        {
+        { 
             onHitRushAttack = TakeDamage;
             agent.ResetPath();
             yield return Wait(enemyParams.rushBeforeDelay);
@@ -211,15 +222,27 @@ namespace Feature.Component.Enemy
 
         private void TakeDamage()
         {
+            
             var player = ObjectFactory.Instance.FindPlayer();
             if (player == null)
             {
                 return;
             }
 
-            var view = player.GetComponent<IDamaged>();
-            view.OnDamage(enemyParams.damage, transform.position, transform);
-            OnTakeDamageEvent?.Invoke();
+            if (!loseAnimation)
+            {
+                animator.Play("attackA");
+                var view = player.GetComponent<IDamaged>();
+                view.OnDamage(enemyParams.damage, transform.position, transform);
+                OnTakeDamageEvent?.Invoke();
+            }
+
+        }
+
+        public void DestroyEnemy()
+        {
+            loseAnimation = true;
+            animator.Play("defeat");
         }
     }
 }
