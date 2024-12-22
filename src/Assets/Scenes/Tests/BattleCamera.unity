@@ -2035,7 +2035,7 @@ PrefabInstance:
     - target: {fileID: 7437453453869855136, guid: a1bb7634d6aec412b97028e350fb9469,
         type: 3}
       propertyPath: spawnEnemyType
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8529875732360637480, guid: a1bb7634d6aec412b97028e350fb9469,
         type: 3}
@@ -2221,12 +2221,12 @@ PrefabInstance:
     - target: {fileID: 1961276430645119237, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000002149071
+      value: 0.0000000021490707
       objectReference: {fileID: 0}
     - target: {fileID: 1961276430645119237, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 8.61693e-11
+      value: -8.6169294e-11
       objectReference: {fileID: 0}
     - target: {fileID: 3606400983697465113, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
