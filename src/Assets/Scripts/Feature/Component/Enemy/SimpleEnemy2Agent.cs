@@ -188,6 +188,8 @@ namespace Feature.Component.Enemy
         {
             if (!loseAnimation)
             {
+                animator.Play("attackSetB");
+                yield return Wait(1.5f);
                 animator.Play("attackB");
                 var dir = (playerTransform.position - transform.position).normalized;
                 for (var _ = 0; _ < enemyParams.shootCount; _++)

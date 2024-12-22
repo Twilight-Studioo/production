@@ -206,12 +206,18 @@ namespace Feature.Component.Enemy
                 }
             }
         }
-
+        
         private IEnumerator Attack()
         { 
             onHitRushAttack = TakeDamage;
             agent.ResetPath();
             yield return Wait(enemyParams.rushBeforeDelay);
+            animator.Play("attackSetA");
+            yield return Wait(0.5f);
+            if (loseAnimation)
+            {
+               yield break;
+            }
             yield return Action("AIRushToPosition")
                 .Param("RushSpeed", enemyParams.rushSpeed)
                 .Param("TargetTransform", playerTransform)
@@ -222,7 +228,6 @@ namespace Feature.Component.Enemy
 
         private void TakeDamage()
         {
-            
             var player = ObjectFactory.Instance.FindPlayer();
             if (player == null)
             {
