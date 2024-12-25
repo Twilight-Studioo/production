@@ -29,6 +29,7 @@ namespace Feature.Component.Enemy
         private bool upper = false;
         private GameObject mine;
         private GameObject debris;
+        private GameObject debris2;
         private uint health;
         private float lastDamageTime = 0f;
         private bool kick = false;
@@ -257,7 +258,7 @@ namespace Feature.Component.Enemy
             yield return new WaitForSeconds(bossPrams.debrisAttackOccurrenceTime);
             animator.SetTrigger("DebriAttack");
             yield return new WaitForSeconds(0.2f);
-            Instantiate(debrisPrefab, spawnPoint.transform.position, Quaternion.identity);
+            debris2 = ObjectFactory.Instance.CreateObject(debrisPrefab,spawnPoint.transform.position,Quaternion.identity);
             debris = ObjectFactory.Instance.CreateObject(debrisPrefab,spawnPoint.transform.position,Quaternion.identity);
             debris.GetComponent<Debris>().Kick();
             yield return new WaitForSeconds(bossPrams.debrisAttackIntervalSec);
