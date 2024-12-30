@@ -193,9 +193,9 @@ namespace Feature.Component.Enemy
                         .Param("MoveSpeed", enemyParams.pursuitSpeed)
                         .IfEnd(
                             UnFocusTrigger()
-                                .Build(),
-                            RushStart()
                                 .Build()
+                            // RushStart()
+                            //     .Build()
                         )
                         .Build();
                 }
@@ -213,20 +213,21 @@ namespace Feature.Component.Enemy
             agent.ResetPath();
             yield return Wait(enemyParams.rushBeforeDelay);
             animator.Play("attackSetA");
-            yield return Wait(0.5f);
+            yield return Wait(0.2f);
             if (loseAnimation)
             {
                yield break;
             }
-            yield return Action("AIRushToPosition")
-                .Param("RushSpeed", enemyParams.rushSpeed)
-                .Param("TargetTransform", playerTransform)
-                .Param("OnHitRushAttack", onHitRushAttack)
-                .Build();
+            AttackDecision();
+            // yield return Action("AIRushToPosition")
+            //     .Param("RushSpeed", enemyParams.rushSpeed)
+            //     .Param("TargetTransform", playerTransform)
+            //     .Param("OnHitRushAttack", onHitRushAttack)
+            //     .Build();
             yield return Wait(enemyParams.rushAfterDelay);
         }
 
-        private void TakeDamage()
+        public void TakeDamage()
         {
             var player = ObjectFactory.Instance.FindPlayer();
             if (player == null)
@@ -236,7 +237,6 @@ namespace Feature.Component.Enemy
 
             if (!loseAnimation)
             {
-                animator.Play("attackA");
                 var view = player.GetComponent<IDamaged>();
                 view.OnDamage(enemyParams.damage, transform.position, transform);
                 OnTakeDamageEvent?.Invoke();
@@ -244,6 +244,14 @@ namespace Feature.Component.Enemy
 
         }
 
+        private void AttackDecision()
+        {
+            if (!loseAnimation)
+            {
+                animator.Play("attackA");
+            }
+        }
+        
         public void DestroyEnemy()
         {
             loseAnimation = true;

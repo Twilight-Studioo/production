@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4327409793896937792}
   - component: {fileID: 3791294383091726126}
   - component: {fileID: 3692354379227533408}
+  - component: {fileID: 233455785558702723}
+  - component: {fileID: 4344957614709072196}
   m_Layer: 0
   m_Name: Fire_effect
   m_TagString: Untagged
@@ -111,6 +113,39 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &233455785558702723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567658353936242706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 147cb68f9cf9449c9369d466a76ecb7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &4344957614709072196
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567658353936242706}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.74923265, y: 2.7324064, z: 0.7861115}
+  m_Center: {x: -0.03499394, y: 0.49124262, z: 0.020392397}
 --- !u!1 &1867458220199271070
 GameObject:
   m_ObjectHideFlags: 0
