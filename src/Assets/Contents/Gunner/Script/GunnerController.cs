@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class GunnerController : MonoBehaviour
 {
+    [SerializeField] private CanvasGroup endFieldCanvasGroup; 
+    [SerializeField] private string endSceneName = "EndScene";
+
     public EnemyParams enemyParams;
     public GameObject bulletPrefab;
     public Transform bulletSpawnPoint;
@@ -19,6 +22,7 @@ public class GunnerController : MonoBehaviour
     private int currentAmmo;
     public int attackCount;
     public int specialAttackCount;
+    public int enemyHP;
 
     private void Start()
     {
@@ -28,6 +32,7 @@ public class GunnerController : MonoBehaviour
         attackCount = 0;
         specialAttackCount = 0;
         rb = GetComponent<Rigidbody>();
+        enemyHP = enemyParams.MaxHP;
 
         FindPlayer();
 
@@ -263,5 +268,42 @@ public class GunnerController : MonoBehaviour
     {
         rb.velocity = Vector3.zero;
         Debug.Log("Stopping movement, velocity set to zero.");
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            enemyHP -= 10;
+            Debug.Log($"Gunner hit by Player! HP: {enemyHP}");
+
+          
+            Vector3 knockbackDirection = (transform.position - collision.transform.position).normalized;
+            knockbackDirection.y = 0;
+            rb.AddForce(knockbackDirection * 10f, ForceMode.Impulse);
+
+            // 检查 HP 是否归零
+            if (enemyHP <= 0)
+            {
+                StartCoroutine(FadeOutAndEndGame());
+            }
+        }
+    }
+
+    private IEnumerator FadeOutAndEndGame()
+    {
+        Debug.Log("Gunner defeated! Starting fade-out...");
+
+        float duration = 2.0f; // 淡出时间
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            endFieldCanvasGroup.alpha = Mathf.Lerp(0, 1, elapsedTime / duration);
+            yield return null;
+        }
+
+        endFieldCanvasGroup.alpha = 1;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(endSceneName);
     }
 }

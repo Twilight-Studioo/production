@@ -3,6 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GunnerParams.asset", menuName = "Params/GunnerParams", order = 1)]
 public class EnemyParams : ScriptableObject
 {
+    [Tooltip("敵のHP"), Header("敵のHP")]
+    public int MaxHP= 300;
+
     [Tooltip("普通攻撃のクールタイム"), Header("普通攻撃のクールタイム")]
     public float BasicAttackCooldown = 3f;
 
