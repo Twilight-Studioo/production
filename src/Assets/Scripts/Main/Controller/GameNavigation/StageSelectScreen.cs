@@ -5,7 +5,8 @@ using Main.Scene.Generated;
 using TMPro;
 using UniRx;
 using UnityEngine;
-
+using Feature.Component;
+using System.Collections;
 #endregion
 
 namespace Main.Controller.GameNavigation
@@ -18,11 +19,15 @@ namespace Main.Controller.GameNavigation
         [SerializeField] private TextMeshProUGUI AText;
         [SerializeField] private TextMeshProUGUI BText;
         [SerializeField] private TextMeshProUGUI backText;
-
+        private TitlePlayerAnimation titlePlayerAnimation;
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>(Navi.A);
 
         private IDisposable disposable;
 
+        private void Awake()
+        {
+            titlePlayerAnimation = FindObjectOfType<TitlePlayerAnimation>();
+        }
         public override void OnShow()
         {
             base.OnShow();
@@ -84,19 +89,24 @@ namespace Main.Controller.GameNavigation
             switch (currentNavi.Value)
             {
                 case Navi.A:
-                    Controller.Reset();
-                    SceneLoaderFeatures.Stage(null).Bind(RootInstance).Load();
+                    titlePlayerAnimation.StageSelect();
+                    StartCoroutine(LoadStageWithDelay());
                     break;
                 case Navi.B:
-                    Controller.Reset();
-                    SceneLoaderFeatures.Stage(null).Bind(RootInstance).Load();
+                    titlePlayerAnimation.StageSelect();
+                    StartCoroutine(LoadStageWithDelay());
                     break;
                 case Navi.Back:
                     Controller.PopBackstack();
                     break;
             }
         }
-
+        private IEnumerator LoadStageWithDelay()
+        {
+            yield return new WaitForSeconds(2.0f);
+            Controller.Reset();
+            SceneLoaderFeatures.Stage(null).Bind(RootInstance).Load();
+        }
         private enum Navi
         {
             A,

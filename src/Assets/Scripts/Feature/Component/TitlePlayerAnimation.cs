@@ -14,7 +14,8 @@ namespace Feature.Component
 
         private void Awake()
         {
-            animator = GetComponent<Animator>(); 
+            animator = GetComponent<Animator>();
+            PlayRandomAnimation();
         }
 
         public void SheatingSword()
@@ -25,22 +26,19 @@ namespace Feature.Component
 
         public void OnClickStage()
         {
-            animator.Play("A");
-            PlayRandomAnimation();
+            animator.Play("StageSelectA");
         }
 
-        public void OnClickContinue()
+        public void StageSelect()
         {
-            PlayRandomAnimation();
+            animator.Play("StageSelectB");
         }
         private void PlayRandomAnimation()
         {
             sword.SetActive(true);
             swordReverse.SetActive(false);
-           // if (animator == null) return;
-           // Debug.Log("aiueo");
-            int randomChoice = Random.Range(0, 2); // 0 or 1
-            var animationStateName = randomChoice == 0 ? "A" : "B";
+            int randomChoice = Random.Range(0, 2);
+            var animationStateName = randomChoice == 0 ? "Player_katana" : "Player_swap";
             
             animator.Play(animationStateName, 0, 0f);
         }
