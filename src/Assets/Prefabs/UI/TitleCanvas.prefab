@@ -875,3 +875,5 @@ MonoBehaviour:
   toContinueText: {fileID: 2962095213631538020}
   toOptionText: {fileID: 8637632404105958199}
   toQuitText: {fileID: 5778216579393810114}
+  titlePlayerAnimation: {fileID: 7750658774937906615, guid: 31dcfb9f6a400bf4dae9899a78579d18,
+    type: 3}
