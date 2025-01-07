@@ -33,10 +33,16 @@ namespace Core.Utilities
         {
             get
             {
-                if (superObject == null)
+                if (!superObject)
                 {
-                    superObject = new GameObject("SuperObject");
-                    Object.DontDestroyOnLoad(superObject);
+                    lock (typeof(ObjectFactory))
+                    {
+                        if (!superObject)
+                        {
+                            superObject = new GameObject("SuperObject");
+                            Object.DontDestroyOnLoad(superObject);
+                        }
+                    }
                 }
 
                 return superObject;

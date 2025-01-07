@@ -33,7 +33,6 @@ namespace Feature.View
         {
             OnDamageEvent?.Invoke(damage, attacker.position);
             CurrentHealth -= damage;
-            Debug.Log($"CurrentHealth {CurrentHealth}");
             if (CurrentHealth <= 0)
             {
                 // delete 
