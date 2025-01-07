@@ -9,10 +9,12 @@ namespace Feature.Component
     public class Debris : MonoBehaviour
     {
         [SerializeField] private SmasherPrams bossPrams;
+        [SerializeField] private float splashSpeed = 200;
         private Transform playerTransform;
         private float distance;
         private Rigidbody debrisRb;
-        private bool accelation = true;
+        private bool accelation = false;
+        private bool splash = true;
         private int count = 0;
         private bool playerRightSide = false;
 
@@ -41,6 +43,19 @@ namespace Feature.Component
                 }
                 count++;
             }
+            else if(splash)
+            {
+                gameObject.GetComponent<Rigidbody>().useGravity = true;
+                if (playerRightSide)
+                {
+                    debrisRb.AddForce(splashSpeed,splashSpeed,0);
+                }
+                else
+                {
+                    debrisRb.AddForce(-splashSpeed,splashSpeed,0);
+                }
+                splash = false;
+            }
 
             if (count > 10 && accelation)
             {
@@ -48,11 +63,23 @@ namespace Feature.Component
             }
         }
 
+        public void Kick()
+        {
+            accelation = true;
+            splash = false;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
                 other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
+                this.gameObject.GetComponent<ISwappable>().Delete();
+            }
+            else if(other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
+                this.gameObject.GetComponent<ISwappable>().Delete();
             }
 
             if (other.gameObject.CompareTag("Ground"))
