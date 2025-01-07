@@ -63,7 +63,8 @@ namespace Main.Factory
             enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);
             enemyComponent.OnDamageEvent += (result, hitPoint) =>
             {
-                var rotation = Quaternion.LookRotation(enemy.transform.position - hitPoint);
+                var forward = enemy.transform.position - hitPoint;
+                var rotation = forward != Vector3.zero ? Quaternion.LookRotation(forward) : Quaternion.identity;
                 if (result is DamageResult.Killed)
                 {
                     damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.EnemyKill);

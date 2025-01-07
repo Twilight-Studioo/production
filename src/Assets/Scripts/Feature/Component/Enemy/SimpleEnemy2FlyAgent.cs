@@ -161,7 +161,6 @@ namespace Feature.Component.Enemy
 
                 if (Math.Abs(enemyParams.shootDistance - distance) < 2f && distance > 1f && canBullet)
                 {
-                    Debug.Log("Attack");
                     canBullet = false;
                     lastAttackedTime = Time.time;
                     yield return Attack();
@@ -247,7 +246,6 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         public void DestroyEnemy()
