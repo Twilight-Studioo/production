@@ -14,6 +14,8 @@ namespace Main.Scene.Generated
         TitleScene,
         Stage,
         GameOverScene,
+        SmasherBossFight,
+        ClearSmasherScene,
     }
 
     public static class SceneLoaderFeatures
@@ -29,6 +31,14 @@ namespace Main.Scene.Generated
         public static SceneLoader GameOverScene(ISceneDataModel sceneDataModel)
         {
             return new SceneLoader(Scene.GameOverScene, "Assets/Scenes/OutGame/GameOverScene.unity", sceneDataModel);
+        }
+        public static SceneLoader SmasherBossFight(ISceneDataModel sceneDataModel)
+        {
+            return new SceneLoader(Scene.SmasherBossFight, "Assets/Scenes/TestStage/SmasherBossFight.unity", sceneDataModel);
+        }
+        public static SceneLoader ClearSmasherScene(ISceneDataModel sceneDataModel)
+        {
+            return new SceneLoader(Scene.ClearSmasherScene, "Assets/Scenes/OutGame/ClearSmasherScene.unity", sceneDataModel);
         }
     }
 }

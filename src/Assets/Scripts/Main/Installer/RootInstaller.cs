@@ -20,6 +20,7 @@ namespace Main.Installer
         [SerializeField] private GameObject controlsPrefab;
         [SerializeField] private GameObject titlePrefab;
         [SerializeField] private GameObject gameOverPrefab;
+        [SerializeField] private GameObject smasherClearPrefab;
         
         [SerializeField] private GameSettings settings;
 
@@ -33,6 +34,7 @@ namespace Main.Installer
                 controlsPrefab,
                 titlePrefab,
                 gameOverPrefab,
+                smasherClearPrefab,
                 this
             ).CheckNull());
 
@@ -44,6 +46,7 @@ namespace Main.Installer
             builder.RegisterComponent(controlsPrefab.GetComponent<ControlsScreen>().CheckNull());
             builder.RegisterComponent(titlePrefab.GetComponent<TitleScreen>().CheckNull());
             builder.RegisterComponent(gameOverPrefab.GetComponent<GameOverScreen>().CheckNull());
+            builder.RegisterComponent(smasherClearPrefab.GetComponent<ClearSmasherScreen>().CheckNull());
             builder.Register<GameSaveManager>(Lifetime.Singleton);
             builder.Register<RootInstance>(Lifetime.Singleton);
             builder.RegisterEntryPoint<RootManager>();

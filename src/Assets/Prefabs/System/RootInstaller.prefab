@@ -61,6 +61,8 @@ MonoBehaviour:
     type: 3}
   gameOverPrefab: {fileID: 7612237818007759691, guid: 5d1c69e5dcc4f49e6aa0bda05763b50c,
     type: 3}
+  smasherClearPrefab: {fileID: 3004297570899923012, guid: 79e35b3bda31c0f4bacfa21e84f48ac3,
+    type: 3}
   settings: {fileID: 11400000, guid: 8a53a45fe1b0e447fbfa4740df1db905, type: 2}
 --- !u!114 &1835336076385595755
 MonoBehaviour:
