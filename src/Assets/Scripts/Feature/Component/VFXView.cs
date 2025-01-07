@@ -39,5 +39,7 @@ namespace Feature.Component
 
             isPlaySwapEffect = false;
         }
+        
+        public VisualEffect GetEffect() => effect;
     }
 }
