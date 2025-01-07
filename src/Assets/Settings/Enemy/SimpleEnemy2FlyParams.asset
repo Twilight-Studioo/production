@@ -24,7 +24,7 @@ MonoBehaviour:
   shootIntervalSec: 0.4
   shootCount: 1
   shootAfterSec: 1
-  shootCoolDownSec: 2
+  shootCoolDownSec: 1.7
   movePower: 2
   maxHeightFromGround: 20
   minDistanceToCeiling: 5
