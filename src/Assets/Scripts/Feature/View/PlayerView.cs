@@ -8,7 +8,7 @@ using Feature.Component;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.VFX;
 
 #endregion
 
@@ -16,12 +16,15 @@ namespace Feature.View
 {
     public class PlayerView : MonoBehaviour, IDamaged, IPlayerView
     {
+        [SerializeField] private List<GameObject> normalSlash;
         [SerializeField] private List<GameObject> slashingEffect;
         [SerializeField] private GameObject dagger;
+        [SerializeField] private GameObject katana;
+        [SerializeField] private GameObject sheath;
+        [SerializeField] private GameObject swappingEffect;
+        [SerializeField] private VisualEffect visualEffect;
         public Transform daggerSpawn;
 
-        [SerializeField] private List<AudioClip> slashingSound;
-        [SerializeField] private List<AudioClip> hitSound;
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
@@ -30,9 +33,8 @@ namespace Feature.View
         private AnimationWrapper animator;
         private float attackComboCount;
         private float attackCoolTime;
-        private AudioSource audioSource;
         private float comboAngleOffset; // 連続攻撃時の角度変化
-        private float comboCount = -1;
+        private int comboCount = -1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private bool isGravityDisabled;
 
@@ -40,13 +42,16 @@ namespace Feature.View
         private float lastDegree;
         private float maxComboCount; // 連続攻撃の最大回数
         private float monochrome;
+        private float maxComboCoolTime;
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
+        private bool isMovementDisabled;
+        public event Action<DamageResult> OnHitHandler;
 
         private float vignetteChange; //赤くなるまでの時間
-        private float yDegree; //y座標の回転
-
+        [SerializeField, Tooltip("刀の初期回転角度（一段目の攻撃時）")] private float yDegree =105f;
+        [SerializeField, Tooltip("刀の二段目攻撃時の回転角度")] private float newYDegree = 284f;
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
@@ -61,7 +66,6 @@ namespace Feature.View
         {
             position.Value = transform.position;
         }
-
         private void FixedUpdate()
         {
             var pos = rb.position;
@@ -73,7 +77,7 @@ namespace Feature.View
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.CompareTag("Ground"))
+            if (collision.gameObject.CompareTag("Ground") && 1f > transform.GetGroundDistance(10f))
             {
                 isGrounded.Value = true;
             }
@@ -94,15 +98,24 @@ namespace Feature.View
             }
         }
 
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            var imp = (transform.position - attacker.position).normalized;
+            var imp = (transform.position - hitPoint).normalized;
             imp.y += 1f;
-            rb.AddForce(imp * 5f, ForceMode.Impulse);
-            OnDamageEvent?.Invoke(damage);
+            this.UniqueStartCoroutine(Knockback(imp, 5f, 0.4f));
+            // rb.AddForce(imp * 5f, ForceMode.Impulse);
+            var result = OnDamageEvent?.Invoke(damage, attacker.position);
             animator.OnTakeDamage();
+            return result;
         }
-
+        
+        private IEnumerator Knockback(Vector3 direction, float strength, float duration)
+        {
+            isMovementDisabled = true;
+            yield return transform.Knockback(direction, strength, duration);
+            yield return new WaitForSeconds(0.9f);
+            isMovementDisabled = false;
+        }
         public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
         public float SwapRange { get; set; }
@@ -113,27 +126,52 @@ namespace Feature.View
 
         public GameObject GetGameObject() => gameObject;
 
-        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
-            AudioSource audioSource)
+        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime)
         {
             this.comboTimeWindow = comboTimeWindow;
             this.comboAngleOffset = comboAngleOffset;
             this.maxComboCount = maxComboCount;
             this.attackCoolTime = attackCoolTime;
-            this.audioSource = audioSource;
+            this.maxComboCoolTime = maxComboCoolTime;
         }
 
         public void SetPosition(Vector3 p)
         {
+            // スワップ前の位置を取得
+            var previousPosition = transform.position;
+
             transform.position = p;
+            
+            if (swappingEffect != null)
+            {
+                // 生成
+                var instantiateEffect = ObjectFactory.Instance.CreateObject(
+                    swappingEffect,
+                    transform.position,
+                    Quaternion.identity
+                );
+
+                // VisualEffect コンポーネントを取得
+                var visualEffect = instantiateEffect.GetComponent<VisualEffect>();
+
+                //Target_position更新
+                if (visualEffect != null)
+                {
+                    visualEffect.SetVector3("Target_position_position", new Vector3(previousPosition.x, previousPosition.y, 0));
+                }
+            }
         }
 
         public Transform GetTransform() => transform;
 
-        public event Action<uint> OnDamageEvent;
+        public event DamageHandler<uint, Vector3> OnDamageEvent;
 
         public void Move(Vector3 direction, float power)
         {
+            if (isMovementDisabled)
+            {
+                return;
+            }
             //向き
             if (direction.x > 0)
             {
@@ -202,7 +240,13 @@ namespace Feature.View
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
         } // ReSharper disable Unity.PerformanceAnalysis
-        public void Attack(float degree, uint damage)
+        
+        public bool CanAttack()
+        {
+            var currentTime = Time.time;
+            return currentTime - lastAttackTime >= (comboCount == 2 ? maxComboCoolTime : attackCoolTime);
+        }
+        public void Attack(float degree, uint damage, bool voltage)
         {
             var currentTime = Time.time;
             if (currentTime - lastAttackTime < attackCoolTime)
@@ -217,64 +261,42 @@ namespace Feature.View
                     comboCount = -1;
                     yDegree = 0;
                 }
-
                 comboCount++;
-                switch (comboCount)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        yDegree += comboAngleOffset;
-                        break;
-                    case 2:
-                        yDegree += lastDegree - comboAngleOffset * 3;
-                        break;
-                }
-                // if (comboCount < maxComboCount)
-                // {
-                //     comboCount++;
-                //     yDegree += lastDegree + comboAngleOffset;
-                //     // if (degree != 90)
-                //     // {
-                //     //     yDegree += lastDegree + comboAngleOffset;
-                //     // }
-                // }
-                // else
-                // {
-                //     // 最大連続攻撃回数に達した場合、リセット
-                //     comboCount = 0;
-                //     // 角度をリセット
-                //     yDegree = 0; 
-                // }
             }
             else
             {
                 comboCount = 0;
-                yDegree = 0;
             }
 
-            var effectIndex = Mathf.Clamp((int)comboCount, 0, slashingEffect.Count - 1);
+            var effectIndex = Mathf.Clamp(comboCount, 0, slashingEffect.Count - 1);
 
             // 最後の攻撃情報を更新
             lastAttackTime = currentTime;
-            lastDegree = yDegree;
 
             if (degree == 0 && right == false)
             {
                 degree = -180f;
             }
 
-            var obj = Instantiate(slashingEffect[effectIndex], transform.position + new Vector3(0f, 1f, 0),
-                Quaternion.Euler(yDegree, 0, degree));
+            switch (comboCount)
+            {
+                case 0:
+                    katana.gameObject.transform.Rotate(0,newYDegree * Time.deltaTime,0);
+                    break;
+                case 1:
+                    katana.gameObject.transform.Rotate(0,yDegree * Time.deltaTime,0);
+                    break;
+            }
+            
+            var effectPrefab = voltage ? slashingEffect[effectIndex] : normalSlash[effectIndex];
 
-            var slashingSoundRandom = Random.Range(0, slashingSound.Count);
-            var selectedSlashingClip = slashingSound[slashingSoundRandom];
-            audioSource.PlayOneShot(selectedSlashingClip);
+            var obj = Instantiate(effectPrefab, transform.position + new Vector3(0f, 1f, 0),
+                    Quaternion.Euler(effectPrefab.transform.localEulerAngles.x, effectPrefab.transform.localEulerAngles.y, degree));
 
-            var hitSoundRandom = Random.Range(0, hitSound.Count);
-            var selectedHitClip = hitSound[hitSoundRandom];
             var slash = obj.GetComponent<Slash>();
-            slash.SetDamage(damage, selectedHitClip, audioSource);
+            slash.OnHitEvent += OnHitHandler;
+            slash.SetDamage(damage);
+            
             Destroy(obj, 0.5f);
             animator.SetAttackComboCount(comboCount);
             animator.OnAttack(0);
@@ -314,7 +336,25 @@ namespace Feature.View
             rb.velocity = Vector3.zero;
             rb.AddForce(force, ForceMode.VelocityChange);
         }
-
+        public void VoltageEffect(int voltageValue, int useVoltageAttackValue, int votageTwoAttackValue, int maxVoltage)
+        {
+            if (voltageValue >= maxVoltage)
+            {
+                visualEffect.SetUInt("Voltage",3);
+            }
+            else if (voltageValue >= votageTwoAttackValue)
+            {
+                visualEffect.SetUInt("Voltage",2);
+            }
+            else if (voltageValue >= useVoltageAttackValue)
+            {
+                visualEffect.SetUInt("Voltage",1);
+            }
+            else
+            {
+                visualEffect.SetUInt("Voltage",0);
+            }
+        }
         public bool IsGrounded() => isGrounded.Value;
 
         public Vector3 GetForward() => right ? Vector3.right : Vector3.left;

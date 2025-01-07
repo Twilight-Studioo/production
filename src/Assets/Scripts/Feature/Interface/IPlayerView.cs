@@ -17,7 +17,10 @@ namespace Feature.Interface
         IReadOnlyReactiveProperty<float> Speed { get; }
         Transform GetTransform();
 
-        event Action<uint> OnDamageEvent;
+        // damage & hit point
+        public event DamageHandler<uint, Vector3> OnDamageEvent;
+        
+        public event Action<DamageResult> OnHitHandler;
 
         IReadOnlyReactiveProperty<Vector3> GetPositionRef();
 
@@ -31,13 +34,16 @@ namespace Feature.Interface
 
         void SetPosition(Vector3 position);
 
-        void Attack(float degree, uint damage);
+        bool CanAttack();
+
+        void Attack(float degree, uint damage,bool voltage);
 
         void Dagger(float degree, float h, float v);
 
-        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
-            AudioSource audioSource);
+        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime);
 
+        public void VoltageEffect(int voltageValue, int useVoltageAttackValue, int votageTwoAttackValue,
+            int maxVoltage);
         Vector3 GetForward();
     }
 }

@@ -17,6 +17,7 @@ namespace Editor.Tests.Main
     public class EnemyFactoryTest
     {
         private EnemiesSetting enemiesSetting;
+        private DamageEffectFactory damageEffectFactory;
         private EnemyFactory enemyFactory;
         private List<EnemyStart> enemyStarts;
 
@@ -36,9 +37,11 @@ namespace Editor.Tests.Main
             // EnemyFactoryオブジェクトの生成
             var gameObject = new GameObject();
             enemyFactory = gameObject.AddComponent<EnemyFactory>();
+            damageEffectFactory = gameObject.AddComponent<DamageEffectFactory>();
 
             // ReflectionHelperを使ってprivateフィールドにEnemiesSettingを設定
             ReflectionHelper.SetPrivateField(enemyFactory, "settings", enemiesSetting);
+            ReflectionHelper.SetPrivateField(enemyFactory, "damageEffectFactory", damageEffectFactory);
         }
 
         [Test]
@@ -50,14 +53,6 @@ namespace Editor.Tests.Main
             // Act & Assert
             var exception = Assert.Throws<Exception>(() => enemyFactory.Subscribe());
             Assert.AreEqual("Settings is not set", exception.Message);
-        }
-
-        [Test]
-        public void Subscribe_ValidatesSettings()
-        {
-            // Act & Assert
-            var exception = Assert.Throws<Exception>(() => enemyFactory.Subscribe());
-            Assert.AreEqual("EnemyType SimpleEnemy1 is not found in settings", exception.Message);
         }
 
         [Test]

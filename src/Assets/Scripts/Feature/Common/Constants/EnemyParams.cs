@@ -1,12 +1,13 @@
 #region
 
+using Core.Utilities.Parameter;
 using UnityEngine;
 
 #endregion
 
 namespace Feature.Common.Constants
 {
-    public class EnemyParams : ScriptableObject
+    public class EnemyParams : BaseParameter
     {
         [Tooltip("発見距離")] public float foundDistance = 10f;
 

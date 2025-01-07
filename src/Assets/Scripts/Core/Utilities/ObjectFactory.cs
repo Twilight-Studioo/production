@@ -29,7 +29,28 @@ namespace Core.Utilities
                 .AddTo(SuperObject);
         }
 
-        public static GameObject SuperObject { get; } = superObject ??= new("ObjectFactory");
+        public static GameObject SuperObject
+        {
+            get
+            {
+                if (!superObject)
+                {
+                    lock (typeof(ObjectFactory))
+                    {
+                        if (!superObject)
+                        {
+                            superObject = new GameObject("SuperObject");
+                            if (Application.isPlaying)
+                            {
+                                Object.DontDestroyOnLoad(superObject);
+                            }
+                        }
+                    }
+                }
+
+                return superObject;
+            }
+        }
         public static ObjectFactory Instance => instance ??= new();
         public event Action<GameObject> OnObjectCreated;
 
@@ -62,7 +83,7 @@ namespace Core.Utilities
 
         public GameObject FindPlayer()
         {
-            return objects.Find(obj => obj.CompareTag("Player"));
+            return objects.Find(obj => obj != null && obj.activeSelf && obj.CompareTag("Player"));
         }
     }
 }

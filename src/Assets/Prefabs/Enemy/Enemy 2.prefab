@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoPlay: 0
-  bulletPrefab: {fileID: 7359196021201563163, guid: d0e23bcee8f76406db28e20292aa6f84,
+  bulletPrefab: {fileID: 7359196021201563163, guid: 052105eff95385244b406d70ebee8e0f,
     type: 3}
 --- !u!1001 &524503771379390800
 PrefabInstance:
@@ -341,8 +341,8 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 830351968691479553}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 92e8b6664be85754c9b3085604c11d8d, type: 2}
+  m_Avatar: {fileID: 9000000, guid: 6c6d935e0c6801d4e877a60367d9ef60, type: 3}
+  m_Controller: {fileID: 9100000, guid: 1afca7c2a8a12dd4990d7d4aab7afd15, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

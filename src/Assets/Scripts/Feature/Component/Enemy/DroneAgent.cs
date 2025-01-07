@@ -71,6 +71,10 @@ namespace Feature.Component.Enemy
         {
         }
 
+        public void Delete()
+        {
+        }
+
 
         public GetHealth OnGetHealth { set; get; }
 
@@ -88,7 +92,7 @@ namespace Feature.Component.Enemy
 
                 if (distance > enemyParams.playerKeepDistance)
                 {
-                    yield return Action("FlyingEnemy")
+                    yield return Action("FlyingEnemyV1")
                         .Param("Transform", playerTransform)
                         .Param("PlayerMinDistance", enemyParams.playerKeepDistance)
                         .IfEnd(
@@ -162,8 +166,12 @@ namespace Feature.Component.Enemy
                 case DroneAttackType.Bullet:
                     for (var _ = 0; _ < enemyParams.shotCount; _++)
                     {
-                        var bullet = ObjectFactory.Instance.CreateObject(enemyParams.bulletPrefab, transform.position,
+                        var toPlayerDirection = (playerTransform.position - transform.position).normalized;
+                        var bullet = ObjectFactory.Instance.CreateObject(
+                            enemyParams.bulletPrefab,
+                            transform.position + toPlayerDirection * 1f,
                             Quaternion.identity);
+                        bullet.transform.LookAt(playerTransform);
                         var bulletRb = bullet.GetComponent<DamagedTrigger>();
                         bulletRb.SetHitObject(false, true, true);
                         bulletRb.ExecuteWithFollow(playerTransform, enemyParams.bulletSpeed, enemyParams.damage,
@@ -213,6 +221,10 @@ namespace Feature.Component.Enemy
                 case DroneAttackType.None:
                     break;
             }
+        }
+        public void DestroyEnemy()
+        {
+            
         }
     }
 }

@@ -1,0 +1,156 @@
+name: unity_build_on_devops.yml
+
+on:
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    if: >
+      github.event.issue.pull_request != null &&
+      startsWith(github.event.comment.body, '/build')
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install -y curl)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+
+      - name: Authenticate GitHub CLI
+        env:
+          AUTH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        run: |
+          unset GITHUB_TOKEN
+          echo "${AUTH_TOKEN}" | gh auth login --with-token
+
+      - name: Verify Commenter is in GitHub Organization
+        id: verify-org
+        run: |
+          COMMENTER="${{ github.event.comment.user.login }}"
+          ORG="Twilight-Studioo"  # Replace with your GitHub organization name or use a secret
+          echo "Verifying if $COMMENTER is a member of the organization $ORG..."
+          
+          if gh api orgs/$ORG/members/$COMMENTER --silent; then
+            echo "$COMMENTER is a member of $ORG."
+            echo "is_member=true" >> $GITHUB_OUTPUT
+          else
+            echo "$COMMENTER is NOT a member of $ORG. Exiting..."
+            echo "is_member=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if PR is Open
+        id: check-pr-state
+        run: |
+          PR_NUMBER="${{ github.event.issue.number }}"
+          PR_STATE=$(gh pr view $PR_NUMBER --json state -q .state)
+          echo "PR #$PR_NUMBER is currently: $PR_STATE"
+          
+          if [ "$PR_STATE" != "OPEN" ]; then
+            echo "PR is not open. Exiting..."
+            echo "pr_open=false" >> $GITHUB_OUTPUT
+          else
+            echo "PR is open."
+            echo "pr_open=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Exit if conditions not met
+        if: steps.verify-org.outputs.is_member != 'true' || steps.check-pr-state.outputs.pr_open != 'true'
+        run: |
+          echo "Conditions not met. Skipping the build trigger."
+          exit 0
+
+      - name: Parse build command
+        id: parse
+        run: |
+          comment="${{ github.event.comment.body }}"
+          echo "Comment: $comment"
+          if [[ "$comment" =~ ^/build[[:space:]]*([a-fA-F0-9]{7,40})?$ ]]; then
+            commit="${BASH_REMATCH[1]}"
+            if [ -z "$commit" ]; then
+              # PRの最新コミットSHAを取得
+              commit=$(gh pr view ${{ github.event.issue.number }} --json headRefOid -q .headRefOid)
+              echo "No commit specified. Using latest commit: $commit"
+            else
+              echo "Using specified commit: $commit"
+            fi
+            echo "commit=$commit" >> $GITHUB_OUTPUT
+          else
+            echo "No valid build command found."
+            exit 1
+          fi
+
+      - name: Trigger Unity Cloud Build
+        id: trigger-build
+        run: |
+          commit_sha=${{ steps.parse.outputs.commit }}
+          echo "Triggering build for commit: $commit_sha"
+
+          # Ensure jq is installed
+          sudo apt-get install -y jq
+
+          # Prepare payload
+          payload=$(jq -n \
+            --arg commit "$commit_sha" \
+            --arg platform "standalonewindows64" \
+            --arg machineTypeLabel "win_premium_v1" \
+            '{
+              clean: false,
+              delay: 0,
+              commit: $commit
+            }')
+
+          # Trigger build via Unity Cloud Build API
+          response=$(curl -s -w "%{http_code}" -o response.json -X POST "https://build-api.cloud.unity3d.com/api/v1/orgs/${{ secrets.UNITY_ORG_ID }}/projects/${{ secrets.UNITY_PROJECT_ID }}/buildtargets/${{ secrets.BUILD_TARGET_ID }}/builds" \
+            -H "${{ secrets.AUTHORIZATION_HEADER }}" \
+            -H "Content-Type: application/json" \
+            -d "$payload")
+
+          echo "HTTP Status Code: $response"
+
+          if [[ "$response" =~ ^2 ]]; then
+            echo "Build triggered successfully."
+            # Extract build ID from response
+            build_id=$(jq -r '.[0].build' response.json)
+            if [[ "$build_id" != "null" ]]; then
+              echo "build_id=$build_id" >> $GITHUB_OUTPUT
+            else
+              echo "Failed to trigger build. HTTP status code: $response"
+              # Extract error message
+              error_message=$(jq -r '.[0].error' response.json)
+              echo "error_message=$error_message" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Failed to trigger build. HTTP status code: $response"
+            # Extract error message
+            error_message=$(jq -r '.[0].error' response.json)
+            echo "error_message=$error_message" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ github.event.issue.number }}
+          hide_and_recreate: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            ✅ ビルドをqueueに追加しました。
+            コミット: `${{ steps.parse.outputs.commit }}`
+            ビルドID: `${{ steps.trigger-build.outputs.build_id }}`
+            状況はDiscordの#unity-buildチャンネルで確認してください。(完了すると自動でリンクが貼られます)

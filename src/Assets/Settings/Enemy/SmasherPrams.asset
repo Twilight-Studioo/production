@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cd10ad94dde418c80e1534826ad9595, type: 3}
+  m_Name: SmasherPrams
+  m_EditorClassIdentifier: 
+  foundDistance: 10
+  pursuitDistance: 14
+  damage: 10
+  bulletLifeTime: 5
+  maxHp: 100
+  patrolSpeed: 1
+  pursuitSpeed: 1.4
+  health: 500
+  chargeAttackTime: 0.5
+  chargeSpeed: 750
+  chargeTime: 1
+  chargeAttackDamage: 10
+  chargeIntervalSec: 1
+  upperHeight: 400
+  upperOccurrenceTime: 1
+  upperDamage: 6
+  upperIntervalSec: 0.5
+  jumpOccurrenceTime: 0.5
+  jumpIntervalSec: 0.5
+  slapDistance: 3
+  slapDamage: 3
+  slapOccurrenceTime: 0.1
+  slapIntervalSec: 0.1
+  fallAttackDistance: 15
+  fallSpeed: 80
+  fallAttackDamage: 10
+  fallAttackOccurrenceTime: 0.1
+  fallAttackIntervalSec: 0
+  debrisDamage: 10
+  debrisSpeed: 20
+  debrisAttackOccurrenceTime: 0.2
+  debrisAttackIntervalSec: 2
+  mineOccurrenceTime: 2
+  mineIntervalSec: 1
+  mineSpeedVertical: 50
+  mineSpeedBeside: 25
+  mineDamage: 30
+  kickTriggerTime: 1.5
+  kickDamage: 10
+  kickbackHalf: 100
+  kickbackOneThird: 150
+  kickbackTenth: 200

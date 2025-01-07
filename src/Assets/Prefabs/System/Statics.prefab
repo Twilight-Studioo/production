@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2938938321683381644}
   - component: {fileID: 2248742397137636691}
   - component: {fileID: 6463161338108047316}
+  - component: {fileID: 2371831410402479299}
   m_Layer: 0
   m_Name: Factory
   m_TagString: Untagged
@@ -75,6 +76,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectPrefab: {fileID: 4919690633393672407, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
+    type: 3}
+--- !u!114 &2371831410402479299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134378673789953357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb90bc3318a5423b958844d66fdd935e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDamageEffectPrefab: {fileID: 523181041067438922, guid: 6bf5b405f5edcd84681db4d058d0bfbb,
+    type: 3}
+  enemyDamageEffectPrefab: {fileID: 4262131058543893208, guid: 2f3c141cbcf763840ad43e8eeb46c942,
     type: 3}
 --- !u!1 &3753271352152893003
 GameObject:
@@ -312,7 +329,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8588103418973680680}
   - component: {fileID: 8673267923572853573}
-  - component: {fileID: 3885856482781034563}
   m_Layer: 0
   m_Name: Installer
   m_TagString: Untagged
@@ -348,25 +364,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: 
+    TypeName: Main.Installer.RootInstaller
   autoRun: 1
   autoInjectGameObjects: []
   characterParams: {fileID: 11400000, guid: ff0abe4541d12444b8f2c2f950daebc2, type: 2}
   gameSettings: {fileID: 11400000, guid: 8a53a45fe1b0e447fbfa4740df1db905, type: 2}
---- !u!114 &3885856482781034563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7875515698578903318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 839a9dce8ae54a96beb975b1b1f764cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputActionAsset: {fileID: -944628639613478452, guid: 76d496628dadb6f4d8f915bb7ea2aaaf,
-    type: 3}
+  gameAudioAssets: {fileID: 11400000, guid: 5e077b8ddf4fd4bedb1c9b2c349db0d8, type: 2}
 --- !u!1001 &5870329775406970056
 PrefabInstance:
   m_ObjectHideFlags: 0

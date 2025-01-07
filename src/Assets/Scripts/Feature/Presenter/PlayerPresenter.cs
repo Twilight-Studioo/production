@@ -5,6 +5,7 @@ using Core.Utilities;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Component;
+using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Model;
 using Feature.View;
@@ -19,10 +20,9 @@ namespace Feature.Presenter
 {
     public class PlayerPresenter : IDisposable
     {
-        private readonly AudioSource audioSource;
         private readonly CharacterParams characterParams;
 
-        private readonly EndFieldController endFieldController;
+        private readonly IEndFieldController endFieldController;
         private readonly EnemyParams enemyParams;
 
         private readonly GameUIView gameUIView;
@@ -32,6 +32,9 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
         private readonly VoltageBar voltageBar;
+        
+        private readonly IAudioMixerController audioMixerController;
+        private readonly DamageEffectFactory damageEffectFactory;
 
         private bool isGameOver;
         private IPlayerView playerView;
@@ -43,7 +46,9 @@ namespace Feature.Presenter
             VoltageBar voltageBar,
             GameUIView ui,
             VolumeController volumeController,
-            AudioSource audioSource
+            IEndFieldController endFieldController,
+            IAudioMixerController audioMixerController,
+            DamageEffectFactory damageEffectFactory
         )
         {
             playerModel = model;
@@ -51,8 +56,9 @@ namespace Feature.Presenter
             gameUIView = ui;
             swapTimer = new();
             this.voltageBar = voltageBar;
-            endFieldController = new();
-            this.audioSource = audioSource;
+            this.endFieldController = endFieldController;
+            this.audioMixerController = audioMixerController.CheckNull();
+            this.damageEffectFactory = damageEffectFactory.CheckNull();
         }
 
         public void Dispose()
@@ -65,7 +71,21 @@ namespace Feature.Presenter
         {
             playerView = view;
 
-            playerView.OnDamageEvent += playerModel.TakeDamage;
+            playerView.OnDamageEvent += (d, hit) =>
+            {
+                // pos to hit point
+                var rotation = Quaternion.LookRotation(playerView.GetTransform().position - hit);
+                damageEffectFactory.PlayEffectAtPosition(playerView.GetTransform().position, rotation, DamageEffectFactory.Type.Player);
+                if (playerModel.TakeDamage(d))
+                {
+                    return new DamageResult.Killed(playerView.GetTransform());
+                }
+                else
+                {
+                    return new DamageResult.Damaged(playerView.GetTransform());
+                }
+            };
+            playerView.OnHitHandler += OnAttackHitHandler;
             playerView.SwapRange = characterParams.canSwapDistance;
             playerView.GetPositionRef()
                 .Subscribe(position =>
@@ -106,14 +126,20 @@ namespace Feature.Presenter
                     if (x <= 0)
                     {
                         isGameOver = true;
-                        endFieldController.SubscribeToPlayerHealth(playerModel.Health);
                     }
                 })
                 .AddTo(playerHpBar);
+            endFieldController.SubscribeToPlayerHealth(playerModel.Health);
             playerView.SetParam(playerModel.ComboTimeWindow, playerModel.ComboAngleOffset,
-                playerModel.MaxComboCount, playerModel.AttackCoolTime, audioSource
+                playerModel.MaxComboCount, playerModel.AttackCoolTime, playerModel.MaxComboCoolTime
             );
             playerModel.PlayerStateChange += StateHandler;
+        }
+        
+        private void OnAttackHitHandler(DamageResult result)
+        {
+            playerModel.OnEnemyAttacked(result);
+            audioMixerController.PlayOneShotSE(AudioAssetType.SlashingHit);
         }
 
         private void StateHandler(PlayerStateEvent stateEvent)
@@ -258,18 +284,24 @@ namespace Feature.Presenter
 
         public void Attack(float degree)
         {
-            if (!isGameOver)
+            if (!isGameOver && playerModel.CanAttack.Value && playerView.CanAttack())
             {
                 playerModel.Attack();
-                playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower());
-                voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
+                var isSpecialAttack = playerModel.VoltagePower.Value >= characterParams.useVoltageAttackValue;
+                playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
+                audioMixerController.PlayOneShotSE(AudioAssetType.Slashing);
+                voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,characterParams.votageTwoAttackValue,characterParams.maxVoltage);
+                playerView.VoltageEffect( playerModel.VoltagePower.Value,  characterParams.useVoltageAttackValue, characterParams.votageTwoAttackValue,
+                    characterParams.maxVoltage);
             }
         }
 
         private void AddVoltageSwap()
         {
             playerModel.AddVoltageSwap();
-            voltageBar.UpdateVoltageBar(playerModel.VoltageValue, characterParams.useVoltageAttackValue);
+            voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,characterParams.votageTwoAttackValue,characterParams.maxVoltage);
+            playerView.VoltageEffect( playerModel.VoltagePower.Value,  characterParams.useVoltageAttackValue, characterParams.votageTwoAttackValue,
+                characterParams.maxVoltage);
         }
 
         public Transform GetTransform() => playerView.GetTransform();

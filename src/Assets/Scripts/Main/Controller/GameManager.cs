@@ -1,6 +1,8 @@
 #region
 
 using System;
+using Core.Utilities;
+using Feature.Common.Constants;
 using Feature.Component.Environment;
 using Feature.Interface;
 using Feature.Presenter;
@@ -14,19 +16,25 @@ namespace Main.Controller
     public class GameManager : IStartable, IDisposable
     {
         private readonly IGameController gameController;
+        private readonly IGameInputController gameInputController;
         private readonly PlayerPresenter playerPresenter;
         private readonly PlayerStart playerStart;
+        private readonly IAudioMixerController audioMixerController;
 
         private bool isStarted;
 
         [Inject]
         public GameManager(
             PlayerStart playerStart,
-            IGameController gameController
+            IGameController gameController,
+            IGameInputController gameInputController,
+            IAudioMixerController audioMixerController
         )
         {
-            this.gameController = gameController;
-            this.playerStart = playerStart;
+            this.gameController = gameController.CheckNull();
+            this.playerStart = playerStart.CheckNull();
+            this.gameInputController = gameInputController.CheckNull();
+            this.audioMixerController = audioMixerController.CheckNull();
         }
 
         public void Dispose()
@@ -40,6 +48,7 @@ namespace Main.Controller
             {
                 return;
             }
+            audioMixerController.LoadSaveData();
 
             isStarted = true;
             var player = playerStart.OnStart();
@@ -50,6 +59,8 @@ namespace Main.Controller
 
             gameController.OnPossess(player);
             gameController.Start();
+            gameInputController.Start();
+            audioMixerController.PlayLoopFile(AudioAssetType.BGM);
         }
 
         public static void Register(IContainerBuilder builder)

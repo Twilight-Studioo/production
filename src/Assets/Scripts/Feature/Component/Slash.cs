@@ -1,5 +1,6 @@
 #region
 
+using System;
 using Feature.Interface;
 using UnityEngine;
 
@@ -11,26 +12,25 @@ namespace Feature.Component
 {
     public class Slash : MonoBehaviour
     {
-        private AudioSource audioSource;
         private uint damage;
-        private AudioClip hitSound;
+        
+        public event Action<DamageResult> OnHitEvent;
 
         private void OnTriggerEnter(Collider other)
         {
-            var enemy = other.gameObject.GetComponent<IEnemy>()
-                        ?? other.gameObject.GetComponentInParent<IEnemy>();
-            enemy?.OnDamage(damage, other.transform.position, transform);
-            if (enemy != null)
+            var enemy = other.gameObject.GetComponent<IDamaged>()
+                        ?? other.gameObject.GetComponentInParent<IDamaged>();
+            if (enemy == null || other.gameObject.CompareTag("Player"))
             {
-                audioSource.PlayOneShot(hitSound);
+                return;
             }
+            var result = enemy.OnDamage(damage, other.transform.position, transform);
+            OnHitEvent?.Invoke(result);
         }
 
-        public void SetDamage(uint dmg, AudioClip selectedClip, AudioSource audioSource)
+        public void SetDamage(uint dmg)
         {
             damage = dmg;
-            hitSound = selectedClip;
-            this.audioSource = audioSource;
         }
     }
 }
