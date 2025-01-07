@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: EnemyMask
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Arm
+    m_Weight: 1
+  - m_Path: Armature_zakoW
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/LeftUpLeg
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/LeftUpLeg/LeftLeg
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/LeftUpLeg/LeftLeg/LeftFoot
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/RightUpLeg
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/RightUpLeg/RightLeg
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/RightUpLeg/RightLeg/RightFoot
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/Head
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/Head/Eye
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/LeftShoulder
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/LeftShoulder/LeftArm
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/LeftShoulder/LeftArm/LeftForeArm
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/LeftShoulder/LeftArm/LeftForeArm/LeftForeArm_sp
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/LeftShoulder/LeftArm/LeftForeArm/LeftHand
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/RightShoulder
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/RightShoulder/RightArm
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/RightShoulder/RightArm/RightForeArm
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/RightShoulder/RightArm/RightForeArm/RightForeArm_sp
+    m_Weight: 1
+  - m_Path: Armature_zakoW/Root/Hips/Spine/RightShoulder/RightArm/RightForeArm/RightHand
+    m_Weight: 1
+  - m_Path: Body
+    m_Weight: 1
+  - m_Path: Eye
+    m_Weight: 1
+  - m_Path: HandRebaring
+    m_Weight: 1
+  - m_Path: HandWelding
+    m_Weight: 1
+  - m_Path: Leg
+    m_Weight: 1
+  - m_Path: RebarL
+    m_Weight: 1
+  - m_Path: RebarR
+    m_Weight: 1
