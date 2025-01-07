@@ -15,7 +15,7 @@ namespace Feature.Interface
 
         public event Action OnHealth0Event;
 
-        public event DamageHandler<uint, Vector3> OnDamageEvent;
+        public event DamageHandler<DamageResult, Vector3> OnDamageEvent;
 
         public event Action OnTakeDamageEvent;
 

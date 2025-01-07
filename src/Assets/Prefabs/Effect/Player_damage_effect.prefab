@@ -75,8 +75,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
   m_LocalPosition: {x: -0, y: 0.385, z: 0.395}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3130827728873669100}
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
@@ -137,7 +137,10 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 7
+        m_Name: Range
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:

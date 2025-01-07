@@ -161,7 +161,6 @@ namespace Feature.Component.Enemy
 
                 if (Math.Abs(enemyParams.shootDistance - distance) < 2f && distance > 1f && canBullet)
                 {
-                    Debug.Log("Attack");
                     canBullet = false;
                     lastAttackedTime = Time.time;
                     yield return Attack();
@@ -189,7 +188,17 @@ namespace Feature.Component.Enemy
 
         private IEnumerator Attack()
         {
-            animator.Play("attackA");
+            if (animator)
+            {
+                try
+                {
+                    animator.Play("attackA");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
@@ -237,13 +246,19 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         public void DestroyEnemy()
         {
             loseAnimation = true;
-            animator.Play("defeat");
+            try
+            {
+                animator.Play("defeat");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

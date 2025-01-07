@@ -35,12 +35,20 @@ namespace Main.Factory
             var points = objectUtil.FindObjectsOfType<EnemyStart>();
             foreach (var enemyStart in points)
             {
-                if (settings.GetEnemyTypes().All(x => x != enemyStart.SpawnEnemyType))
+                try
                 {
-                    throw new($"EnemyType {enemyStart.SpawnEnemyType} is not found in settings");
-                }
+                    if (settings.GetEnemyTypes().All(x => x != enemyStart.SpawnEnemyType))
+                    {
+                        throw new($"EnemyType {enemyStart.SpawnEnemyType} is not found in settings");
+                    }
 
-                enemyStart.OnRequestSpawn = t => SpawnEnemy(enemyStart, t);
+                    enemyStart.OnRequestSpawn = t => SpawnEnemy(enemyStart, t);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                    throw;
+                }
             }
         }
 
@@ -53,11 +61,18 @@ namespace Main.Factory
             var presenter = new EnemyPresenter(enemyComponent, agent, start.GetParam ?? enemyRef.parameters);
             OnAddField?.Invoke(presenter);
             enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);
-            enemyComponent.OnDamageEvent += (damage, hitPoint) =>
+            enemyComponent.OnDamageEvent += (result, hitPoint) =>
             {
-                var rotation = Quaternion.LookRotation(enemy.transform.position - hitPoint);
-                Debug.Log($"rotation {rotation}");
-                damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.Enemy);
+                var forward = enemy.transform.position - hitPoint;
+                var rotation = forward != Vector3.zero ? Quaternion.LookRotation(forward) : Quaternion.identity;
+                if (result is DamageResult.Killed)
+                {
+                    damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.EnemyKill);
+                }
+                else
+                {
+                    damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.Enemy);
+                }
                 return new DamageResult.Damaged(enemy.transform);
             };
             presenter.Execute(start.Points);

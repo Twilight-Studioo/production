@@ -137,7 +137,6 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         private TriggerRef MoveTrigger() =>
