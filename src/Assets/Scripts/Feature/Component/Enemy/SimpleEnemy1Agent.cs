@@ -158,6 +158,10 @@ namespace Feature.Component.Enemy
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
+            if (loseAnimation)
+            {
+                yield break;
+            }
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
@@ -219,11 +223,11 @@ namespace Feature.Component.Enemy
                yield break;
             }
             AttackDecision();
-            // yield return Action("AIRushToPosition")
-            //     .Param("RushSpeed", enemyParams.rushSpeed)
-            //     .Param("TargetTransform", playerTransform)
+             yield return Action("AIRushToPosition")
+                 .Param("RushSpeed", enemyParams.rushSpeed)
+                 .Param("TargetTransform", playerTransform)
             //     .Param("OnHitRushAttack", onHitRushAttack)
-            //     .Build();
+                 .Build();
             yield return Wait(enemyParams.rushAfterDelay);
         }
 
