@@ -5,8 +5,6 @@ using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Interface;
 using UnityEngine;
-using System.Collections;
-using Core.Utilities;
 
 #endregion
 
@@ -32,7 +30,6 @@ namespace Feature.View
 
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            Debug.Log($"OnDamage: {damage} {CurrentHealth}");
             if (CurrentHealth <= 0)
             {
                 return new DamageResult.Missed();
