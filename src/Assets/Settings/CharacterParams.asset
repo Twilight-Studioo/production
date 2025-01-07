@@ -28,7 +28,7 @@ MonoBehaviour:
   maxComboCoolTime: 1
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
-  canSwapDistance: 20
+  canSwapDistance: 18
   swapReturnTimeMillis: 1000
   swapReturnCurve: 0
   maxHasStamina: 12
@@ -41,6 +41,7 @@ MonoBehaviour:
   recoveryStaminaTimeMillis: 10
   useDaggerUseStamina: 20
   useVoltageAttackValue: 30
+  votageTwoAttackValue: 65
   addVoltageSwapValue: 10
   voltageAttackPowerValue: 2
   maxVoltage: 100

@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab235e7024649ab9b337fe47e2a1bba, type: 3}
   m_Name: SimpleEnemy2Params
   m_EditorClassIdentifier: 
-  foundDistance: 10
-  pursuitDistance: 14
+  foundDistance: 14
+  pursuitDistance: 17
   damage: 10
   bulletLifeTime: 5
   maxHp: 10
   patrolSpeed: 1
   pursuitSpeed: 1.4
-  shootDistance: 10
+  shootDistance: 14
   shootSpeed: 7
   shootIntervalSec: 0.2
   shootCount: 1
-  shootAfterSec: 2
+  shootAfterSec: 2.5

@@ -16,15 +16,15 @@ MonoBehaviour:
   pursuitDistance: 20
   damage: 10
   bulletLifeTime: 5
-  maxHp: 15
+  maxHp: 10
   patrolSpeed: 1
   pursuitSpeed: 1.4
   shootDistance: 10
   shootSpeed: 5
   shootIntervalSec: 0.4
-  shootCount: 3
+  shootCount: 1
   shootAfterSec: 1
-  shootCoolDownSec: 5
+  shootCoolDownSec: 2
   movePower: 2
   maxHeightFromGround: 20
   minDistanceToCeiling: 5
