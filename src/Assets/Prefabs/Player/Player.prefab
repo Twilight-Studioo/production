@@ -2766,7 +2766,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2c2d43ae97d9bcd4cb8decf3dc761991,
         type: 3}
@@ -4664,32 +4664,32 @@ PrefabInstance:
     - target: {fileID: 313941454988547379, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
       propertyPath: m_AABB.m_Center.x
-      value: NaN
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 313941454988547379, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
       propertyPath: m_AABB.m_Center.y
-      value: NaN
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 313941454988547379, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
       propertyPath: m_AABB.m_Center.z
-      value: NaN
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 313941454988547379, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
       propertyPath: m_AABB.m_Extent.x
-      value: NaN
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 313941454988547379, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
       propertyPath: m_AABB.m_Extent.y
-      value: NaN
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 313941454988547379, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
       propertyPath: m_AABB.m_Extent.z
-      value: NaN
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7045083909915287496, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
@@ -4699,7 +4699,7 @@ PrefabInstance:
     - target: {fileID: 7045083909915287496, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7371979905000986218, guid: a4a9957a091d6464ab1dad3b15a55a9c,
         type: 3}
