@@ -1,11 +1,12 @@
-#region
+                                                                                                                                                                        #region
 
 using System;
 using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Interface;
 using UnityEngine;
-
+using System.Collections;                                                                                                                                                                        
+                                                                                                                                                                        
 #endregion
 
 namespace Feature.View
@@ -13,7 +14,6 @@ namespace Feature.View
     public class EnemyView : MonoBehaviour, IHealthBar, IEnemy, IDamaged
     {
         private IEnemyAgent agent;
-
         public EnemyType EnemyType => agent.EnemyType;
 
         public event DamageHandler<uint, Vector3> OnDamageEvent;
@@ -33,18 +33,19 @@ namespace Feature.View
         {
             OnDamageEvent?.Invoke(damage, attacker.position);
             CurrentHealth -= damage;
-            Debug.Log($"CurrentHealth {CurrentHealth}");
             if (CurrentHealth <= 0)
             {
                 // delete 
                 OnHealth0Event?.Invoke();
                 agent.FlowCancel();
-                agent.Delete();
-                if (gameObject != null)
-                {
-                    Destroy(gameObject);
-                }
-                OnRemoveEvent?.Invoke();
+                agent.DestroyEnemy();
+                StartCoroutine(WaitForDeathAnimation());
+                // agent.Delete();
+                // if (gameObject != null)
+                // {
+                //     Destroy(gameObject);
+                // }
+                // OnRemoveEvent?.Invoke();
                 return new DamageResult.Killed(transform);
             }
             else
@@ -54,7 +55,19 @@ namespace Feature.View
                 return new DamageResult.Damaged(transform);
             }
         }
+        private IEnumerator WaitForDeathAnimation()
+        {
+            // アニメーションの長さを待機
+            yield return new WaitForSeconds(3);
 
+            // オブジェクト削除
+            if (gameObject != null)
+            {
+                agent.Delete();
+                Destroy(gameObject);
+            }
+            OnRemoveEvent?.Invoke();
+        }
         public void SetHealth(uint health)
         {
             MaxHealth = health;
