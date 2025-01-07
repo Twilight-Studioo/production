@@ -222,5 +222,9 @@ namespace Feature.Component.Enemy
                     break;
             }
         }
+        public void DestroyEnemy()
+        {
+            
+        }
     }
 }
