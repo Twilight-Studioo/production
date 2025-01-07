@@ -61,11 +61,17 @@ namespace Main.Factory
             var presenter = new EnemyPresenter(enemyComponent, agent, start.GetParam ?? enemyRef.parameters);
             OnAddField?.Invoke(presenter);
             enemyComponent.OnHealth0Event += () => OnRemoveField?.Invoke(presenter);
-            enemyComponent.OnDamageEvent += (damage, hitPoint) =>
+            enemyComponent.OnDamageEvent += (result, hitPoint) =>
             {
                 var rotation = Quaternion.LookRotation(enemy.transform.position - hitPoint);
-                Debug.Log($"rotation {rotation}");
-                damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.Enemy);
+                if (result is DamageResult.Killed)
+                {
+                    damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.EnemyKill);
+                }
+                else
+                {
+                    damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.Enemy);
+                }
                 return new DamageResult.Damaged(enemy.transform);
             };
             presenter.Execute(start.Points);

@@ -16,6 +16,7 @@ namespace Feature.Component.Environment
         {
             Player,
             Enemy,
+            EnemyKill,
         }
         
         private EffectManager<VFXView> playerDamageEffectManager;
@@ -42,6 +43,14 @@ namespace Feature.Component.Environment
                 case Type.Enemy:
                     
                     enemyDamageEffectManager.PlayEffect(position, enemyDamageEffectPrefab.GetComponent<VFXView>(), EffectLifetime, rotation);
+                    break;
+                case Type.EnemyKill:
+                    enemyDamageEffectManager
+                        .PlayEffect(position, enemyDamageEffectPrefab.GetComponent<VFXView>(), EffectLifetime, rotation,
+                            view =>
+                            {
+                                view.GetEffect().CheckNull()?.SetBool("Death", true);
+                            });
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -16,7 +16,7 @@ namespace Feature.View
         private IEnemyAgent agent;
         public EnemyType EnemyType => agent.EnemyType;
 
-        public event DamageHandler<uint, Vector3> OnDamageEvent;
+        public event DamageHandler<DamageResult, Vector3> OnDamageEvent;
 
         public event Action OnTakeDamageEvent;
 
@@ -31,10 +31,10 @@ namespace Feature.View
 
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            OnDamageEvent?.Invoke(damage, attacker.position);
             CurrentHealth -= damage;
             if (CurrentHealth <= 0)
             {
+                OnDamageEvent?.Invoke(new DamageResult.Killed(transform), hitPoint);
                 // delete 
                 OnHealth0Event?.Invoke();
                 agent.FlowCancel();
@@ -50,6 +50,7 @@ namespace Feature.View
             }
             else
             {
+                OnDamageEvent?.Invoke(new DamageResult.Damaged(transform), hitPoint);
                 // hit event for agent
                 agent.OnDamage(damage, hitPoint, attacker);
                 return new DamageResult.Damaged(transform);
