@@ -346,7 +346,7 @@ public class FlyAttackState : IState//特殊攻击触发的飞天攻击
 
     public void Execute()
     {
-        _gunnerController.ChangeState(new LandingState(_gunnerController));// 切换到落地状态   
+        _gunnerController.ChangeState(new LandingState(_gunnerController));   
     }
 
     public void Exit()
