@@ -40,7 +40,10 @@ namespace Core.Utilities
                         if (!superObject)
                         {
                             superObject = new GameObject("SuperObject");
-                            Object.DontDestroyOnLoad(superObject);
+                            if (Application.isPlaying)
+                            {
+                                Object.DontDestroyOnLoad(superObject);
+                            }
                         }
                     }
                 }
