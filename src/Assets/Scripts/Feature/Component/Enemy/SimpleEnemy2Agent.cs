@@ -36,18 +36,20 @@ namespace Feature.Component.Enemy
         private Transform playerTransform;
         private List<Vector3> points;
 
+        private Animator animator;
+        private bool loseAnimation = false;
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             rb = GetComponent<Rigidbody>();
             position.Value = transform.position;
+            animator = GetComponentInChildren<Animator>();
         }
 
         private void Update()
         {
             position.Value = transform.position;
         }
-
         public Action RequireDestroy { set; get; }
 
         public GetHealth OnGetHealth { get; set; }
@@ -62,7 +64,7 @@ namespace Feature.Component.Enemy
         public void FlowExecute()
         {
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
-            FlowStart();
+            FlowStart(); 
         }
 
         public void SetParams(EnemyParams @params)
@@ -136,61 +138,77 @@ namespace Feature.Component.Enemy
 
             while (true)
             {
-                // パトロール状態
-                agent.ResetPath();
+                if (!loseAnimation)
+                {
+                    // パトロール状態
+                    agent.ResetPath();
 
-                var distance = Vector3.Distance(playerTransform.position, transform.position);
+                    var distance = Vector3.Distance(playerTransform.position, transform.position);
 
-                if (Math.Abs(enemyParams.shootDistance - distance) < 1f || canBullet)
-                {
-                    canBullet = false;
-                    yield return Attack();
+                    if (Math.Abs(enemyParams.shootDistance - distance) < 1f || canBullet)
+                    {
+                        canBullet = false;
+                        yield return Attack();
+                    }
+                    else if (enemyParams.pursuitDistance > distance)
+                    {
+                        yield return Action("AIMoveToTargetDistance")
+                            .Param("Target", playerTransform)
+                            .Param("Distance", enemyParams.shootDistance)
+                            .Param("MoveSpeed", 1f)
+                            .IfEnd(
+                                UnFocusTrigger().Build(), // プレイヤーを見失った場合のトリガー
+                                AttackTrigger().Build()
+                            )
+                            .Build();
+                        canBullet = true;
+                    }
+                    else if((enemyParams.foundDistance > distance))
+                    {
+                        yield return Action("PointsAIMoveTo")
+                            .Param("Points", points)
+                            .Param("MoveSpeed", enemyParams.patrolSpeed)
+                            .IfEnd(
+                                FocusTrigger().Build(), // プレイヤー発見のトリガー
+                                AttackTrigger().Build() // 攻撃モードのトリガー
+                            )
+                            .Build();
+                    }
+                    else
+                    {
+                        animator.Play("miss");
+                        yield return Wait(5.0f);
+                    }
                 }
-                else if (enemyParams.pursuitDistance > distance)
-                {
-                    yield return Action("AIMoveToTargetDistance")
-                        .Param("Target", playerTransform)
-                        .Param("Distance", enemyParams.shootDistance)
-                        .Param("MoveSpeed", 1f)
-                        .IfEnd(
-                            UnFocusTrigger().Build(), // プレイヤーを見失った場合のトリガー
-                            AttackTrigger().Build()
-                        )
-                        .Build();
-                    canBullet = true;
-                }
-                else
-                {
-                    yield return Action("PointsAIMoveTo")
-                        .Param("Points", points)
-                        .Param("MoveSpeed", enemyParams.patrolSpeed)
-                        .IfEnd(
-                            FocusTrigger().Build(), // プレイヤー発見のトリガー
-                            AttackTrigger().Build() // 攻撃モードのトリガー
-                        )
-                        .Build();
-                }
+
             }
         }
 
         private IEnumerator Attack()
         {
-            var dir = (playerTransform.position - transform.position).normalized;
-            for (var _ = 0; _ < enemyParams.shootCount; _++)
+            if (!loseAnimation)
             {
-                var bullet = ObjectFactory.Instance.CreateObject(
-                    bulletPrefab,
-                    transform.position + dir * 1f,
-                    Quaternion.identity);
-                bullet.transform.LookAt(playerTransform);
-                var bulletRb = bullet.GetComponent<DamagedTrigger>();
-                bulletRb.SetHitObject(true, true, true);
-                bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
-                bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
-                yield return Wait(enemyParams.shootIntervalSec);
+                animator.Play("attackSetB");
+                yield return Wait(1.5f);
+                animator.Play("attackB");
+                var dir = (playerTransform.position - transform.position).normalized;
+                for (var _ = 0; _ < enemyParams.shootCount; _++)
+                {
+                    var bullet = ObjectFactory.Instance.CreateObject(
+                        bulletPrefab,
+                        transform.position + dir * 1f,
+                        Quaternion.identity);
+                    bullet.transform.LookAt(playerTransform);
+                    var bulletRb = bullet.GetComponent<DamagedTrigger>();
+                    bulletRb.SetHitObject(true, true, true);
+                    bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
+                    bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
+                    yield return Wait(enemyParams.shootIntervalSec);
+                }
+                
+                yield return Wait(enemyParams.shootAfterSec);
             }
 
-            yield return Wait(enemyParams.shootAfterSec);
         }
 
         public void OnSelected()
@@ -224,6 +242,11 @@ namespace Feature.Component.Enemy
         {
             OnDestroyEvent?.Invoke();
             Destroy(gameObject);
+        }
+        public void DestroyEnemy()
+        {
+            loseAnimation = true;
+            animator.Play("defeat");
         }
     }
 }
