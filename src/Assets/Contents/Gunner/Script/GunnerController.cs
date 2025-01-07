@@ -271,7 +271,7 @@ public class GunnerController : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.name == "slash1" || collision.gameObject.name == "slash2" || collision.gameObject.name == "slash3")
         {
             enemyHP -= 10;
             Debug.Log($"Gunner hit by Player! HP: {enemyHP}");
@@ -281,7 +281,6 @@ public class GunnerController : MonoBehaviour
             knockbackDirection.y = 0;
             rb.AddForce(knockbackDirection * 10f, ForceMode.Impulse);
 
-            // 检查 HP 是否归零
             if (enemyHP <= 0)
             {
                 StartCoroutine(FadeOutAndEndGame());
@@ -293,7 +292,7 @@ public class GunnerController : MonoBehaviour
     {
         Debug.Log("Gunner defeated! Starting fade-out...");
 
-        float duration = 2.0f; // 淡出时间
+        float duration = 2.0f; 
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
