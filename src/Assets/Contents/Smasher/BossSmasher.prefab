@@ -336,22 +336,22 @@ PrefabInstance:
     - target: {fileID: -1086963222496172109, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.28143796
+      value: 0.28143728
       objectReference: {fileID: 0}
     - target: {fileID: -1086963222496172109, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.30452248
+      value: 0.30452532
       objectReference: {fileID: 0}
     - target: {fileID: -1086963222496172109, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.8882605
+      value: 0.8882595
       objectReference: {fileID: 0}
     - target: {fileID: -1086963222496172109, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.19761609
+      value: 0.197617
       objectReference: {fileID: 0}
     - target: {fileID: -979708066547803064, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
@@ -661,22 +661,22 @@ PrefabInstance:
     - target: {fileID: 8848751684091601938, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.28143796
+      value: 0.28143728
       objectReference: {fileID: 0}
     - target: {fileID: 8848751684091601938, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.30452248
+      value: 0.30452532
       objectReference: {fileID: 0}
     - target: {fileID: 8848751684091601938, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.8882605
+      value: -0.8882595
       objectReference: {fileID: 0}
     - target: {fileID: 8848751684091601938, guid: 5954a93dbe3cae54d86f38089fc823e8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.19761609
+      value: -0.197617
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1152,12 +1152,12 @@ RotationConstraint:
   m_GameObject: {fileID: 4250444573989922407}
   m_Enabled: 1
   serializedVersion: 2
-  m_Weight: 0.5
+  m_Weight: 0.6
   m_RotationAtRest: {x: -10.350049, y: 140.90573, z: 41.530342}
   m_RotationOffset: {x: -0.8737104, y: -0.050801806, z: 17.428389}
   m_AffectRotationX: 0
   m_AffectRotationY: 1
-  m_AffectRotationZ: 0
+  m_AffectRotationZ: 1
   m_Active: 1
   m_IsLocked: 1
   m_Sources:
@@ -1393,12 +1393,12 @@ RotationConstraint:
   m_GameObject: {fileID: 6817389889771721087}
   m_Enabled: 1
   serializedVersion: 2
-  m_Weight: 0.5
+  m_Weight: 0.6
   m_RotationAtRest: {x: -10.35005, y: -140.90573, z: -41.530346}
   m_RotationOffset: {x: -0.87371117, y: 0.050805397, z: -17.428392}
   m_AffectRotationX: 0
   m_AffectRotationY: 1
-  m_AffectRotationZ: 0
+  m_AffectRotationZ: 1
   m_Active: 1
   m_IsLocked: 1
   m_Sources:
