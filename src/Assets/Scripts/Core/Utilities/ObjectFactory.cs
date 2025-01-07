@@ -29,7 +29,19 @@ namespace Core.Utilities
                 .AddTo(SuperObject);
         }
 
-        public static GameObject SuperObject { get; } = superObject ??= new("ObjectFactory");
+        public static GameObject SuperObject
+        {
+            get
+            {
+                if (superObject == null)
+                {
+                    superObject = new GameObject("SuperObject");
+                    Object.DontDestroyOnLoad(superObject);
+                }
+
+                return superObject;
+            }
+        }
         public static ObjectFactory Instance => instance ??= new();
         public event Action<GameObject> OnObjectCreated;
 
