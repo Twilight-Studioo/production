@@ -60,6 +60,10 @@ namespace Feature.Component.Enemy
         public void FlowCancel()
         {
             FlowStop();
+            if (movableCoroutine != null)
+            {
+                StopCoroutine(movableCoroutine);
+            }
         }
 
         public void FlowExecute()
