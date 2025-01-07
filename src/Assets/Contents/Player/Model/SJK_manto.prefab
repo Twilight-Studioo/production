@@ -396,8 +396,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 3857115022940273104}
   m_AABB:
-    m_Center: {x: 0.00031196524, y: 0.014451948, z: 0.00005223439}
-    m_Extent: {x: 0.0019562365, y: 0.001527247, z: 0.001584045}
+    m_Center: {x: 0, y: 0.01, z: 0}
+    m_Extent: {x: 0.01, y: 0.01, z: 0.01}
   m_DirtyAABB: 0
 --- !u!1 &618816059396768451
 GameObject:
@@ -710,8 +710,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 3857115022940273104}
   m_AABB:
-    m_Center: {x: 3.4924597e-10, y: 0.0007208574, z: -0.00028387326}
-    m_Extent: {x: 0.0014646758, y: 0.001519247, z: 0.0012598964}
+    m_Center: {x: 0, y: 0.01, z: 0}
+    m_Extent: {x: 0.01, y: 0.01, z: 0.01}
   m_DirtyAABB: 0
 --- !u!1 &987676342802664310
 GameObject:
@@ -2646,8 +2646,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 3857115022940273104}
   m_AABB:
-    m_Center: {x: 1.1641532e-10, y: 0.0138207525, z: -0.00041812722}
-    m_Extent: {x: 0.0012044986, y: 0.0012128074, z: 0.0008569073}
+    m_Center: {x: 0, y: 0.01, z: 0}
+    m_Extent: {x: 0.01, y: 0.01, z: 0.01}
   m_DirtyAABB: 0
 --- !u!1 &5786725376747558248
 GameObject:
@@ -3122,8 +3122,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 3857115022940273104}
   m_AABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 1, y: 1, z: 1}
+    m_Center: {x: 0, y: 0.01, z: 0}
+    m_Extent: {x: 0.01, y: 0.01, z: 0.01}
   m_DirtyAABB: 0
 --- !u!1 &6345986730669504355
 GameObject:
@@ -3578,8 +3578,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 3857115022940273104}
   m_AABB:
-    m_Center: {x: 5.820766e-10, y: 0.0077525787, z: -0.00011269815}
-    m_Extent: {x: 0.0017542382, y: 0.0057357447, z: 0.0010442879}
+    m_Center: {x: 0, y: 0.01, z: 0}
+    m_Extent: {x: 0.01, y: 0.01, z: 0.01}
   m_DirtyAABB: 0
 --- !u!1 &7117733083495372725
 GameObject:
@@ -4205,32 +4205,32 @@ PrefabInstance:
     - target: {fileID: 2163781913510973215, guid: 8ed13ab303f86474d8b4b1c2c7807440,
         type: 3}
       propertyPath: m_AABB.m_Center.x
-      value: NaN
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2163781913510973215, guid: 8ed13ab303f86474d8b4b1c2c7807440,
         type: 3}
       propertyPath: m_AABB.m_Center.y
-      value: NaN
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 2163781913510973215, guid: 8ed13ab303f86474d8b4b1c2c7807440,
         type: 3}
       propertyPath: m_AABB.m_Center.z
-      value: NaN
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2163781913510973215, guid: 8ed13ab303f86474d8b4b1c2c7807440,
         type: 3}
       propertyPath: m_AABB.m_Extent.x
-      value: NaN
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2163781913510973215, guid: 8ed13ab303f86474d8b4b1c2c7807440,
         type: 3}
       propertyPath: m_AABB.m_Extent.y
-      value: NaN
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2163781913510973215, guid: 8ed13ab303f86474d8b4b1c2c7807440,
         type: 3}
       propertyPath: m_AABB.m_Extent.z
-      value: NaN
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
