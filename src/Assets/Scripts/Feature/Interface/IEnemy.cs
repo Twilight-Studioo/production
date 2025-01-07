@@ -11,11 +11,11 @@ namespace Feature.Interface
     public interface IEnemy
     {
         public EnemyType EnemyType { get; }
-        public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
+        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
 
         public event Action OnHealth0Event;
 
-        public event Action OnDamageEvent;
+        public event DamageHandler<uint, Vector3> OnDamageEvent;
 
         public event Action OnTakeDamageEvent;
 

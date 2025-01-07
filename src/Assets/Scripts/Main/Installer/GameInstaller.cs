@@ -9,6 +9,7 @@ using Feature.Model;
 using Feature.Presenter;
 using Feature.View;
 using Main.Controller;
+using Main.Controller.Save;
 using Main.Factory;
 using UnityEngine;
 using VContainer;
@@ -22,6 +23,7 @@ namespace Main.Installer
     {
         [SerializeField] private CharacterParams characterParams;
         [SerializeField] private GameSettings gameSettings;
+        [SerializeField] private GameAudioAssets gameAudioAssets;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -30,13 +32,14 @@ namespace Main.Installer
             builder.RegisterComponentInHierarchy<TargetGroupManager>();
             builder.RegisterComponentInHierarchy<EnemyFactory>();
             builder.RegisterComponentInHierarchy<SwapEffectFactory>();
+            builder.RegisterComponentInHierarchy<DamageEffectFactory>();
             builder.RegisterComponentInHierarchy<GameUIView>();
-            builder.RegisterComponentInHierarchy<SwapView>();
             builder.RegisterComponentInHierarchy<VoltageBar>();
             builder.RegisterComponentInHierarchy<SelectorEffect>();
             builder.RegisterComponentInHierarchy<VolumeController>();
             builder.RegisterComponentInHierarchy<CameraSwitcher>();
             builder.RegisterComponentInHierarchy<AudioSource>();
+            builder.RegisterComponentInHierarchy<IAudioMixerController>();
 
 
             builder.Register<SwapPresenter>(Lifetime.Scoped);
@@ -44,6 +47,7 @@ namespace Main.Installer
             builder.Register<IEndFieldController, EndFieldController>(Lifetime.Scoped);
             builder.RegisterInstance(characterParams);
             builder.RegisterInstance(gameSettings);
+            builder.RegisterInstance(gameAudioAssets);
 
             builder.Register<PlayerModel>(Lifetime.Scoped);
             builder.Register<PlayerPresenter>(Lifetime.Scoped);

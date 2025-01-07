@@ -43,7 +43,7 @@ namespace Core.Utilities.Effect
                 .AddTo(context);
         }
 
-        public T PlayEffect(Vector3 position, T prefab, float lifetime)
+        public T PlayEffect(Vector3 position, T prefab, float lifetime, Quaternion rotate = default)
         {
             EffectInstance<T> effectInstance;
 
@@ -68,6 +68,7 @@ namespace Core.Utilities.Effect
 
             effectInstance.Effect.enabled = true;
             effectInstance.Effect.transform.position = position;
+            effectInstance.Effect.transform.rotation = rotate;
             effectInstance.UpdateUsage();
             context.StartCoroutine(ReturnEffectToPool(effectInstance, lifetime));
 

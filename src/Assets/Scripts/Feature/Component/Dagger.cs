@@ -44,9 +44,16 @@ namespace Feature.Component
 
         private void FixedUpdate()
         {
-            var currentVelocity = rb.velocity;
-            var constantVelocity = currentVelocity.normalized * speed;
-            rb.velocity = constantVelocity;
+            if (rb.isKinematic)
+            {
+                rb.MovePosition(rb.position + rb.velocity * Time.fixedDeltaTime);
+            }
+            else
+            {
+                var currentVelocity = rb.velocity;
+                var constantVelocity = currentVelocity.normalized * speed;
+                rb.velocity = constantVelocity;
+            }
         }
 
         private void OnTriggerEnter(Collider collision)

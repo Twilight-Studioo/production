@@ -1,5 +1,6 @@
 #region
 
+using Core.Utilities.Parameter;
 using Feature.Common.Constants;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Feature.Common.Parameter
     {
         [Tooltip("水平距離でのプレイヤーとの距離の目標")] public float playerKeepDistance = 8f;
 
-        [Header("自爆"), Tooltip("自爆を開始するまでのHPのしきい値"),]
+        [ToggleGroup("自爆"), Tooltip("自爆を開始するまでのHPのしきい値"),]
         public float thresholdHealth = 4f;
 
         [Tooltip("自爆までのカウントダウン時間")] public float selfDestructionCountDownSec = 3f;
@@ -23,9 +24,9 @@ namespace Feature.Common.Parameter
 
         [Tooltip("自爆のダメージ")] public uint explosionDamage = 20;
 
-        [Header("攻撃の種類"), Tooltip("攻撃の種類"),] public DroneAttackType attackType = DroneAttackType.Bullet;
+        [ToggleGroup("攻撃の種類"), Tooltip("攻撃の種類"),] public DroneAttackType attackType = DroneAttackType.Bullet;
 
-        [Header("Bullet"), Tooltip("弾のプレハブ"),] public GameObject bulletPrefab;
+        [ToggleGroup("Bullet"), Tooltip("弾のプレハブ"),] public GameObject bulletPrefab;
 
         [Tooltip("弾の速度")] public float bulletSpeed = 4f;
 
@@ -33,7 +34,7 @@ namespace Feature.Common.Parameter
 
         [Tooltip("弾の発射後の待機時間")] public float shootIntervalSec = 1f;
 
-        [Header("Ray"), Tooltip("ビームのダメージ"),] public uint rayDamage = 10;
+        [ToggleGroup("Ray"), Tooltip("ビームのダメージ"),] public uint rayDamage = 10;
 
         [Tooltip("ビームの射程")] public float rayRange = 7f;
 

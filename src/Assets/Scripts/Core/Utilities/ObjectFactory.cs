@@ -62,7 +62,7 @@ namespace Core.Utilities
 
         public GameObject FindPlayer()
         {
-            return objects.Find(obj => obj.CompareTag("Player"));
+            return objects.Find(obj => obj != null && obj.activeSelf && obj.CompareTag("Player"));
         }
     }
 }
