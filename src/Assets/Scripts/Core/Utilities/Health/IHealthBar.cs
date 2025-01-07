@@ -8,9 +8,9 @@ namespace Core.Utilities.Health
 {
     public interface IHealthBar
     {
-        public uint MaxHealth { get; }
+        public int MaxHealth { get; }
 
-        public uint CurrentHealth { get; }
+        public int CurrentHealth { get; }
 
         public bool IsVisible { get; }
 
