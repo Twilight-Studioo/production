@@ -61,6 +61,8 @@ MonoBehaviour:
     type: 3}
   gameOverPrefab: {fileID: 7612237818007759691, guid: 5d1c69e5dcc4f49e6aa0bda05763b50c,
     type: 3}
+  stageSelectPrefab: {fileID: 7612237818007759691, guid: d53d5e1b9d6474f43a9e8008340af25e,
+    type: 3}
   settings: {fileID: 11400000, guid: 8a53a45fe1b0e447fbfa4740df1db905, type: 2}
 --- !u!114 &1835336076385595755
 MonoBehaviour:

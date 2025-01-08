@@ -24,7 +24,7 @@ MonoBehaviour:
   comboTimeWindow: 0.7
   comboAngleOffset: 0
   maxComboCount: 2
-  attackCoolTime: 0.33
+  attackCoolTime: 0.25
   maxComboCoolTime: 1
   swapContinueMaxMillis: 4000
   swapContinueTimeScale: 0.2
@@ -49,4 +49,4 @@ MonoBehaviour:
   killRecoveryVoltage: 10
   swappedRecoveryVoltageTimeMillis: 1000
   swappedRecoveryVoltageIntervalMillis: 500
-  swappedRecoveryVoltageQuantity: 5
+  swappedRecoveryVoltageQuantity: 7
