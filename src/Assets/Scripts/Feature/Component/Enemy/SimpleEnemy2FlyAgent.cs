@@ -42,6 +42,7 @@ namespace Feature.Component.Enemy
         {
             rb = GetComponent<Rigidbody>();
             position.Value = transform.position;
+            animator = GetComponentInChildren<Animator>();
         }
 
         private void Update()
@@ -149,62 +150,75 @@ namespace Feature.Component.Enemy
 
             while (true)
             {
-                // パトロール状態
-
-                var distance = Vector3.Distance(playerTransform.position, transform.position);
-                
-                if (enemyParams.pursuitDistance < distance)
+                if (!loseAnimation)
                 {
-                    yield return new WaitForSeconds(0.5f);
-                    continue;
-                }
+                    // パトロール状態
 
-                if (Math.Abs(enemyParams.shootDistance - distance) < 2f && distance > 1f && canBullet)
-                {
-                    Debug.Log("Attack");
-                    canBullet = false;
-                    lastAttackedTime = Time.time;
-                    yield return Attack();
-                }
+                    var distance = Vector3.Distance(playerTransform.position, transform.position);
 
-                yield return new WaitForSeconds(0.2f);
+                    if (enemyParams.pursuitDistance < distance)
+                    {
+                        yield return new WaitForSeconds(0.5f);
+                        continue;
+                    }
+
+                    if (Math.Abs(enemyParams.shootDistance - distance) < 2f && distance > 1f && canBullet)
+                    {
+                        Debug.Log("Attack");
+                        canBullet = false;
+                        lastAttackedTime = Time.time;
+                        yield return Attack();
+                    }
+
+                    yield return new WaitForSeconds(0.2f);
+                }
             }
         }
 
         private IEnumerator Movable()
         {
-            if (playerTransform == null)
+            if (!loseAnimation)
             {
-                playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+                if (playerTransform == null)
+                {
+                    playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+                }
+
+                yield return Action("FlyingEnemyV2")
+                    .Param("Target", playerTransform)
+                    .Param("Power", enemyParams.movePower)
+                    .Param("Distance", enemyParams.distance)
+                    .Param("MaxHeightFromGround", enemyParams.maxHeightFromGround)
+                    .Param("MinDistanceToCeiling", enemyParams.minDistanceToCeiling)
+                    .Build();
+                rb.velocity = Vector3.zero;
             }
-            yield return Action("FlyingEnemyV2")
-                .Param("Target", playerTransform)
-                .Param("Power", enemyParams.movePower)
-                .Param("Distance", enemyParams.distance)
-                .Param("MaxHeightFromGround", enemyParams.maxHeightFromGround)
-                .Param("MinDistanceToCeiling", enemyParams.minDistanceToCeiling)
-                .Build();
-            rb.velocity = Vector3.zero;
         }
 
         private IEnumerator Attack()
         {
-            animator.Play("attackA");
-            var dir = (playerTransform.position - transform.position).normalized;
-            for (var _ = 0; _ < enemyParams.shootCount; _++)
+            if (!loseAnimation)
             {
-                var bullet = ObjectFactory.Instance.CreateObject(
-                    bulletPrefab,
-                    transform.position + dir * 1f,
-                    Quaternion.identity);
-                bullet.transform.LookAt(playerTransform);
-                var bulletRb = bullet.GetComponent<DamagedTrigger>();
-                bulletRb.SetHitObject(true, true, true);
-                bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
-                bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
-                yield return Wait(enemyParams.shootIntervalSec);
+                animator.Play("attackSetB");
+                yield return Wait(1.5f);
+                animator.Play("attackB");
+                var dir = (playerTransform.position - transform.position).normalized;
+                for (var _ = 0; _ < enemyParams.shootCount; _++)
+                {
+                    var bullet = ObjectFactory.Instance.CreateObject(
+                        bulletPrefab,
+                        transform.position + dir * 1f,
+                        Quaternion.identity);
+                    bullet.transform.LookAt(playerTransform);
+                    var bulletRb = bullet.GetComponent<DamagedTrigger>();
+                    bulletRb.SetHitObject(true, true, true);
+                    bulletRb.Execute(dir, enemyParams.shootSpeed, enemyParams.damage, enemyParams.bulletLifeTime);
+                    bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
+                    yield return Wait(enemyParams.shootIntervalSec);
+                }
+
+                yield return Wait(enemyParams.shootAfterSec);
             }
-            yield return Wait(enemyParams.shootAfterSec);
         }
 
         public void OnSelected()
