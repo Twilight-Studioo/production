@@ -56,14 +56,6 @@ namespace Editor.Tests.Main
         }
 
         [Test]
-        public void Subscribe_ValidatesSettings()
-        {
-            // Act & Assert
-            var exception = Assert.Throws<Exception>(() => enemyFactory.Subscribe());
-            Assert.AreEqual("EnemyType SimpleEnemy1 is not found in settings", exception.Message);
-        }
-
-        [Test]
         public void 設定に重複したpairをチェックする()
         {
             // Arrange

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Feature.Interface
 {
-    public delegate uint GetHealth();
+    public delegate int GetHealth();
 
     public interface IEnemyAgent
     {

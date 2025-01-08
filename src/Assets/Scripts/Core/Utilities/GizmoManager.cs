@@ -39,7 +39,12 @@ namespace Core.Utilities
 
         private void OnDrawGizmos()
         {
-            foreach (var drawable in gizmoDrawables)
+            if (gizmoDrawables == null)
+            {
+                return;
+            }
+            var drawablesCopy = new List<IGizmoDrawable>(gizmoDrawables);
+            foreach (var drawable in drawablesCopy)
             {
                 drawable.DrawGizmos();
             }
@@ -48,8 +53,9 @@ namespace Core.Utilities
             {
                 return;
             }
+            var gizmosCopy = new List<GizmoData>(gizmos);
 
-            foreach (var gizmo in gizmos)
+            foreach (var gizmo in gizmosCopy)
             {
                 // Gizmoの色を設定
                 Gizmos.color = new(1f, 0f, 0f, 0.5f); // 半透明の赤
