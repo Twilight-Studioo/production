@@ -1658,7 +1658,7 @@ CapsuleCollider:
   m_Radius: 0.002
   m_Height: 0.01
   m_Direction: 0
-  m_Center: {x: 0, y: 0.0045, z: 0}
+  m_Center: {x: 0, y: 0.004, z: 0}
 --- !u!1 &3351649044127438249
 GameObject:
   m_ObjectHideFlags: 0
@@ -4265,11 +4265,11 @@ Cloth:
   m_BendingStiffness: 1
   m_UseTethers: 1
   m_UseGravity: 1
-  m_Damping: 0.3
+  m_Damping: 0.7
   m_ExternalAcceleration: {x: 0, y: 0, z: 0}
   m_RandomAcceleration: {x: 0, y: 0, z: 0}
-  m_WorldVelocityScale: 1
-  m_WorldAccelerationScale: 0.5
+  m_WorldVelocityScale: 0.1
+  m_WorldAccelerationScale: 0
   m_Friction: 0.1
   m_CollisionMassScale: 30
   m_UseContinuousCollision: 1
