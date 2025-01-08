@@ -99,6 +99,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: conveyoEndPort
       objectReference: {fileID: 0}
+    - target: {fileID: 4957834258885889619, guid: 279a72bc6b4eec147aace4f174ec8f90,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 977475f4a7332ed4f8eac4e065929d60, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -204,6 +209,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3793315596274928281, guid: 87f70e4d212b8564fad282ffc329f4de,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 977475f4a7332ed4f8eac4e065929d60, type: 2}
     - target: {fileID: 351716269205130601, guid: 87f70e4d212b8564fad282ffc329f4de,
         type: 3}
       propertyPath: m_IsActive
@@ -319,6 +329,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3793315596274928281, guid: 87f70e4d212b8564fad282ffc329f4de,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 977475f4a7332ed4f8eac4e065929d60, type: 2}
     - target: {fileID: 351716269205130601, guid: 87f70e4d212b8564fad282ffc329f4de,
         type: 3}
       propertyPath: m_IsActive
@@ -629,6 +644,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2224178687032405752, guid: 7e189acd7d049704392d0d7156edb14b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 977475f4a7332ed4f8eac4e065929d60, type: 2}
     - target: {fileID: -569511762109867776, guid: 7e189acd7d049704392d0d7156edb14b,
         type: 3}
       propertyPath: m_LocalRotation.w
