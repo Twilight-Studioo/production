@@ -11,17 +11,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c33712e8763aa014b91f7c27e915abeb,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c33712e8763aa014b91f7c27e915abeb,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c33712e8763aa014b91f7c27e915abeb,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c33712e8763aa014b91f7c27e915abeb,
         type: 3}
@@ -91,7 +91,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c33712e8763aa014b91f7c27e915abeb,
         type: 3}
       propertyPath: m_TagString
-      value: SwapItem
+      value: Ground
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -109,6 +109,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3736672431351400891}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c33712e8763aa014b91f7c27e915abeb,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4146078191473639671}
   m_SourcePrefab: {fileID: 100100000, guid: c33712e8763aa014b91f7c27e915abeb, type: 3}
 --- !u!1 &2395911530744628524 stripped
 GameObject:
@@ -180,3 +184,15 @@ MonoBehaviour:
   effect: {fileID: 0}
   isSwap: 0
   highlightRimThreshold: 0
+--- !u!114 &4146078191473639671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2395911530744628524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e36d112f7c437c85ded5b3ee422494, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

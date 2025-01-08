@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2938938321683381644}
   - component: {fileID: 2248742397137636691}
   - component: {fileID: 6463161338108047316}
+  - component: {fileID: 2371831410402479299}
   m_Layer: 0
   m_Name: Factory
   m_TagString: Untagged
@@ -75,6 +76,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectPrefab: {fileID: 4919690633393672407, guid: 6fdaa2d08a8f549cd9c67a7d38cedb32,
+    type: 3}
+--- !u!114 &2371831410402479299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134378673789953357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb90bc3318a5423b958844d66fdd935e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDamageEffectPrefab: {fileID: 523181041067438922, guid: 6bf5b405f5edcd84681db4d058d0bfbb,
+    type: 3}
+  enemyDamageEffectPrefab: {fileID: 4262131058543893208, guid: 2f3c141cbcf763840ad43e8eeb46c942,
     type: 3}
 --- !u!1 &3753271352152893003
 GameObject:

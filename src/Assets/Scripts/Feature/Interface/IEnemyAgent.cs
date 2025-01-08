@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Feature.Interface
 {
-    public delegate uint GetHealth();
+    public delegate int GetHealth();
 
     public interface IEnemyAgent
     {
@@ -27,6 +27,8 @@ namespace Feature.Interface
         public void SetPatrolPoints(List<Vector3> pts);
 
         public void OnDamage(uint damage, Vector3 hitPoint, Transform attacker);
+
+        public void DestroyEnemy();
 
         public event Action OnTakeDamageEvent;
 

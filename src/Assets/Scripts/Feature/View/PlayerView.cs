@@ -104,7 +104,7 @@ namespace Feature.View
             imp.y += 1f;
             this.UniqueStartCoroutine(Knockback(imp, 5f, 0.4f));
             // rb.AddForce(imp * 5f, ForceMode.Impulse);
-            var result = OnDamageEvent?.Invoke(damage);
+            var result = OnDamageEvent?.Invoke(damage, attacker.position);
             animator.OnTakeDamage();
             return result;
         }
@@ -164,7 +164,7 @@ namespace Feature.View
 
         public Transform GetTransform() => transform;
 
-        public event DamageHandler<uint> OnDamageEvent;
+        public event DamageHandler<uint, Vector3> OnDamageEvent;
 
         public void Move(Vector3 direction, float power)
         {

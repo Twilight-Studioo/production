@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 6183106572404452267}
   - component: {fileID: 6849105640851932337}
   - component: {fileID: 8323412490717024231}
-  - component: {fileID: -582146934751173968}
   - component: {fileID: 6847142486643971181}
+  - component: {fileID: -582146934751173968}
   m_Layer: 6
   m_Name: Debris
   m_TagString: Untagged
@@ -109,18 +109,6 @@ CapsuleCollider:
   m_Height: 1.59
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-582146934751173968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6077337631855442057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f67a02c29c943b9b1caa7e882765618, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &6847142486643971181
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -148,3 +136,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 8
   m_CollisionDetection: 0
+--- !u!114 &-582146934751173968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6077337631855442057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f67a02c29c943b9b1caa7e882765618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

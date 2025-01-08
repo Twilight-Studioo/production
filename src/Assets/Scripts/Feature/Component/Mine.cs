@@ -60,6 +60,7 @@ namespace Feature.Component
             
             if (other.gameObject.CompareTag("Enemy"))
             {
+                Debug.Log("enemy pushed");
                 other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.mineDamage,transform.position,transform);
                 this.gameObject.GetComponent<ISwappable>().Delete();
             }

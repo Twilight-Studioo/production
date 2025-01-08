@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OutGame/GameOverScene.unity
     guid: b5c189f6996ef40dc91c4ee55f50fd70
+  - enabled: 1
+    path: Assets/Scenes/OutGame/CrearSmasherStageScene.unity
+    guid: 4b20f727f2def0546b45d826c0651dae
   m_configObjects: {}
