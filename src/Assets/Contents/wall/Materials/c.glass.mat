@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6430127310609685824
+--- !u!114 &-3265650448319535111
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: conbeyor_glass
-  m_Shader: {fileID: 4800000, guid: 3fb94a39b2685ee4d9817dcaf6542d99, type: 3}
+  m_Name: c.glass
+  m_Shader: {fileID: 4800000, guid: dce3f3e248acc7b4daeda00daf616b4d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -29,7 +29,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2650
+  m_CustomRenderQueue: 2900
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -154,7 +154,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _Main2ndTex:
         m_Texture: {fileID: 2800000, guid: 41dde515b7de73a44b691f17d90b995a, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 0.5, y: 0.5}
         m_Offset: {x: 0, y: 0}
     - _Main3rdBlendMask:
         m_Texture: {fileID: 0}
@@ -205,7 +205,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
-        m_Texture: {fileID: 2800000, guid: 61744362947ecad4faff4d3d3cc3834c, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -431,9 +431,9 @@ Material:
     - _GlitterShadowMask: 0
     - _GlitterUVMode: 0
     - _GlitterVRParallaxStrength: 0
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
     - _IDMask1: 0
     - _IDMask2: 0
     - _IDMask3: 0
@@ -468,9 +468,9 @@ Material:
     - _LightMinLimit: 0.05
     - _Main2ndDissolveNoiseStrength: 0.1
     - _Main2ndEnableLighting: 1
-    - _Main2ndTexAlphaMode: 2
-    - _Main2ndTexAngle: 3.1415927
-    - _Main2ndTexBlendMode: 1
+    - _Main2ndTexAlphaMode: 1
+    - _Main2ndTexAngle: 0
+    - _Main2ndTexBlendMode: 3
     - _Main2ndTexIsDecal: 0
     - _Main2ndTexIsLeftOnly: 0
     - _Main2ndTexIsMSDF: 0
@@ -516,15 +516,14 @@ Material:
     - _MatCapBumpScale: 1
     - _MatCapCustomNormal: 0
     - _MatCapEnableLighting: 1
-    - _MatCapLod: 6.6
-    - _MatCapMainStrength: 1
+    - _MatCapLod: 0
+    - _MatCapMainStrength: 0
     - _MatCapNormalStrength: 1
     - _MatCapPerspective: 1
     - _MatCapShadowMask: 0
     - _MatCapVRParallaxStrength: 1
     - _MatCapZRotCancel: 1
-    - _Metallic: 0.34
-    - _Mode: 0
+    - _Metallic: 0
     - _MonochromeLighting: 0
     - _OcclusionStrength: 1
     - _OffsetFactor: 0
@@ -609,8 +608,8 @@ Material:
     - _ReflectionCubeOverride: 0
     - _ReflectionNormalStrength: 1
     - _RefractionColorFromMain: 0
-    - _RefractionFresnelPower: 0.5
-    - _RefractionStrength: 0.1
+    - _RefractionFresnelPower: 0.45
+    - _RefractionStrength: -0.005
     - _RimApplyTransparency: 1
     - _RimBackfaceMask: 1
     - _RimBlendMode: 1
@@ -700,7 +699,6 @@ Material:
     - _UDIMDiscardRow3_2: 0
     - _UDIMDiscardRow3_3: 0
     - _UDIMDiscardUV: 0
-    - _UVSec: 0
     - _UseAnisotropy: 0
     - _UseAudioLink: 0
     - _UseBacklight: 0
@@ -713,13 +711,13 @@ Material:
     - _UseGlitter: 0
     - _UseMain2ndTex: 1
     - _UseMain3rdTex: 0
-    - _UseMatCap: 1
+    - _UseMatCap: 0
     - _UseMatCap2nd: 0
     - _UseOutline: 0
     - _UsePOM: 0
     - _UseParallax: 0
     - _UseReflection: 1
-    - _UseRim: 1
+    - _UseRim: 0
     - _UseRimShade: 0
     - _UseShadow: 0
     - _VertexLightStrength: 0
@@ -747,11 +745,11 @@ Material:
     - _BacklightColor: {r: 0.85, g: 0.8, b: 0.7, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Color2nd: {r: 1, g: 1, b: 1, a: 0.09}
+    - _Color2nd: {r: 1, g: 1, b: 1, a: 0.174}
     - _Color3rd: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveColor: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveNoiseMask_ScrollRotate: {r: 0, g: 0, b: 0, a: 0}
-    - _DissolveParams: {r: 0, g: 0, b: 0.41, a: 0.1}
+    - _DissolveParams: {r: 0, g: 0, b: 0.5, a: 0.1}
     - _DissolvePos: {r: 0, g: 0, b: 0, a: 0}
     - _DistanceFade: {r: 0.1, g: 0.01, b: 0, a: 0}
     - _DistanceFadeColor: {r: 0, g: 0, b: 0, a: 1}
@@ -774,7 +772,7 @@ Material:
     - _Main2ndDissolveNoiseMask_ScrollRotate: {r: 0, g: 0, b: 0, a: 0}
     - _Main2ndDissolveParams: {r: 0, g: 0, b: 0, a: 0}
     - _Main2ndDissolvePos: {r: 0, g: 0, b: 0, a: 0}
-    - _Main2ndDistanceFade: {r: 0, g: 1, b: 0.73, a: 0}
+    - _Main2ndDistanceFade: {r: 1, g: 1, b: 0, a: 0}
     - _Main2ndTexDecalAnimation: {r: 1, g: 1, b: 1, a: 30}
     - _Main2ndTexDecalSubParam: {r: 1, g: 1, b: 0, a: 1}
     - _Main2ndTex_ScrollRotate: {r: 0, g: 0, b: 0, a: 0}
@@ -791,7 +789,7 @@ Material:
     - _MatCap2ndBlendUV1: {r: 0, g: 0, b: 0, a: 0}
     - _MatCap2ndColor: {r: 1, g: 1, b: 1, a: 1}
     - _MatCapBlendUV1: {r: 0, g: 0, b: 0, a: 0}
-    - _MatCapColor: {r: 1, g: 1, b: 1, a: 0.7}
+    - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0.6, g: 0.56, b: 0.73, a: 1}
     - _OutlineLitColor: {r: 1, g: 0.19999996, b: 0, a: 0}
     - _OutlineTexHSVG: {r: 0, g: 1, b: 1, a: 1}
@@ -799,7 +797,7 @@ Material:
     - _PreColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectionColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectionCubeColor: {r: 0, g: 0, b: 0, a: 1}
-    - _RefractionColor: {r: 0.52201253, g: 0.52201253, b: 0.52201253, a: 1}
+    - _RefractionColor: {r: 0.69182384, g: 0.69182384, b: 0.69182384, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimIndirColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimShadeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
