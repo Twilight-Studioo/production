@@ -16,9 +16,9 @@ MonoBehaviour:
   pursuitDistance: 15
   damage: 10
   bulletLifeTime: 5
-  maxHp: 10
+  maxHp: 20
   patrolSpeed: 1
-  pursuitSpeed: 1.4
+  pursuitSpeed: 3
   rushBeforeDelay: 0.2
   rushAfterDelay: 0.6
   rushStartDistance: 7

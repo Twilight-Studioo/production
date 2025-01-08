@@ -20,12 +20,12 @@ namespace Core.Camera
         /// </returns>
         internal static CameraTargetGroupTag Player()
         {
-            return new CameraTargetGroupTag(4, 3);
+            return new CameraTargetGroupTag(11, 8);
         }
 
         public static CameraTargetGroupTag Boss()
         {
-            return new CameraTargetGroupTag(4, 3);
+            return new CameraTargetGroupTag(8, 5);
         }
 
         public static CameraTargetGroupTag Enemy()
@@ -35,7 +35,7 @@ namespace Core.Camera
 
         public static CameraTargetGroupTag SwapItem()
         {
-            return new CameraTargetGroupTag(1, 1);
+            return new CameraTargetGroupTag(4, 3);
         }
     }
 }
