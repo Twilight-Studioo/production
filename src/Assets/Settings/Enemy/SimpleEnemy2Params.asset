@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foundDistance: 14
   pursuitDistance: 17
-  damage: 10
+  damage: 15
   bulletLifeTime: 5
-  maxHp: 10
+  maxHp: 20
   patrolSpeed: 1
-  pursuitSpeed: 1.4
+  pursuitSpeed: 1.8
   shootDistance: 14
   shootSpeed: 7
   shootIntervalSec: 0.2
