@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using Core.Utilities;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
@@ -49,6 +51,7 @@ namespace Feature.Component.Enemy
         private Vector3 previousPosition;
 
         [SerializeField] private GameObject debrisPrefab;
+        [SerializeField] private List<GameObject> swapItemPrefab;
         [SerializeField] private GameObject minePrefab;
 
         private bool alive = true;
@@ -265,8 +268,11 @@ namespace Feature.Component.Enemy
             yield return new WaitForSeconds(bossPrams.debrisAttackOccurrenceTime);
             animator.SetTrigger("DebriAttack");
             yield return new WaitForSeconds(0.2f);
-            debris2 = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
-                Quaternion.identity);
+            // debris2 = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
+            //     Quaternion.identity);
+            var swapitem = swapItemPrefab.RandomElement();
+            debris2 = ObjectFactory.Instance.CreateObject(swapitem, spawnPoint.transform.position, spawnPoint.transform.rotation);
+            debris2.GetComponent<Rigidbody>().AddForce((playerRightSide == true) ? 2 : -2, 10, 0);
             debris = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
                 Quaternion.identity);
             debris.GetComponent<Debris>().Kick();
