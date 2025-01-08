@@ -60,8 +60,11 @@ namespace Main.Controller.GameNavigation
                     case Navi.Continue:
                         navi = Navi.Start;
                         break;
+                    //case Navi.Option:
+                    //    navi = Navi.Continue;
+                    //    break;
                     case Navi.Option:
-                        navi = Navi.Continue;
+                        navi = Navi.Start;
                         break;
                     case Navi.Quit:
                         navi = Navi.Option;
@@ -72,8 +75,11 @@ namespace Main.Controller.GameNavigation
             {
                 switch (navi)
                 {
+                    //case Navi.Start:
+                    //    navi = Navi.Continue;
+                    //    break;
                     case Navi.Start:
-                        navi = Navi.Continue;
+                        navi = Navi.Option;
                         break;
                     case Navi.Continue:
                         navi = Navi.Option;

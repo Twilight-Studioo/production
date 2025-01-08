@@ -97,6 +97,7 @@ namespace Main.Controller.GameNavigation
                     StartCoroutine(LoadStageWithDelay());
                     break;
                 case Navi.Back:
+                    titlePlayerAnimation.ClickBacktoTitle();
                     Controller.PopBackstack();
                     break;
             }
