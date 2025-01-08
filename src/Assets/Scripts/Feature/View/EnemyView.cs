@@ -4,6 +4,7 @@ using System;
 using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Interface;
+using UniRx;
 using UnityEngine;
 
 #endregion
@@ -38,16 +39,19 @@ namespace Feature.View
             {
                 CurrentHealth = 0;
                 OnDamageEvent?.Invoke(new DamageResult.Killed(transform), hitPoint);
-                // delete 
-                OnHealth0Event?.Invoke();
                 agent.FlowCancel();
                 agent.DestroyEnemy();
+                OnHealth0Event?.Invoke();
                 agent.Delete();
-                if (gameObject != null)
-                {
-                    Destroy(gameObject, 3f);
-                }
                 OnRemoveEvent?.Invoke();
+                // delete
+                Destroy(gameObject);
+                // Observable
+                //     .Timer(TimeSpan.FromSeconds(3f))
+                //     .Subscribe(_ =>
+                //     {
+                //         Destroy(gameObject);
+                //     });
                 return new DamageResult.Killed(transform);
             }
             else
