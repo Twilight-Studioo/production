@@ -41,6 +41,7 @@ namespace Feature.Component.Enemy
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            animator = GetComponentInChildren<Animator>();
             position.Value = transform.position;
         }
 
@@ -254,10 +255,14 @@ namespace Feature.Component.Enemy
 
         public void DestroyEnemy()
         {
-            loseAnimation = true;
+            // loseAnimation = true;
+            FlowCancel();
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.velocity = Vector3.down;
             try
             {
-                animator.Play("defeat");
+               animator.Play("defeat");
             }
             catch (Exception e)
             {
