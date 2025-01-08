@@ -1,5 +1,6 @@
 using System;
 using Core.Utilities;
+using Feature.Component;
 using Main.Scene.Generated;
 using TMPro;
 using UniRx;
@@ -13,11 +14,16 @@ namespace Main.Controller.GameNavigation
         [SerializeField] private TextMeshProUGUI toContinueText;
         [SerializeField] private TextMeshProUGUI toOptionText;
         [SerializeField] private TextMeshProUGUI toQuitText;
+        private TitlePlayerAnimation titlePlayerAnimation;
 
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
 
         private IDisposable disposable;
-        
+        private void Awake()
+        {
+             titlePlayerAnimation = FindObjectOfType<TitlePlayerAnimation>();
+        }
+
         public override void OnShow()
         {
             base.OnShow();
@@ -87,11 +93,13 @@ namespace Main.Controller.GameNavigation
             {
                 case Navi.Start:
                     // TODO: production code here
-                    Controller.Reset();
-                    SceneLoaderFeatures.Stage(null).Bind(RootInstance).Load();
+                    Controller.Navigate(Navigation.StageSelect);
+                    titlePlayerAnimation.OnClickStage();
                     break;
                 case Navi.Continue:
                     // TODO: Continue the game logic here
+                    Controller.Navigate(Navigation.StageSelect);
+                    titlePlayerAnimation.OnClickStage();
                     break;
                 case Navi.Option:
                     Controller.Navigate(Navigation.Option);
