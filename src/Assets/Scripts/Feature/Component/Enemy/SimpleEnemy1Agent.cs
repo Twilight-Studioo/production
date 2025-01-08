@@ -137,7 +137,6 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         private TriggerRef MoveTrigger() =>
@@ -254,7 +253,8 @@ namespace Feature.Component.Enemy
         
         public void DestroyEnemy()
         {
-            loseAnimation = true;
+           // loseAnimation = true;
+            FlowCancel();
             animator.Play("defeat");
         }
     }
