@@ -41,6 +41,7 @@ namespace Feature.Component.Enemy
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            animator = GetComponentInChildren<Animator>();
             position.Value = transform.position;
             animator = GetComponentInChildren<Animator>();
         }
@@ -61,6 +62,10 @@ namespace Feature.Component.Enemy
         public void FlowCancel()
         {
             FlowStop();
+            if (movableCoroutine != null)
+            {
+                StopCoroutine(movableCoroutine);
+            }
         }
 
         public void FlowExecute()
@@ -154,7 +159,12 @@ namespace Feature.Component.Enemy
                 {
                     // パトロール状態
 
-                    var distance = Vector3.Distance(playerTransform.position, transform.position);
+                if (Math.Abs(enemyParams.shootDistance - distance) < 2f && distance > 1f && canBullet)
+                {
+                    canBullet = false;
+                    lastAttackedTime = Time.time;
+                    yield return Attack();
+                }
 
                     if (enemyParams.pursuitDistance < distance)
                     {
@@ -197,7 +207,19 @@ namespace Feature.Component.Enemy
 
         private IEnumerator Attack()
         {
-            if (!loseAnimation)
+            if (animator)
+            {
+                try
+                {
+                    animator.Play("attackA");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+            var dir = (playerTransform.position - transform.position).normalized;
+            for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
                 animator.Play("attackSetB");
                 yield return Wait(1.5f);
@@ -251,13 +273,23 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         public void DestroyEnemy()
         {
-            loseAnimation = true;
-            animator.Play("defeat");
+            // loseAnimation = true;
+            FlowCancel();
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.velocity = Vector3.down;
+            try
+            {
+               animator.Play("defeat");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

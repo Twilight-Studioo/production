@@ -109,9 +109,9 @@ namespace Feature.Component.Enemy.SmasherEx
             }
         }
 
-        public uint MaxHealth => 400;
-        private uint currentHealth = 400;
-        public uint CurrentHealth => currentHealth;
+        public int MaxHealth => 400;
+        private int currentHealth = 400;
+        public int CurrentHealth => currentHealth;
         public bool IsVisible => true;
         public event Action OnRemoveEvent;
         public void Dispose()
@@ -122,8 +122,7 @@ namespace Feature.Component.Enemy.SmasherEx
 
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            Debug.Log($"OnDamage: {damage}");
-            currentHealth -= damage;
+            currentHealth -= (int)damage;
             if (currentHealth <= 0)
             {
                 Dispose();

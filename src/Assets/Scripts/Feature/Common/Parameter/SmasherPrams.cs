@@ -102,5 +102,14 @@ namespace Feature.Common.Parameter
         
         [Tooltip("キックダメージ")]
         public uint kickDamage = 10;
+        
+        [Tooltip("体力半分の時のキックバック")]
+        public float kickbackHalf = 100f;
+        
+        [Tooltip("体力1/3の時のキックバック")]
+        public float kickbackOneThird = 150f;
+        
+        [Tooltip("体力1/10の時のキックバック")]
+        public float kickbackTenth = 200f;
     }
 }

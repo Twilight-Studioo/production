@@ -241,11 +241,11 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
         public void DestroyEnemy()
         {
-            loseAnimation = true;
+            // loseAnimation = true;
+            FlowCancel();
             animator.Play("defeat");
         }
     }
