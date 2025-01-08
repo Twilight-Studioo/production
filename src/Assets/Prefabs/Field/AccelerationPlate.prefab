@@ -200,10 +200,45 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -4823819908350997494, guid: 7e189acd7d049704392d0d7156edb14b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4654556223499129484, guid: 7e189acd7d049704392d0d7156edb14b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 333873991619874402, guid: 7e189acd7d049704392d0d7156edb14b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 834192292310563322, guid: 7e189acd7d049704392d0d7156edb14b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7e189acd7d049704392d0d7156edb14b,
         type: 3}
       propertyPath: m_Name
       value: conveyoMiddle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2251457652121768707, guid: 7e189acd7d049704392d0d7156edb14b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753705370032899036, guid: 7e189acd7d049704392d0d7156edb14b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953606483559150473, guid: 7e189acd7d049704392d0d7156edb14b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
