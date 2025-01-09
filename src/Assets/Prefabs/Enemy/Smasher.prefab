@@ -195,7 +195,8 @@ MonoBehaviour:
   spawnPoint: {fileID: 2022946376560845435}
   debrisPrefab: {fileID: 1288972277542475340, guid: 9ee9135df19c20d4a867756f8f0f5f47,
     type: 3}
-  swapItemPrefab: []
+  swapItemPrefab:
+  - {fileID: 5520726374553969170, guid: 98baf53b7cca8654aa65501398cd9e83, type: 3}
   minePrefab: {fileID: 4968052675775006875, guid: 3a0b54af16b82ee47ad98aa1908ca74f,
     type: 3}
 --- !u!1 &5070997775858505843
