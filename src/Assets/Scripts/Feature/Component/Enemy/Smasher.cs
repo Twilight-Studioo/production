@@ -67,6 +67,10 @@ namespace Feature.Component.Enemy
         private void Update()
         {
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+            if (playerTransform == null)
+            {
+                return;
+            }
             xDistance = Mathf.Abs(transform.position.x - positionAtAttack.x);
             var distance = transform.position.x - playerTransform.position.x;
             if (distance < 0)
@@ -271,7 +275,7 @@ namespace Feature.Component.Enemy
             // debris2 = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
             //     Quaternion.identity);
             var swapitem = swapItemPrefab.RandomElement();
-            debris2 = ObjectFactory.Instance.CreateObject(swapitem, spawnPoint.transform.position, spawnPoint.transform.rotation);
+                    debris2 = ObjectFactory.Instance.CreateObject(swapitem, spawnPoint.transform.position, spawnPoint.transform.rotation);
             debris2.GetComponent<Rigidbody>().AddForce((playerRightSide == true) ? 2 : -2, 10, 0);
             debris = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
                 Quaternion.identity);

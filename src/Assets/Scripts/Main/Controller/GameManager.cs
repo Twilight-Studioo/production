@@ -31,6 +31,7 @@ namespace Main.Controller
             IAudioMixerController audioMixerController
         )
         {
+            ObjectFactory.Reset();
             this.gameController = gameController.CheckNull();
             this.playerStart = playerStart.CheckNull();
             this.gameInputController = gameInputController.CheckNull();
