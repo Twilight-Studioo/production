@@ -15,7 +15,8 @@ namespace Main.Scene.Generated
         zako,
         boss,
         GameOverScene,
-        CrearSmasherStageScene,
+        SmasherBossFight,
+        ClearSmasherScene,
     }
 
     public static class SceneLoaderFeatures
@@ -36,9 +37,13 @@ namespace Main.Scene.Generated
         {
             return new SceneLoader(Scene.GameOverScene, "Assets/Scenes/OutGame/GameOverScene.unity", sceneDataModel);
         }
-        public static SceneLoader CrearSmasherStageScene(ISceneDataModel sceneDataModel)
+        public static SceneLoader SmasherBossFight(ISceneDataModel sceneDataModel)
         {
-            return new SceneLoader(Scene.CrearSmasherStageScene, "Assets/Scenes/OutGame/CrearSmasherStageScene.unity", sceneDataModel);
+            return new SceneLoader(Scene.SmasherBossFight, "Assets/Scenes/TestStage/SmasherBossFight.unity", sceneDataModel);
+        }
+        public static SceneLoader ClearSmasherScene(ISceneDataModel sceneDataModel)
+        {
+            return new SceneLoader(Scene.ClearSmasherScene, "Assets/Scenes/OutGame/ClearSmasherScene.unity", sceneDataModel);
         }
     }
 }

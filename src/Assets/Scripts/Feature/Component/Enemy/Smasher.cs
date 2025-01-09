@@ -346,7 +346,7 @@ namespace Feature.Component.Enemy
             alive = false;
             Destroy(bossHealthBar);
             yield return new WaitForSeconds(2);
-            SceneManager.LoadScene("CrearSmasherStageScene");
+            SceneManager.LoadScene("ClearSmasherScene");
         }
 
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
