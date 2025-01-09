@@ -21,6 +21,7 @@ namespace Main.Controller.GameNavigation
         Title,
         GameOver,
         SmasherClear,
+        StageSelect,
     }
 
     public static class NavigationExtensions
@@ -33,6 +34,7 @@ namespace Main.Controller.GameNavigation
             GameObject titlePrefab,
             GameObject gameOverPrefab,
             GameObject smasherClearPrefab,
+            GameObject stageSelectPrefab,
             LifetimeScope installer
         )
         {
@@ -49,7 +51,8 @@ namespace Main.Controller.GameNavigation
                 new Destination<Navigation>(Navigation.Controls, controlsPrefab.CheckNull()),
                 new Destination<Navigation>(Navigation.Title, titlePrefab.CheckNull()),
                 new Destination<Navigation>(Navigation.GameOver, gameOverPrefab.CheckNull()),
-                new  Destination<Navigation>(Navigation.SmasherClear, smasherClearPrefab.CheckNull())
+                new  Destination<Navigation>(Navigation.SmasherClear, smasherClearPrefab.CheckNull()),
+                new Destination<Navigation>(Navigation.StageSelect, stageSelectPrefab.CheckNull())
             );
         }
     }

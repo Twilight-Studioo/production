@@ -4,9 +4,9 @@ using System;
 using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Interface;
+using UniRx;
 using UnityEngine;
-using System.Collections;                                                                                                                                                                        
-                                                                                                                                                                        
+
 #endregion
 
 namespace Feature.View
@@ -16,7 +16,7 @@ namespace Feature.View
         private IEnemyAgent agent;
         public EnemyType EnemyType => agent.EnemyType;
 
-        public event DamageHandler<uint, Vector3> OnDamageEvent;
+        public event DamageHandler<DamageResult, Vector3> OnDamageEvent;
 
         public event Action OnTakeDamageEvent;
 
@@ -24,55 +24,50 @@ namespace Feature.View
         {
             agent = GetComponent<IEnemyAgent>();
             agent.OnGetHealth = () => CurrentHealth;
-            agent.RequireDestroy = () => { OnDamage(CurrentHealth, Vector3.zero, null); };
+            agent.RequireDestroy = () => { OnDamage((uint)CurrentHealth, Vector3.zero, null); };
             agent.OnTakeDamageEvent += () => OnTakeDamageEvent?.Invoke();
             agent.FlowExecute();
         }
 
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            OnDamageEvent?.Invoke(damage, attacker.position);
-            CurrentHealth -= damage;
-            Debug.Log($"CurrentHealth {CurrentHealth}");
             if (CurrentHealth <= 0)
             {
-                // delete 
-                OnHealth0Event?.Invoke();
+                return new DamageResult.Missed();
+            }
+            if (CurrentHealth - damage <= 0)
+            {
+                CurrentHealth = 0;
+                OnDamageEvent?.Invoke(new DamageResult.Killed(transform), hitPoint);
                 agent.FlowCancel();
                 agent.DestroyEnemy();
-                StartCoroutine(WaitForDeathAnimation());
-                // agent.Delete();
-                // if (gameObject != null)
-                // {
-                //     Destroy(gameObject);
-                // }
-                // OnRemoveEvent?.Invoke();
+                OnHealth0Event?.Invoke();
+                agent.Delete();
+                OnRemoveEvent?.Invoke();
+                // delete
+                Destroy(gameObject);
+                // Observable
+                //     .Timer(TimeSpan.FromSeconds(3f))
+                //     .Subscribe(_ =>
+                //     {
+                //         Destroy(gameObject);
+                //     });
                 return new DamageResult.Killed(transform);
             }
             else
             {
+                CurrentHealth -= (int)damage;
+                OnDamageEvent?.Invoke(new DamageResult.Damaged(transform), hitPoint);
                 // hit event for agent
                 agent.OnDamage(damage, hitPoint, attacker);
                 return new DamageResult.Damaged(transform);
             }
         }
-        private IEnumerator WaitForDeathAnimation()
-        {
-            // アニメーションの長さを待機
-            yield return new WaitForSeconds(3);
 
-            // オブジェクト削除
-            if (gameObject != null)
-            {
-                agent.Delete();
-                Destroy(gameObject);
-            }
-            OnRemoveEvent?.Invoke();
-        }
         public void SetHealth(uint health)
         {
-            MaxHealth = health;
-            CurrentHealth = health;
+            MaxHealth = (int)health;
+            CurrentHealth = (int)health;
         }
 
         public event Action OnHealth0Event;
@@ -80,9 +75,9 @@ namespace Feature.View
         public GameObject GameObject() => gameObject;
 
         public event Action OnRemoveEvent;
-        public uint MaxHealth { get; private set; }
+        public int MaxHealth { get; private set; }
 
-        public uint CurrentHealth { get; private set; }
+        public int CurrentHealth { get; private set; }
 
         public bool IsVisible => true;
     }

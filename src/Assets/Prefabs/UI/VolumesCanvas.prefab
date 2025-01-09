@@ -65,12 +65,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Volumes Screen
-
-'
+  m_text: "\u97F3\u91CF"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: cd69179c0331aa342b6cdd6b01f414fe, type: 2}
+  m_sharedMaterial: {fileID: -4969729480948511585, guid: cd69179c0331aa342b6cdd6b01f414fe,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -153,7 +152,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1133485970545327880
 RectTransform:
   m_ObjectHideFlags: 0
@@ -276,7 +275,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: back
+  m_text: "\u623B\u308B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cd69179c0331aa342b6cdd6b01f414fe, type: 2}
   m_sharedMaterial: {fileID: -4969729480948511585, guid: cd69179c0331aa342b6cdd6b01f414fe,
@@ -770,7 +769,7 @@ PrefabInstance:
     - target: {fileID: 5496449426518960132, guid: f701cdf50745b4a87b796b5f3deabafa,
         type: 3}
       propertyPath: m_text
-      value: Master
+      value: "\u5168\u4F53"
       objectReference: {fileID: 0}
     - target: {fileID: 5496449426518960132, guid: f701cdf50745b4a87b796b5f3deabafa,
         type: 3}

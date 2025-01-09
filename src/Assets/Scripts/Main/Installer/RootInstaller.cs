@@ -20,6 +20,7 @@ namespace Main.Installer
         [SerializeField] private GameObject controlsPrefab;
         [SerializeField] private GameObject titlePrefab;
         [SerializeField] private GameObject gameOverPrefab;
+        [SerializeField] private GameObject stageSelectPrefab;
         [SerializeField] private GameObject smasherClearPrefab;
         
         [SerializeField] private GameSettings settings;
@@ -34,6 +35,7 @@ namespace Main.Installer
                 controlsPrefab,
                 titlePrefab,
                 gameOverPrefab,
+                stageSelectPrefab,
                 smasherClearPrefab,
                 this
             ).CheckNull());

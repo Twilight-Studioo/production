@@ -41,6 +41,7 @@ namespace Feature.Component.Enemy
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            animator = GetComponentInChildren<Animator>();
             position.Value = transform.position;
         }
 
@@ -60,6 +61,10 @@ namespace Feature.Component.Enemy
         public void FlowCancel()
         {
             FlowStop();
+            if (movableCoroutine != null)
+            {
+                StopCoroutine(movableCoroutine);
+            }
         }
 
         public void FlowExecute()
@@ -158,10 +163,8 @@ namespace Feature.Component.Enemy
                     yield return new WaitForSeconds(0.5f);
                     continue;
                 }
-
                 if (Math.Abs(enemyParams.shootDistance - distance) < 2f && distance > 1f && canBullet)
                 {
-                    Debug.Log("Attack");
                     canBullet = false;
                     lastAttackedTime = Time.time;
                     yield return Attack();
@@ -189,7 +192,17 @@ namespace Feature.Component.Enemy
 
         private IEnumerator Attack()
         {
-            animator.Play("attackA");
+            if (animator)
+            {
+                try
+                {
+                    animator.Play("attackB");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
@@ -237,13 +250,23 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         public void DestroyEnemy()
         {
-            loseAnimation = true;
-            animator.Play("defeat");
+            // loseAnimation = true;
+            FlowCancel();
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.velocity = Vector3.down;
+            try
+            {
+               animator.Play("defeat");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

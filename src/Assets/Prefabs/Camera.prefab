@@ -734,7 +734,11 @@ MonoBehaviour:
   m_PositionMode: 1
   m_RotationMode: 0
   m_UpdateMethod: 2
-  m_Targets: []
+  m_Targets:
+  - target: {fileID: 2113007197219777006, guid: e35f659dc96364216acb46f208f83a5b,
+      type: 3}
+    weight: 10
+    radius: 0
 --- !u!114 &6021065651016145650
 MonoBehaviour:
   m_ObjectHideFlags: 0

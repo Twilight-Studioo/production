@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Codice.Client.BaseCommands;
 using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
@@ -14,7 +13,6 @@ using Feature.Interface;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.UI;
 
 #endregion
 
@@ -38,6 +36,7 @@ namespace Feature.Component.Enemy
         private Animator animator;
 
         private bool loseAnimation = false;
+        private bool tracking = false;
 
         private void Awake()
         {
@@ -137,7 +136,6 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         private TriggerRef MoveTrigger() =>
@@ -158,6 +156,10 @@ namespace Feature.Component.Enemy
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
+            if (loseAnimation)
+            {
+                yield break;
+            }
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
@@ -187,6 +189,11 @@ namespace Feature.Component.Enemy
 
                 if (enemyParams.foundDistance > distance)
                 {
+                    if (!tracking)
+                    {
+                        animator.Play("float");  
+                    }
+                    tracking = true;
                     agent.ResetPath();
                     yield return Action("AIMoveToFollow")
                         .Param("FollowTransform", playerTransform)
@@ -201,6 +208,11 @@ namespace Feature.Component.Enemy
                 }
                 else
                 {
+                    if (tracking)
+                    {
+                        animator.Play("move");  
+                    }
+                    tracking = false;
                     animator.Play("miss");
                     yield return Wait(5.0f);
                 }
@@ -219,11 +231,11 @@ namespace Feature.Component.Enemy
                yield break;
             }
             AttackDecision();
-            // yield return Action("AIRushToPosition")
-            //     .Param("RushSpeed", enemyParams.rushSpeed)
-            //     .Param("TargetTransform", playerTransform)
+             yield return Action("AIRushToPosition")
+                 .Param("RushSpeed", enemyParams.rushSpeed)
+                 .Param("TargetTransform", playerTransform)
             //     .Param("OnHitRushAttack", onHitRushAttack)
-            //     .Build();
+                 .Build();
             yield return Wait(enemyParams.rushAfterDelay);
         }
 
@@ -254,7 +266,8 @@ namespace Feature.Component.Enemy
         
         public void DestroyEnemy()
         {
-            loseAnimation = true;
+           // loseAnimation = true;
+            FlowCancel();
             animator.Play("defeat");
         }
     }
