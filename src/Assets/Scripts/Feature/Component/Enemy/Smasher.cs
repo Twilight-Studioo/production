@@ -145,7 +145,7 @@ namespace Feature.Component.Enemy
                     break;
 
                 case 6:
-                    yield return StartCoroutine(StrikeMine());
+                    // yield return StartCoroutine(StrikeMine());
                     break;
 
                 case 7:
