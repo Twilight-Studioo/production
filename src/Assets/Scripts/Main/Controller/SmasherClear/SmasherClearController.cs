@@ -23,7 +23,7 @@ namespace Main.Controller.SmasherClear
         public void Start()
         {
             controller.Reset();
-            controller.Navigate(Navigation.GameOver);
+            controller.Navigate(Navigation.SmasherClear);
         }
     }
 }

@@ -35,8 +35,8 @@ namespace Main.Installer
                 controlsPrefab,
                 titlePrefab,
                 gameOverPrefab,
-                stageSelectPrefab,
                 smasherClearPrefab,
+                stageSelectPrefab,
                 this
             ).CheckNull());
 
