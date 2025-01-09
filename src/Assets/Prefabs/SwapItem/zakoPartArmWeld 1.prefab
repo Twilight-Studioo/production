@@ -63,6 +63,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e9da2ccead1601745add4963cce8c32f, type: 2}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 808738e928fbf144fb23701a1e3f5c2b,
         type: 3}
       propertyPath: m_Name
@@ -76,7 +96,27 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 808738e928fbf144fb23701a1e3f5c2b,
         type: 3}
       propertyPath: m_TagString
-      value: SwapItem
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5190430159691044689, guid: 808738e928fbf144fb23701a1e3f5c2b,
         type: 3}
@@ -108,6 +148,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: -4808801400952603678}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1179242337196399249}
   m_SourcePrefab: {fileID: 100100000, guid: 808738e928fbf144fb23701a1e3f5c2b, type: 3}
 --- !u!1 &877894574874129651 stripped
 GameObject:
@@ -218,5 +262,17 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 64
   m_CollisionDetection: 0
+--- !u!114 &-1179242337196399249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 877894574874129651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e36d112f7c437c85ded5b3ee422494, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

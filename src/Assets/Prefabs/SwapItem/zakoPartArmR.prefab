@@ -81,7 +81,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a954b1aeaeb0f4f4ab0a129dd99e24d9,
         type: 3}
       propertyPath: m_TagString
-      value: SwapItem
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -103,6 +103,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 667877515771091826}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a954b1aeaeb0f4f4ab0a129dd99e24d9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7203267023144812994}
   m_SourcePrefab: {fileID: 100100000, guid: a954b1aeaeb0f4f4ab0a129dd99e24d9, type: 3}
 --- !u!1 &5520726374553969170 stripped
 GameObject:
@@ -150,7 +154,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 8
   m_CollisionDetection: 0
 --- !u!23 &-7196024756949729453
 MeshRenderer:
@@ -215,3 +219,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.3578846, y: 0.49566406, z: 1.1844786}
   m_Center: {x: -0.007047057, y: 0.25216797, z: 0.01001972}
+--- !u!114 &-7203267023144812994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5520726374553969170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e36d112f7c437c85ded5b3ee422494, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -12,8 +12,10 @@ namespace Main.Scene.Generated
     public enum Scene
     {
         TitleScene,
-        Stage,
+        zako,
+        boss,
         GameOverScene,
+        CrearSmasherStageScene,
     }
 
     public static class SceneLoaderFeatures
@@ -22,13 +24,21 @@ namespace Main.Scene.Generated
         {
             return new SceneLoader(Scene.TitleScene, "Assets/Scenes/OutGame/TitleScene.unity", sceneDataModel);
         }
-        public static SceneLoader Stage(ISceneDataModel sceneDataModel)
+        public static SceneLoader zako(ISceneDataModel sceneDataModel)
         {
-            return new SceneLoader(Scene.Stage, "Assets/Scenes/Template/Stage.unity", sceneDataModel);
+            return new SceneLoader(Scene.zako, "Assets/Scenes/Zako/zako.unity", sceneDataModel);
+        }
+        public static SceneLoader boss(ISceneDataModel sceneDataModel)
+        {
+            return new SceneLoader(Scene.boss, "Assets/Scenes/Zako/boss.unity", sceneDataModel);
         }
         public static SceneLoader GameOverScene(ISceneDataModel sceneDataModel)
         {
             return new SceneLoader(Scene.GameOverScene, "Assets/Scenes/OutGame/GameOverScene.unity", sceneDataModel);
+        }
+        public static SceneLoader CrearSmasherStageScene(ISceneDataModel sceneDataModel)
+        {
+            return new SceneLoader(Scene.CrearSmasherStageScene, "Assets/Scenes/OutGame/CrearSmasherStageScene.unity", sceneDataModel);
         }
     }
 }

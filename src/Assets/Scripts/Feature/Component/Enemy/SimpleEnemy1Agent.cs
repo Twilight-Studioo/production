@@ -33,11 +33,16 @@ namespace Feature.Component.Enemy
 
         private Transform playerTransform;
 
+        private Animator animator;
+
+        private bool loseAnimation = false;
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             rb = GetComponent<Rigidbody>();
             position.Value = transform.position;
+            animator = GetComponentInChildren<Animator>();
         }
 
         private void Update()
@@ -49,8 +54,7 @@ namespace Feature.Component.Enemy
 
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy1;
-
-
+        
         public void FlowCancel()
         {
             FlowStop();
@@ -131,7 +135,6 @@ namespace Feature.Component.Enemy
         public void Delete()
         {
             OnDestroyEvent?.Invoke();
-            Destroy(gameObject);
         }
 
         private TriggerRef MoveTrigger() =>
@@ -187,29 +190,41 @@ namespace Feature.Component.Enemy
                         .Param("MoveSpeed", enemyParams.pursuitSpeed)
                         .IfEnd(
                             UnFocusTrigger()
-                                .Build(),
-                            RushStart()
                                 .Build()
+                            // RushStart()
+                            //     .Build()
                         )
                         .Build();
                 }
+                else
+                {
+                    animator.Play("miss");
+                    yield return Wait(5.0f);
+                }
             }
         }
-
+        
         private IEnumerator Attack()
-        {
+        { 
             onHitRushAttack = TakeDamage;
             agent.ResetPath();
             yield return Wait(enemyParams.rushBeforeDelay);
-            yield return Action("AIRushToPosition")
-                .Param("RushSpeed", enemyParams.rushSpeed)
-                .Param("TargetTransform", playerTransform)
-                .Param("OnHitRushAttack", onHitRushAttack)
-                .Build();
+            animator.Play("attackSetA");
+            yield return Wait(0.2f);
+            if (loseAnimation)
+            {
+               yield break;
+            }
+            AttackDecision();
+            // yield return Action("AIRushToPosition")
+            //     .Param("RushSpeed", enemyParams.rushSpeed)
+            //     .Param("TargetTransform", playerTransform)
+            //     .Param("OnHitRushAttack", onHitRushAttack)
+            //     .Build();
             yield return Wait(enemyParams.rushAfterDelay);
         }
 
-        private void TakeDamage()
+        public void TakeDamage()
         {
             var player = ObjectFactory.Instance.FindPlayer();
             if (player == null)
@@ -217,9 +232,28 @@ namespace Feature.Component.Enemy
                 return;
             }
 
-            var view = player.GetComponent<IDamaged>();
-            view.OnDamage(enemyParams.damage, transform.position, transform);
-            OnTakeDamageEvent?.Invoke();
+            if (!loseAnimation)
+            {
+                var view = player.GetComponent<IDamaged>();
+                view.OnDamage(enemyParams.damage, transform.position, transform);
+                OnTakeDamageEvent?.Invoke();
+            }
+
+        }
+
+        private void AttackDecision()
+        {
+            if (!loseAnimation)
+            {
+                animator.Play("attackA");
+            }
+        }
+        
+        public void DestroyEnemy()
+        {
+           // loseAnimation = true;
+            FlowCancel();
+            animator.Play("defeat");
         }
     }
 }
