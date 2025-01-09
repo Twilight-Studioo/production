@@ -163,7 +163,6 @@ namespace Feature.Component.Enemy
                     yield return new WaitForSeconds(0.5f);
                     continue;
                 }
-
                 if (Math.Abs(enemyParams.shootDistance - distance) < 2f && distance > 1f && canBullet)
                 {
                     canBullet = false;
@@ -197,7 +196,7 @@ namespace Feature.Component.Enemy
             {
                 try
                 {
-                    animator.Play("attackA");
+                    animator.Play("attackB");
                 }
                 catch (Exception e)
                 {
