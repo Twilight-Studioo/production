@@ -55,6 +55,7 @@ namespace Feature.Component.Enemy
         [SerializeField] private GameObject minePrefab;
 
         private bool alive = true;
+        private bool attack = false;
 
         private void Start()
         {
@@ -78,11 +79,14 @@ namespace Feature.Component.Enemy
                 playerRightSide = true;
             }
 
-            playerPosition = playerTransform.position;
-            var direction = playerPosition - transform.position;
-            direction.y = 0;
-            var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
+            if (!attack)
+            {
+                playerPosition = playerTransform.position;
+                var direction = playerPosition - transform.position;
+                direction.y = 0;
+                var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+                transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
+            }
         }
 
         private void UpdateHealth()
@@ -167,12 +171,14 @@ namespace Feature.Component.Enemy
             Debug.Log("突進");
             chargeAttack = true;
             yield return new WaitForSeconds(bossPrams.chargeTime);
+            attack = true;
             animator.SetTrigger("OnForwardattack");
             CurrentDistance();
             Debug.Log(playerDistance);
             bossRb.AddRelativeForce(bossPrams.chargeSpeed * Vector3.forward);
             yield return new WaitForSeconds(bossPrams.chargeAttackTime);
             bossRb.velocity = Vector3.zero;
+            attack = false;
             chargeAttack = false;
             yield return new WaitForSeconds(bossPrams.chargeIntervalSec);
         }
@@ -345,7 +351,7 @@ namespace Feature.Component.Enemy
         {
             alive = false;
             Destroy(bossHealthBar);
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             SceneManager.LoadScene("ClearSmasherScene");
         }
 
