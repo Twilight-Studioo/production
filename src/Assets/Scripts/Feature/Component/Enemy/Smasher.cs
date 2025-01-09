@@ -33,7 +33,7 @@ namespace Feature.Component.Enemy
         private GameObject mine;
         private GameObject debris;
         private GameObject debris2;
-        private uint health;
+        private int health;
         private float lastDamageTime = 0f;
         private bool kick = false;
         private bool slap = false;
@@ -59,7 +59,7 @@ namespace Feature.Component.Enemy
         private void Start()
         {
             bossRb = GetComponent<Rigidbody>();
-            health = bossPrams.health;
+            health = (int)bossPrams.health;
             UpdateHealth();
             StartCoroutine(Attack());
         }
@@ -88,7 +88,7 @@ namespace Feature.Component.Enemy
         private void UpdateHealth()
         {
             bossHealthBar.value = (float)health / bossPrams.health;
-            if (health <= 0)
+            if (health <= 0 && alive)
             {
                 StartCoroutine(Dead());
             }
@@ -352,7 +352,7 @@ namespace Feature.Component.Enemy
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             var currentTime = Time.time;
-            health -= damage;
+            health -= (int)damage;
             if (health < bossPrams.health / 2)
             {
                 bossRb.AddRelativeForce(bossPrams.kickbackHalf * Vector3.back);
