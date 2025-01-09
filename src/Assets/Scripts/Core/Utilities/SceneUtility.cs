@@ -70,6 +70,7 @@ namespace Core.Utilities
             sb.AppendLine("            {");
             sb.AppendLine("                rootInstance.CurrentDataModel = sceneDataModel;");
             sb.AppendLine("            }");
+            sb.AppendLine("            rootInstance.AddHistory(scene);");
 
             sb.AppendLine("            SceneManager.LoadScene(path);");
             sb.AppendLine("        }");

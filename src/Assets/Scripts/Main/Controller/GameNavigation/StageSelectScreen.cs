@@ -7,6 +7,8 @@ using UniRx;
 using UnityEngine;
 using Feature.Component;
 using System.Collections;
+using Main.Scene.Model;
+
 #endregion
 
 namespace Main.Controller.GameNavigation
@@ -90,11 +92,11 @@ namespace Main.Controller.GameNavigation
             {
                 case Navi.A:
                     titlePlayerAnimation.StageSelect();
-                    StartCoroutine(LoadStageWithDelay());
+                    StartCoroutine(LoadStageWithDelay(SceneLoaderFeatures.zako(new ZakoSceneDataModel())));
                     break;
                 case Navi.B:
                     titlePlayerAnimation.StageSelect();
-                    StartCoroutine(LoadStageWithDelay());
+                    StartCoroutine(LoadStageWithDelay(SceneLoaderFeatures.boss(new BossSceneDataModel())));
                     break;
                 case Navi.Back:
                     titlePlayerAnimation.ClickBacktoTitle();
@@ -102,11 +104,11 @@ namespace Main.Controller.GameNavigation
                     break;
             }
         }
-        private IEnumerator LoadStageWithDelay()
+        private IEnumerator LoadStageWithDelay(SceneLoader sceneLoader)
         {
             yield return new WaitForSeconds(2.0f);
             Controller.Reset();
-            SceneLoaderFeatures.Stage(null).Bind(RootInstance).Load();
+            sceneLoader.Bind(RootInstance).Load();
         }
         private enum Navi
         {

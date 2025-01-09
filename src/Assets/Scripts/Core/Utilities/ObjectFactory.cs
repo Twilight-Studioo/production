@@ -52,6 +52,12 @@ namespace Core.Utilities
             }
         }
         public static ObjectFactory Instance => instance ??= new();
+        
+        public static void Reset()
+        {
+            instance = null;
+            superObject = null;
+        }
         public event Action<GameObject> OnObjectCreated;
 
         private void Update(long x)
