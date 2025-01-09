@@ -22,35 +22,35 @@ MonoBehaviour:
   health: 500
   chargeAttackTime: 0.5
   chargeSpeed: 750
-  chargeTime: 1
+  chargeTime: 0.4
   chargeAttackDamage: 10
   chargeIntervalSec: 1
   upperHeight: 400
-  upperOccurrenceTime: 1
+  upperOccurrenceTime: 0.4
   upperDamage: 6
   upperIntervalSec: 0.5
-  jumpOccurrenceTime: 0.5
+  jumpOccurrenceTime: 0.3
   jumpIntervalSec: 0.5
   slapDistance: 3
-  slapDamage: 3
+  slapDamage: 6
   slapOccurrenceTime: 0.1
   slapIntervalSec: 0.1
   fallAttackDistance: 15
   fallSpeed: 80
-  fallAttackDamage: 10
+  fallAttackDamage: 15
   fallAttackOccurrenceTime: 0.1
-  fallAttackIntervalSec: 0
-  debrisDamage: 10
+  fallAttackIntervalSec: 0.3
+  debrisDamage: 5
   debrisSpeed: 20
   debrisAttackOccurrenceTime: 0.2
-  debrisAttackIntervalSec: 2
-  mineOccurrenceTime: 2
+  debrisAttackIntervalSec: 1
+  mineOccurrenceTime: 1
   mineIntervalSec: 1
   mineSpeedVertical: 50
   mineSpeedBeside: 25
-  mineDamage: 30
+  mineDamage: 10
   kickTriggerTime: 1.5
-  kickDamage: 10
+  kickDamage: 5
   kickbackHalf: 100
   kickbackOneThird: 150
   kickbackTenth: 200

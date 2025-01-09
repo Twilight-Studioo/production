@@ -32,6 +32,7 @@ namespace Main.Scene.Generated
             {
                 rootInstance.CurrentDataModel = sceneDataModel;
             }
+            rootInstance.AddHistory(scene);
             SceneManager.LoadScene(path);
         }
     }

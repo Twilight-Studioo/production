@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using Core.Utilities;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
@@ -31,7 +33,7 @@ namespace Feature.Component.Enemy
         private GameObject mine;
         private GameObject debris;
         private GameObject debris2;
-        private uint health;
+        private int health;
         private float lastDamageTime = 0f;
         private bool kick = false;
         private bool slap = false;
@@ -49,6 +51,7 @@ namespace Feature.Component.Enemy
         private Vector3 previousPosition;
 
         [SerializeField] private GameObject debrisPrefab;
+        [SerializeField] private List<GameObject> swapItemPrefab;
         [SerializeField] private GameObject minePrefab;
 
         private bool alive = true;
@@ -56,7 +59,7 @@ namespace Feature.Component.Enemy
         private void Start()
         {
             bossRb = GetComponent<Rigidbody>();
-            health = bossPrams.health;
+            health = (int)bossPrams.health;
             UpdateHealth();
             StartCoroutine(Attack());
         }
@@ -64,6 +67,10 @@ namespace Feature.Component.Enemy
         private void Update()
         {
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+            if (playerTransform == null)
+            {
+                return;
+            }
             xDistance = Mathf.Abs(transform.position.x - positionAtAttack.x);
             var distance = transform.position.x - playerTransform.position.x;
             if (distance < 0)
@@ -81,7 +88,7 @@ namespace Feature.Component.Enemy
         private void UpdateHealth()
         {
             bossHealthBar.value = (float)health / bossPrams.health;
-            if (health <= 0)
+            if (health <= 0 && alive)
             {
                 StartCoroutine(Dead());
             }
@@ -138,7 +145,7 @@ namespace Feature.Component.Enemy
                     break;
 
                 case 6:
-                    yield return StartCoroutine(StrikeMine());
+                    // yield return StartCoroutine(StrikeMine());
                     break;
 
                 case 7:
@@ -266,7 +273,10 @@ namespace Feature.Component.Enemy
             animator.SetTrigger("DebriAttack");
             yield return new WaitForSeconds(0.2f);
             debris2 = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
-                Quaternion.identity);
+                 Quaternion.identity);
+            //var swapitem = swapItemPrefab.RandomElement();
+                    //debris2 = ObjectFactory.Instance.CreateObject(swapitem, spawnPoint.transform.position, spawnPoint.transform.rotation);
+            //debris2.GetComponent<Rigidbody>().AddForce((playerRightSide == true) ? 2 : -2, 10, 0);
             debris = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
                 Quaternion.identity);
             debris.GetComponent<Debris>().Kick();
@@ -342,7 +352,7 @@ namespace Feature.Component.Enemy
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
             var currentTime = Time.time;
-            health -= damage;
+            health -= (int)damage;
             if (health < bossPrams.health / 2)
             {
                 bossRb.AddRelativeForce(bossPrams.kickbackHalf * Vector3.back);

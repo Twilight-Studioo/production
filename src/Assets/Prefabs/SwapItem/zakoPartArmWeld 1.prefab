@@ -63,6 +63,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e9da2ccead1601745add4963cce8c32f, type: 2}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 808738e928fbf144fb23701a1e3f5c2b,
         type: 3}
       propertyPath: m_Name
@@ -77,6 +97,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5190430159691044689, guid: 808738e928fbf144fb23701a1e3f5c2b,
         type: 3}
@@ -222,7 +262,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 64
   m_CollisionDetection: 0
 --- !u!114 &-1179242337196399249
 MonoBehaviour:

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -26,19 +27,28 @@ namespace Feature.Component
 
         public void OnClickStage()
         {
-            animator.Play("StageSelectA");
+            //animator.Play("StageSelectA");
+            animator.SetBool("Selecting", true);
+        }
+
+        public void ClickBacktoTitle()
+        {
+            animator.SetBool("Selecting", false);
         }
 
         public void StageSelect()
         {
+            sword.SetActive(true);
+            swordReverse.SetActive(false);
             animator.Play("StageSelectB");
         }
         private void PlayRandomAnimation()
         {
             sword.SetActive(true);
             swordReverse.SetActive(false);
-            int randomChoice = Random.Range(0, 2);
-            var animationStateName = randomChoice == 0 ? "Player_katana" : "Player_swap";
+            // int randomChoice = Random.Range(0, 2);
+            // var animationStateName = randomChoice == 0 ? "Player_katana" : "Player_swap";
+            var animationStateName = "Player_katana";
             
             animator.Play(animationStateName, 0, 0f);
         }
