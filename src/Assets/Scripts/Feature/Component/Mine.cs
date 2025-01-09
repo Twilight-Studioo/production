@@ -50,7 +50,7 @@ namespace Feature.Component
             }
         }
 
-        private void OnCollisionExit(Collision other)
+        private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.CompareTag("Player"))
             {

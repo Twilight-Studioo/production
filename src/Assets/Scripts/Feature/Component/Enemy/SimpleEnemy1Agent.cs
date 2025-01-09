@@ -36,6 +36,7 @@ namespace Feature.Component.Enemy
         private Animator animator;
 
         private bool loseAnimation = false;
+        private bool tracking = false;
 
         private void Awake()
         {
@@ -155,6 +156,10 @@ namespace Feature.Component.Enemy
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
+            if (loseAnimation)
+            {
+                yield break;
+            }
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
@@ -184,6 +189,11 @@ namespace Feature.Component.Enemy
 
                 if (enemyParams.foundDistance > distance)
                 {
+                    if (!tracking)
+                    {
+                        animator.Play("float");  
+                    }
+                    tracking = true;
                     agent.ResetPath();
                     yield return Action("AIMoveToFollow")
                         .Param("FollowTransform", playerTransform)
@@ -198,6 +208,11 @@ namespace Feature.Component.Enemy
                 }
                 else
                 {
+                    if (tracking)
+                    {
+                        animator.Play("move");  
+                    }
+                    tracking = false;
                     animator.Play("miss");
                     yield return Wait(5.0f);
                 }
@@ -216,11 +231,11 @@ namespace Feature.Component.Enemy
                yield break;
             }
             AttackDecision();
-            // yield return Action("AIRushToPosition")
-            //     .Param("RushSpeed", enemyParams.rushSpeed)
-            //     .Param("TargetTransform", playerTransform)
+             yield return Action("AIRushToPosition")
+                 .Param("RushSpeed", enemyParams.rushSpeed)
+                 .Param("TargetTransform", playerTransform)
             //     .Param("OnHitRushAttack", onHitRushAttack)
-            //     .Build();
+                 .Build();
             yield return Wait(enemyParams.rushAfterDelay);
         }
 
