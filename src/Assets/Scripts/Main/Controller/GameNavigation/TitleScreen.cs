@@ -14,6 +14,7 @@ namespace Main.Controller.GameNavigation
         [SerializeField] private TextMeshProUGUI toContinueText;
         [SerializeField] private TextMeshProUGUI toOptionText;
         [SerializeField] private TextMeshProUGUI toQuitText;
+        [SerializeField] private TextMeshProUGUI versionText;
         private TitlePlayerAnimation titlePlayerAnimation;
 
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
@@ -29,6 +30,7 @@ namespace Main.Controller.GameNavigation
             base.OnShow();
             disposable = currentNavi.Subscribe(OnNaviChanged);
             currentNavi.Value = Navi.Start;
+            versionText.text = $"version: {Application.version}";
         }
 
         public override void OnHide()
