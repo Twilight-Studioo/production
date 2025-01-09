@@ -156,7 +156,7 @@ namespace Feature.Model
             return nearestItem;
         }
 
-        public List<SwapItem> GetItemsInRange(Vector3 position, Vector3 direction, float maxDistance)
+        public List<SwapItem> GetItemsInRange(Vector3 position, float maxDistance)
         {
             var itemsInRange = Items
                 .Where(item => Vector3.Distance(item.Position, position) < maxDistance)
