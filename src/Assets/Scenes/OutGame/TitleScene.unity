@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.127317, g: 0.13414717, b: 0.12107849, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 09de5551bd9864923a0f0079de327dc4,
+    type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -2830,6 +2831,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor
       objectReference: {fileID: 0}
+    - target: {fileID: 6001522100721454400, guid: 6d1579caeb0c71f438db6cd2b6b5f78f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6341736920268724218, guid: 6d1579caeb0c71f438db6cd2b6b5f78f,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -3301,6 +3307,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TitlePlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 4574757291823330106, guid: 31dcfb9f6a400bf4dae9899a78579d18,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7750658774937906615, guid: 31dcfb9f6a400bf4dae9899a78579d18,
         type: 3}
@@ -4445,7 +4456,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1844856757}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0027323975, y: 0.9971211, z: -0.044334628, w: 0.061453797}
+  m_LocalRotation: {x: 0.0027323961, y: 0.9971211, z: -0.04433463, w: 0.061453763}
   m_LocalPosition: {x: 0.08139396, y: 1.3396742, z: 0.87959534}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4845,7 +4856,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062072765}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0027323975, y: 0.9971211, z: -0.044334628, w: 0.061453797}
+  m_LocalRotation: {x: 0.0027323961, y: 0.9971211, z: -0.04433463, w: 0.061453763}
   m_LocalPosition: {x: 0.08139396, y: 1.3396742, z: 0.87959534}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4942,6 +4953,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TitleStatics
+      objectReference: {fileID: 0}
+    - target: {fileID: 399044689837861768, guid: 2ea1358c84ca84ab3b04937080c2c1e6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2815364559624918695, guid: 2ea1358c84ca84ab3b04937080c2c1e6,
         type: 3}

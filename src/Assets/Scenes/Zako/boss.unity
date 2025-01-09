@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.127317, g: 0.13414717, b: 0.12107849, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 0b8685720c1a946f1a392778c3cdd2d4,
+    type: 2}
   m_LightingSettings: {fileID: 1948977007}
 --- !u!196 &4
 NavMeshSettings:
@@ -191,6 +192,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeleteSpawnItemArea
       objectReference: {fileID: 0}
+    - target: {fileID: 7094686518649341032, guid: 7784bbebbe59b48598260b4cb22659e2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -204,25 +210,45 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 438578797}
     m_Modifications:
+    - target: {fileID: 1516876901922022039, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.2814373
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516876901922022039, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.88825953
+      objectReference: {fileID: 0}
     - target: {fileID: 2136804035946126029, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7019865
+      value: 0.70198643
       objectReference: {fileID: 0}
     - target: {fileID: 2136804035946126029, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7097833
+      value: -0.7097834
       objectReference: {fileID: 0}
     - target: {fileID: 2136804035946126029, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000071525574
+      value: -0.000000089406974
       objectReference: {fileID: 0}
     - target: {fileID: 2136804035946126029, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.058502942
+      value: 0.05850366
+      objectReference: {fileID: 0}
+    - target: {fileID: 2245686469170979126, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.2814373
+      objectReference: {fileID: 0}
+    - target: {fileID: 2245686469170979126, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.88825953
       objectReference: {fileID: 0}
     - target: {fileID: 3495553469206181156, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
@@ -292,18 +318,23 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 8980884533986266060, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70198643
+      objectReference: {fileID: 0}
+    - target: {fileID: 8980884533986266060, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
+        type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7097833
+      value: -0.7097834
       objectReference: {fileID: 0}
     - target: {fileID: 8980884533986266060, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0000007152558
+      value: 0.000000059604645
       objectReference: {fileID: 0}
     - target: {fileID: 8980884533986266060, guid: cbf47b1c7e1f582418b2678c0a9bf8c7,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.058502916
+      value: -0.058503687
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2656,6 +2687,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4056644079389105336, guid: ec52b863a8c5442f3bf9a82e85a42e98,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5249968229004039808, guid: ec52b863a8c5442f3bf9a82e85a42e98,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2794,6 +2830,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5598527947834059465, guid: 5b939b2effde44a1dae4f968d35a8f18,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5729609478086918310, guid: 5b939b2effde44a1dae4f968d35a8f18,
         type: 3}
       propertyPath: m_LocalPosition.x
