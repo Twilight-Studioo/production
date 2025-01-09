@@ -19,7 +19,7 @@ MonoBehaviour:
   maxHp: 100
   patrolSpeed: 1
   pursuitSpeed: 1.4
-  health: 10
+  health: 550
   chargeAttackTime: 0.5
   chargeSpeed: 750
   chargeTime: 0.4
