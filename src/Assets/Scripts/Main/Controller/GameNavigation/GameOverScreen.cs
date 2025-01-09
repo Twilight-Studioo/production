@@ -2,6 +2,7 @@
 
 using System;
 using Main.Scene.Generated;
+using Main.Scene.Model;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -87,7 +88,21 @@ namespace Main.Controller.GameNavigation
             {
                 case Navi.GoToRestart:
                     Controller.Reset();
-                    SceneLoaderFeatures.Stage(null).Bind(RootInstance).Load();
+                    foreach (var scene in RootInstance.GetHistory())
+                    {
+                        switch (scene)
+                        {
+                            case Scene.Generated.Scene.boss:
+                                SceneLoaderFeatures.boss(new BossSceneDataModel()).Bind(RootInstance).Load();
+                                return;
+                            case Scene.Generated.Scene.zako:
+                                SceneLoaderFeatures.zako(new ZakoSceneDataModel()).Bind(RootInstance).Load();
+                                return;
+                            default:
+                                break;
+                        }
+                    }
+                    SceneLoaderFeatures.TitleScene(null).Bind(RootInstance).Load();
                     break;
                 case Navi.GoToTitle:
                     Controller.Reset();
