@@ -38,6 +38,7 @@ namespace Feature.Component.Enemy
 
         private Animator animator;
         private bool loseAnimation = false;
+        private bool tracking = false;
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -152,6 +153,12 @@ namespace Feature.Component.Enemy
                     }
                     else if (enemyParams.pursuitDistance > distance)
                     {
+                        if (tracking)
+                        {
+                            animator.Play("float");  
+                        }
+
+                        tracking = false;
                         yield return Action("AIMoveToTargetDistance")
                             .Param("Target", playerTransform)
                             .Param("Distance", enemyParams.shootDistance)
@@ -165,6 +172,11 @@ namespace Feature.Component.Enemy
                     }
                     else if((enemyParams.foundDistance > distance))
                     {
+                        if (!tracking)
+                        {
+                            animator.Play("move");
+                        }
+                        tracking = true;
                         yield return Action("PointsAIMoveTo")
                             .Param("Points", points)
                             .Param("MoveSpeed", enemyParams.patrolSpeed)
