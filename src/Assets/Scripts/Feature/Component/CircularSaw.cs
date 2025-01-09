@@ -33,6 +33,8 @@ namespace Feature.Component
         private bool outLine;
         private float repopTime;
 
+        private string smasher = "Smasher";
+
         private GameObject saw;
 
         private void Start()
@@ -79,7 +81,14 @@ namespace Feature.Component
 
             if (other.gameObject.CompareTag("Enemy"))
             {
-                other.gameObject.GetComponent<IEnemy>().OnDamage(damage, transform.position, transform);
+                if (other.gameObject.name == smasher)
+                {
+                    other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+                }
+                else
+                {
+                    other.gameObject.GetComponent<IEnemy>().OnDamage(damage, transform.position, transform);
+                }
             }
         }
 
@@ -92,7 +101,14 @@ namespace Feature.Component
 
             if (other.gameObject.CompareTag("Enemy"))
             {
-                other.gameObject.GetComponent<IEnemy>().OnDamage(damage, transform.position, transform);
+                if (other.gameObject.name == smasher)
+                {
+                    other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+                }
+                else
+                {
+                    other.gameObject.GetComponent<IEnemy>().OnDamage(damage, transform.position, transform);
+                }
             }
         }
 
