@@ -51,6 +51,6 @@ MonoBehaviour:
   mineDamage: 10
   kickTriggerTime: 1.5
   kickDamage: 5
-  kickbackHalf: 100
-  kickbackOneThird: 150
-  kickbackTenth: 200
+  kickbackHalf: 75
+  kickbackOneThird: 100
+  kickbackTenth: 150
