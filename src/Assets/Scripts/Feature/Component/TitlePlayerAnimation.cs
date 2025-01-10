@@ -1,7 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
-using UnityEngine;
-using Random = UnityEngine.Random;
+﻿using UnityEngine;
 
 namespace Feature.Component
 {
