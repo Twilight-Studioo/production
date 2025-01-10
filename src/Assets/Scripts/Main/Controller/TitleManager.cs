@@ -14,6 +14,8 @@ namespace Main.Controller
             IOutGameController controller
         )
         {
+            ObjectFactory.Reset();
+            Time.timeScale = 1f;
             this.controller = controller.CheckNull();
         }
         public void Start()

@@ -55,6 +55,7 @@ namespace Core.Utilities
         
         public static void Reset()
         {
+            Object.Destroy(superObject);
             instance = null;
             superObject = null;
         }
