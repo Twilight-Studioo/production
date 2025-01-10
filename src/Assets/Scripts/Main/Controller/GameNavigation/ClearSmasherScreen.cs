@@ -84,7 +84,8 @@ namespace Main.Controller.GameNavigation
             {
                 case Navi.GoToRestart:
                     Controller.Reset();
-                    SceneLoaderFeatures.SmasherBossFight(null).Bind(RootInstance).Load();
+                    // SceneLoaderFeatures.SmasherBossFight(null).Bind(RootInstance).Load();
+                    SceneLoaderFeatures.boss(null).Bind(RootInstance).Load();
                     break;
                 case Navi.GoToTitle:
                     Controller.Reset();
