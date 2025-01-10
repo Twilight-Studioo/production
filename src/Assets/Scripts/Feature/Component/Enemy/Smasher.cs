@@ -37,7 +37,7 @@ namespace Feature.Component.Enemy
         private float lastDamageTime = 0f;
         private bool kick = false;
         private bool slap = false;
-        [SerializeField] private Slider bossHealthBar;
+        [SerializeField] private Image bossHealthBar;
         [SerializeField] private Animator animator;
         [SerializeField] private Transform strikePoint;
 
@@ -91,7 +91,7 @@ namespace Feature.Component.Enemy
 
         private void UpdateHealth()
         {
-            bossHealthBar.value = (float)health / bossPrams.health;
+            bossHealthBar.fillAmount = (float)health / bossPrams.health;
             if (health <= 0 && alive)
             {
                 StartCoroutine(Dead());
