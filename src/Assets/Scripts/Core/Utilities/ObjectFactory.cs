@@ -55,7 +55,10 @@ namespace Core.Utilities
         
         public static void Reset()
         {
-            Object.Destroy(superObject);
+            if (Application.isPlaying)
+            {
+                Object.Destroy(superObject);
+            }
             instance = null;
             superObject = null;
         }
