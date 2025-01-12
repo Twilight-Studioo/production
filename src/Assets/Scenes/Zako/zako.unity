@@ -12657,6 +12657,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4260750018971809318, guid: a8825b7e524048b428b9a8105364fa6e,
         type: 3}
+      propertyPath: moveRunawaySpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4260750018971809318, guid: a8825b7e524048b428b9a8105364fa6e,
+        type: 3}
       propertyPath: wayPoints.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -32931,12 +32936,12 @@ PrefabInstance:
     - target: {fileID: 4256864520778078277, guid: a1ce4840f1c4245479bc7ad73626b27e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 47.6
       objectReference: {fileID: 0}
     - target: {fileID: 4256864520778078277, guid: a1ce4840f1c4245479bc7ad73626b27e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.62
+      value: 34.2
       objectReference: {fileID: 0}
     - target: {fileID: 4256864520778078277, guid: a1ce4840f1c4245479bc7ad73626b27e,
         type: 3}
@@ -56390,7 +56395,7 @@ PrefabInstance:
     - target: {fileID: 974588675384877354, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: field of view
-      value: 29.24465
+      value: 28.39817
       objectReference: {fileID: 0}
     - target: {fileID: 1879344804925149864, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
@@ -56435,12 +56440,12 @@ PrefabInstance:
     - target: {fileID: 1961276430645119237, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000002149071
+      value: 0.0000000021490707
       objectReference: {fileID: 0}
     - target: {fileID: 1961276430645119237, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 8.616936e-11
+      value: -8.6169356e-11
       objectReference: {fileID: 0}
     - target: {fileID: 3606400983697465113, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
@@ -56515,7 +56520,7 @@ PrefabInstance:
     - target: {fileID: 7271379122264895468, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
       propertyPath: m_Lens.FieldOfView
-      value: 29.24465
+      value: 28.39817
       objectReference: {fileID: 0}
     - target: {fileID: 7729599276646446907, guid: 2536c13a70eb64bbdb5c44fa72e0f117,
         type: 3}
