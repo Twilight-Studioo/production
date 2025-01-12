@@ -43,7 +43,8 @@ namespace Core.Utilities.Effect
                 .AddTo(context);
         }
 
-        public T PlayEffect(Vector3 position, T prefab, float lifetime, Quaternion rotate = default, Action<T> onStart = null)
+        public T PlayEffect(Vector3 position, T prefab, float lifetime, Quaternion rotate = default,
+            Action<T> onStart = null)
         {
             EffectInstance<T> effectInstance;
 

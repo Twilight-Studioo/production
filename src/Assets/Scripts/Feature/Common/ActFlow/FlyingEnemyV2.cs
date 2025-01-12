@@ -14,23 +14,28 @@ namespace Feature.Common.ActFlow
     [ActionTag("FlyingEnemyV2")]
     public class FlyingEnemyV2Action : FixedUpdatedAction, IGizmoDrawable, IDisposable
     {
+        private const float HoverAmplitude = 0.6f; // 揺れの振幅
+        private const float HoverFrequency = 2f; // 揺れの周波数
+        private const float MinHeightFromGround = 1f; // 地面からの最低高さ
+        private float hoverTime;
+        private LayerMask obstacleMask;
+
+        private Vector3 previousMoveForce;
+
+        // 内部変数
+        private Rigidbody rb;
+
         // パラメータ (ActionParameterで外部設定可能)
         [ActionParameter("Power")] private float Power { get; set; }
         [ActionParameter("Distance")] private float Distance { get; set; } = 5f;
-        [ActionParameter("MaxHeightFromGround")] private float MaxHeightFromGround { get; set; } = 20f;
-        [ActionParameter("MinDistanceToCeiling")] private float MinDistanceToCeiling { get; set; } = 5f;
+
+        [ActionParameter("MaxHeightFromGround")]
+        private float MaxHeightFromGround { get; set; } = 20f;
+
+        [ActionParameter("MinDistanceToCeiling")]
+        private float MinDistanceToCeiling { get; set; } = 5f;
+
         [ActionParameter("Target")] private Transform Player { get; set; }
-
-         // 内部変数
-        private Rigidbody rb;
-        private LayerMask obstacleMask;
-
-        private const float HoverAmplitude = 0.6f; // 揺れの振幅
-        private const float HoverFrequency = 2f;  // 揺れの周波数
-        private const float MinHeightFromGround = 1f; // 地面からの最低高さ
-        private float hoverTime;
-        
-        private Vector3 previousMoveForce;
 
         public void Dispose()
         {
@@ -57,7 +62,7 @@ namespace Feature.Common.ActFlow
             Gizmos.DrawLine(
                 Owner.transform.position,
                 Owner.transform.position + Vector3.up * MinDistanceToCeiling);
-            
+
             Gizmos.color = Color.green;
             Gizmos.DrawLine(
                 Owner.transform.position,
@@ -87,6 +92,7 @@ namespace Feature.Common.ActFlow
             {
                 Player = ObjectFactory.Instance.FindPlayer()?.transform;
             }
+
             obstacleMask = LayerMask.GetMask("Default", "Ground");
         }
 
@@ -133,8 +139,8 @@ namespace Feature.Common.ActFlow
             var distanceDifference = distanceToPlayer - Distance;
 
             // 移動力を距離の差に比例させる（負の値も考慮）
-            var moveForce = directionToPlayer * 
-                                (Power * Random.Range(0.8f, 1.0f)) * (distanceDifference / Distance);
+            var moveForce = directionToPlayer *
+                            (Power * Random.Range(0.8f, 1.0f)) * (distanceDifference / Distance);
 
             return moveForce;
         }
@@ -144,7 +150,8 @@ namespace Feature.Common.ActFlow
         {
             // 地面までの距離を取得
             var distanceToGround = Mathf.Infinity;
-            if (Physics.Raycast(Owner.transform.position, Vector3.down, out var groundHit, Mathf.Infinity, obstacleMask))
+            if (Physics.Raycast(Owner.transform.position, Vector3.down, out var groundHit, Mathf.Infinity,
+                    obstacleMask))
             {
                 distanceToGround = groundHit.distance;
             }

@@ -11,6 +11,7 @@ namespace Main.Controller.SmasherClear
     {
         private readonly InputActionAccessor accessor;
         private readonly ScreenController<Navigation> controller;
+
         [Inject]
         public SmasherClearController(
             InputActionAccessor accessor,
@@ -20,6 +21,7 @@ namespace Main.Controller.SmasherClear
             this.accessor = accessor.CheckNull();
             this.controller = controller.CheckNull();
         }
+
         public void Start()
         {
             controller.Reset();

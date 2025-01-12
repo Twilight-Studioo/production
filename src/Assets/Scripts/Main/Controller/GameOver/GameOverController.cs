@@ -7,10 +7,11 @@ using VContainer;
 
 namespace Main.Controller.GameOver
 {
-    public class GameOverController: IOutGameController
+    public class GameOverController : IOutGameController
     {
         private readonly InputActionAccessor accessor;
         private readonly ScreenController<Navigation> controller;
+
         [Inject]
         public GameOverController(
             InputActionAccessor accessor,
@@ -20,6 +21,7 @@ namespace Main.Controller.GameOver
             this.accessor = accessor.CheckNull();
             this.controller = controller.CheckNull();
         }
+
         public void Start()
         {
             controller.Reset();

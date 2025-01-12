@@ -10,24 +10,24 @@ namespace Feature.Component.Enemy.SmasherEx
 {
     public partial class SmasherAI
     {
-
         private const float Angle = 45f; // 投げる角度（度）
         private const float MaxFindPlayerDistance = 30f; // プレイヤーを探す距離
+
         /// <summary>
-        /// playerに向かって移動する時の目標距離
-        /// ForwardBlowなどで使用
+        ///     playerに向かって移動する時の目標距離
+        ///     ForwardBlowなどで使用
         /// </summary>
         private const float MoveToPlayerTargetDistance = 4f;
-        
+
         /// <summary>
-        /// 一定距離を保つ時の目標距離
-        /// 落下攻撃などで使用
+        ///     一定距離を保つ時の目標距離
+        ///     落下攻撃などで使用
         /// </summary>
         private const float MoveToKeepDistanceTargetDistance = 10f;
-        
 
-    
-        private partial Vector3 CalculateVelocity(GameObject mine, Vector3 target, float angle, float velocityMultiplier, bool useGravity)
+
+        private partial Vector3 CalculateVelocity(GameObject mine, Vector3 target, float angle,
+            float velocityMultiplier, bool useGravity)
         {
             var start = mine.transform.position;
 
@@ -45,7 +45,7 @@ namespace Feature.Component.Enemy.SmasherEx
             var gravity = Physics.gravity.magnitude * 1.0f; // 必要に応じて倍率を調整
 
             // 初速度を計算
-            var velocitySquared = (gravity * distance * distance) /
+            var velocitySquared = gravity * distance * distance /
                                   (2 * (distance * Mathf.Tan(angleRad) - heightDifference));
             if (velocitySquared < 0)
             {
@@ -74,12 +74,11 @@ namespace Feature.Component.Enemy.SmasherEx
 
         private void ChargingForwardTick(float chargeSpeed, float rayLength)
         {
-    
             var minePosition = spawnedMine.transform.position;
             var toMine = minePosition - transform.position;
             var mineToPlayerDirection = toMine.normalized;
             agent.velocity = mineToPlayerDirection * chargeSpeed;
-            var hits = transform.GetBoxCastAll(new Vector3(1f, 1f, 1f), mineToPlayerDirection, rayLength, 10);
+            var hits = transform.GetBoxCastAll(new(1f, 1f, 1f), mineToPlayerDirection, rayLength, 10);
             // hitしたobjに突進の力を加える
             foreach (var raycastHit in hits)
             {
@@ -93,26 +92,25 @@ namespace Feature.Component.Enemy.SmasherEx
                 var hitRb = raycastHit.transform.GetComponent<Rigidbody>();
                 if (hitRb != null && hitRb.gameObject != spawnedMine.gameObject)
                 {
-                    var velocity = CalculateVelocity(hitRb.gameObject, spawnedMine.transform.position, 20f,
-                        1.0f);
+                    var velocity = CalculateVelocity(hitRb.gameObject, spawnedMine.transform.position, 20f);
                     hitRb.velocity = velocity;
                 }
             }
         }
-        
+
         /// <summary>
-        /// 2点間に指定objが存在するか
+        ///     2点間に指定objが存在するか
         /// </summary>
         private bool ExistsBetweenTwoPoints(Vector3 from, Vector3 to, Transform obj)
         {
             var direction = to - from;
             var distance = direction.magnitude;
-            var hits = transform.GetBoxCastAll(new Vector3(1f, 1f, 1f), direction.normalized, distance, 10);
+            var hits = transform.GetBoxCastAll(new(1f, 1f, 1f), direction.normalized, distance, 10);
             return hits.Any(hit => hit.transform == obj);
         }
-        
+
         /// <summary>
-        /// 指定秒数後にAIを再開する
+        ///     指定秒数後にAIを再開する
         /// </summary>
         private IEnumerator DelaySecondsRestartFlow(float delay)
         {
@@ -122,15 +120,16 @@ namespace Feature.Component.Enemy.SmasherEx
         }
 
         /// <summary>
-        /// プレイヤーから一定距離or至近距離のどちらかにランダムで目標地点を打つ
-        /// 至近距離の場合は、playerに向かって[MoveToPlayerTargetDistance]の距離を保つ
-        /// 一定距離の場合は、playerから[KeepDistanceTargetDistance]の距離を保つように指定するが、壁などにより到達できない場合は至近距離になる
+        ///     プレイヤーから一定距離or至近距離のどちらかにランダムで目標地点を打つ
+        ///     至近距離の場合は、playerに向かって[MoveToPlayerTargetDistance]の距離を保つ
+        ///     一定距離の場合は、playerから[KeepDistanceTargetDistance]の距離を保つように指定するが、壁などにより到達できない場合は至近距離になる
         /// </summary>
         private void MoveToPlayerWithAgent()
         {
             var player = ObjectFactory.Instance.FindPlayer().CheckNull();
             var playerLeaveDirection = (transform.position - player.transform.position).normalized;
-            var leaveTargetPosition = player.transform.position + playerLeaveDirection * MoveToKeepDistanceTargetDistance;
+            var leaveTargetPosition =
+                player.transform.position + playerLeaveDirection * MoveToKeepDistanceTargetDistance;
             var canKeepDistance = IsDestinationReachable(leaveTargetPosition);
             var isMoveToLeave = canKeepDistance && Random.Range(0, 2) == 0;
             if (isMoveToLeave)
@@ -151,9 +150,9 @@ namespace Feature.Component.Enemy.SmasherEx
                 Debug.Log("至近距離に移動");
             }
         }
-        
+
         /// <summary>
-        /// NavMeshAgentが指定地点に到達可能か
+        ///     NavMeshAgentが指定地点に到達可能か
         /// </summary>
         private bool IsDestinationReachable(Vector3 destination)
         {
@@ -161,13 +160,15 @@ namespace Feature.Component.Enemy.SmasherEx
             var pathFound = NavMesh.CalculatePath(agent.transform.position, destination, NavMesh.AllAreas, path);
 
             if (!pathFound)
+            {
                 return false;
+            }
 
             return path.status == NavMeshPathStatus.PathComplete;
         }
-        
+
         /// <summary>
-        /// playerとの距離を取得
+        ///     playerとの距離を取得
         /// </summary>
         private float ToPlayerDistance()
         {
@@ -175,12 +176,9 @@ namespace Feature.Component.Enemy.SmasherEx
             return Vector3.Distance(transform.position, player.transform.position);
         }
     }
-    
+
     internal static class SmasherAIExtension
     {
-        public static float ClampNan(this float value)
-        {
-            return float.IsNaN(value) ? 0 : value;
-        }
+        public static float ClampNan(this float value) => float.IsNaN(value) ? 0 : value;
     }
 }

@@ -22,6 +22,8 @@ namespace Feature.Component
         private readonly uint damage = 10;
         private readonly Vector3 directionMovement = new(1, 0, 0);
 
+        private readonly string smasher = "Smasher";
+
         private Rigidbody circularsaw;
         private SphereCollider circularsawIsTrigger;
         private int currentWaypointIndex;
@@ -32,8 +34,6 @@ namespace Feature.Component
 
         private bool outLine;
         private float repopTime;
-
-        private string smasher = "Smasher";
 
         private GameObject saw;
 
@@ -173,7 +173,7 @@ namespace Feature.Component
             circularsawIsTrigger.isTrigger = true;
             circularsaw.useGravity = false;
             transform.position = element0;
-            saw = ObjectFactory.Instance.CreateObject(this.gameObject, original.transform.position, Quaternion.identity);
+            saw = ObjectFactory.Instance.CreateObject(gameObject, original.transform.position, Quaternion.identity);
             gameObject.GetComponent<DamagedTrigger>().Delete();
         }
     }

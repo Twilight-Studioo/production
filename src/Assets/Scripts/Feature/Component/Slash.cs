@@ -13,8 +13,6 @@ namespace Feature.Component
     public class Slash : MonoBehaviour
     {
         private uint damage;
-        
-        public event Action<DamageResult> OnHitEvent;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -24,9 +22,12 @@ namespace Feature.Component
             {
                 return;
             }
+
             var result = enemy.OnDamage(damage, other.transform.position, transform);
             OnHitEvent?.Invoke(result);
         }
+
+        public event Action<DamageResult> OnHitEvent;
 
         public void SetDamage(uint dmg)
         {

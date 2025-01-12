@@ -98,10 +98,9 @@ namespace Main.Controller.GameNavigation
                             case Scene.Generated.Scene.zako:
                                 SceneLoaderFeatures.zako(new ZakoSceneDataModel()).Bind(RootInstance).Load();
                                 return;
-                            default:
-                                break;
                         }
                     }
+
                     SceneLoaderFeatures.TitleScene(null).Bind(RootInstance).Load();
                     break;
                 case Navi.GoToTitle:

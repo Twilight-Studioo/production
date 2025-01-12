@@ -10,7 +10,8 @@ namespace Main.Scene
 {
     public class RootInstance
     {
-        private Stack<Generated.Scene> history = new Stack<Generated.Scene>();
+        private readonly Stack<Generated.Scene> history = new();
+
         [Inject]
         public RootInstance()
         {
@@ -18,20 +19,14 @@ namespace Main.Scene
 
         public ISceneDataModel CurrentDataModel { get; set; }
 
-        public T TryGetDataModel<T>() where T : class, ISceneDataModel
-        {
-            return CurrentDataModel as T;
-        }
-        
+        public T TryGetDataModel<T>() where T : class, ISceneDataModel => CurrentDataModel as T;
+
         public void AddHistory(Generated.Scene scene)
         {
             // Add to history
             history.Push(scene);
         }
 
-        public Stack<Generated.Scene> GetHistory()
-        {
-            return history;
-        }
+        public Stack<Generated.Scene> GetHistory() => history;
     }
 }

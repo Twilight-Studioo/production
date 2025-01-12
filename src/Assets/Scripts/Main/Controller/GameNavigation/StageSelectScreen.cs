@@ -1,13 +1,13 @@
 #region
 
 using System;
+using System.Collections;
+using Feature.Component;
 using Main.Scene.Generated;
+using Main.Scene.Model;
 using TMPro;
 using UniRx;
 using UnityEngine;
-using Feature.Component;
-using System.Collections;
-using Main.Scene.Model;
 
 #endregion
 
@@ -21,15 +21,16 @@ namespace Main.Controller.GameNavigation
         [SerializeField] private TextMeshProUGUI AText;
         [SerializeField] private TextMeshProUGUI BText;
         [SerializeField] private TextMeshProUGUI backText;
-        private TitlePlayerAnimation titlePlayerAnimation;
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>(Navi.A);
 
         private IDisposable disposable;
+        private TitlePlayerAnimation titlePlayerAnimation;
 
         private void Awake()
         {
             titlePlayerAnimation = FindObjectOfType<TitlePlayerAnimation>();
         }
+
         public override void OnShow()
         {
             base.OnShow();
@@ -104,12 +105,14 @@ namespace Main.Controller.GameNavigation
                     break;
             }
         }
+
         private IEnumerator LoadStageWithDelay(SceneLoader sceneLoader)
         {
             yield return new WaitForSeconds(2.0f);
             Controller.Reset();
             sceneLoader.Bind(RootInstance).Load();
         }
+
         private enum Navi
         {
             A,

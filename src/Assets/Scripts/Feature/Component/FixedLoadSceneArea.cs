@@ -1,10 +1,10 @@
-using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Feature.Component
 {
     [RequireComponent(typeof(Collider))]
-    public class FixedLoadSceneArea: MonoBehaviour
+    public class FixedLoadSceneArea : MonoBehaviour
     {
         [SerializeField] private string sceneName;
 
@@ -20,7 +20,7 @@ namespace Feature.Component
         {
             if (other.CompareTag("Player"))
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+                SceneManager.LoadScene(sceneName);
             }
         }
     }

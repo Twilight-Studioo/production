@@ -1,9 +1,9 @@
 ﻿#region
-using System;
-using Unity.Properties;
+
 using UnityEngine;
 
 #endregion
+
 namespace Feature.Component.Enemy
 {
     public class SimpleEnemy1Attack : MonoBehaviour
@@ -18,7 +18,7 @@ namespace Feature.Component.Enemy
         public void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Player"))
-            { 
+            {
                 enemy.TakeDamage();
             }
         }

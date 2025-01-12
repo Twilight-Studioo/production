@@ -21,11 +21,13 @@ namespace Feature.Component.Enemy
     public class SimpleEnemy2Agent : FlowScope, IEnemyAgent, ISwappable
     {
         [SerializeField] private GameObject bulletPrefab;
+        private readonly bool loseAnimation = false;
 
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private NavMeshAgent agent;
-        private Rigidbody rb;
+
+        private Animator animator;
 
         private bool canBullet;
 
@@ -35,10 +37,9 @@ namespace Feature.Component.Enemy
 
         private Transform playerTransform;
         private List<Vector3> points;
+        private Rigidbody rb;
+        private bool tracking;
 
-        private Animator animator;
-        private bool loseAnimation = false;
-        private bool tracking = false;
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -51,6 +52,7 @@ namespace Feature.Component.Enemy
         {
             position.Value = transform.position;
         }
+
         public Action RequireDestroy { set; get; }
 
         public GetHealth OnGetHealth { get; set; }
@@ -65,7 +67,7 @@ namespace Feature.Component.Enemy
         public void FlowExecute()
         {
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
-            FlowStart(); 
+            FlowStart();
         }
 
         public void SetParams(EnemyParams @params)
@@ -89,9 +91,10 @@ namespace Feature.Component.Enemy
         {
             var imp = (transform.position - attacker.position).normalized;
             imp.y += 0.3f;
-            this.UniqueStartCoroutine(HitStop(imp), $"HitStop_{gameObject.name}");;
+            this.UniqueStartCoroutine(HitStop(imp), $"HitStop_{gameObject.name}");
+            ;
         }
-        
+
         private IEnumerator HitStop(Vector3 imp)
         {
             FlowCancel();
@@ -155,7 +158,7 @@ namespace Feature.Component.Enemy
                     {
                         if (tracking)
                         {
-                            animator.Play("float");  
+                            animator.Play("float");
                         }
 
                         tracking = false;
@@ -170,12 +173,13 @@ namespace Feature.Component.Enemy
                             .Build();
                         canBullet = true;
                     }
-                    else if((enemyParams.foundDistance > distance))
+                    else if (enemyParams.foundDistance > distance)
                     {
                         if (!tracking)
                         {
                             animator.Play("move");
                         }
+
                         tracking = true;
                         yield return Action("PointsAIMoveTo")
                             .Param("Points", points)
@@ -192,7 +196,6 @@ namespace Feature.Component.Enemy
                         yield return Wait(5.0f);
                     }
                 }
-
             }
         }
 
@@ -217,10 +220,9 @@ namespace Feature.Component.Enemy
                     bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                     yield return Wait(enemyParams.shootIntervalSec);
                 }
-                
+
                 yield return Wait(enemyParams.shootAfterSec);
             }
-
         }
 
         public void OnSelected()
@@ -254,6 +256,7 @@ namespace Feature.Component.Enemy
         {
             OnDestroyEvent?.Invoke();
         }
+
         public void DestroyEnemy()
         {
             // loseAnimation = true;

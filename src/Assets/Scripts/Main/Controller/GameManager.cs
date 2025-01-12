@@ -15,11 +15,11 @@ namespace Main.Controller
 {
     public class GameManager : IStartable, IDisposable
     {
+        private readonly IAudioMixerController audioMixerController;
         private readonly IGameController gameController;
         private readonly IGameInputController gameInputController;
         private readonly PlayerPresenter playerPresenter;
         private readonly PlayerStart playerStart;
-        private readonly IAudioMixerController audioMixerController;
 
         private bool isStarted;
 
@@ -49,6 +49,7 @@ namespace Main.Controller
             {
                 return;
             }
+
             audioMixerController.LoadSaveData();
 
             isStarted = true;
