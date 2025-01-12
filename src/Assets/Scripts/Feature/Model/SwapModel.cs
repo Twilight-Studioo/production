@@ -31,10 +31,9 @@ namespace Feature.Model
 
     public class SwapModel
     {
+        private readonly float canSelectDirectionRange = 45f;
         private Guid currentId = Guid.Empty;
         public List<SwapItem> Items { get; } = new();
-        
-        private readonly float canSelectDirectionRange = 45f;
 
         public void AddItems(List<SwapItem> items)
         {
@@ -123,7 +122,7 @@ namespace Feature.Model
             var nearestDirDot = -1f;
             var nearestDistance = Mathf.Infinity;
 
-            if (direction is { x: 0f, y: 0f })
+            if (direction is { x: 0f, y: 0f, })
             {
                 return null;
             }
@@ -144,7 +143,8 @@ namespace Feature.Model
 
                 if (angle <= canSelectDirectionRange)
                 {
-                    if (angleDot > nearestDirDot || (Mathf.Approximately(angleDot, nearestDirDot) && distance < nearestDistance))
+                    if (angleDot > nearestDirDot ||
+                        (Mathf.Approximately(angleDot, nearestDirDot) && distance < nearestDistance))
                     {
                         nearestDirDot = angleDot;
                         nearestItem = item;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Feature.Component
 {
     [RequireComponent(typeof(CinemachineVirtualCamera))]
-    public class CinemachineSmoothPathManager: MonoBehaviour
+    public class CinemachineSmoothPathManager : MonoBehaviour
     {
         public enum PathPoint
         {
@@ -13,13 +13,14 @@ namespace Feature.Component
             Noop = 2,
             StageSelect = 3,
         }
-        private CinemachineVirtualCamera vcam;
-        private CinemachineTrackedDolly dolly;
-        
-        private float targetPathPosition;
-        private float currentPathPosition;
-        
+
         [SerializeField] private float smoothSpeed = 1.4f;
+        private float currentPathPosition;
+        private CinemachineTrackedDolly dolly;
+
+        private float targetPathPosition;
+        private CinemachineVirtualCamera vcam;
+
         private void Awake()
         {
             vcam = GetComponent<CinemachineVirtualCamera>();
@@ -30,24 +31,24 @@ namespace Feature.Component
         {
             SetPathPoint(PathPoint.StageSelect);
         }
-        
-        public void SetPathPoint(PathPoint pathPoint)
-        {
-            SetPathPointInternal(pathPoint);
-        }
-        
-        public void SetPathPointFast(PathPoint pathPoint)
-        {
-            SetPathPointInternal(pathPoint);
-            currentPathPosition = targetPathPosition;
-        }
 
         private void Update()
         {
             currentPathPosition = Mathf.Lerp(currentPathPosition, targetPathPosition, Time.deltaTime * smoothSpeed);
             dolly.m_PathPosition = currentPathPosition;
         }
-        
+
+        public void SetPathPoint(PathPoint pathPoint)
+        {
+            SetPathPointInternal(pathPoint);
+        }
+
+        public void SetPathPointFast(PathPoint pathPoint)
+        {
+            SetPathPointInternal(pathPoint);
+            currentPathPosition = targetPathPosition;
+        }
+
         private void SetPathPointInternal(PathPoint pathPoint)
         {
             targetPathPosition = (int)pathPoint;

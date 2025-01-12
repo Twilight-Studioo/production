@@ -5,7 +5,7 @@ using VContainer.Unity;
 
 namespace Main.Installer
 {
-    public class GameOverInstaller: LifetimeScope
+    public class GameOverInstaller : LifetimeScope
     {
         protected override void Configure(IContainerBuilder builder)
         {

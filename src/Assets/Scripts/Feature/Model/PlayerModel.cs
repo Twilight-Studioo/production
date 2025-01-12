@@ -20,7 +20,6 @@ namespace Feature.Model
         }
 
         private const float AttackAfterMovableMillis = 250;
-        private int MaxVoltageValue => characterParams.maxVoltage;
         private const int MinVoltageValue = 0;
 
         private readonly CompositeDisposable attackAfterCompositeDisposable = new();
@@ -56,17 +55,17 @@ namespace Feature.Model
         private readonly IReactiveProperty<int> swapStamina;
 
         public readonly IReadOnlyReactiveProperty<int> SwapStamina;
+
+        private readonly IReactiveProperty<int> voltagePower = new ReactiveProperty<int>(0);
+        public readonly IReadOnlyReactiveProperty<int> VoltagePower;
         public IReadOnlyReactiveProperty<int> Health;
 
         private IDisposable recoverStaminaSubscription;
+        private IDisposable swappedRecoveryHealth;
+        private IDisposable swappedRecoveryVoltage;
 
         private IDisposable swapUseStaminaSubscription;
         private IDisposable useDaggerUseStamina;
-        private IDisposable swappedRecoveryHealth;
-        private IDisposable swappedRecoveryVoltage;
-        
-        private IReactiveProperty<int> voltagePower = new ReactiveProperty<int>(0);
-        public readonly IReadOnlyReactiveProperty<int> VoltagePower;
 
         [Inject]
         public PlayerModel(
@@ -120,6 +119,8 @@ namespace Feature.Model
             canAttack.Value = true;
         }
 
+        private int MaxVoltageValue => characterParams.maxVoltage;
+
         // TODO: スワップに入れるのは、enter+exitスタミナを持っている場合
         public float IfCanStartSwapRate =>
             (float)(characterParams.enterSwapUseStamina + characterParams.swapExecUseStamina) /
@@ -137,7 +138,7 @@ namespace Feature.Model
         public float ComboAngleOffset => characterParams.comboAngleOffset;
         public float MaxComboCount => characterParams.maxComboCount;
         public float AttackCoolTime => characterParams.attackCoolTime;
-        
+
         public float MaxComboCoolTime => characterParams.maxComboCoolTime;
 
         public Vector3 Forward { get; private set; }
@@ -233,7 +234,7 @@ namespace Feature.Model
             {
                 PlayerStateChange?.Invoke(PlayerStateEvent.SwapExec);
                 swapStamina.Value = Math.Max(swapStamina.Value - (int)characterParams.swapExecUseStamina, 0);
-                
+
                 var recoveryHealthDurationSeconds = characterParams.swappedRecoveryHealthTimeMillis / 1000f;
                 var recoveryHealthIntervalSeconds = characterParams.swappedRecoveryHealthIntervalMillis / 1000f;
                 var swappedRecoveryHealthQuantity = characterParams.swappedRecoveryHealthQuantity;
@@ -245,22 +246,24 @@ namespace Feature.Model
                     .Interval(TimeSpan.FromSeconds(recoveryHealthIntervalSeconds))
                     .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(recoveryHealthDurationSeconds)))
                     .Subscribe(_ =>
-                        {
-                            health.Value = (int)Mathf.Min(health.Value + swappedRecoveryHealthQuantity, characterParams.health);
-                        })
+                    {
+                        health.Value = (int)Mathf.Min(health.Value + swappedRecoveryHealthQuantity,
+                            characterParams.health);
+                    })
                     .AddTo(playerModelTimer);
-                
+
                 var recoveryVoltageDurationSeconds = characterParams.swappedRecoveryVoltageTimeMillis / 1000f;
                 var recoveryVoltageIntervalSeconds = characterParams.swappedRecoveryVoltageIntervalMillis / 1000f;
                 var swappedRecoveryVoltageQuantity = characterParams.swappedRecoveryVoltageQuantity;
-                
+
                 swappedRecoveryVoltage?.Dispose();
                 swappedRecoveryVoltage = Observable
                     .Interval(TimeSpan.FromSeconds(recoveryVoltageIntervalSeconds))
                     .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(recoveryVoltageDurationSeconds)))
                     .Subscribe(_ =>
                     {
-                        voltagePower.Value = (int)Mathf.Min(voltagePower.Value + swappedRecoveryVoltageQuantity, MaxVoltageValue);
+                        voltagePower.Value = (int)Mathf.Min(voltagePower.Value + swappedRecoveryVoltageQuantity,
+                            MaxVoltageValue);
                     })
                     .AddTo(playerModelTimer);
             }
@@ -304,6 +307,7 @@ namespace Feature.Model
                     break;
             }
         }
+
         private void OnEnemyAttackedDamage()
         {
             var damagedRecovery = characterParams.damagedRecoveryHealth;
@@ -317,7 +321,7 @@ namespace Feature.Model
         {
             var killedRecovery = characterParams.killRecoveryHealth;
             health.Value = Mathf.Min(health.Value + (int)killedRecovery, characterParams.health);
-            
+
             var killedVoltage = characterParams.killRecoveryVoltage;
             voltagePower.Value = Mathf.Min(voltagePower.Value + (int)killedVoltage, MaxVoltageValue);
         }

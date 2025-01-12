@@ -21,6 +21,7 @@ namespace Core.Utilities
             {
                 layerMask = Physics.DefaultRaycastLayers;
             }
+
             var results = new RaycastHit[capacity];
             Physics.BoxCastNonAlloc(transform.position, halfExtents, direction, results, Quaternion.identity,
                 maxDistance, layerMask);

@@ -18,7 +18,7 @@ namespace Feature.Component.Environment
         [SerializeField] private uint spawnQuantity = 1; // 1度に何個スポーンするか
         [SerializeField] private float spawnDistance = 20.0f; // アイテムをスポーンし始める距離
         [SerializeField] private float respawnTimeSec = 5.0f; // リスポーンするまでの秒数
-        
+
         [SerializeField] private List<Vector3> spawnPoints;
 
         private bool isCt;
@@ -38,6 +38,29 @@ namespace Feature.Component.Environment
         {
             SpawnCheck();
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+
+            // 全てのポイントに対して球を描画
+            for (var i = 0; i < spawnPoints.Count; i++)
+            {
+                var worldPosition = spawnPoints[i];
+                Gizmos.DrawSphere(worldPosition, 0.4f);
+
+                // 操作可能なハンドルを追加
+                var newWorldPosition = Handles.PositionHandle(worldPosition, Quaternion.identity);
+
+                if (newWorldPosition != worldPosition)
+                {
+                    Undo.RecordObject(this, "Move Spawn Point"); // Undo対応
+                    spawnPoints[i] = transform.InverseTransformPoint(newWorldPosition);
+                }
+            }
+        }
+#endif
 
         private void SpawnCheck()
         {
@@ -77,6 +100,7 @@ namespace Feature.Component.Environment
                 {
                     continue;
                 }
+
                 ObjectFactory.Instance.CreateObject(item, new(pos.x, pos.y, 0), Quaternion.identity);
             }
 
@@ -84,28 +108,5 @@ namespace Feature.Component.Environment
                 .Timer(TimeSpan.FromSeconds(respawnTimeSec))
                 .Subscribe(_ => { isCt = false; });
         }
-        
-#if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-
-            // 全てのポイントに対して球を描画
-            for (var i = 0; i < spawnPoints.Count; i++)
-            {
-                var worldPosition = spawnPoints[i];
-                Gizmos.DrawSphere(worldPosition, 0.4f);
-
-                // 操作可能なハンドルを追加
-                var newWorldPosition = Handles.PositionHandle(worldPosition, Quaternion.identity);
-
-                if (newWorldPosition != worldPosition)
-                {
-                    Undo.RecordObject(this, "Move Spawn Point"); // Undo対応
-                    spawnPoints[i] = transform.InverseTransformPoint(newWorldPosition);
-                }
-            }
-        }
-#endif
     }
 }

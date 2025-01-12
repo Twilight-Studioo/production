@@ -43,6 +43,7 @@ namespace Core.Utilities
             {
                 return;
             }
+
             var drawablesCopy = new List<IGizmoDrawable>(gizmoDrawables);
             foreach (var drawable in drawablesCopy)
             {
@@ -53,6 +54,7 @@ namespace Core.Utilities
             {
                 return;
             }
+
             var gizmosCopy = new List<GizmoData>(gizmos);
 
             foreach (var gizmo in gizmosCopy)

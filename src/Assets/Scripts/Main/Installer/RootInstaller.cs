@@ -1,6 +1,5 @@
 using Core.Input;
 using Core.Utilities;
-using Core.Utilities.Save;
 using Feature.Common.Parameter;
 using Main.Controller;
 using Main.Controller.GameNavigation;
@@ -12,7 +11,7 @@ using VContainer.Unity;
 
 namespace Main.Installer
 {
-    public class RootInstaller: LifetimeScope
+    public class RootInstaller : LifetimeScope
     {
         [SerializeField] private GameObject pausePrefab;
         [SerializeField] private GameObject optionPrefab;
@@ -22,7 +21,7 @@ namespace Main.Installer
         [SerializeField] private GameObject gameOverPrefab;
         [SerializeField] private GameObject stageSelectPrefab;
         [SerializeField] private GameObject smasherClearPrefab;
-        
+
         [SerializeField] private GameSettings settings;
 
         protected override void Configure(IContainerBuilder builder)

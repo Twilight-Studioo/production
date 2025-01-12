@@ -25,7 +25,11 @@ namespace Feature.Component
 
         public void StartAnimation()
         {
-            if (isAttacking) return;
+            if (isAttacking)
+            {
+                return;
+            }
+
             isAttacking = true;
             katana.SetActive(true);
             sheath.SetActive(true);

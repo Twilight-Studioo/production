@@ -18,7 +18,6 @@ namespace Feature.Common.Parameter
 
         [Tooltip("１度に打つ数"),] public int shootCount = 3;
 
-        [Tooltip("射撃後の待機時間")]
-        public float shootAfterSec = 1f;
+        [Tooltip("射撃後の待機時間")] public float shootAfterSec = 1f;
     }
 }

@@ -1,28 +1,28 @@
 using System;
 using Core.Utilities;
 using Feature.Component;
-using Main.Scene.Generated;
 using TMPro;
 using UniRx;
 using UnityEngine;
 
 namespace Main.Controller.GameNavigation
 {
-    public class TitleScreen: ScreenProtocol<Navigation>
+    public class TitleScreen : ScreenProtocol<Navigation>
     {
         [SerializeField] private TextMeshProUGUI toStartText;
         [SerializeField] private TextMeshProUGUI toContinueText;
         [SerializeField] private TextMeshProUGUI toOptionText;
         [SerializeField] private TextMeshProUGUI toQuitText;
         [SerializeField] private TextMeshProUGUI versionText;
-        private TitlePlayerAnimation titlePlayerAnimation;
 
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
 
         private IDisposable disposable;
+        private TitlePlayerAnimation titlePlayerAnimation;
+
         private void Awake()
         {
-             titlePlayerAnimation = FindObjectOfType<TitlePlayerAnimation>();
+            titlePlayerAnimation = FindObjectOfType<TitlePlayerAnimation>();
         }
 
         public override void OnShow()
@@ -46,7 +46,7 @@ namespace Main.Controller.GameNavigation
             toOptionText.color = navi == Navi.Option ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
             toQuitText.color = navi == Navi.Quit ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
         }
-        
+
         protected override void OnCancel()
         {
             currentNavi.Value = Navi.Quit;
@@ -91,7 +91,7 @@ namespace Main.Controller.GameNavigation
                         break;
                 }
             }
-            
+
             currentNavi.Value = navi;
         }
 
@@ -117,7 +117,7 @@ namespace Main.Controller.GameNavigation
                     break;
             }
         }
-        
+
         private enum Navi
         {
             Start,

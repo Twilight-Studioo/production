@@ -1,7 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using Core.Camera;
+﻿using Core.Camera;
 using Feature.Component.Enemy;
-using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -9,11 +7,11 @@ namespace Main.Controller
 {
     public class SmasherManager : IStartable
     {
-        private readonly TargetGroupManager targetGroupManager;
         private readonly Smasher smasher;
+        private readonly TargetGroupManager targetGroupManager;
 
         [Inject]
-        public SmasherManager(TargetGroupManager targetGroupManager,Smasher smasher)
+        public SmasherManager(TargetGroupManager targetGroupManager, Smasher smasher)
         {
             this.targetGroupManager = targetGroupManager;
             this.smasher = smasher;
@@ -21,8 +19,7 @@ namespace Main.Controller
 
         public void Start()
         {
-            targetGroupManager.AddTarget(smasher.transform,CameraTargetGroupTag.Boss());
+            targetGroupManager.AddTarget(smasher.transform, CameraTargetGroupTag.Boss());
         }
-        
     }
 }

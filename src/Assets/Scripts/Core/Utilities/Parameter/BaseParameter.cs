@@ -2,8 +2,7 @@ using UnityEngine;
 
 namespace Core.Utilities.Parameter
 {
-    public class BaseParameter: ScriptableObject
+    public class BaseParameter : ScriptableObject
     {
-        
     }
 }

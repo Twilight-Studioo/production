@@ -6,10 +6,10 @@ using UnityEngine;
 namespace Feature.Component.Enemy.SmasherEx
 {
     /// <summary>
-    /// 瓦礫オブジェクト
-    /// <warning>Smasherでのみ使用</warning>
+    ///     瓦礫オブジェクト
+    ///     <warning>Smasherでのみ使用</warning>
     /// </summary>
-    public class DebrisObject: MonoBehaviour, ISwappable
+    public class DebrisObject : MonoBehaviour, ISwappable
     {
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
@@ -36,14 +36,13 @@ namespace Feature.Component.Enemy.SmasherEx
         }
 
         public event Action OnDestroyEvent;
+
         public void OnInSelectRange()
         {
-            
         }
 
         public void OnOutSelectRange()
         {
-            
         }
 
         public void Delete()
