@@ -81,6 +81,9 @@ namespace Feature.Component.Enemy
 #pragma warning disable CS0067
         public event Action OnTakeDamageEvent;
 #pragma warning restore CS0067
+        public void DestroyEnemy()
+        {
+        }
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
@@ -221,10 +224,6 @@ namespace Feature.Component.Enemy
                 case DroneAttackType.None:
                     break;
             }
-        }
-        public void DestroyEnemy()
-        {
-            
         }
     }
 }

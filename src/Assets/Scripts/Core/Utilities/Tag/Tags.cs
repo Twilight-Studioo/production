@@ -11,8 +11,10 @@ namespace Core.Utilities.Tag
             {
                 return false;
             }
+
             return obj.GetComponents<ITag>().Any(tag => tag is T t && tag.TagName == t.TagName);
         }
+
         public static bool HasTag(this Component obj, string tagName)
         {
             return obj.GetComponents<ITag>().Any(tag => tag.TagName == tagName);

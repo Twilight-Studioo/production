@@ -1,8 +1,8 @@
 namespace Feature.Common.Constants
 {
     /// <summary>
-    /// type追加時は最後尾に追加すること
-    /// serializeField等でindex管理している部分がズレてしまうため
+    ///     type追加時は最後尾に追加すること
+    ///     serializeField等でindex管理している部分がズレてしまうため
     /// </summary>
     public enum EnemyType
     {
@@ -11,11 +11,11 @@ namespace Feature.Common.Constants
         SimpleEnemy2,
 
         Drone,
-        
+
         Smasher,
 
         None,
-        
+
         SimpleEnemy2Fly,
     }
 }

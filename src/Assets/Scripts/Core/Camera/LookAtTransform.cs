@@ -1,19 +1,17 @@
-using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
 namespace Core.Camera
 {
-    
-    [ExecuteAlways,DisallowMultipleComponent]
-    public class LookAtTransform: CinemachineExtension
+    [ExecuteAlways, DisallowMultipleComponent,]
+    public class LookAtTransform : CinemachineExtension
     {
-        
         public CinemachineSmoothPath lookAtSmoothPath;
-        
+
         public Transform lookAtTargetTransform;
 
-        protected override void PostPipelineStageCallback(CinemachineVirtualCameraBase vcam, CinemachineCore.Stage stage, ref CameraState state, float deltaTime)
+        protected override void PostPipelineStageCallback(CinemachineVirtualCameraBase vcam,
+            CinemachineCore.Stage stage, ref CameraState state, float deltaTime)
         {
             if (stage == CinemachineCore.Stage.Aim)
             {

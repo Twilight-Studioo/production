@@ -20,7 +20,9 @@ namespace Feature.Presenter
 {
     public class PlayerPresenter : IDisposable
     {
+        private readonly IAudioMixerController audioMixerController;
         private readonly CharacterParams characterParams;
+        private readonly DamageEffectFactory damageEffectFactory;
 
         private readonly IEndFieldController endFieldController;
         private readonly EnemyParams enemyParams;
@@ -32,9 +34,6 @@ namespace Feature.Presenter
 
         private readonly CompositeDisposable swapTimer;
         private readonly VoltageBar voltageBar;
-        
-        private readonly IAudioMixerController audioMixerController;
-        private readonly DamageEffectFactory damageEffectFactory;
 
         private bool isGameOver;
         private IPlayerView playerView;
@@ -75,15 +74,14 @@ namespace Feature.Presenter
             {
                 // pos to hit point
                 var rotation = Quaternion.LookRotation(playerView.GetTransform().position - hit);
-                damageEffectFactory.PlayEffectAtPosition(playerView.GetTransform().position, rotation, DamageEffectFactory.Type.Player);
+                damageEffectFactory.PlayEffectAtPosition(playerView.GetTransform().position, rotation,
+                    DamageEffectFactory.Type.Player);
                 if (playerModel.TakeDamage(d))
                 {
                     return new DamageResult.Killed(playerView.GetTransform());
                 }
-                else
-                {
-                    return new DamageResult.Damaged(playerView.GetTransform());
-                }
+
+                return new DamageResult.Damaged(playerView.GetTransform());
             };
             playerView.OnHitHandler += OnAttackHitHandler;
             playerView.SwapRange = characterParams.canSwapDistance;
@@ -135,7 +133,7 @@ namespace Feature.Presenter
             );
             playerModel.PlayerStateChange += StateHandler;
         }
-        
+
         private void OnAttackHitHandler(DamageResult result)
         {
             playerModel.OnEnemyAttacked(result);
@@ -290,8 +288,10 @@ namespace Feature.Presenter
                 var isSpecialAttack = playerModel.VoltagePower.Value >= characterParams.useVoltageAttackValue;
                 playerView.Attack(degree, (uint)playerModel.GetVoltageAttackPower(), isSpecialAttack);
                 audioMixerController.PlayOneShotSE(AudioAssetType.Slashing);
-                voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,characterParams.votageTwoAttackValue,characterParams.maxVoltage);
-                playerView.VoltageEffect( playerModel.VoltagePower.Value,  characterParams.useVoltageAttackValue, characterParams.votageTwoAttackValue,
+                voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,
+                    characterParams.votageTwoAttackValue, characterParams.maxVoltage);
+                playerView.VoltageEffect(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,
+                    characterParams.votageTwoAttackValue,
                     characterParams.maxVoltage);
             }
         }
@@ -299,8 +299,10 @@ namespace Feature.Presenter
         private void AddVoltageSwap()
         {
             playerModel.AddVoltageSwap();
-            voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,characterParams.votageTwoAttackValue,characterParams.maxVoltage);
-            playerView.VoltageEffect( playerModel.VoltagePower.Value,  characterParams.useVoltageAttackValue, characterParams.votageTwoAttackValue,
+            voltageBar.UpdateVoltageBar(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,
+                characterParams.votageTwoAttackValue, characterParams.maxVoltage);
+            playerView.VoltageEffect(playerModel.VoltagePower.Value, characterParams.useVoltageAttackValue,
+                characterParams.votageTwoAttackValue,
                 characterParams.maxVoltage);
         }
 

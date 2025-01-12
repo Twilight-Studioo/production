@@ -7,7 +7,7 @@ using VContainer.Unity;
 
 namespace Main.Installer
 {
-    public class TitleInstaller: LifetimeScope
+    public class TitleInstaller : LifetimeScope
     {
         [SerializeField] private CinemachineSmoothPathManager cinemachineSmoothPathManager;
 

@@ -6,42 +6,42 @@ namespace Feature.Common.Parameter
     [CustomEditor(typeof(SmasherPrams))]
     public class SmasherPramsEditor : Editor
     {
-        private SerializedProperty health;
+        private SerializedProperty chargeAttackDamage;
         private SerializedProperty chargeAttackTime;
+        private SerializedProperty chargeIntervalSec;
         private SerializedProperty chargeSpeed;
         private SerializedProperty chargeTime;
-        private SerializedProperty chargeAttackDamage;
-        private SerializedProperty chargeIntervalSec;
-        private SerializedProperty upperHeight;
-        private SerializedProperty upperDamage;
-        private SerializedProperty upperOccurrenceTime;
-        private SerializedProperty upperIntervalSec;
-        private SerializedProperty jumpOccurrenceTime;
-        private SerializedProperty jumpIntervalSec;
-        private SerializedProperty slapDistance;
-        private SerializedProperty slapDamage;
-        private SerializedProperty slapOccurrenceTime;
-        private SerializedProperty slapIntervalSec;
-        private SerializedProperty fallAttackDistance;
-        private SerializedProperty fallSpeed;
-        private SerializedProperty fallAttackDamage;
-        private SerializedProperty fallAttackOccurrenceTime;
-        private SerializedProperty fallAttackIntervalSec;
+        private SerializedProperty debrisAttackIntervalSec;
+        private SerializedProperty debrisAttackOccurrenceTime;
         private SerializedProperty debrisDamage;
         private SerializedProperty debrisSpeed;
-        private SerializedProperty debrisAttackOccurrenceTime;
-        private SerializedProperty debrisAttackIntervalSec;
-        private SerializedProperty mineOccurrenceTime;
-        private SerializedProperty mineIntervalSec;
-        private SerializedProperty mineSpeedVertical;
-        private SerializedProperty mineSpeedBeside;
-        private SerializedProperty mineDamage;
-        private SerializedProperty kickTriggerTime;
-        private SerializedProperty kickDamage;
+        private SerializedProperty fallAttackDamage;
+        private SerializedProperty fallAttackDistance;
+        private SerializedProperty fallAttackIntervalSec;
+        private SerializedProperty fallAttackOccurrenceTime;
+        private SerializedProperty fallSpeed;
+        private SerializedProperty health;
+        private SerializedProperty jumpIntervalSec;
+        private SerializedProperty jumpOccurrenceTime;
         private SerializedProperty kickbackHalf;
         private SerializedProperty kickbackOneThird;
         private SerializedProperty kickbackTenth;
-        
+        private SerializedProperty kickDamage;
+        private SerializedProperty kickTriggerTime;
+        private SerializedProperty mineDamage;
+        private SerializedProperty mineIntervalSec;
+        private SerializedProperty mineOccurrenceTime;
+        private SerializedProperty mineSpeedBeside;
+        private SerializedProperty mineSpeedVertical;
+        private SerializedProperty slapDamage;
+        private SerializedProperty slapDistance;
+        private SerializedProperty slapIntervalSec;
+        private SerializedProperty slapOccurrenceTime;
+        private SerializedProperty upperDamage;
+        private SerializedProperty upperHeight;
+        private SerializedProperty upperIntervalSec;
+        private SerializedProperty upperOccurrenceTime;
+
         private void OnEnable()
         {
             health = serializedObject.FindProperty("health");
@@ -105,7 +105,7 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(upperDamage);
             EditorGUILayout.PropertyField(upperOccurrenceTime);
             EditorGUILayout.PropertyField(upperIntervalSec);
-            
+
             // ジャンプ系パラメータ
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("ジャンプ", EditorStyles.boldLabel);
@@ -119,7 +119,7 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(slapDamage);
             EditorGUILayout.PropertyField(slapOccurrenceTime);
             EditorGUILayout.PropertyField(slapIntervalSec);
-            
+
             // 落下攻撃
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("落下攻撃", EditorStyles.boldLabel);
@@ -145,7 +145,7 @@ namespace Feature.Common.Parameter
             EditorGUILayout.PropertyField(mineSpeedVertical);
             EditorGUILayout.PropertyField(mineSpeedBeside);
             EditorGUILayout.PropertyField(mineDamage);
-            
+
             //被ダメ
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("被ダメ", EditorStyles.boldLabel);

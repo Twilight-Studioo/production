@@ -17,10 +17,10 @@ namespace Main.Factory
     public class EnemyFactory : MonoBehaviour
     {
         [SerializeField] private EnemiesSetting settings;
-        
-        [Inject] private DamageEffectFactory damageEffectFactory;
 
         private readonly IObjectUtil objectUtil = new ObjectUtil();
+
+        [Inject] private DamageEffectFactory damageEffectFactory;
 
         public void Subscribe()
         {
@@ -28,6 +28,7 @@ namespace Main.Factory
             {
                 throw new("Settings is not set");
             }
+
             damageEffectFactory.CheckNull();
 
             settings.SettingValidate();
@@ -66,12 +67,15 @@ namespace Main.Factory
                 var rotation = forward != Vector3.zero ? Quaternion.LookRotation(forward) : Quaternion.identity;
                 if (result is DamageResult.Killed)
                 {
-                    damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.EnemyKill);
+                    damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation,
+                        DamageEffectFactory.Type.EnemyKill);
                 }
                 else
                 {
-                    damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation, DamageEffectFactory.Type.Enemy);
+                    damageEffectFactory.PlayEffectAtPosition(enemy.transform.position, rotation,
+                        DamageEffectFactory.Type.Enemy);
                 }
+
                 return new DamageResult.Damaged(enemy.transform);
             };
             presenter.Execute(start.Points);

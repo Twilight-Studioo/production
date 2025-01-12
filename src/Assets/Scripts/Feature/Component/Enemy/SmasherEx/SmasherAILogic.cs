@@ -10,31 +10,34 @@ namespace Feature.Component.Enemy.SmasherEx
 {
     public partial class SmasherAI
     {
+        private IDisposable chargeForwardDisposable;
         private Mine spawnedMine;
 
         /// <summary>
-        /// 突進攻撃が可能か
+        ///     突進攻撃が可能か
         /// </summary>
         private partial bool CanChargeForward();
 
         /// <summary>
-        /// 地雷を投げることが可能か
+        ///     地雷を投げることが可能か
         /// </summary>
         private partial bool CanThrowMines();
-        
+
         /// <summary>
-        /// 前方に向かって攻撃が可能か
+        ///     前方に向かって攻撃が可能か
         /// </summary>
         private partial bool CanForwardBlow();
-        
+
         /// <summary>
-        /// 落下攻撃が可能か
+        ///     落下攻撃が可能か
         /// </summary>
         private partial bool CanDropAttack();
-        
-        private partial Vector3 CalculateVelocity(GameObject mine, Vector3 target, float angle = Angle, float velocityMultiplier = 1.0f, bool useGravity = true);
-        ///<summary>
-        ///  アクションを起こせるまでスタンバイ
+
+        private partial Vector3 CalculateVelocity(GameObject mine, Vector3 target, float angle = Angle,
+            float velocityMultiplier = 1.0f, bool useGravity = true);
+
+        /// <summary>
+        ///     アクションを起こせるまでスタンバイ
         /// </summary>
         private partial IEnumerator ActStandby()
         {
@@ -54,7 +57,7 @@ namespace Feature.Component.Enemy.SmasherEx
                 {
                     MoveToPlayerWithAgent();
                 }
-                
+
                 if (agent != null && agent.enabled)
                 {
                     if (agent.remainingDistance <= agent.stoppingDistance)
@@ -77,7 +80,7 @@ namespace Feature.Component.Enemy.SmasherEx
                 }
             }
         }
-        
+
         // 地雷を投げる
         private partial IEnumerator ThrowingMines()
         {
@@ -87,12 +90,15 @@ namespace Feature.Component.Enemy.SmasherEx
                 Destroy(spawnedMine.gameObject);
                 spawnedMine = null;
             }
+
             var target = ObjectFactory.Instance.FindPlayer()?.transform;
             if (target == null)
             {
                 yield break;
             }
-            var mine = ObjectFactory.Instance.CreateObject(minePrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
+
+            var mine = ObjectFactory.Instance.CreateObject(minePrefab, transform.position + Vector3.up * 1f,
+                Quaternion.identity);
             var bRigidbody = mine.GetComponent<Rigidbody>();
             var direction = (target.position - mine.transform.position).normalized;
 
@@ -110,8 +116,6 @@ namespace Feature.Component.Enemy.SmasherEx
                 .Subscribe(_ => spawnedMine.Resume(transform))
                 .AddTo(this);
         }
-        
-        private IDisposable chargeForwardDisposable;
 
         private partial IEnumerator ChargeForward()
         {
@@ -132,6 +136,7 @@ namespace Feature.Component.Enemy.SmasherEx
                     spawnedMine = null;
                     break;
                 }
+
                 // 自機が地雷に接近すると自爆する
                 var finished = Vector3.Distance(transform.position, spawnedMine.transform.position) < 2f;
                 if (finished)
@@ -139,16 +144,20 @@ namespace Feature.Component.Enemy.SmasherEx
                     spawnedMine.LaunchExplosionForSelf();
                     break;
                 }
+
                 // playerが地雷との間に存在しなくなったら中断
                 // FIXME: 地雷と一定距離orSpeedなら止まれない
                 var player = ObjectFactory.Instance.FindPlayer();
                 var toMineDistance = Vector3.Distance(transform.position, spawnedMine.transform.position);
-                if (toMineDistance > 7f && !ExistsBetweenTwoPoints(transform.position, spawnedMine.transform.position, player.transform))
+                if (toMineDistance > 7f && !ExistsBetweenTwoPoints(transform.position, spawnedMine.transform.position,
+                        player.transform))
                 {
                     break;
                 }
+
                 ChargingForwardTick(chargeSpeed, rayLength);
             }
+
             StartCoroutine(DelaySecondsRestartFlow(1f));
             yield return null;
         }
@@ -163,19 +172,22 @@ namespace Feature.Component.Enemy.SmasherEx
                 transform.LookAt(player.transform.position);
                 agent.SetDestination(player.transform.position);
             }
-            var hits = transform.GetBoxForwardCastAll(new Vector3(1f, 1f, 1f), 1f, 10);
+
+            var hits = transform.GetBoxForwardCastAll(new(1f, 1f, 1f), 1f, 10);
             foreach (var raycastHit in hits)
             {
                 if (raycastHit.transform == null || raycastHit.transform == transform)
                 {
                     continue;
                 }
+
                 var damaged = raycastHit.transform.GetComponent<IDamaged>();
                 if (damaged != null)
                 {
                     damaged.OnDamage(15, raycastHit.point, transform);
                     continue;
                 }
+
                 var component = raycastHit.transform.GetComponent<Rigidbody>();
                 if (component != null)
                 {
@@ -184,13 +196,14 @@ namespace Feature.Component.Enemy.SmasherEx
                     component.velocity = dir * 3f;
                 }
             }
+
             state = MovementState.Standby;
             yield return null;
         }
 
         /// <summary>
-        /// 一度空中に上がり、一定時間後に地面に落ちる攻撃
-        /// 落下後にdebrisの入れ替えとrespawnを行う
+        ///     一度空中に上がり、一定時間後に地面に落ちる攻撃
+        ///     落下後にdebrisの入れ替えとrespawnを行う
         /// </summary>
         private partial IEnumerator DropAttack()
         {
@@ -198,7 +211,7 @@ namespace Feature.Component.Enemy.SmasherEx
             var player = ObjectFactory.Instance.FindPlayer().CheckNull();
             var target = player.transform.position + Vector3.up * 8f;
             var maxHeight = debrisSpawner.transform.position.y - 1f;
-            target.y = target.y > maxHeight ? maxHeight : target.y; 
+            target.y = target.y > maxHeight ? maxHeight : target.y;
             agent.enabled = false;
             rb.isKinematic = false;
             while (true)
@@ -207,10 +220,12 @@ namespace Feature.Component.Enemy.SmasherEx
                 {
                     break;
                 }
+
                 yield return new WaitForFixedUpdate();
                 var direction = (target - transform.position).normalized;
                 rb.velocity = direction * 15f;
             }
+
             rb.velocity = Vector3.zero;
             yield return new WaitForSeconds(0.6f);
             rb.useGravity = false;
@@ -219,32 +234,36 @@ namespace Feature.Component.Enemy.SmasherEx
             {
                 yield return new WaitForFixedUpdate();
             }
+
             rb.velocity = Vector3.zero;
             rb.useGravity = true;
             Debug.Log("着地");
             rb.isKinematic = true;
             agent.enabled = true;
             yield return new WaitForFixedUpdate();
-            var hits = transform.GetBoxCastAll(new Vector3(50f, 1f, 1f), Vector3.up, 0.5f, 100, LayerMask.GetMask("Default", "NotHitAreaObject", "Character"));
+            var hits = transform.GetBoxCastAll(new(50f, 1f, 1f), Vector3.up, 0.5f, 100,
+                LayerMask.GetMask("Default", "NotHitAreaObject", "Character"));
             foreach (var raycastHit in hits)
             {
                 if (raycastHit.transform == null)
                 {
                     continue;
                 }
-                
+
                 var damaged = raycastHit.transform.GetComponent<IDamaged>();
                 if (damaged != null)
                 {
                     damaged.OnDamage(10, raycastHit.point - new Vector3(0f, 1f, 0f), transform);
                     continue;
                 }
+
                 var component = raycastHit.transform.GetComponent<Rigidbody>();
                 if (component != null)
                 {
                     component.velocity = Vector3.up * 3f;
                 }
             }
+
             debrisSpawner.RandomLifeTimeDestroy(0.6f);
             debrisSpawner.RandomSpawnDebris(20);
             yield return new WaitForSeconds(2f);

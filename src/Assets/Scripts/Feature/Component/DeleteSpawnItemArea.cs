@@ -6,9 +6,8 @@ using UnityEngine;
 
 namespace Feature.Component
 {
-    public class DeleteSpawnItemArea: MonoBehaviour
+    public class DeleteSpawnItemArea : MonoBehaviour
     {
-
         private BoxCollider boxCollider;
 
         private float lastUpdatedAt;

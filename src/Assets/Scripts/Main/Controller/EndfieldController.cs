@@ -14,14 +14,14 @@ using VContainer;
 
 namespace Main.Controller
 {
-    public class EndFieldController: IEndFieldController
+    public class EndFieldController : IEndFieldController
     {
         private readonly CompositeDisposable disposable = new();
-        private readonly RootInstance rootInstance;
         private readonly Image endFieldImage;
         private readonly float fadeDuration = 2f;
+        private readonly RootInstance rootInstance;
 
-        private bool isEnded = false;
+        private bool isEnded;
 
         [Inject]
         public EndFieldController(
