@@ -4,7 +4,6 @@ using Feature.Common.Parameter;
 using Main.Controller;
 using Main.Controller.GameNavigation;
 using Main.Controller.Save;
-using Main.Scene;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -49,7 +48,6 @@ namespace Main.Installer
             builder.RegisterComponent(gameOverPrefab.GetComponent<GameOverScreen>().CheckNull());
             builder.RegisterComponent(smasherClearPrefab.GetComponent<ClearSmasherScreen>().CheckNull());
             builder.Register<GameSaveManager>(Lifetime.Singleton);
-            builder.Register<RootInstance>(Lifetime.Singleton);
             builder.RegisterEntryPoint<RootManager>();
         }
     }

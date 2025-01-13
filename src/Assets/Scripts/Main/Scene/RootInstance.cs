@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using Feature.Interface;
-using VContainer;
 
 #endregion
 
@@ -10,12 +9,9 @@ namespace Main.Scene
 {
     public class RootInstance
     {
+        private static RootInstance instance;
         private readonly Stack<Generated.Scene> history = new();
-
-        [Inject]
-        public RootInstance()
-        {
-        }
+        public static RootInstance Shared => instance ??= new();
 
         public ISceneDataModel CurrentDataModel { get; set; }
 

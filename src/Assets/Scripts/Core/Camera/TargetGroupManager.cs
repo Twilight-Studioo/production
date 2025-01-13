@@ -16,8 +16,8 @@ namespace Core.Camera
         [SerializeField] private CinemachineVirtualCamera virtualCamera;
         [SerializeField] private float minFOV = 67.3f;
         [SerializeField] private float maxFOV = 100f;
-        [SerializeField, Range(0, 25),]  private float minDistance = 5f;
-        [SerializeField, Range(0, 25),]  private float maxDistance = 20f;
+        [SerializeField, Range(0, 25),] private float minDistance = 5f;
+        [SerializeField, Range(0, 25),] private float maxDistance = 20f;
         [SerializeField] private float fovMargin = 5f;
         [SerializeField] private float changeFOVTime = 0.8f;
 
