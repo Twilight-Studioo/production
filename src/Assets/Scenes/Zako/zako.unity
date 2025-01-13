@@ -11395,7 +11395,7 @@ PrefabInstance:
     - target: {fileID: 6756771703116161775, guid: 3f393ea558b094729ad0d0d3dca7f080,
         type: 3}
       propertyPath: sceneName
-      value: boss
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7324055784581613257, guid: 3f393ea558b094729ad0d0d3dca7f080,
         type: 3}
@@ -18722,7 +18722,7 @@ PrefabInstance:
     - target: {fileID: 6756771703116161775, guid: 3f393ea558b094729ad0d0d3dca7f080,
         type: 3}
       propertyPath: sceneName
-      value: boss
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7324055784581613257, guid: 3f393ea558b094729ad0d0d3dca7f080,
         type: 3}
