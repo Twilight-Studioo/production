@@ -1,12 +1,11 @@
 ﻿using Feature.Interface;
-using Main.Controller.GameOver;
 using Main.Controller.SmasherClear;
 using VContainer;
 using VContainer.Unity;
 
 namespace Main.Installer
 {
-    public class SmasherClearInstaller: LifetimeScope
+    public class SmasherClearInstaller : LifetimeScope
     {
         protected override void Configure(IContainerBuilder builder)
         {

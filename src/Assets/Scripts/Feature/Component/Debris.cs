@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Utilities;
+﻿using Core.Utilities;
 using Feature.Common.Parameter;
 using Feature.Interface;
 using UnityEngine;
@@ -10,13 +9,13 @@ namespace Feature.Component
     {
         [SerializeField] private SmasherPrams bossPrams;
         [SerializeField] private float splashSpeed = 200;
-        private Transform playerTransform;
-        private float distance;
+        private bool accelation;
+        private int count;
         private Rigidbody debrisRb;
-        private bool accelation = false;
+        private float distance;
+        private bool playerRightSide;
+        private Transform playerTransform;
         private bool splash = true;
-        private int count = 0;
-        private bool playerRightSide = false;
 
         private void Start()
         {
@@ -35,25 +34,27 @@ namespace Feature.Component
             {
                 if (playerRightSide)
                 {
-                    debrisRb.AddForce(bossPrams.debrisSpeed,0,0);
+                    debrisRb.AddForce(bossPrams.debrisSpeed, 0, 0);
                 }
                 else
                 {
-                    debrisRb.AddForce(-bossPrams.debrisSpeed,0,0);
+                    debrisRb.AddForce(-bossPrams.debrisSpeed, 0, 0);
                 }
+
                 count++;
             }
-            else if(splash)
+            else if (splash)
             {
                 gameObject.GetComponent<Rigidbody>().useGravity = true;
                 if (playerRightSide)
                 {
-                    debrisRb.AddForce(splashSpeed,splashSpeed,0);
+                    debrisRb.AddForce(splashSpeed, splashSpeed, 0);
                 }
                 else
                 {
-                    debrisRb.AddForce(-splashSpeed,splashSpeed,0);
+                    debrisRb.AddForce(-splashSpeed, splashSpeed, 0);
                 }
+
                 splash = false;
             }
 
@@ -63,29 +64,31 @@ namespace Feature.Component
             }
         }
 
-        public void Kick()
-        {
-            accelation = true;
-            splash = false;
-        }
-
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
-                this.gameObject.GetComponent<ISwappable>().Delete();
+                other.gameObject.GetComponent<IDamaged>()
+                    .OnDamage(bossPrams.debrisDamage, transform.position, transform);
+                gameObject.GetComponent<ISwappable>().Delete();
             }
-            else if(other.gameObject.CompareTag("Enemy"))
+            else if (other.gameObject.CompareTag("Enemy"))
             {
-                other.gameObject.GetComponent<IDamaged>().OnDamage(bossPrams.debrisDamage,transform.position,transform);
-                this.gameObject.GetComponent<ISwappable>().Delete();
+                other.gameObject.GetComponent<IDamaged>()
+                    .OnDamage(bossPrams.debrisDamage, transform.position, transform);
+                gameObject.GetComponent<ISwappable>().Delete();
             }
 
             if (other.gameObject.CompareTag("Ground"))
             {
                 Destroy(this);
             }
+        }
+
+        public void Kick()
+        {
+            accelation = true;
+            splash = false;
         }
     }
 }

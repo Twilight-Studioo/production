@@ -5,23 +5,24 @@ using UnityEngine;
 namespace Feature.Component.Enemy.SmasherEx
 {
     [RequireComponent(typeof(Collider))]
-    public class DebrisSpawner: MonoBehaviour
+    public class DebrisSpawner : MonoBehaviour
     {
         [SerializeField] private GameObject debrisPrefab;
+        private readonly List<DebrisObject> debrisObjects = new();
+        private readonly int maxDebrisCount = 40;
         private Collider spawnerCollider;
-        private List<DebrisObject> debrisObjects = new List<DebrisObject>();
-        private int maxDebrisCount = 40;
+
         private void Awake()
         {
             spawnerCollider = GetComponent<Collider>();
         }
-        
+
         /// <summary>
-        /// per%のobjectを破壊する
+        ///     per%のobjectを破壊する
         /// </summary>
         public void RandomLifeTimeDestroy(float per)
         {
-            var count = (int) (debrisObjects.Count * per);
+            var count = (int)(debrisObjects.Count * per);
             for (var i = 0; i < count; i++)
             {
                 var index = Random.Range(0, debrisObjects.Count);
@@ -30,13 +31,14 @@ namespace Feature.Component.Enemy.SmasherEx
                 debris.Delete();
             }
         }
-        
+
         public void RandomSpawnDebris(int count)
         {
             if (spawnerCollider == null)
             {
                 spawnerCollider = GetComponent<Collider>();
             }
+
             for (var i = 0; i < count; i++)
             {
                 var randomPosition = new Vector3(
@@ -47,13 +49,14 @@ namespace Feature.Component.Enemy.SmasherEx
                 SpawnDebris(randomPosition);
             }
         }
-        
+
         private void SpawnDebris(Vector3 position)
         {
             if (debrisObjects.Count >= maxDebrisCount)
             {
                 return;
             }
+
             var item = ObjectFactory.Instance.CreateObject(debrisPrefab, position, Quaternion.identity);
             var debrisObject = item.GetComponent<DebrisObject>().CheckNull();
             debrisObjects.Add(debrisObject);

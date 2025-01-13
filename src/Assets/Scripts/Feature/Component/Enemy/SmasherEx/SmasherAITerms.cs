@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using Core.Utilities;
-using Feature.Component.Enemy.SmasherEx.State;
 using UnityEngine;
 
 namespace Feature.Component.Enemy.SmasherEx
@@ -9,7 +7,7 @@ namespace Feature.Component.Enemy.SmasherEx
     public partial class SmasherAI
     {
         /// <summary>
-        /// 突進攻撃が可能か
+        ///     突進攻撃が可能か
         /// </summary>
         private partial bool CanChargeForward()
         {
@@ -24,20 +22,17 @@ namespace Feature.Component.Enemy.SmasherEx
             {
                 return false;
             }
-            
+
             // 地雷と自機の間にplayerがいるか
             var player = ObjectFactory.Instance.FindPlayer().CheckNull();
             var minePosition = spawnedMine.transform.position;
-            return  ExistsBetweenTwoPoints(transform.position, minePosition, player.transform);
+            return ExistsBetweenTwoPoints(transform.position, minePosition, player.transform);
         }
 
         /// <summary>
-        /// 地雷を投げることが可能か
+        ///     地雷を投げることが可能か
         /// </summary>
-        private partial bool CanThrowMines()
-        {
-            return minePrefab != null && spawnedMine == null;
-        }
+        private partial bool CanThrowMines() => minePrefab != null && spawnedMine == null;
 
         private partial bool CanForwardBlow()
         {
@@ -45,7 +40,7 @@ namespace Feature.Component.Enemy.SmasherEx
             var toPlayerDistance = Vector3.Distance(transform.position, player.transform.position);
             return Math.Abs(toPlayerDistance - MoveToPlayerTargetDistance) < 1f;
         }
-        
+
         private partial bool CanDropAttack()
         {
             var player = ObjectFactory.Instance.FindPlayer().CheckNull();

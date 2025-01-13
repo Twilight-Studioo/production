@@ -8,9 +8,13 @@ using UnityEngine;
 namespace Feature.Common.Parameter
 {
     [CreateAssetMenu(fileName = "GameAudioAssets.asset", menuName = "GameAudioAssets", order = 0)]
-    public class GameAudioAssets: BaseParameter
+    public class GameAudioAssets : BaseParameter
     {
-        
+        [Tooltip("BGM")] public AudioClip bgm;
+
+        [Tooltip("Slashing(通常攻撃)")] public List<AudioClip> slashing;
+        [Tooltip("SlashingHit(攻撃のhit)")] public List<AudioClip> slashingHit;
+
         public AudioClip GetAudioClip(AudioAssetType type)
         {
             return type switch
@@ -21,12 +25,5 @@ namespace Feature.Common.Parameter
                 var _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
             };
         }
-        
-        [Tooltip("BGM")]
-        public AudioClip bgm;
-
-        [Tooltip("Slashing(通常攻撃)")] public List<AudioClip> slashing;
-        [Tooltip("SlashingHit(攻撃のhit)")] public List<AudioClip> slashingHit;
-
     }
 }

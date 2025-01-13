@@ -19,7 +19,7 @@ namespace Feature.Interface
 
         // damage & hit point
         public event DamageHandler<uint, Vector3> OnDamageEvent;
-        
+
         public event Action<DamageResult> OnHitHandler;
 
         IReadOnlyReactiveProperty<Vector3> GetPositionRef();
@@ -36,14 +36,16 @@ namespace Feature.Interface
 
         bool CanAttack();
 
-        void Attack(float degree, uint damage,bool voltage);
+        void Attack(float degree, uint damage, bool voltage);
 
         void Dagger(float degree, float h, float v);
 
-        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime);
+        void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
+            float maxComboCoolTime);
 
         public void VoltageEffect(int voltageValue, int useVoltageAttackValue, int votageTwoAttackValue,
             int maxVoltage);
+
         Vector3 GetForward();
     }
 }

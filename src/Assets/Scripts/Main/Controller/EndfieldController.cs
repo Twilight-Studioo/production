@@ -1,7 +1,6 @@
 #region
 
 using System;
-using Core.Utilities;
 using Feature.Interface;
 using Main.Scene;
 using Main.Scene.Generated;
@@ -14,21 +13,19 @@ using VContainer;
 
 namespace Main.Controller
 {
-    public class EndFieldController: IEndFieldController
+    public class EndFieldController : IEndFieldController
     {
         private readonly CompositeDisposable disposable = new();
-        private readonly RootInstance rootInstance;
         private readonly Image endFieldImage;
         private readonly float fadeDuration = 2f;
+        private readonly RootInstance rootInstance;
 
-        private bool isEnded = false;
+        private bool isEnded;
 
         [Inject]
-        public EndFieldController(
-            RootInstance rootInstance
-        )
+        public EndFieldController()
         {
-            this.rootInstance = rootInstance.CheckNull();
+            rootInstance = RootInstance.Shared;
             endFieldImage = GameObject.Find("EndField").GetComponent<Image>();
             endFieldImage.color = new(0, 0, 0, 0);
         }

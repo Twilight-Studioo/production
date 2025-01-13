@@ -18,11 +18,11 @@ namespace Main.Controller.GameNavigation
     public class ControlsScreen : ScreenProtocol<Navigation>
     {
         [SerializeField] private TextMeshProUGUI backText;
-        
+
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
 
         private IDisposable disposable;
-        
+
         public override void OnShow()
         {
             base.OnShow();
@@ -35,13 +35,13 @@ namespace Main.Controller.GameNavigation
             base.OnHide();
             disposable?.Dispose();
         }
-        
+
         private void OnNaviChanged(Navi navi)
         {
             backText.color = navi == Navi.Back ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
         }
 
-        
+
         protected override void OnCancel()
         {
             Controller.PopBackstack();
@@ -61,7 +61,7 @@ namespace Main.Controller.GameNavigation
                     break;
             }
         }
-        
+
         private enum Navi
         {
             Back,

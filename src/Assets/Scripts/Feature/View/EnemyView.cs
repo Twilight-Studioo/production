@@ -1,10 +1,9 @@
-                                                                                                                                                                        #region
+#region
 
 using System;
 using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Interface;
-using UniRx;
 using UnityEngine;
 
 #endregion
@@ -35,6 +34,7 @@ namespace Feature.View
             {
                 return new DamageResult.Missed();
             }
+
             if (CurrentHealth - damage <= 0)
             {
                 CurrentHealth = 0;
@@ -54,14 +54,12 @@ namespace Feature.View
                 //     });
                 return new DamageResult.Killed(transform);
             }
-            else
-            {
-                CurrentHealth -= (int)damage;
-                OnDamageEvent?.Invoke(new DamageResult.Damaged(transform), hitPoint);
-                // hit event for agent
-                agent.OnDamage(damage, hitPoint, attacker);
-                return new DamageResult.Damaged(transform);
-            }
+
+            CurrentHealth -= (int)damage;
+            OnDamageEvent?.Invoke(new DamageResult.Damaged(transform), hitPoint);
+            // hit event for agent
+            agent.OnDamage(damage, hitPoint, attacker);
+            return new DamageResult.Damaged(transform);
         }
 
         public void SetHealth(uint health)

@@ -1,18 +1,16 @@
 using Core.Input;
 using Core.Utilities;
-using Core.Utilities.Save;
 using Feature.Common.Parameter;
 using Main.Controller;
 using Main.Controller.GameNavigation;
 using Main.Controller.Save;
-using Main.Scene;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
 namespace Main.Installer
 {
-    public class RootInstaller: LifetimeScope
+    public class RootInstaller : LifetimeScope
     {
         [SerializeField] private GameObject pausePrefab;
         [SerializeField] private GameObject optionPrefab;
@@ -22,7 +20,7 @@ namespace Main.Installer
         [SerializeField] private GameObject gameOverPrefab;
         [SerializeField] private GameObject stageSelectPrefab;
         [SerializeField] private GameObject smasherClearPrefab;
-        
+
         [SerializeField] private GameSettings settings;
 
         protected override void Configure(IContainerBuilder builder)
@@ -50,7 +48,6 @@ namespace Main.Installer
             builder.RegisterComponent(gameOverPrefab.GetComponent<GameOverScreen>().CheckNull());
             builder.RegisterComponent(smasherClearPrefab.GetComponent<ClearSmasherScreen>().CheckNull());
             builder.Register<GameSaveManager>(Lifetime.Singleton);
-            builder.Register<RootInstance>(Lifetime.Singleton);
             builder.RegisterEntryPoint<RootManager>();
         }
     }

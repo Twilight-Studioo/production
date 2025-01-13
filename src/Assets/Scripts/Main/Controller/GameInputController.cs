@@ -29,7 +29,7 @@ namespace Main.Controller
         ///     画面遷移を制御するコントローラー
         /// </summary>
         private readonly ScreenController<Navigation> controller;
-        
+
         private float lastTimeScale = 1f;
 
         [Inject]
@@ -76,6 +76,7 @@ namespace Main.Controller
                 }
             }
         }
+
         private void NavigationShowing(bool isShowing)
         {
             if (isShowing)

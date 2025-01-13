@@ -244,7 +244,8 @@ namespace Main.Controller
                     }
                     else
                     {
-                        if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle || swapPresenter.SelectItem() == null)
+                        if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle ||
+                            swapPresenter.SelectItem() == null)
                         {
                             playerPresenter.CancelSwap();
                             return;

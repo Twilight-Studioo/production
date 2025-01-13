@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 #endregion
 
@@ -10,7 +11,7 @@ namespace Core.Navigation
     public partial class ScreenController<T> where T : Enum
     {
         private readonly Dictionary<T, Destination<T>> screenCache = new();
-        
+
         /// <summary>
         ///     指定されたルートに対応する画面を検索します。
         /// </summary>
@@ -23,7 +24,7 @@ namespace Core.Navigation
             {
                 throw new InvalidOperationException("画面コレクションが初期化されていません。");
             }
-            
+
             if (screenCache.TryGetValue(route, out var cachedScreen))
             {
                 return cachedScreen;
@@ -42,8 +43,8 @@ namespace Core.Navigation
 
             throw new ScreenNotFoundException($"ルート {route} に対応する画面が見つかりません。");
         }
-        
-        
+
+
         [Serializable]
         public class ScreenNotFoundException : Exception
         {
@@ -52,13 +53,11 @@ namespace Core.Navigation
             }
 
             protected ScreenNotFoundException(
-                System.Runtime.Serialization.SerializationInfo info,
-                System.Runtime.Serialization.StreamingContext context)
+                SerializationInfo info,
+                StreamingContext context)
                 : base(info, context)
             {
-                
             }
-            
         }
     }
 }

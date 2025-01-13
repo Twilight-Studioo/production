@@ -39,6 +39,7 @@ namespace Feature.Component
             swordReverse.SetActive(false);
             animator.Play("StageSelectB");
         }
+
         private void PlayRandomAnimation()
         {
             sword.SetActive(true);
@@ -46,7 +47,7 @@ namespace Feature.Component
             // int randomChoice = Random.Range(0, 2);
             // var animationStateName = randomChoice == 0 ? "Player_katana" : "Player_swap";
             var animationStateName = "Player_katana";
-            
+
             animator.Play(animationStateName, 0, 0f);
         }
     }

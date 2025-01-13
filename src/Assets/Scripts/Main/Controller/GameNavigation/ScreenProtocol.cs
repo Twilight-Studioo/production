@@ -23,12 +23,15 @@ namespace Main.Controller.GameNavigation
         [Inject] public InputActionAccessor ActionAccessor { get; set; }
 
         [Inject] public ScreenController<T> Controller { get; set; }
-        
-        [Inject] public RootInstance RootInstance { get; set; }
 
-        public void OnDestroy()
+        protected RootInstance RootInstance => RootInstance.Shared;
+
+        public void OnRequireDestroy()
         {
-            Destroy(gameObject);
+            if (gameObject != null)
+            {
+                Destroy(gameObject);
+            }
         }
 
         public void OnCreate()

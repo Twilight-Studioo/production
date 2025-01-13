@@ -7,28 +7,21 @@ using UnityEngine;
 namespace Feature.Component.Enemy.SmasherEx
 {
     /// <summary>
-    /// Smasherが投げる地雷
-    /// <warning>Smasherでのみ使用</warning>
+    ///     Smasherが投げる地雷
+    ///     <warning>Smasherでのみ使用</warning>
     /// </summary>
-    public class Mine: MonoBehaviour
+    public class Mine : MonoBehaviour
     {
-        private Collider mineCollider;
-        public event Action OnDestroyed;
         private bool isReady;
-        
-        private Transform smasher;
+        private Collider mineCollider;
         private Transform player;
+
+        private Transform smasher;
+
         private void Awake()
         {
             isReady = false;
             mineCollider = GetComponent<Collider>();
-        }
-
-        public void Resume(Transform smasher)
-        {
-            player = ObjectFactory.Instance.FindPlayer()?.transform;
-            this.smasher = smasher;
-            isReady = true;
         }
 
         private void FixedUpdate()
@@ -37,6 +30,7 @@ namespace Feature.Component.Enemy.SmasherEx
             {
                 return;
             }
+
             var hits = transform.GetBoxCastAll(mineCollider.bounds.size * 1.2f, Vector3.up, 0.1f, 10);
             var onHit = hits.Any(x => x.transform == smasher || x.transform == player);
             if (onHit)
@@ -44,10 +38,41 @@ namespace Feature.Component.Enemy.SmasherEx
                 LaunchExplosion();
             }
         }
-        
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (!isActiveAndEnabled || !isReady)
+            {
+                return;
+            }
+
+            if (other.gameObject != smasher.gameObject || other.gameObject != player.gameObject ||
+                other.gameObject == gameObject)
+            {
+                return;
+            }
+
+            if (other.gameObject.TryGetComponent(out IDamaged damageable))
+            {
+                damageable.OnDamage(10, other.contacts[0].point, transform);
+            }
+
+            Destroy(gameObject);
+            OnDestroyed?.Invoke();
+        }
+
+        public event Action OnDestroyed;
+
+        public void Resume(Transform smasher)
+        {
+            player = ObjectFactory.Instance.FindPlayer()?.transform;
+            this.smasher = smasher;
+            isReady = true;
+        }
+
         /// <summary>
-        /// smasher自身が接近した時
-        /// 確定でsmasherにダメージを与える
+        ///     smasher自身が接近した時
+        ///     確定でsmasherにダメージを与える
         internal void LaunchExplosionForSelf()
         {
             if (!isReady)
@@ -62,6 +87,7 @@ namespace Feature.Component.Enemy.SmasherEx
                     damageable.OnDamage(10, smasher.position, transform);
                 }
             }
+
             LaunchExplosion();
         }
 
@@ -71,6 +97,7 @@ namespace Feature.Component.Enemy.SmasherEx
             {
                 return;
             }
+
             Debug.Log("地雷の爆発");
             var hits = transform.GetBoxCastAll(mineCollider.bounds.size * 1.2f, Vector3.up, 0.1f, 10);
             foreach (var hit in hits)
@@ -80,24 +107,7 @@ namespace Feature.Component.Enemy.SmasherEx
                     damageable.OnDamage(10, hit.point, transform);
                 }
             }
-            Destroy(gameObject);
-            OnDestroyed?.Invoke();
-        }
 
-        private void OnCollisionEnter(Collision other)
-        {
-            if (!isActiveAndEnabled || !isReady)
-            {
-                return;
-            }
-            if (other.gameObject != smasher.gameObject || other.gameObject != player.gameObject || other.gameObject == gameObject)
-            {
-                return;
-            }
-            if (other.gameObject.TryGetComponent(out IDamaged damageable))
-            {
-                damageable.OnDamage(10, other.contacts[0].point, transform);
-            }
             Destroy(gameObject);
             OnDestroyed?.Invoke();
         }

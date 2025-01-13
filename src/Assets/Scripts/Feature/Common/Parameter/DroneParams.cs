@@ -24,9 +24,11 @@ namespace Feature.Common.Parameter
 
         [Tooltip("自爆のダメージ")] public uint explosionDamage = 20;
 
-        [ToggleGroup("攻撃の種類"), Tooltip("攻撃の種類"),] public DroneAttackType attackType = DroneAttackType.Bullet;
+        [ToggleGroup("攻撃の種類"), Tooltip("攻撃の種類"),]
+        public DroneAttackType attackType = DroneAttackType.Bullet;
 
-        [ToggleGroup("Bullet"), Tooltip("弾のプレハブ"),] public GameObject bulletPrefab;
+        [ToggleGroup("Bullet"), Tooltip("弾のプレハブ"),]
+        public GameObject bulletPrefab;
 
         [Tooltip("弾の速度")] public float bulletSpeed = 4f;
 
@@ -34,7 +36,8 @@ namespace Feature.Common.Parameter
 
         [Tooltip("弾の発射後の待機時間")] public float shootIntervalSec = 1f;
 
-        [ToggleGroup("Ray"), Tooltip("ビームのダメージ"),] public uint rayDamage = 10;
+        [ToggleGroup("Ray"), Tooltip("ビームのダメージ"),]
+        public uint rayDamage = 10;
 
         [Tooltip("ビームの射程")] public float rayRange = 7f;
 

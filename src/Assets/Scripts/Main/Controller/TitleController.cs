@@ -5,16 +5,16 @@ using Feature.Component;
 using Feature.Interface;
 using Main.Controller.GameNavigation;
 using UniRx;
-using UnityEngine;
 using VContainer;
 
 namespace Main.Controller
 {
-    public class TitleController: IOutGameController
+    public class TitleController : IOutGameController
     {
         private readonly InputActionAccessor accessor;
-        private readonly ScreenController<Navigation> controller;
         private readonly CinemachineSmoothPathManager cinemachineSmoothPathManager;
+        private readonly ScreenController<Navigation> controller;
+
         [Inject]
         public TitleController(
             InputActionAccessor accessor,
@@ -26,6 +26,7 @@ namespace Main.Controller
             this.controller = controller.CheckNull();
             this.cinemachineSmoothPathManager = cinemachineSmoothPathManager.CheckNull();
         }
+
         public void Start()
         {
             Observable.EveryUpdate()
@@ -37,13 +38,14 @@ namespace Main.Controller
             cinemachineSmoothPathManager.SetPathPointFast(CinemachineSmoothPathManager.PathPoint.Title);
             controller.Navigate(Navigation.Title);
         }
-        
+
         private void OnNavigationChanged(Destination<Navigation> navigation)
         {
             if (navigation == null)
             {
                 return;
             }
+
             switch (navigation.Route)
             {
                 case Navigation.Controls:

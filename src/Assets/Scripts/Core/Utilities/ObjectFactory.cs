@@ -39,7 +39,7 @@ namespace Core.Utilities
                     {
                         if (!superObject)
                         {
-                            superObject = new GameObject("SuperObject");
+                            superObject = new("SuperObject");
                             if (Application.isPlaying)
                             {
                                 Object.DontDestroyOnLoad(superObject);
@@ -51,17 +51,20 @@ namespace Core.Utilities
                 return superObject;
             }
         }
+
         public static ObjectFactory Instance => instance ??= new();
-        
+
         public static void Reset()
         {
             if (Application.isPlaying)
             {
                 Object.Destroy(superObject);
             }
+
             instance = null;
             superObject = null;
         }
+
         public event Action<GameObject> OnObjectCreated;
 
         private void Update(long x)
