@@ -26,7 +26,7 @@ namespace Main.Controller.GameNavigation
 
         protected RootInstance RootInstance => RootInstance.Shared;
 
-        public void OnDestroy()
+        public void OnRequireDestroy()
         {
             if (gameObject != null)
             {
