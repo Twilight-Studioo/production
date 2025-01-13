@@ -68,6 +68,13 @@ namespace Feature.View
 
         private void Update()
         {
+            var pos = transform.position;
+            if(Mathf.Abs(pos.z) > 0.3f)
+            {
+                pos.z = 0f;
+                transform.position = pos;
+            }
+            
             position.Value = transform.position;
         }
 
