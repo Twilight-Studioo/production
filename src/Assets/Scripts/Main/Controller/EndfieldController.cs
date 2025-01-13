@@ -1,7 +1,6 @@
 #region
 
 using System;
-using Core.Utilities;
 using Feature.Interface;
 using Main.Scene;
 using Main.Scene.Generated;
@@ -24,11 +23,9 @@ namespace Main.Controller
         private bool isEnded;
 
         [Inject]
-        public EndFieldController(
-            RootInstance rootInstance
-        )
+        public EndFieldController()
         {
-            this.rootInstance = rootInstance.CheckNull();
+            rootInstance = RootInstance.Shared;
             endFieldImage = GameObject.Find("EndField").GetComponent<Image>();
             endFieldImage.color = new(0, 0, 0, 0);
         }

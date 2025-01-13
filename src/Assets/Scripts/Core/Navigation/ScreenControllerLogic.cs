@@ -39,7 +39,7 @@ namespace Core.Navigation
             }
 
             currentDestination.Hide();
-            currentDestination.Instance.OnDestroy();
+            currentDestination.Instance.OnRequireDestroy();
             currentDestination = null;
         }
 

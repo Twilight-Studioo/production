@@ -36,5 +36,19 @@ namespace Main.Scene.Generated
 
         public static SceneLoader ClearSmasherScene(ISceneDataModel sceneDataModel) => new(Scene.ClearSmasherScene,
             "Assets/Scenes/OutGame/ClearSmasherScene.unity", sceneDataModel);
+
+        public static SceneLoader GetSceneLoader(Scene scene, ISceneDataModel sceneDataModel)
+        {
+            return scene switch
+            {
+                Scene.TitleScene => TitleScene(sceneDataModel),
+                Scene.zako => zako(sceneDataModel),
+                Scene.boss => boss(sceneDataModel),
+                Scene.GameOverScene => GameOverScene(sceneDataModel),
+                Scene.SmasherBossFight => SmasherBossFight(sceneDataModel),
+                Scene.ClearSmasherScene => ClearSmasherScene(sceneDataModel),
+                var _ => null,
+            };
+        }
     }
 }

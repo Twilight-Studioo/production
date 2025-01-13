@@ -5,7 +5,7 @@ namespace Core.Navigation
         /// <summary>
         ///     画面が破棄される際に呼び出されます。
         /// </summary>
-        public void OnDestroy();
+        public void OnRequireDestroy();
 
         /// <summary>
         ///     画面の初期化処理を実装します。

@@ -24,11 +24,14 @@ namespace Main.Controller.GameNavigation
 
         [Inject] public ScreenController<T> Controller { get; set; }
 
-        [Inject] public RootInstance RootInstance { get; set; }
+        protected RootInstance RootInstance => RootInstance.Shared;
 
-        public void OnDestroy()
+        public void OnRequireDestroy()
         {
-            Destroy(gameObject);
+            if (gameObject != null)
+            {
+                Destroy(gameObject);
+            }
         }
 
         public void OnCreate()
