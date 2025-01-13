@@ -31,15 +31,15 @@ MonoBehaviour:
   canSwapDistance: 18
   swapReturnTimeMillis: 1000
   swapReturnCurve: 0
-  maxHasStamina: 12
-  enterSwapUseStamina: 3
+  maxHasStamina: 60
+  enterSwapUseStamina: 13
   swapModeStaminaUsageIntervalMillis: 1000
   swapModeStaminaUsage: 1
-  swapExecUseStamina: 3
+  swapExecUseStamina: 5
   recoveryTimeMillis: 800
   resourceRecoveryQuantity: 1
   recoveryStaminaTimeMillis: 10
-  useDaggerUseStamina: 20
+  useDaggerUseStamina: 10
   useVoltageAttackValue: 30
   votageTwoAttackValue: 65
   addVoltageSwapValue: 10
