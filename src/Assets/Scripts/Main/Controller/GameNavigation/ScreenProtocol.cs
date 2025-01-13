@@ -30,7 +30,7 @@ namespace Main.Controller.GameNavigation
         {
             if (gameObject != null)
             {
-                Destroy(gameObject);   
+                Destroy(gameObject);
             }
         }
 

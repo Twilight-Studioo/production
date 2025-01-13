@@ -142,6 +142,7 @@ namespace Core.Utilities
             {
                 sb.AppendLine($"                {enumName}.{sceneName} => {sceneName}(sceneDataModel),");
             }
+
             sb.AppendLine("                var _ => null,");
             sb.AppendLine("            };");
             sb.AppendLine("        }");
