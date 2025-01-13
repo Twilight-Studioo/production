@@ -1,4 +1,3 @@
-using Core.Utilities;
 using Feature.Interface;
 using UnityEngine.SceneManagement;
 
@@ -31,12 +30,12 @@ namespace Main.Scene.Generated
 
         public void Load()
         {
-            if (rootInstance.CheckNull() != null)
+            if (rootInstance != null)
             {
                 rootInstance.CurrentDataModel = sceneDataModel;
+                rootInstance.AddHistory(scene);
             }
 
-            rootInstance.AddHistory(scene);
             SceneManager.LoadScene(path);
         }
     }

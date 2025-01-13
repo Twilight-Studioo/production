@@ -16,7 +16,7 @@ namespace Core.Utilities
         private const string ClassName = "SceneLoaderFeatures";
 
         private const string RequiredNamespace =
-            "using Feature.Interface;\nusing Core.Utilities;\nusing UnityEngine.SceneManagement;\n\n";
+            "using Feature.Interface;\nusing UnityEngine.SceneManagement;\n\n";
 
         private const string SceneEnumClassName = "Scene";
         private const string SceneLoaderClassName = "SceneLoader";
@@ -66,11 +66,11 @@ namespace Core.Utilities
 
             sb.AppendLine("        public void Load()");
             sb.AppendLine("        {");
-            sb.AppendLine("            if (rootInstance.CheckNull() != null)");
+            sb.AppendLine("            if (rootInstance != null)");
             sb.AppendLine("            {");
             sb.AppendLine("                rootInstance.CurrentDataModel = sceneDataModel;");
+            sb.AppendLine("                rootInstance.AddHistory(scene);");
             sb.AppendLine("            }");
-            sb.AppendLine("            rootInstance.AddHistory(scene);");
 
             sb.AppendLine("            SceneManager.LoadScene(path);");
             sb.AppendLine("        }");
@@ -132,6 +132,19 @@ namespace Core.Utilities
                     $"            return new SceneLoader({enumName}.{sceneName}, \"{scenePath}\", sceneDataModel);");
                 sb.AppendLine("        }");
             }
+
+            sb.AppendLine(
+                "        public static SceneLoader GetSceneLoader(Scene scene, ISceneDataModel sceneDataModel)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            return scene switch");
+            sb.AppendLine("            {");
+            foreach (var sceneName in sceneNames)
+            {
+                sb.AppendLine($"                {enumName}.{sceneName} => {sceneName}(sceneDataModel),");
+            }
+            sb.AppendLine("                var _ => null,");
+            sb.AppendLine("            };");
+            sb.AppendLine("        }");
 
             // End class and namespace definition
             sb.AppendLine("    }");
