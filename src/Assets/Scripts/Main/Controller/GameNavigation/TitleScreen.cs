@@ -1,28 +1,36 @@
 using System;
 using Core.Utilities;
-using Main.Scene.Generated;
+using Feature.Component;
 using TMPro;
 using UniRx;
 using UnityEngine;
 
 namespace Main.Controller.GameNavigation
 {
-    public class TitleScreen: ScreenProtocol<Navigation>
+    public class TitleScreen : ScreenProtocol<Navigation>
     {
         [SerializeField] private TextMeshProUGUI toStartText;
         [SerializeField] private TextMeshProUGUI toContinueText;
         [SerializeField] private TextMeshProUGUI toOptionText;
         [SerializeField] private TextMeshProUGUI toQuitText;
+        [SerializeField] private TextMeshProUGUI versionText;
 
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
 
         private IDisposable disposable;
-        
+        private TitlePlayerAnimation titlePlayerAnimation;
+
+        private void Awake()
+        {
+            titlePlayerAnimation = FindObjectOfType<TitlePlayerAnimation>();
+        }
+
         public override void OnShow()
         {
             base.OnShow();
             disposable = currentNavi.Subscribe(OnNaviChanged);
             currentNavi.Value = Navi.Start;
+            versionText.text = $"version: {Application.version}";
         }
 
         public override void OnHide()
@@ -38,7 +46,7 @@ namespace Main.Controller.GameNavigation
             toOptionText.color = navi == Navi.Option ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
             toQuitText.color = navi == Navi.Quit ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
         }
-        
+
         protected override void OnCancel()
         {
             currentNavi.Value = Navi.Quit;
@@ -54,8 +62,11 @@ namespace Main.Controller.GameNavigation
                     case Navi.Continue:
                         navi = Navi.Start;
                         break;
+                    //case Navi.Option:
+                    //    navi = Navi.Continue;
+                    //    break;
                     case Navi.Option:
-                        navi = Navi.Continue;
+                        navi = Navi.Start;
                         break;
                     case Navi.Quit:
                         navi = Navi.Option;
@@ -66,8 +77,11 @@ namespace Main.Controller.GameNavigation
             {
                 switch (navi)
                 {
+                    //case Navi.Start:
+                    //    navi = Navi.Continue;
+                    //    break;
                     case Navi.Start:
-                        navi = Navi.Continue;
+                        navi = Navi.Option;
                         break;
                     case Navi.Continue:
                         navi = Navi.Option;
@@ -77,7 +91,7 @@ namespace Main.Controller.GameNavigation
                         break;
                 }
             }
-            
+
             currentNavi.Value = navi;
         }
 
@@ -87,11 +101,13 @@ namespace Main.Controller.GameNavigation
             {
                 case Navi.Start:
                     // TODO: production code here
-                    Controller.Reset();
-                    SceneLoaderFeatures.Stage(null).Bind(RootInstance).Load();
+                    Controller.Navigate(Navigation.StageSelect);
+                    titlePlayerAnimation.OnClickStage();
                     break;
                 case Navi.Continue:
                     // TODO: Continue the game logic here
+                    Controller.Navigate(Navigation.StageSelect);
+                    titlePlayerAnimation.OnClickStage();
                     break;
                 case Navi.Option:
                     Controller.Navigate(Navigation.Option);
@@ -101,7 +117,7 @@ namespace Main.Controller.GameNavigation
                     break;
             }
         }
-        
+
         private enum Navi
         {
             Start,

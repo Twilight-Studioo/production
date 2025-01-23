@@ -63,6 +63,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e9da2ccead1601745add4963cce8c32f, type: 2}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2997285702215954903, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 808738e928fbf144fb23701a1e3f5c2b,
         type: 3}
       propertyPath: m_Name
@@ -77,6 +97,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575989490468627257, guid: 808738e928fbf144fb23701a1e3f5c2b,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5190430159691044689, guid: 808738e928fbf144fb23701a1e3f5c2b,
         type: 3}
@@ -153,8 +193,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.562704, y: 0.51300246, z: 1.2280263}
-  m_Center: {x: 0.017056465, y: 0.24349877, z: -0.0027039647}
+  m_Size: {x: 1.7712238, y: 0.2855085, z: 0.8275071}
+  m_Center: {x: 0.061371922, y: 0.1297518, z: 0.008221477}
 --- !u!23 &-8664925601229844446
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -222,7 +262,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 64
   m_CollisionDetection: 0
 --- !u!114 &-1179242337196399249
 MonoBehaviour:

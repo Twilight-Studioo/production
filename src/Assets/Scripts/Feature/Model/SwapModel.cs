@@ -31,6 +31,7 @@ namespace Feature.Model
 
     public class SwapModel
     {
+        private readonly float canSelectDirectionRange = 45f;
         private Guid currentId = Guid.Empty;
         public List<SwapItem> Items { get; } = new();
 
@@ -126,37 +127,29 @@ namespace Feature.Model
                 return null;
             }
 
-            // Filter and process items in range
+            direction.Normalize();
+
             var itemsInRange = Items
                 .Where(item => Vector3.Distance(item.Position, position) < maxDistance)
                 .ToList();
 
-            // Dictionary to hold angle and distance data
-            var itemMetrics = new Dictionary<SwapItem, (float angleDot, float distance)>();
-
             foreach (var item in itemsInRange)
             {
-                var itemDirection = item.Position - position;
-                var distance = itemDirection.magnitude;
-                var angleDot = Vector3.Dot(direction.normalized, itemDirection.normalized);
+                var itemDirection = (item.Position - position).normalized;
+                var distance = Vector3.Distance(item.Position, position);
+                var angleDot = Vector3.Dot(direction, itemDirection);
 
-                // Save the angle and distance for each item
-                itemMetrics[item] = (angleDot, distance);
-            }
+                var angle = Mathf.Acos(angleDot) * Mathf.Rad2Deg;
 
-            // Select the item that has the highest dot product (closest to desired direction) and within the maximum distance
-            foreach (var (item, (angleDot, distance)) in itemMetrics)
-            {
-                if (angleDot > nearestDirDot)
+                if (angle <= canSelectDirectionRange)
                 {
-                    nearestDirDot = angleDot;
-                    nearestItem = item;
-                    nearestDistance = distance;
-                }
-                else if (Mathf.Approximately(angleDot, nearestDirDot) && distance < nearestDistance)
-                {
-                    nearestItem = item;
-                    nearestDistance = distance;
+                    if (angleDot > nearestDirDot ||
+                        (Mathf.Approximately(angleDot, nearestDirDot) && distance < nearestDistance))
+                    {
+                        nearestDirDot = angleDot;
+                        nearestItem = item;
+                        nearestDistance = distance;
+                    }
                 }
             }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Feature.Common.Constants;
 using Feature.Common.Parameter;
 using Feature.Interface;
@@ -15,48 +16,50 @@ namespace Feature.Component.Enemy
     public class Smasher : MonoBehaviour, IDamaged
     {
         [SerializeField] private SmasherPrams bossPrams;
-        public EnemyType EnemyType => EnemyType.Smasher;
 
         public bool onGround = true;
-        private float xDistance = 0;
-        private bool hit = false;
-        private int rnd;
-        private Transform playerTransform;
-        private Rigidbody bossRb;
-        private Vector3 playerPosition;
-        private bool playerRightSide = false;
-        private bool chargeAttack = false;
-        private bool fallAttack = false;
-        private bool upper = false;
-        private GameObject mine;
-        private GameObject debris;
-        private GameObject debris2;
-        private uint health;
-        private float lastDamageTime = 0f;
-        private bool kick = false;
-        private bool slap = false;
-        [SerializeField] private Slider bossHealthBar;
+        [SerializeField] private Image bossHealthBar;
         [SerializeField] private Animator animator;
         [SerializeField] private Transform strikePoint;
-
-        private float playerDistance = 0;
-        private Vector3 positionAtAttack;
         [SerializeField] private Collider kickCollider;
         [SerializeField] private Collider slapCollider;
         [SerializeField] private GameObject spawnPoint;
 
-        private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
-        private Vector3 previousPosition;
-
         [SerializeField] private GameObject debrisPrefab;
+        [SerializeField] private List<GameObject> swapItemPrefab;
         [SerializeField] private GameObject minePrefab;
 
+        private readonly IReactiveProperty<float> speed = new ReactiveProperty<float>(0f);
+
         private bool alive = true;
+        private bool attack;
+        private Rigidbody bossRb;
+        private bool chargeAttack;
+        private GameObject debris;
+        private GameObject debris2;
+        private bool fallAttack;
+        private int health;
+        private bool hit;
+        private bool kick;
+        private float lastDamageTime;
+        private GameObject mine;
+
+        private float playerDistance;
+        private Vector3 playerPosition;
+        private bool playerRightSide;
+        private Transform playerTransform;
+        private Vector3 positionAtAttack;
+        private Vector3 previousPosition;
+        private int rnd;
+        private bool slap;
+        private bool upper;
+        private float xDistance;
+        public EnemyType EnemyType => EnemyType.Smasher;
 
         private void Start()
         {
             bossRb = GetComponent<Rigidbody>();
-            health = bossPrams.health;
+            health = (int)bossPrams.health;
             UpdateHealth();
             StartCoroutine(Attack());
         }
@@ -64,6 +67,11 @@ namespace Feature.Component.Enemy
         private void Update()
         {
             playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
+            if (playerTransform == null)
+            {
+                return;
+            }
+
             xDistance = Mathf.Abs(transform.position.x - positionAtAttack.x);
             var distance = transform.position.x - playerTransform.position.x;
             if (distance < 0)
@@ -71,17 +79,80 @@ namespace Feature.Component.Enemy
                 playerRightSide = true;
             }
 
-            playerPosition = playerTransform.position;
-            var direction = playerPosition - transform.position;
-            direction.y = 0;
-            var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
+            if (!attack)
+            {
+                playerPosition = playerTransform.position;
+                var direction = playerPosition - transform.position;
+                direction.y = 0;
+                var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+                transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
+            }
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                if (chargeAttack)
+                {
+                    other.gameObject.GetComponent<IDamaged>()
+                        .OnDamage(bossPrams.chargeAttackDamage, transform.position, transform);
+                }
+                else if (fallAttack)
+                {
+                    other.gameObject.GetComponent<IDamaged>()
+                        .OnDamage(bossPrams.fallAttackDamage, transform.position, transform);
+                }
+            }
+
+            if (other.gameObject.CompareTag("Ground"))
+            {
+                onGround = true;
+            }
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            if (other.gameObject.CompareTag("Ground"))
+            {
+                onGround = false;
+            }
+        }
+
+        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
+        {
+            var currentTime = Time.time;
+            health -= (int)damage;
+            if (health < bossPrams.health / 2)
+            {
+                bossRb.AddRelativeForce(bossPrams.kickbackHalf * Vector3.back);
+            }
+            else if (health < bossPrams.health / 3)
+            {
+                bossRb.AddRelativeForce(bossPrams.kickbackOneThird * Vector3.back);
+            }
+            else if (health < bossPrams.health / 10)
+            {
+                bossRb.AddRelativeForce(bossPrams.kickbackTenth * Vector3.back);
+            }
+
+            animator.SetTrigger("OnDamage");
+            UpdateHealth();
+            if (currentTime - lastDamageTime <= bossPrams.kickTriggerTime)
+            {
+                animator.SetTrigger("Kick");
+                kick = true;
+                Kick();
+            }
+
+            lastDamageTime = currentTime;
+            return new DamageResult.Damaged(transform);
         }
 
         private void UpdateHealth()
         {
-            bossHealthBar.value = (float)health / bossPrams.health;
-            if (health <= 0)
+            bossHealthBar.fillAmount = (float)health / bossPrams.health;
+            if (health <= 0 && alive)
             {
                 StartCoroutine(Dead());
             }
@@ -104,6 +175,7 @@ namespace Feature.Component.Enemy
                     {
                         yield return StartCoroutine(FallAttack());
                     }
+
                     break;
 
                 case 2:
@@ -138,7 +210,7 @@ namespace Feature.Component.Enemy
                     break;
 
                 case 6:
-                    yield return StartCoroutine(StrikeMine());
+                    // yield return StartCoroutine(StrikeMine());
                     break;
 
                 case 7:
@@ -160,12 +232,14 @@ namespace Feature.Component.Enemy
             Debug.Log("突進");
             chargeAttack = true;
             yield return new WaitForSeconds(bossPrams.chargeTime);
+            attack = true;
             animator.SetTrigger("OnForwardattack");
             CurrentDistance();
             Debug.Log(playerDistance);
             bossRb.AddRelativeForce(bossPrams.chargeSpeed * Vector3.forward);
             yield return new WaitForSeconds(bossPrams.chargeAttackTime);
             bossRb.velocity = Vector3.zero;
+            attack = false;
             chargeAttack = false;
             yield return new WaitForSeconds(bossPrams.chargeIntervalSec);
         }
@@ -175,7 +249,7 @@ namespace Feature.Component.Enemy
             Debug.Log("アッパー");
             yield return new WaitForSeconds(bossPrams.upperOccurrenceTime);
             upper = true;
-            kickCollider.OnTriggerEnterAsObservable().Where(_ => upper == true)
+            kickCollider.OnTriggerEnterAsObservable().Where(_ => upper)
                 .Subscribe(other =>
                 {
                     var damaged = other.gameObject.GetComponent<IDamaged>();
@@ -223,18 +297,18 @@ namespace Feature.Component.Enemy
                 if (playerRightSide)
                 {
                     StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,
-                        new Vector3(transform.position.x + bossPrams.fallAttackDistance, positionAtAttack.y,
+                        new(transform.position.x + bossPrams.fallAttackDistance, positionAtAttack.y,
                             positionAtAttack.z)));
                 }
                 else
                 {
                     StartCoroutine(MoveTowardsTarget(bossPrams.fallSpeed,
-                        new Vector3(transform.position.x - bossPrams.fallAttackDistance, positionAtAttack.y,
+                        new(transform.position.x - bossPrams.fallAttackDistance, positionAtAttack.y,
                             positionAtAttack.z)));
                 }
             }
 
-            yield return new WaitUntil(() => onGround == true);
+            yield return new WaitUntil(() => onGround);
             bossRb.velocity = Vector3.zero;
             yield return new WaitForSeconds(bossPrams.fallAttackIntervalSec);
             fallAttack = false;
@@ -256,6 +330,7 @@ namespace Feature.Component.Enemy
                     break;
                 }
             }
+
             bossRb.velocity = Vector3.zero;
         }
 
@@ -267,6 +342,9 @@ namespace Feature.Component.Enemy
             yield return new WaitForSeconds(0.2f);
             debris2 = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
                 Quaternion.identity);
+            //var swapitem = swapItemPrefab.RandomElement();
+            //debris2 = ObjectFactory.Instance.CreateObject(swapitem, spawnPoint.transform.position, spawnPoint.transform.rotation);
+            //debris2.GetComponent<Rigidbody>().AddForce((playerRightSide == true) ? 2 : -2, 10, 0);
             debris = ObjectFactory.Instance.CreateObject(debrisPrefab, spawnPoint.transform.position,
                 Quaternion.identity);
             debris.GetComponent<Debris>().Kick();
@@ -288,7 +366,7 @@ namespace Feature.Component.Enemy
             yield return new WaitForSeconds(bossPrams.slapOccurrenceTime);
             animator.SetTrigger("OnSlap");
             slap = true;
-            slapCollider.OnTriggerEnterAsObservable().Where(_ => slap == true)
+            slapCollider.OnTriggerEnterAsObservable().Where(_ => slap)
                 .Subscribe(other =>
                 {
                     var damaged = other.gameObject.GetComponent<IDamaged>();
@@ -300,13 +378,13 @@ namespace Feature.Component.Enemy
                 })
                 .AddTo(this);
             yield return new WaitForSeconds(bossPrams.slapIntervalSec);
-            yield return new WaitUntil(() => onGround == true);
+            yield return new WaitUntil(() => onGround);
             animator.SetTrigger("OnGround");
         }
 
         private void Kick()
         {
-            kickCollider.OnTriggerEnterAsObservable().Where(_ => kick == true)
+            kickCollider.OnTriggerEnterAsObservable().Where(_ => kick)
                 .Subscribe(other =>
                 {
                     var damaged = other.gameObject.GetComponent<IDamaged>();
@@ -326,77 +404,14 @@ namespace Feature.Component.Enemy
             positionAtAttack = playerTransform.position;
         }
 
-        private float DistancePlayer()
-        {
-            return Vector3.Distance(playerTransform.position, transform.position);
-        }
+        private float DistancePlayer() => Vector3.Distance(playerTransform.position, transform.position);
 
         private IEnumerator Dead()
         {
             alive = false;
             Destroy(bossHealthBar);
-            yield return new WaitForSeconds(2);
-            SceneManager.LoadScene("CrearSmasherStageScene");
-        }
-
-        public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
-        {
-            var currentTime = Time.time;
-            health -= damage;
-            if (health < bossPrams.health / 2)
-            {
-                bossRb.AddRelativeForce(bossPrams.kickbackHalf * Vector3.back);
-            }
-            else if (health < bossPrams.health / 3)
-            {
-                bossRb.AddRelativeForce(bossPrams.kickbackOneThird * Vector3.back);
-            }
-            else if (health < bossPrams.health / 10)
-            {
-                bossRb.AddRelativeForce(bossPrams.kickbackTenth * Vector3.back);
-            }
-
-            animator.SetTrigger("OnDamage");
-            UpdateHealth();
-            if (currentTime - lastDamageTime <= bossPrams.kickTriggerTime)
-            {
-                animator.SetTrigger("Kick");
-                kick = true;
-                Kick();
-            }
-
-            lastDamageTime = currentTime;
-            return new DamageResult.Damaged(transform);
-        }
-
-        private void OnCollisionEnter(Collision other)
-        {
-            if (other.gameObject.CompareTag("Player"))
-            {
-                if (chargeAttack)
-                {
-                    other.gameObject.GetComponent<IDamaged>()
-                        .OnDamage(bossPrams.chargeAttackDamage, transform.position, transform);
-                }
-                else if (fallAttack)
-                {
-                    other.gameObject.GetComponent<IDamaged>()
-                        .OnDamage(bossPrams.fallAttackDamage, transform.position, transform);
-                }
-            }
-
-            if (other.gameObject.CompareTag("Ground"))
-            {
-                onGround = true;
-            }
-        }
-
-        private void OnCollisionExit(Collision other)
-        {
-            if (other.gameObject.CompareTag("Ground"))
-            {
-                onGround = false;
-            }
+            yield return new WaitForSeconds(1);
+            SceneManager.LoadScene("ClearSmasherScene");
         }
     }
 }

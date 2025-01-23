@@ -181,13 +181,15 @@ namespace Main.Controller
                             playerPresenter.Move(v.x);
                         }
                     }
-                });
+                })
+                .AddTo(ObjectFactory.SuperObject);
 
             var jumpEvent = inputActionAccessor.CreateAction(Player.Jump);
             Observable.EveryFixedUpdate()
                 .Select(_ => jumpEvent.ReadValue<float>() > 0f)
                 .DistinctUntilChanged()
-                .Subscribe(_ => { playerPresenter.Jump(); });
+                .Subscribe(_ => { playerPresenter.Jump(); })
+                .AddTo(ObjectFactory.SuperObject);
 
             var attackEvent = inputActionAccessor.CreateAction(Player.Attack);
             Observable.EveryFixedUpdate()
@@ -206,7 +208,8 @@ namespace Main.Controller
 
                         playerPresenter.Attack(degree);
                     }
-                });
+                })
+                .AddTo(ObjectFactory.SuperObject);
 
             var daggerEvent = inputActionAccessor.CreateAction(Player.Dagger);
             Observable.EveryFixedUpdate()
@@ -231,7 +234,8 @@ namespace Main.Controller
                             playerPresenter.Dagger(degree, h, v);
                         }
                     }
-                });
+                })
+                .AddTo(ObjectFactory.SuperObject);
             var swapEvent = inputActionAccessor.CreateAction(Player.SwapMode);
             Observable.EveryFixedUpdate()
                 .Select(_ => swapEvent.ReadValue<float>() > 0f)
@@ -244,7 +248,8 @@ namespace Main.Controller
                     }
                     else
                     {
-                        if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle || swapPresenter.SelectItem() == null)
+                        if (!playerModel.CanEndSwap.Value || playerModel.State.Value == PlayerModel.PlayerState.Idle ||
+                            swapPresenter.SelectItem() == null)
                         {
                             playerPresenter.CancelSwap();
                             return;
@@ -252,7 +257,8 @@ namespace Main.Controller
 
                         playerPresenter.ExecuteSwap();
                     }
-                });
+                })
+                .AddTo(ObjectFactory.SuperObject);
         }
 
         private void StateHandler(PlayerStateEvent stateEvent)

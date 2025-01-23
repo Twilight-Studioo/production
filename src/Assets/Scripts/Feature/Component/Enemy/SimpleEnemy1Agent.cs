@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Codice.Client.BaseCommands;
 using Core.Utilities;
 using DynamicActFlow.Runtime.Core.Action;
 using DynamicActFlow.Runtime.Core.Flow;
@@ -14,7 +13,6 @@ using Feature.Interface;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.UI;
 
 #endregion
 
@@ -24,20 +22,21 @@ namespace Feature.Component.Enemy
     {
         public List<Vector3> points;
 
+        private readonly bool loseAnimation = false;
+
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private NavMeshAgent agent;
-        private Rigidbody rb;
+
+        private Animator animator;
 
         private SimpleEnemy1Params enemyParams;
 
         private OnHitRushAttack onHitRushAttack;
 
         private Transform playerTransform;
-
-        private Animator animator;
-
-        private bool loseAnimation = false;
+        private Rigidbody rb;
+        private bool tracking;
 
         private void Awake()
         {
@@ -56,7 +55,7 @@ namespace Feature.Component.Enemy
 
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy1;
-        
+
         public void FlowCancel()
         {
             FlowStop();
@@ -89,21 +88,23 @@ namespace Feature.Component.Enemy
         {
             var imp = (transform.position - attacker.position).normalized;
             imp.y += 0.3f;
-            this.UniqueStartCoroutine(HitStop(imp), $"HitStop_{gameObject.name}");;
-        }
-
-        private IEnumerator HitStop(Vector3 imp)
-        {
-            FlowCancel();
-            agent.enabled = false;
-            rb.isKinematic = false;
-            yield return transform.Knockback(imp, 3f, 0.8f);
-            rb.isKinematic = true;
-            agent.enabled = true;
-            FlowStart();
+            this.UniqueStartCoroutine(HitStop(imp), $"HitStop_{gameObject.name}");
+            ;
         }
 
         public event Action OnTakeDamageEvent;
+
+        public void Delete()
+        {
+            OnDestroyEvent?.Invoke();
+        }
+
+        public void DestroyEnemy()
+        {
+            // loseAnimation = true;
+            FlowCancel();
+            animator.Play("defeat");
+        }
 
         public void OnSelected()
         {
@@ -134,9 +135,15 @@ namespace Feature.Component.Enemy
         public event Action OnDestroyEvent;
 #pragma warning restore CS0067
 
-        public void Delete()
+        private IEnumerator HitStop(Vector3 imp)
         {
-            OnDestroyEvent?.Invoke();
+            FlowCancel();
+            agent.enabled = false;
+            rb.isKinematic = false;
+            yield return transform.Knockback(imp, 3f, 0.8f);
+            rb.isKinematic = true;
+            agent.enabled = true;
+            FlowStart();
         }
 
         private TriggerRef MoveTrigger() =>
@@ -157,6 +164,11 @@ namespace Feature.Component.Enemy
 
         protected override IEnumerator Flow(IFlowBuilder context)
         {
+            if (loseAnimation)
+            {
+                yield break;
+            }
+
             if (enemyParams == null)
             {
                 throw new("EnemyParams is not set");
@@ -186,6 +198,12 @@ namespace Feature.Component.Enemy
 
                 if (enemyParams.foundDistance > distance)
                 {
+                    if (!tracking)
+                    {
+                        animator.Play("float");
+                    }
+
+                    tracking = true;
                     agent.ResetPath();
                     yield return Action("AIMoveToFollow")
                         .Param("FollowTransform", playerTransform)
@@ -200,14 +218,20 @@ namespace Feature.Component.Enemy
                 }
                 else
                 {
+                    if (tracking)
+                    {
+                        animator.Play("move");
+                    }
+
+                    tracking = false;
                     animator.Play("miss");
                     yield return Wait(5.0f);
                 }
             }
         }
-        
+
         private IEnumerator Attack()
-        { 
+        {
             onHitRushAttack = TakeDamage;
             agent.ResetPath();
             yield return Wait(enemyParams.rushBeforeDelay);
@@ -215,14 +239,15 @@ namespace Feature.Component.Enemy
             yield return Wait(0.2f);
             if (loseAnimation)
             {
-               yield break;
+                yield break;
             }
+
             AttackDecision();
-            // yield return Action("AIRushToPosition")
-            //     .Param("RushSpeed", enemyParams.rushSpeed)
-            //     .Param("TargetTransform", playerTransform)
-            //     .Param("OnHitRushAttack", onHitRushAttack)
-            //     .Build();
+            yield return Action("AIRushToPosition")
+                .Param("RushSpeed", enemyParams.rushSpeed)
+                .Param("TargetTransform", playerTransform)
+                //     .Param("OnHitRushAttack", onHitRushAttack)
+                .Build();
             yield return Wait(enemyParams.rushAfterDelay);
         }
 
@@ -240,7 +265,6 @@ namespace Feature.Component.Enemy
                 view.OnDamage(enemyParams.damage, transform.position, transform);
                 OnTakeDamageEvent?.Invoke();
             }
-
         }
 
         private void AttackDecision()
@@ -249,12 +273,6 @@ namespace Feature.Component.Enemy
             {
                 animator.Play("attackA");
             }
-        }
-        
-        public void DestroyEnemy()
-        {
-            loseAnimation = true;
-            animator.Play("defeat");
         }
     }
 }

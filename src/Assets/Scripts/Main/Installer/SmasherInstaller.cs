@@ -11,6 +11,7 @@ namespace Main.Installer
     public class SmasherInstaller : LifetimeScope
     {
         [SerializeField] private Smasher smasher;
+
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterComponent(smasher.CheckNull());

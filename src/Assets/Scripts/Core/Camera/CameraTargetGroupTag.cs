@@ -18,24 +18,12 @@ namespace Core.Camera
         /// <returns>
         ///     A new instance of CameraTargetGroupTag with default weight and radius set for a player.
         /// </returns>
-        internal static CameraTargetGroupTag Player()
-        {
-            return new CameraTargetGroupTag(4, 3);
-        }
+        internal static CameraTargetGroupTag Player() => new(11, 8);
 
-        public static CameraTargetGroupTag Boss()
-        {
-            return new CameraTargetGroupTag(4, 3);
-        }
+        public static CameraTargetGroupTag Boss() => new(8, 5);
 
-        public static CameraTargetGroupTag Enemy()
-        {
-            return new CameraTargetGroupTag(3, 4);
-        }
+        public static CameraTargetGroupTag Enemy() => new(3, 4);
 
-        public static CameraTargetGroupTag SwapItem()
-        {
-            return new CameraTargetGroupTag(1, 1);
-        }
+        public static CameraTargetGroupTag SwapItem() => new(4, 3);
     }
 }

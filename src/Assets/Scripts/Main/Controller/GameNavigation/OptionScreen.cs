@@ -21,7 +21,7 @@ namespace Main.Controller.GameNavigation
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
 
         private IDisposable disposable;
-        
+
         public override void OnShow()
         {
             base.OnShow();
@@ -41,7 +41,7 @@ namespace Main.Controller.GameNavigation
             controlsText.color = navi == Navi.Controls ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
             backText.color = navi == Navi.Back ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
         }
-        
+
         protected override void OnCancel()
         {
             Controller.PopBackstack();
@@ -74,7 +74,7 @@ namespace Main.Controller.GameNavigation
                         break;
                 }
             }
-            
+
             currentNavi.Value = navi;
         }
 
@@ -93,7 +93,7 @@ namespace Main.Controller.GameNavigation
                     break;
             }
         }
-        
+
         private enum Navi
         {
             Volumes,

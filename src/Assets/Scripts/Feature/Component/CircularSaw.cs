@@ -22,6 +22,8 @@ namespace Feature.Component
         private readonly uint damage = 10;
         private readonly Vector3 directionMovement = new(1, 0, 0);
 
+        private readonly string smasher = "Smasher";
+
         private Rigidbody circularsaw;
         private SphereCollider circularsawIsTrigger;
         private int currentWaypointIndex;
@@ -79,7 +81,14 @@ namespace Feature.Component
 
             if (other.gameObject.CompareTag("Enemy"))
             {
-                other.gameObject.GetComponent<IEnemy>().OnDamage(damage, transform.position, transform);
+                if (other.gameObject.name == smasher)
+                {
+                    other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+                }
+                else
+                {
+                    other.gameObject.GetComponent<IEnemy>().OnDamage(damage, transform.position, transform);
+                }
             }
         }
 
@@ -92,7 +101,14 @@ namespace Feature.Component
 
             if (other.gameObject.CompareTag("Enemy"))
             {
-                other.gameObject.GetComponent<IEnemy>().OnDamage(damage, transform.position, transform);
+                if (other.gameObject.name == smasher)
+                {
+                    other.gameObject.GetComponent<IDamaged>().OnDamage(damage, transform.position, transform);
+                }
+                else
+                {
+                    other.gameObject.GetComponent<IEnemy>().OnDamage(damage, transform.position, transform);
+                }
             }
         }
 
@@ -157,7 +173,7 @@ namespace Feature.Component
             circularsawIsTrigger.isTrigger = true;
             circularsaw.useGravity = false;
             transform.position = element0;
-            saw = ObjectFactory.Instance.CreateObject(this.gameObject, original.transform.position, Quaternion.identity);
+            saw = ObjectFactory.Instance.CreateObject(gameObject, original.transform.position, Quaternion.identity);
             gameObject.GetComponent<DamagedTrigger>().Delete();
         }
     }

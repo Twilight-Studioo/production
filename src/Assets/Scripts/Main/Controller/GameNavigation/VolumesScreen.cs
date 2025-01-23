@@ -17,7 +17,6 @@ namespace Main.Controller.GameNavigation
     /// </summary>
     public class VolumesScreen : ScreenProtocol<Navigation>
     {
-        
         [SerializeField] private TextMeshProUGUI masterSliderText;
         [SerializeField] private Slider masterSlider;
         [SerializeField] private TextMeshProUGUI bgmSliderText;
@@ -25,14 +24,13 @@ namespace Main.Controller.GameNavigation
         [SerializeField] private TextMeshProUGUI seSliderText;
         [SerializeField] private Slider seSlider;
         [SerializeField] private TextMeshProUGUI backText;
-        
-        [Inject]
-        private GameSaveManager localSave;
-        
+
         private readonly IReactiveProperty<Navi> currentNavi = new ReactiveProperty<Navi>();
 
         private IDisposable disposable;
-        
+
+        [Inject] private GameSaveManager localSave;
+
         public override void OnShow()
         {
             base.OnShow();
@@ -62,6 +60,7 @@ namespace Main.Controller.GameNavigation
             seSliderText.color = navi == Navi.Se ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
             backText.color = navi == Navi.Back ? Color.white : Color.HSVToRGB(0.6f, 0.2f, 0.6f);
         }
+
         protected override void OnCancel()
         {
             Controller.PopBackstack();
@@ -78,7 +77,7 @@ namespace Main.Controller.GameNavigation
                 OnNavigationHorizontal(value.x);
             }
         }
-        
+
         protected void OnNavigationHorizontal(float value)
         {
             var changed = value > 0 ? 0.05f : -0.05f;
@@ -98,7 +97,7 @@ namespace Main.Controller.GameNavigation
                     break;
             }
         }
-        
+
         private void OnNavigationVertical(float value)
         {
             if (value > 0)
@@ -148,25 +147,25 @@ namespace Main.Controller.GameNavigation
                     break;
             }
         }
-        
+
         private void SetMasterVolume(float value)
         {
             value = Mathf.Clamp(value, 0.0001f, 1.0f);
             localSave.SetMasterVolume(value);
         }
-        
+
         private void SetBgmVolume(float value)
         {
             value = Mathf.Clamp(value, 0.0001f, 1.0f);
             localSave.SetBgmVolume(value);
         }
-        
+
         private void SetSeVolume(float value)
         {
             value = Mathf.Clamp(value, 0.0001f, 1.0f);
             localSave.SetSeVolume(value);
         }
-        
+
         private enum Navi
         {
             Master,

@@ -1,3 +1,5 @@
+using System;
+
 namespace Core.Utilities
 {
     public static class NullChecker
@@ -6,8 +8,9 @@ namespace Core.Utilities
         {
             if (obj == null)
             {
-                throw new System.ArgumentNullException(nameof(obj));
+                throw new ArgumentNullException(nameof(obj));
             }
+
             return obj;
         }
     }

@@ -70,9 +70,13 @@ namespace Feature.Component
                     h *= -0.5f;
                     v = 0.5f;
                     if (h <= 0)
+                    {
                         RotateToTarget(200, 0.2f);
+                    }
                     else
+                    {
                         RotateToTarget(-200, 0.2f);
+                    }
 
                     rb.isKinematic = false;
                 }
@@ -82,13 +86,21 @@ namespace Feature.Component
             else if (collision.gameObject.CompareTag("Wall"))
             {
                 var component = GetComponent<Rigidbody>();
-                if (component != null) component.isKinematic = true;
+                if (component != null)
+                {
+                    component.isKinematic = true;
+                }
+
                 position.Value = transform.position;
             }
             else if (collision.gameObject.CompareTag("Ground"))
             {
                 var component = GetComponent<Rigidbody>();
-                if (component != null) component.isKinematic = true;
+                if (component != null)
+                {
+                    component.isKinematic = true;
+                }
+
                 position.Value = transform.position;
             }
         }
@@ -101,15 +113,9 @@ namespace Feature.Component
         {
         }
 
-        public IReadOnlyReactiveProperty<Vector2> GetPositionRef()
-        {
-            return position.ToReadOnlyReactiveProperty();
-        }
+        public IReadOnlyReactiveProperty<Vector2> GetPositionRef() => position.ToReadOnlyReactiveProperty();
 
-        public Vector2 GetPosition()
-        {
-            return position.Value;
-        }
+        public Vector2 GetPosition() => position.Value;
 
         public void OnSwap(Vector2 p)
         {

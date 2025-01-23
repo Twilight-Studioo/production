@@ -25,6 +25,12 @@ namespace Feature.View
         [SerializeField] private VisualEffect visualEffect;
         public Transform daggerSpawn;
 
+        [SerializeField, Tooltip("刀の初期回転角度（一段目の攻撃時）"),]
+        private float yDegree = 105f;
+
+        [SerializeField, Tooltip("刀の二段目攻撃時の回転角度"),]
+        private float newYDegree = 284f;
+
         private readonly IReactiveProperty<bool> isGrounded = new ReactiveProperty<bool>(false); // 地面に接触しているかどうかのフラグ
 
         private readonly IReactiveProperty<Vector3> position = new ReactiveProperty<Vector3>();
@@ -37,21 +43,19 @@ namespace Feature.View
         private int comboCount = -1;
         private float comboTimeWindow; // 〇秒以内の連続攻撃を許可
         private bool isGravityDisabled;
+        private bool isMovementDisabled;
 
         private float lastAttackTime;
         private float lastDegree;
+        private float maxComboCoolTime;
         private float maxComboCount; // 連続攻撃の最大回数
         private float monochrome;
-        private float maxComboCoolTime;
         private Vector3 previousPosition;
         private Rigidbody rb;
         private bool right = true;
-        private bool isMovementDisabled;
-        public event Action<DamageResult> OnHitHandler;
 
         private float vignetteChange; //赤くなるまでの時間
-        [SerializeField, Tooltip("刀の初期回転角度（一段目の攻撃時）")] private float yDegree =105f;
-        [SerializeField, Tooltip("刀の二段目攻撃時の回転角度")] private float newYDegree = 284f;
+
         private void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
@@ -64,8 +68,16 @@ namespace Feature.View
 
         private void Update()
         {
+            var pos = transform.position;
+            if(Mathf.Abs(pos.z) > 0.3f)
+            {
+                pos.z = 0f;
+                transform.position = pos;
+            }
+            
             position.Value = transform.position;
         }
+
         private void FixedUpdate()
         {
             var pos = rb.position;
@@ -108,14 +120,8 @@ namespace Feature.View
             animator.OnTakeDamage();
             return result;
         }
-        
-        private IEnumerator Knockback(Vector3 direction, float strength, float duration)
-        {
-            isMovementDisabled = true;
-            yield return transform.Knockback(direction, strength, duration);
-            yield return new WaitForSeconds(0.9f);
-            isMovementDisabled = false;
-        }
+
+        public event Action<DamageResult> OnHitHandler;
         public IReadOnlyReactiveProperty<float> Speed { get; set; }
 
         public float SwapRange { get; set; }
@@ -126,7 +132,8 @@ namespace Feature.View
 
         public GameObject GetGameObject() => gameObject;
 
-        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime, float maxComboCoolTime)
+        public void SetParam(float comboTimeWindow, float comboAngleOffset, float maxComboCount, float attackCoolTime,
+            float maxComboCoolTime)
         {
             this.comboTimeWindow = comboTimeWindow;
             this.comboAngleOffset = comboAngleOffset;
@@ -141,7 +148,7 @@ namespace Feature.View
             var previousPosition = transform.position;
 
             transform.position = p;
-            
+
             if (swappingEffect != null)
             {
                 // 生成
@@ -157,7 +164,7 @@ namespace Feature.View
                 //Target_position更新
                 if (visualEffect != null)
                 {
-                    visualEffect.SetVector3("Target_position_position", new Vector3(previousPosition.x, previousPosition.y, 0));
+                    visualEffect.SetVector3("Target_position_position", new(previousPosition.x, previousPosition.y, 0));
                 }
             }
         }
@@ -172,6 +179,7 @@ namespace Feature.View
             {
                 return;
             }
+
             //向き
             if (direction.x > 0)
             {
@@ -230,6 +238,14 @@ namespace Feature.View
             animator.OnDagger();
         }
 
+        private IEnumerator Knockback(Vector3 direction, float strength, float duration)
+        {
+            isMovementDisabled = true;
+            yield return transform.Knockback(direction, strength, duration);
+            yield return new WaitForSeconds(0.9f);
+            isMovementDisabled = false;
+        }
+
         private static void DrawWireDisk(Vector3 position, float radius, Color color)
         {
             var oldColor = Gizmos.color;
@@ -240,12 +256,13 @@ namespace Feature.View
             Gizmos.matrix = oldMatrix;
             Gizmos.color = oldColor;
         } // ReSharper disable Unity.PerformanceAnalysis
-        
+
         public bool CanAttack()
         {
             var currentTime = Time.time;
             return currentTime - lastAttackTime >= (comboCount == 2 ? maxComboCoolTime : attackCoolTime);
         }
+
         public void Attack(float degree, uint damage, bool voltage)
         {
             var currentTime = Time.time;
@@ -261,6 +278,7 @@ namespace Feature.View
                     comboCount = -1;
                     yDegree = 0;
                 }
+
                 comboCount++;
             }
             else
@@ -281,22 +299,23 @@ namespace Feature.View
             switch (comboCount)
             {
                 case 0:
-                    katana.gameObject.transform.Rotate(0,newYDegree * Time.deltaTime,0);
+                    katana.gameObject.transform.Rotate(0, newYDegree * Time.deltaTime, 0);
                     break;
                 case 1:
-                    katana.gameObject.transform.Rotate(0,yDegree * Time.deltaTime,0);
+                    katana.gameObject.transform.Rotate(0, yDegree * Time.deltaTime, 0);
                     break;
             }
-            
+
             var effectPrefab = voltage ? slashingEffect[effectIndex] : normalSlash[effectIndex];
 
             var obj = Instantiate(effectPrefab, transform.position + new Vector3(0f, 1f, 0),
-                    Quaternion.Euler(effectPrefab.transform.localEulerAngles.x, effectPrefab.transform.localEulerAngles.y, degree));
+                Quaternion.Euler(effectPrefab.transform.localEulerAngles.x, effectPrefab.transform.localEulerAngles.y,
+                    degree));
 
             var slash = obj.GetComponent<Slash>();
             slash.OnHitEvent += OnHitHandler;
             slash.SetDamage(damage);
-            
+
             Destroy(obj, 0.5f);
             animator.SetAttackComboCount(comboCount);
             animator.OnAttack(0);
@@ -336,25 +355,27 @@ namespace Feature.View
             rb.velocity = Vector3.zero;
             rb.AddForce(force, ForceMode.VelocityChange);
         }
+
         public void VoltageEffect(int voltageValue, int useVoltageAttackValue, int votageTwoAttackValue, int maxVoltage)
         {
             if (voltageValue >= maxVoltage)
             {
-                visualEffect.SetUInt("Voltage",3);
+                visualEffect.SetUInt("Voltage", 3);
             }
             else if (voltageValue >= votageTwoAttackValue)
             {
-                visualEffect.SetUInt("Voltage",2);
+                visualEffect.SetUInt("Voltage", 2);
             }
             else if (voltageValue >= useVoltageAttackValue)
             {
-                visualEffect.SetUInt("Voltage",1);
+                visualEffect.SetUInt("Voltage", 1);
             }
             else
             {
-                visualEffect.SetUInt("Voltage",0);
+                visualEffect.SetUInt("Voltage", 0);
             }
         }
+
         public bool IsGrounded() => isGrounded.Value;
 
         public Vector3 GetForward() => right ? Vector3.right : Vector3.left;

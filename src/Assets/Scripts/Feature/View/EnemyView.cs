@@ -1,12 +1,10 @@
-                                                                                                                                                                        #region
+#region
 
 using System;
 using Core.Utilities.Health;
 using Feature.Common.Constants;
 using Feature.Interface;
 using UnityEngine;
-using System.Collections;
-using Core.Utilities;
 
 #endregion
 
@@ -32,35 +30,36 @@ namespace Feature.View
 
         public DamageResult OnDamage(uint damage, Vector3 hitPoint, Transform attacker)
         {
-            Debug.Log($"OnDamage: {damage} {CurrentHealth}");
             if (CurrentHealth <= 0)
             {
                 return new DamageResult.Missed();
             }
+
             if (CurrentHealth - damage <= 0)
             {
                 CurrentHealth = 0;
                 OnDamageEvent?.Invoke(new DamageResult.Killed(transform), hitPoint);
-                // delete 
-                OnHealth0Event?.Invoke();
                 agent.FlowCancel();
                 agent.DestroyEnemy();
+                OnHealth0Event?.Invoke();
                 agent.Delete();
-                if (gameObject != null)
-                {
-                    Destroy(gameObject, 3f);
-                }
                 OnRemoveEvent?.Invoke();
+                // delete
+                Destroy(gameObject);
+                // Observable
+                //     .Timer(TimeSpan.FromSeconds(3f))
+                //     .Subscribe(_ =>
+                //     {
+                //         Destroy(gameObject);
+                //     });
                 return new DamageResult.Killed(transform);
             }
-            else
-            {
-                CurrentHealth -= (int)damage;
-                OnDamageEvent?.Invoke(new DamageResult.Damaged(transform), hitPoint);
-                // hit event for agent
-                agent.OnDamage(damage, hitPoint, attacker);
-                return new DamageResult.Damaged(transform);
-            }
+
+            CurrentHealth -= (int)damage;
+            OnDamageEvent?.Invoke(new DamageResult.Damaged(transform), hitPoint);
+            // hit event for agent
+            agent.OnDamage(damage, hitPoint, attacker);
+            return new DamageResult.Damaged(transform);
         }
 
         public void SetHealth(uint health)

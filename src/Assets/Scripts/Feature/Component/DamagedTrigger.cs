@@ -11,7 +11,6 @@ namespace Feature.Component
 {
     public class DamagedTrigger : MonoBehaviour, ISwappable
     {
-
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
 
         private bool canHitEnemy;

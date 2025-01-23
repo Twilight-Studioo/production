@@ -12,7 +12,6 @@ using Feature.Common.Parameter;
 using Feature.Interface;
 using UniRx;
 using UnityEngine;
-using UnityEngine.AI;
 
 #endregion
 
@@ -23,24 +22,28 @@ namespace Feature.Component.Enemy
         [SerializeField] private GameObject bulletPrefab;
 
         private readonly IReactiveProperty<Vector2> position = new ReactiveProperty<Vector2>();
+        private Animator animator;
 
-        private Rigidbody rb;
-
-        private bool canBullet = false;
+        private bool canBullet;
 
         private SimpleEnemy2FlyParams enemyParams;
+
+        private float lastAttackedTime;
+        private bool loseAnimation = false;
+
+        private Coroutine movableCoroutine;
 
         private OnHitRushAttack onHitBullet;
 
         private Transform playerTransform;
         private List<Vector3> points;
-        
-        private float lastAttackedTime;
-        private Animator animator;
-        private bool loseAnimation = false;
+
+        private Rigidbody rb;
+
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            animator = GetComponentInChildren<Animator>();
             position.Value = transform.position;
         }
 
@@ -54,12 +57,14 @@ namespace Feature.Component.Enemy
         public GetHealth OnGetHealth { get; set; }
         public EnemyType EnemyType => EnemyType.SimpleEnemy2;
 
-        private Coroutine movableCoroutine;
-
 
         public void FlowCancel()
         {
             FlowStop();
+            if (movableCoroutine != null)
+            {
+                StopCoroutine(movableCoroutine);
+            }
         }
 
         public void FlowExecute()
@@ -89,9 +94,10 @@ namespace Feature.Component.Enemy
         {
             var imp = (transform.position - attacker.position).normalized;
             imp.y += 0.3f;
-            this.UniqueStartCoroutine(HitStop(imp), $"HitStop_{gameObject.name}");;
+            this.UniqueStartCoroutine(HitStop(imp), $"HitStop_{gameObject.name}");
+            ;
         }
-        
+
         private IEnumerator HitStop(Vector3 imp)
         {
             FlowCancel();
@@ -140,11 +146,13 @@ namespace Feature.Component.Enemy
                 playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
                 yield return Wait(0.5f);
             }
+
             canBullet = true;
             if (movableCoroutine != null)
             {
-                StopCoroutine(movableCoroutine);   
+                StopCoroutine(movableCoroutine);
             }
+
             movableCoroutine = StartCoroutine(Movable());
 
             while (true)
@@ -152,7 +160,7 @@ namespace Feature.Component.Enemy
                 // パトロール状態
 
                 var distance = Vector3.Distance(playerTransform.position, transform.position);
-                
+
                 if (enemyParams.pursuitDistance < distance)
                 {
                     yield return new WaitForSeconds(0.5f);
@@ -176,6 +184,7 @@ namespace Feature.Component.Enemy
             {
                 playerTransform = ObjectFactory.Instance.FindPlayer()?.transform;
             }
+
             yield return Action("FlyingEnemyV2")
                 .Param("Target", playerTransform)
                 .Param("Power", enemyParams.movePower)
@@ -192,13 +201,14 @@ namespace Feature.Component.Enemy
             {
                 try
                 {
-                    animator.Play("attackA");
+                    animator.Play("attackB");
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
             }
+
             var dir = (playerTransform.position - transform.position).normalized;
             for (var _ = 0; _ < enemyParams.shootCount; _++)
             {
@@ -213,6 +223,7 @@ namespace Feature.Component.Enemy
                 bulletRb.OnHitEvent += () => onHitBullet?.Invoke();
                 yield return Wait(enemyParams.shootIntervalSec);
             }
+
             yield return Wait(enemyParams.shootAfterSec);
         }
 
@@ -250,7 +261,11 @@ namespace Feature.Component.Enemy
 
         public void DestroyEnemy()
         {
-            loseAnimation = true;
+            // loseAnimation = true;
+            FlowCancel();
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.velocity = Vector3.down;
             try
             {
                 animator.Play("defeat");
